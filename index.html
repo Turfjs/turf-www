@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <link rel='stylesheet' href='site.css'>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/tomorrow.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <img href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
+    <div id='description'>
+      Turf is a modular GIS engine written in Javascript. It performs geospatial statistics with 
+      geojson data and can be run on a server or in a browser. 
+      Here is an example in Node.js:
+      <pre>
+        <code class='javascript'>
+// find out how many snakes are within 1 mile of a wombat
+
+var turf = require('turf');
+var fs = require('fs');
+
+var wombats = fs.readFileSync('./wombats.geojson');
+var snakes = fs.readFileSync('./snakes.geojson');
+
+var oneMileRing = turf.buffer(wombats, 1, 'miles');
+var snakesNearWombats = turf.within(snakes, oneMileRing);
+
+console.log(snakesNearWombats);
+        </code>
+      </pre>
+    </div>
+  </body>
+</html>

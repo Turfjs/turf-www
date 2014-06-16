@@ -1,0 +1,31 @@
+body {
+  padding-left: 25%;
+  padding-right: 25%;
+  padding-top:25px;
+  font-family: Verdana, Geneva, sans-serif;
+  line-height: 1.5
+}
+
+@media screen and (max-width: 1000px){
+  body{
+    padding-left: 15%;
+    padding-right: 15%;
+  }
+}
+
+@media screen and (max-width: 765px){
+  body{
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+#description {
+  padding-top: 30px;
+}
+
+code {
+  line-height: 1.2;
+  font: 14px;
+  padding-left: -30px;
+}
