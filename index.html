@@ -6,14 +6,14 @@
     <script>hljs.initHighlightingOnLoad();</script>
   </head>
   <body>
-    <img href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
+    <img id='logo' href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
     <div class='button-group'>
       <a href='http://rousseau.io/turf-mapboxjs/turf-jenks/' class='button pill'>Examples</a>
       <a href='https://github.com/Turfjs/turf' class='button pill'>Source</a>
     </div>
     <div id='description'>
-      Turf is a modular GIS engine written in Javascript. It performs geospatial statistics with 
-      geojson data and can be run on a server or in a browser. 
+      Turf is a <a href='http://en.wikipedia.org/wiki/Modular_programming'>modular</a> GIS engine written in JavaScript. It performs geospatial processing tasks with 
+      GeoJSON data and can be run on a server or in a browser. 
       Here is an example in Node.js:
       <pre>
         <code class='javascript'>
@@ -31,6 +31,15 @@ var snakesNearWombats = turf.within(snakes, oneMileRing);
 console.log(snakesNearWombats);
         </code>
       </pre>
+
+      Installation is easy:
+      <pre>
+        <code class='javascript'>
+npm install turf
+        </code>
+      </pre>
+
+    <div id='copyright'>Library released under <a href='https://github.com/Turfjs/turf/blob/master/LICENSE'>MIT license</a>. Copyright 2014 <a href='https://twitter.com/morganherlocker'>Morgan Herlocker</a>.</div>
     </div>
   </body>
 </html>

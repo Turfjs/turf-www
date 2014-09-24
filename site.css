@@ -6,6 +6,10 @@ body {
   line-height: 1.5
 }
 
+#logo {
+  margin-top: -20px;
+}
+
 @media screen and (max-width: 1000px){
   body{
     padding-left: 15%;
@@ -28,6 +32,8 @@ code {
   line-height: 1.2;
   font: 14px;
   padding-left: -30px;
+  margin-top:-40px;
+  margin-bottom: -40px;
 }
 
 .button {
@@ -83,4 +89,10 @@ code {
 
 .button-group .button + .button{
   margin-left:-9px;
+}
+
+#copyright {
+  font-size: 10;
+  color: gray;
+  padding-top: 30px;
 }
