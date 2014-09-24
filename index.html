@@ -7,13 +7,17 @@
   </head>
   <body>
     <img href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
+    <div class='button-group'>
+      <a href='http://rousseau.io/turf-mapboxjs/turf-jenks/' class='button pill'>Examples</a>
+      <a href='https://github.com/Turfjs/turf' class='button pill'>Source</a>
+    </div>
     <div id='description'>
       Turf is a modular GIS engine written in Javascript. It performs geospatial statistics with 
       geojson data and can be run on a server or in a browser. 
       Here is an example in Node.js:
       <pre>
         <code class='javascript'>
-// find out how many snakes are within 1 mile of a wombat
+// find all the snakes within 1 mile of a wombat
 
 var turf = require('turf');
 var fs = require('fs');
