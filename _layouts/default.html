@@ -33,7 +33,7 @@ examples:
             <strong class='header'>{{example.name}}</strong>
             {% for example_page in site.tags[example.id] order:ascending %}
             <br/>
-            <a href='{{example_page.url}}/' class='{% if example_page.title == page.title %}active{% endif %}'>{{example_page.title}}</a>
+            <a href='{{site.baseurl}}/{{example_page.url}}/' class='{% if example_page.title == page.title %}active{% endif %}'>{{example_page.title}}</a>
             {% endfor %}
         </div>
         {% endfor %}
