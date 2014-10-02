@@ -40,7 +40,7 @@ var polys = [
     })
 ];
 var poly_fc = turf.featurecollection(polys);
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json').addTo(map);
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/pressure.json').addTo(map);
 points_layer.on('ready', function () {
 
 var average = turf.average(poly_fc, points_layer.toGeoJSON(), 'pressure', 'description');
