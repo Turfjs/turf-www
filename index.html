@@ -1,23 +1,17 @@
-<html>
-  <head>
-  <link rel='icon' type='image/ico' href='favicon.ico'>
-    <link rel='stylesheet' href='site.css'>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/tomorrow.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-  </head>
-  <body>
-    <img id='logo' href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
-    <div class='button-group'>
-      <a href='http://rousseau.io/turf-mapboxjs/turf-jenks/' class='button pill'>Examples</a>
-      <a href='https://github.com/Turfjs/turf' class='button pill'>Source</a>
+---
+layout: index
+title: Turf.js
+---
+<div class='main-turf'>
+    <img class='logo' href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
+    <div class='turf-button-group'>
+        <a href='{{site.baseurl}}/examples.html' class='button pill'>Examples</a>
+        <a href='https://github.com/Turfjs/turf' class='button pill' target="_blank">Source</a>
     </div>
-    <div id='description'>
-      Turf is a <a href='http://en.wikipedia.org/wiki/Modular_programming'>modular</a> GIS engine written in JavaScript. It performs geospatial processing tasks with 
-      GeoJSON data and can be run on a server or in a browser. 
-      Here is an example in Node.js:
-      <pre>
-        <code class='javascript'>
+    <div class='description'>
+        Turf is a <a href='http://en.wikipedia.org/wiki/Modular_programming'>modular</a> GIS engine written in JavaScript. It performs geospatial processing tasks with GeoJSON data and can be run on a server or in a browser. Here is an example in Node.js:
+
+    {% highlight js %}
 // find all the snakes within 1 mile of a wombat
 
 var turf = require('turf');
@@ -30,17 +24,12 @@ var oneMileRing = turf.buffer(wombats, 1, 'miles');
 var snakesNearWombats = turf.within(snakes, oneMileRing);
 
 console.log(snakesNearWombats);
-        </code>
-      </pre>
-
-      Installation:
-      <pre>
-        <code class='javascript'>
+    {% endhighlight %}
+        Installation:
+    {% highlight js %}
 npm install turf
-        </code>
-      </pre>
+    {% endhighlight %}
 
-    <div id='copyright'>Library released under <a href='https://github.com/Turfjs/turf/blob/master/LICENSE'>MIT license</a>. Copyright 2014 <a href='https://twitter.com/morganherlocker'>Morgan Herlocker</a>.</div>
+        <div id='copyright'>Library released under <a href='https://github.com/Turfjs/turf/blob/master/LICENSE'>MIT license</a>. Copyright 2014 <a href='https://twitter.com/morganherlocker'>Morgan Herlocker</a>.</div>
     </div>
-  </body>
-</html>
+</div>
