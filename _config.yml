@@ -13,6 +13,5 @@ permalink: /examples/:title
 exclude: ['README.md', '.gitignore']
 name: turf in mapbox.js
 baseurl: /turf-www
-baseurl: /turf-www/examples
 description: examples of turfjs using mapbox.js
 url: http://rousseau.io/turf-www
