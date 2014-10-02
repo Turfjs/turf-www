@@ -12,6 +12,6 @@ destination: ./_site
 permalink: /examples/:title
 exclude: ['README.md', '.gitignore']
 name: turfjs
-baseurl: /turf-www
+baseurl:
 description: main turfjs website
-url: http://turfjs.org/turf-www
+url: http://turfjs.org
