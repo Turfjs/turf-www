@@ -82,7 +82,7 @@ var aggregations = [
     outField: 'point_count'
   }
 ];
-var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/pressure.json').addTo(map);
+var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json').addTo(map);
 points_layer.on('ready', function () {
 
 var aggregate = turf.aggregate(poly_fc, points_layer.toGeoJSON(), aggregations);

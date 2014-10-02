@@ -13,7 +13,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5
 var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
     .setView([38.466453, -106.514914], 5);
 
-var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/pressure.json');
+var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
 points_layer.on('ready', function () {
     var resolution = 100;
     var jenks = turf.jenks(points_layer.toGeoJSON(), 'pressure', 15);
