@@ -1,0 +1,36 @@
+---
+layout: example
+title: turf-buffer
+description: Buffers a point, linestring, or polygon Feature/FeatureCollection to a given radius. Units supported are miles, kilometers, and degrees.
+tags:
+    - transformation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var linestring = turf.linestring([
+    [-72, 40],
+    [-95, 35],
+    [-124, 37]
+], {
+    "stroke": "#25561F",
+    "stroke-width": 5
+});
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([37.8, -96], 4);
+
+var buffer = turf.buffer(linestring, 50, "miles");
+
+buffer.features[0].properties = {
+    "fill": "#6BC65F",
+    "stroke": "#6BC65F",
+    "stroke-width": 5,
+    "description": "50 miles buffer from polyline"
+}
+
+L.mapbox.featureLayer().setGeoJSON(buffer).addTo(map);
+L.mapbox.featureLayer().setGeoJSON(linestring).addTo(map);
+</script>

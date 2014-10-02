@@ -1,0 +1,27 @@
+---
+layout: example
+title: turf-hex
+description: Generates a hexgrid within the specified bbox.
+tags:
+    - interpolation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var hexgrid = turf.hex([-115.52, 25.460, -87.5, 45.468], .5);
+
+hexgrid.features.map(function(grid) {
+    grid.properties = {
+        "fill": "#25561F",
+        "stroke": "#25561F",
+        "stroke-width": 1
+    };
+    return grid;
+});
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.463453, -102.508014], 4)
+    .featureLayer.setGeoJSON(hexgrid);
+</script>
