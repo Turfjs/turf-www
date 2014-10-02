@@ -1,0 +1,179 @@
+//$visual_grid: true;
+$visual_grid_color: #B2E3EC;
+
+@import "bourbon/bourbon";
+@import "bitters/bitters";
+@import "neat/neat";
+
+// ----------------------------------
+// ----------- Variables ------------
+// ----------------------------------
+
+$small-screen: new-breakpoint(max-width 767px 12);
+$medium-screen: new-breakpoint(min-width 768px max-width 1240px 12);
+$large-screen: new-breakpoint(min-width 1241px 12);
+
+@mixin grid-item-columns($columns) {
+  @if($columns == 4) {
+    width: (100% / 12) * $columns - 1.00%;
+  }
+  @else {
+    width: (100% / 12) * $columns - 1.20%;
+  }
+}
+
+$primary-color: #00c800;
+$secondary-color: #00A000;
+$tertiary-color: #ccc096;
+$background-color: #fbfbfb;
+$example-background-color: #ffffff;
+$example-active: #9b9b9b;
+
+$border-size: 9px;
+$font-stack: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+// ----------------------------------
+// -------- General Styles ----------
+// ----------------------------------
+
+@import "highlight";
+
+body {
+    font-family: $font-stack;
+    background: $background-color;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: $font-stack;
+}
+
+h4 {
+    font-size: 25px;
+    font-style: italic;
+    font-weight: normal;
+}
+
+
+a {
+    color: $secondary-color;
+}
+
+a:hover {
+    color: darken($secondary-color, 30);
+}
+
+a:active, a.active {
+    color: darken($example-active, 30);
+}
+
+ul { @extend %default-ul }
+
+div.example-group {
+    padding-bottom: 10px;
+}
+
+strong.header {
+    color: $primary-color;
+}
+
+section {
+  @include outer-container;
+  div.example-navigation {
+      @include span-columns(2);
+      overflow: auto;
+      height: 100%;
+      float: bottom;
+      bottom: 0px;
+      position: fixed;
+  }
+  div.content-space {
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: $example-background-color;
+      @include shift(3);
+      @include span-columns(10);
+      @include pad();
+      iframe.demo-frame {
+          width: 100%;
+          height: 350px;
+      }
+  }
+}
+
+#copyright {
+  font-size: 10;
+  color: gray;
+  padding-top: 30px;
+}
+
+div.main-turf{
+    padding-left: 25%;
+    padding-right: 25%;
+    padding-top:25px;
+    font-family: Verdana, Geneva, sans-serif;
+    line-height: 1.5;
+
+    .logo {
+    margin-top: -20px;
+    }
+
+    div.description {
+      padding-top: 30px;
+    }
+
+    div.turf-button-group {
+          padding-top:25px;
+
+        .button {
+          color: #000;
+          text-decoration: none;
+          border: 3px solid rgb(0,200,0);
+          //padding: 12px;
+          padding-left: 30px;
+          padding-right: 30px;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          z-index: 1
+        }
+
+        .button:hover{
+          border: 3px solid rgb(0,160,0);
+          z-index: 9999999999
+        }
+
+        .button.pill{
+          -webkit-border-radius: 2px;
+          -moz-border-radius: 2px;
+          border-radius: 2px;
+        }
+
+        .button-group {
+        }
+
+        .button.round:not(:first-child):not(:last-child), .button-group > .button.pill:not(:first-child):not(:last-child){
+          -webkit-border-radius: 0;
+          -moz-border-radius: 0;
+          border-radius: 0;
+        }
+
+        .button.round:first-child, .button-group > .button.pill:first-child{
+          -webkit-border-top-right-radius: 0;
+          -webkit-border-bottom-right-radius: 0;
+          -moz-border-radius-topright: 0;
+          -moz-border-radius-bottomright: 0;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+
+        .button.round:last-child, .button-group > .button.pill:last-child{
+          -webkit-border-top-left-radius: 0;
+          -webkit-border-bottom-left-radius: 0;
+          -moz-border-radius-topleft: 0;
+          -moz-border-radius-bottomleft: 0;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+        .button + .button{
+          margin-left:-9px;
+        }
+    }
+}

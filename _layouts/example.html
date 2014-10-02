@@ -1,0 +1,68 @@
+---
+    layout: default
+    tag: geometry
+---
+<style>
+    .fill-white pre {
+        background-color: transparent;
+    }
+</style>
+<div>
+    <div>
+        <h3>{{page.title}}</h3>
+        <p>{{page.description}}</p>
+    </div>
+    <iframe id='demo' class='demo-frame' frameBorder="0px" allowfullscreen='true' mozallowfullscreen='true' webkitallowfullscreen='true'></iframe>
+
+    <script>
+        var doc = document.getElementById("demo").contentWindow.document;
+        doc.open();
+        doc.write("<html><head><meta charset=utf-8 /><title>{{page.title}}</title>");
+        doc.write("<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />");
+        doc.write("<script src='https://rawgit.com/Turfjs/turf/master/turf.min.js'><\/script>");
+        doc.write("<script src='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.js'><\/script>");
+        doc.write("<link href='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.css' rel='stylesheet' />");
+        doc.write("<style>");
+        doc.write("body { margin:0; padding:0; } #map { position:absolute; top:0; bottom:0; width:100%; }");
+        doc.write("p.turf-controls, input.turf-controls, button.turf-controls { padding: 5px; color: #f8f8f8; background: #6BC65F; border-radius: 5; border: none; }");
+        doc.write("::-webkit-input-placeholder { color: #f8f8f8; }");
+        doc.write(":-moz-placeholder { /* Firefox 18- */ color: #f8f8f8; }");
+        doc.write("::-moz-placeholder {  /* Firefox 19+ */ color: #f8f8f8; }");
+        doc.write(":-ms-input-placeholder { color: #f8f8f8; }");
+        doc.write("</style>");
+        doc.write("</head><body>");
+        doc.write({{content | jsonify | replace: '</', '<\/'}});
+        doc.write("</body></html>");
+        doc.close();
+    </script>
+<div class='header-html'>
+{% highlight html %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>{{page.title}}</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://rawgit.com/Turfjs/turf/master/turf.min.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+{% endhighlight %}
+</div>
+<div class='example-content'>
+    {% highlight html %}{{content}}{% endhighlight %}
+</div>
+<div class='footer-html'>
+{% highlight html %}
+</body>
+</html>
+{% endhighlight %}
+</div>
+        </code>
+    </pre>
+</div>

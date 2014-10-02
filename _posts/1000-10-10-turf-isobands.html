@@ -1,0 +1,29 @@
+---
+layout: example
+title: turf-isobands
+description: Takes a FeatureCollection of points with z values and an array of value breaks and generates filled contour isobands. These are commonly used to create elevation maps, but can be used for general data interpolation as well.
+tags:
+    - interpolation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.466453, -97.514914], 4);
+
+var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
+points_layer.on('ready', function () {
+    var resolution = 100;
+    var breaks = [980, 985, 990, 995, 1000, 1005, 1010, 1015, 1020, 1025, 1030];
+    var isobands = turf.isobands(points_layer.toGeoJSON(), 'pressure', resolution, breaks);
+    isobands.features.forEach(function (feature) {
+        feature.properties["fill"] = "none";
+        feature.properties["stroke"] = "#25561F";
+        feature.properties["stroke-width"] = 5;
+    });
+
+    L.mapbox.featureLayer().setGeoJSON(isobands).addTo(map);
+});
+</script>

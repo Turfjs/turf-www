@@ -1,0 +1,42 @@
+---
+layout: example
+title: turf-featurecollection
+description: Creates a geojson FeatureCollection based on an array of features.
+tags:
+    - geometry
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var point1 = turf.point(-97.514914, 35.463453, {
+    "title": "OKC Thunder",
+    "description": "100 W Reno Ave, Oklahoma City",
+    "marker-color": "#6BC65F",
+    "marker-size": "large",
+    "marker-symbol": "basketball"
+});
+
+var point2 = turf.point(-97.517839, 35.466998, {
+    "title": "Devon Tower",
+    "description": "333 West Sheridan Ave, Oklahoma City",
+    "marker-color": "#6BC65F",
+    "marker-size": "large",
+    "marker-symbol": "building"
+});
+
+var point3 = turf.point(-97.508678, 35.464942, {
+    "title": "OKC Redhawks",
+    "description": "2 South Mickey Mantle Dr, Oklahoma City",
+    "marker-color": "#6BC65F",
+    "marker-size": "large",
+    "marker-symbol": "baseball"
+});
+
+var feature_collection = turf.featurecollection([point1, point2, point3]);
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.465453, -97.513914], 15)
+    .featureLayer.setGeoJSON(feature_collection);
+</script>

@@ -1,0 +1,23 @@
+---
+layout: example
+title: turf-bboxPolygon
+description: Takes a bbox and returns the equivalent polygon feature.
+tags:
+    - measurement
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var bbox = turf.bboxPolygon([-97.52, 35.460, -97.5, 35.468]);
+bbox.properties = {
+    "fill": "#6BC65F",
+    "stroke": "#6BC65F",
+    "stroke-width": 5
+};
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.463453, -97.508014], 14)
+    .featureLayer.setGeoJSON(bbox);
+</script>

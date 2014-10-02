@@ -1,0 +1,80 @@
+---
+layout: example
+title: turf-convex
+description: Takes a set of points and returns a convex hull polygon.
+tags:
+    - transformation
+---
+
+<div id='map'></div>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var features = [
+    turf.point(-98.522259, 35.469100, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-97.502754, 35.463455, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-95.508269, 35.463245, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-97.516809, 35.465779, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-96.515372, 33.467072, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-98.509363, 35.463053, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-97.511123, 38.466601, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-97.518547, 33.469327, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-98.519706, 32.469659, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-95.517839, 32.466998, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-98.508678, 34.464942, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    }),
+    turf.point(-95.514914, 37.463453, {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    })
+];
+
+var fc = turf.featurecollection(features);
+
+var convex = turf.convex(fc);
+
+convex.properties = {
+    "fill": "#6BC65F",
+    "stroke": "#25561F",
+    "stroke-width": 2
+};
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.463453, -97.508014], 5);
+
+L.mapbox.featureLayer().setGeoJSON(fc).addTo(map);
+L.mapbox.featureLayer().setGeoJSON(convex).addTo(map);
+
+</script>

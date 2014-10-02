@@ -1,0 +1,23 @@
+---
+layout: example
+title: turf-point
+description: Creates a geojson Point Feature based on an x and y coordinate. Properties can be added optionally.
+tags:
+    - geometry
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var point = turf.point(-97.514914, 35.463453, {
+    "title": "OKC Thunder",
+    "description": "100 W Reno Ave, Oklahoma City",
+    "marker-color": "#6BC65F",
+    "marker-size": "large",
+    "marker-symbol": "basketball"
+});
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([35.463453, -97.514914], 12)
+    .featureLayer.setGeoJSON(point);
+</script>
