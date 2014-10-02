@@ -13,7 +13,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5
 var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
     .setView([35.466453, -97.514914], 4);
 
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/pressure.json');
 points_layer.on('ready', function () {
     var resolution = 50;
     var breaks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
