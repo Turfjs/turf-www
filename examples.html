@@ -2,6 +2,40 @@
 layout: default
 title: turfjs examples in mapbox.js
 ---
-<h2>Examples of Turfjs visualized with mapbox.js</h2>
 
-&lt;-- Select from one the links over here!
+<h1>Getting Started</h1>
+<p>
+
+Turf can be used as a  framework, or as a collection of tiny modules. 
+
+<h3>framework</h3>
+
+{% highlight sh %}
+npm install turf
+{% endhighlight %}
+
+...then call functions like this
+
+{% highlight js %}
+var turf = require('turf')
+turf.distance(home, store, 'miles')
+turf.buffer(home, 3, 'miles')
+{% endhighlight %}
+
+<h3>modules</h3>
+
+{% highlight sh %}
+npm install turf-distance
+npm install turf-buffer
+{% endhighlight %}
+
+..then call functions like this
+
+{% highlight js %}
+var distance = require('turf-distance')
+var buffer = require('turf-buffer')
+distance(home, store, 'miles')
+buffer(home, 3, 'miles')
+{% endhighlight %}
+
+</p>
