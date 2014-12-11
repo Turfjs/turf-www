@@ -54,12 +54,8 @@ var polygon2 = turf.polygon([
     "stroke-width": 5
 });
 
-var fc1 = turf.featurecollection([polygon1]);
-var fc2 = turf.featurecollection([polygon2]);
-
-var polygon = turf.intersect(fc1, fc2);
-
-polygon.features[0].properties = {
+var polygon = turf.intersect(polygon1, polygon2);
+polygon.properties = {
     "fill": "#25561F",
     "stroke": "#25561F",
     "stroke-width": 1
@@ -72,6 +68,6 @@ var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
 L.mapbox.featureLayer().setGeoJSON(polygon1).addTo(map);
 L.mapbox.featureLayer().setGeoJSON(polygon2).addTo(map);
 
-L.mapbox.featureLayer().setGeoJSON(polygon.features[0]).addTo(map);
+L.mapbox.featureLayer().setGeoJSON(polygon).addTo(map);
 
 </script>
