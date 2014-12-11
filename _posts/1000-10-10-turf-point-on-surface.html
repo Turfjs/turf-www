@@ -1,0 +1,50 @@
+---
+layout: example
+title: turf-point-on-surface
+description: Finds a centroid guaranteed to be on the surface of a geometry, feature, or featurecollection.
+tags:
+    - measurement
+---
+<div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+
+var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+    .setView([52.512042174642346,13.350448608398438], 10);
+
+var polygon = turf.polygon(
+        [[[13.235092163085938,52.435920583590125],
+        [13.235092163085938,52.59720882433758],
+        [13.511810302734375,52.59720882433758],
+        [13.511810302734375,52.435920583590125],
+        [13.235092163085938,52.435920583590125]],
+        [[13.305130004882812,52.48403470519901],
+        [13.305130004882812,52.55631606540653],
+        [13.449325561523438,52.55631606540653],
+        [13.449325561523438,52.48403470519901],
+        [13.305130004882812,52.48403470519901]]], 
+    {
+        "fill": "#6BC65F",
+        "stroke": "#6BC65F",
+        "stroke-width": 5
+    });
+
+var polyLayer = L.mapbox.featureLayer().setGeoJSON(polygon).addTo(map);
+var centroidLayer = L.mapbox.featureLayer().addTo(map);
+
+polyLayer.eachLayer(function(layer) {
+    layer.editing.enable();
+    updateCentroidLayer(layer);
+    layer.on('edit', function(e) {
+        updateCentroidLayer(e.target);
+    });
+});
+
+function updateCentroidLayer(layer) {
+    poly = layer.toGeoJSON();
+    centroid = turf.pointOnSurface(poly.geometry);
+    centroidLayer.setGeoJSON(centroid);
+}
+</script>

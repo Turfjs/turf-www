@@ -3,4 +3,4 @@ turf-www
 
 turf website
 
-http://morganherlocker.github.io/turf-www
+http://turfjs.org/
