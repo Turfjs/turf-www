@@ -64,7 +64,6 @@ polyLayer.eachLayer(function(layer) {
 function updateSquareLayer(layer) {
     poly = layer.toGeoJSON();
     square = turf.square(turf.extent(poly));
-    console.log(square)
     squarePoly = turf.bboxPolygon(square);
     squarePoly.properties = {
 	    "fill": "#6BC65F",
