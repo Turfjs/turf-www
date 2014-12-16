@@ -12,7 +12,7 @@ tags:
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
 <script src='https://rawgit.com/Fragger/Leaflet.Geodesic/master/src/L.Geodesic.js'></script>
 <script>
-L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 
 var point = turf.point(-97.502754, 35.463455, {
@@ -26,7 +26,7 @@ var point2 = turf.point(-97.508269, 35.463245, {
 
 var point_fc = turf.featurecollection([point, point2]);
 
-var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 15);
 
 var bearing = L.mapbox.featureLayer().setGeoJSON(point_fc);

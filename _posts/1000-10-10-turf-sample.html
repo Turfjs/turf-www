@@ -12,7 +12,7 @@ tags:
     onclick="callTurfSample()">click (to sample)
 </button>
 <script>
-L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var features = [
     turf.polygon([
@@ -73,7 +73,7 @@ var features = [
 
 var fc = turf.featurecollection(features);
 
-var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 14);
 
 feature_layer = L.mapbox.featureLayer().setGeoJSON(fc).addTo(map);

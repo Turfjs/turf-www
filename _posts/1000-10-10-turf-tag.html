@@ -7,7 +7,7 @@ tags:
 ---
 <div id='map'></div>
 <script>
-L.mapbox.accessToken = 'pk.eyJ1IjoianZyb3Vzc2VhdSIsImEiOiJYYUNlcVRZIn0.lp0867Jn5ynlj72kMwICSA';
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var polygons = [
     turf.polygon([
@@ -50,7 +50,7 @@ var points = [
 var point_fc = turf.featurecollection(points);
 var poly_fc = turf.featurecollection(polygons);
 
-var map = L.mapbox.map('map', 'jvrousseau.h4h90e5o')
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 14);
 var tagged = turf.tag(point_fc, poly_fc, 'tagged-marker-color', 'marker-color');
 
