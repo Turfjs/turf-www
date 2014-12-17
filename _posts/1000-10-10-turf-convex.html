@@ -69,7 +69,7 @@ var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 5);
 
 var ptsLayer = L.mapbox.featureLayer().setGeoJSON(pts);
-var convexLayer = L.mapbox.featureLayer().setGeoJSON(convex).addTo(map);
+var convexLayer = L.mapbox.featureLayer().addTo(map);
 
 ptsLayer.eachLayer(function(layer) {
     layer.options.draggable = true;
@@ -82,7 +82,9 @@ ptsLayer.addTo(map);
 calculateHull();
 
 function calculateHull() {
-    var pts = ptsLayer.getLayers().toGeoJSON();
+    var pts = turf.featurecollection(ptsLayer.getLayers().map(function(pt){
+            return pt.toGeoJSON()
+        }));
     var convex = turf.convex(pts);
     convex.properties = {
         "fill": "#6BC65F",
