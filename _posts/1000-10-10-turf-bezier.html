@@ -6,14 +6,48 @@ tags:
     - transformation
 ---
 <div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
 
 <script>
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var linestring = turf.linestring([
-    [-72, 40],
-    [-95, 35],
-    [-124, 37]
+    [
+            -112.763671875,
+            35.67514743608467
+          ],
+          [
+            -109.51171875,
+            44.59046718130883
+          ],
+          [
+            -105.908203125,
+            39.30029918615032
+          ],
+          [
+            -98.61328125,
+            44.59046718130883
+          ],
+          [
+            -98.701171875,
+            39.027718840211605
+          ],
+          [
+            -92.46093749999999,
+            33.43144133557529
+          ],
+          [
+            -84.55078125,
+            35.53222622770337
+          ],
+          [
+            -84.55078125,
+            43.26120612479979
+          ],
+          [
+            -78.57421875,
+            37.3002752813443
+          ]
 ], {
     "stroke": "#25561F",
     "stroke-width": 5
@@ -22,14 +56,24 @@ var linestring = turf.linestring([
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([37.8, -96], 4);
 
-var bezier = turf.bezier(linestring, 100, 0.85);
+var bezierLayer = L.mapbox.featureLayer().addTo(map);
+var lineLayer = L.mapbox.featureLayer().setGeoJSON(linestring).addTo(map);
 
-bezier.properties = {
-    "stroke": "#6BC65F",
-    "stroke-width": 5,
-    "description": "Bezier line from polyline"
+lineLayer.eachLayer(function(layer) {
+    layer.editing.enable();
+    updateBezierLayer(layer);
+    layer.on('edit', function(e) {
+        updateBezierLayer(e.target);
+    });
+});
+
+function updateBezierLayer(layer) {
+    line = layer.toGeoJSON();
+    bezier = turf.bezier(line, 10000, 0.85);
+    bezier.properties = {
+        "stroke": "#6BC65F",
+        "stroke-width": 5
+    };
+    bezierLayer.setGeoJSON(bezier);
 }
-
-L.mapbox.featureLayer().setGeoJSON(bezier).addTo(map);
-L.mapbox.featureLayer().setGeoJSON(linestring).addTo(map);
 </script>
