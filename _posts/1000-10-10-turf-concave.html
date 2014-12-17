@@ -12,58 +12,149 @@ tags:
 <script>
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
-var features = [
-    turf.point(-98.522259, 35.469100, {
+var pts = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.00830078125,
+          33.02708758002871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.76611328125,
+          34.397844946449865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.88818359375,
+          33.284619968887675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.6787109375,
+          35.7286770448517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.5791015625,
+          36.89719446989036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.79931640625,
+          37.52715361723378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.51416015625,
+          38.87392853923629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.73388671874999,
+          39.825413103424786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.5244140625,
+          38.87392853923629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.62451171875,
+          39.8928799002948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.107421875,
+          34.30714385628804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.228515625,
+          32.62087018318113
+        ]
+      }
+    }
+  ]
+};
+pts.features.forEach(function(pt){
+    pt.properties = {
         "marker-color": "#6BC65F",
         "marker-size": "small"
-    }),
-    turf.point(-97.502754, 35.463455, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-95.508269, 35.463245, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-97.516809, 35.465779, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-96.515372, 33.467072, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-98.509363, 35.463053, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-97.511123, 38.466601, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-97.518547, 33.469327, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-98.519706, 32.469659, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-95.517839, 32.466998, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-98.508678, 34.464942, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    }),
-    turf.point(-95.514914, 37.463453, {
-        "marker-color": "#6BC65F",
-        "marker-size": "small"
-    })
-];
-
-var pts = turf.featurecollection(features);
+    };
+});
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 5);
