@@ -7,6 +7,8 @@ tags:
 ---
 
 <div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
 <script>
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
@@ -61,20 +63,32 @@ var features = [
     })
 ];
 
-var fc = turf.featurecollection(features);
-
-var convex = turf.convex(fc);
-
-convex.properties = {
-    "fill": "#6BC65F",
-    "stroke": "#25561F",
-    "stroke-width": 2
-};
+var pts = turf.featurecollection(features);
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 5);
 
-L.mapbox.featureLayer().setGeoJSON(fc).addTo(map);
-L.mapbox.featureLayer().setGeoJSON(convex).addTo(map);
+var ptsLayer = L.mapbox.featureLayer().setGeoJSON(pts);
+var convexLayer = L.mapbox.featureLayer().setGeoJSON(convex).addTo(map);
 
+ptsLayer.eachLayer(function(layer) {
+    layer.options.draggable = true;
+    layer.on('drag', function(e) {
+        calculateHull();
+    });
+});
+
+ptsLayer.addTo(map);
+calculateHull();
+
+function calculateHull() {
+    var pts = ptsLayer.getLayers().toGeoJSON();
+    var convex = turf.convex(pts);
+    convex.properties = {
+        "fill": "#6BC65F",
+        "stroke": "#25561F",
+        "stroke-width": 2
+    };
+    convexLayer.setGeoJSON(convex);
+}
 </script>
