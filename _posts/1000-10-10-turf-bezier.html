@@ -58,6 +58,7 @@ var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
 
 var bezierLayer = L.mapbox.featureLayer().addTo(map);
 var lineLayer = L.mapbox.featureLayer().setGeoJSON(linestring).addTo(map);
+var hooked = {};
 
 lineLayer.eachLayer(function(layer) {
     layer.editing.enable();
@@ -75,5 +76,20 @@ function updateBezierLayer(layer) {
         "stroke-width": 5
     };
     bezierLayer.setGeoJSON(bezier);
+    addDragHooks();
 }
+
+function addDragHooks() {
+  lineLayer.eachLayer(function(layer) {
+    layer.editing._markers.forEach(function(marker){
+      if(!hooked[marker._index.toString()]) {
+        hooked[marker._index.toString()] = true;
+        marker.on('drag', function(e) {
+          updateBezierLayer(layer)
+        });
+      }
+    });
+  });
+}
+
 </script>
