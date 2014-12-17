@@ -7,6 +7,8 @@ tags:
 ---
 
 <div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
 <script>
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
@@ -35,7 +37,7 @@ var features = [
         "marker-color": "#6BC65F",
         "marker-size": "small"
     }),
-    turf.point(-98.011123, 37.466601, {
+    turf.point(-97.511123, 38.466601, {
         "marker-color": "#6BC65F",
         "marker-size": "small"
     }),
@@ -55,26 +57,40 @@ var features = [
         "marker-color": "#6BC65F",
         "marker-size": "small"
     }),
-    turf.point(-96.014914, 37.463453, {
+    turf.point(-95.514914, 37.463453, {
         "marker-color": "#6BC65F",
         "marker-size": "small"
     })
 ];
 
-var fc = turf.featurecollection(features);
-
-var concave = turf.concave(fc,  177);
-
-concave.properties = {
-    "fill": "#6BC65F",
-    "stroke": "#25561F",
-    "stroke-width": 2
-};
+var pts = turf.featurecollection(features);
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.463453, -97.508014], 5);
 
-L.mapbox.featureLayer().setGeoJSON(fc).addTo(map);
-L.mapbox.featureLayer().setGeoJSON(concave).addTo(map);
+var ptsLayer = L.mapbox.featureLayer().setGeoJSON(pts);
+var concaveLayer = L.mapbox.featureLayer().addTo(map);
 
+ptsLayer.eachLayer(function(layer) {
+    layer.options.draggable = true;
+    layer.on('drag', function(e) {
+        calculateHull();
+    });
+});
+
+ptsLayer.addTo(map);
+calculateHull();
+
+function calculateHull() {
+    var pts = turf.featurecollection(ptsLayer.getLayers().map(function(pt){
+            return pt.toGeoJSON()
+        }));
+    var concave = turf.concave(pts, 250);
+    concave.properties = {
+        "fill": "#6BC65F",
+        "stroke": "#25561F",
+        "stroke-width": 2
+    };
+    concaveLayer.setGeoJSON(concave);
+}
 </script>
