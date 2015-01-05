@@ -74,7 +74,8 @@ a {
   text-decoration: none;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear; }
+  transition: color 0.1s linear;
+  margin-right: 10px; }
   a:hover {
     color: #2c5999; }
   a:active, a:focus {
@@ -520,8 +521,7 @@ div.main-turf {
       padding-bottom: 10px;
       z-index: 1; }
     div.main-turf div.turf-button-group .button:hover {
-      border: 3px solid #00a000;
-      z-index: 9999999999; }
+      border: 3px solid #00a000; }
     div.main-turf div.turf-button-group .button.pill {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
