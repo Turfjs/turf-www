@@ -20,8 +20,8 @@ title: Turf.js
 var turf = require('turf');
 var fs = require('fs');
 
-var wombats = fs.readFileSync('./wombats.geojson');
-var snakes = fs.readFileSync('./snakes.geojson');
+var wombats = JSON.parse(fs.readFileSync('./wombats.geojson'));
+var snakes = JSON.parse(fs.readFileSync('./snakes.geojson'));
 
 var oneMileRing = turf.buffer(wombats, 1, 'miles');
 var snakesNearWombats = turf.within(snakes, oneMileRing);
