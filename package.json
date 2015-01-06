@@ -1,0 +1,27 @@
+{
+  "name": "turf-www",
+  "version": "1.0.0",
+  "description": "create the turf website and online documentation",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf docs && jsdoc -t ./node_modules/turf-jsdoc/ node_modules/turf/node_modules/turf-*/index.js -c jsdoc.conf.json -d docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/turfjs/turf-www.git"
+  },
+  "keywords": [
+    "turf",
+    "www",
+    "website"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/turfjs/turf-www/issues"
+  },
+  "homepage": "https://github.com/turfjs/turf-www",
+  "dependencies": {
+    "turf": "^1.3.0"
+  }
+}

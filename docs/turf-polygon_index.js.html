@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>turf: Source: turf-polygon/index.js</title>
+
+    <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body class=''>
+
+<div class='col8 margin2 clearfix'>
+
+
+    <div class='col3'>
+        <div class='pad2y pad1x space-top2'>
+            <h3>Modules</h3><ul><li class="small"><a href="module-turf_extent.html">turf.extent</a></li><li class="small"><a href="module-turf_point.html">turf.point</a></li><li class="small"><a href="module-turf_polygon.html">turf.polygon</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Conrec">Conrec</a></li><li><a href="global.html#drawContour">drawContour</a></li><li><a href="global.html#Spline">Spline</a></li></ul>
+        </div>
+    </div>
+
+    <div class='pad1y pad2x col9 fill-white'>
+        <h2 class="page-title">Source: turf-polygon/index.js</h2>
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Generates a new GeoJSON Polygon feature, given an array of coordinates
+ * and list of properties.
+ *
+ * @module turf/polygon
+ * @param {number[][]} rings - an array of LinearRings
+ * @param {Object} properties - an optional properties object
+ * @return {GeoJSONPolygon} output
+ * @example
+ * var poly1 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]])
+ * var poly2 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]],
+ *   {name: 'line 1', distance: 145})
+ * console.log(poly1)
+ * console.log(poly2)
+ */
+module.exports = function(coordinates, properties){
+  if(coordinates === null) return new Error('No coordinates passed');
+  var polygon = { 
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": coordinates
+    },
+    "properties": properties
+  };
+
+  if(!polygon.properties){
+    polygon.properties = {};
+  }
+  
+  return polygon;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

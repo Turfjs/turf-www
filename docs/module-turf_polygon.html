@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>turf: turf.polygon</title>
+
+    <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body class=''>
+
+<div class='col8 margin2 clearfix'>
+
+
+    <div class='col3'>
+        <div class='pad2y pad1x space-top2'>
+            <h3>Modules</h3><ul><li class="small"><a href="module-turf_extent.html">turf.extent</a></li><li class="small"><a href="module-turf_point.html">turf.point</a></li><li class="small"><a href="module-turf_polygon.html">turf.polygon</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Conrec">Conrec</a></li><li><a href="global.html#drawContour">drawContour</a></li><li><a href="global.html#Spline">Spline</a></li></ul>
+        </div>
+    </div>
+
+    <div class='pad1y pad2x col9 fill-white'>
+        <h2 class="page-title">turf.polygon</h2>
+        
+
+
+
+
+<section>
+
+
+            
+                
+            
+    
+
+<div>
+    <div class=''>
+        <div class="container-overview">
+        
+            
+                <p class="description"><p>Generates a new GeoJSON Polygon feature, given an array of coordinates
+and list of properties.</p></p>
+            
+
+            
+                
+
+
+
+
+
+
+
+
+
+
+
+    <div class='space-bottom1'>
+        <h3>Parameters</h3>
+        
+
+<table class="prose">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Array.&lt;number>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>an array of LinearRings</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>an optional properties object</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='space-bottom1'>
+<h3>Returns</h3>
+
+        
+<p class="param-desc">
+    
+        
+<span class="param-type">GeoJSONPolygon</span>
+
+
+    
+    <p>output</p>
+</p>
+
+
+    
+</div>
+
+
+
+    <h3>Example</h3>
+    
+    <pre class="prettyprint"><code>var poly1 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]])
+var poly2 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]],
+  {name: 'line 1', distance: 145})
+console.log(poly1)
+console.log(poly2)</code></pre>
+
+
+
+            
+        
+        </div>
+
+        
+
+        
+
+        
+
+         
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</div>
+
+</section>
+
+
+
+
+    </div>
+</div>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
