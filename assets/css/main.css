@@ -75,12 +75,14 @@ a {
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
-  margin-right: 10px; }
   a:hover {
     color: #2c5999; }
   a:active, a:focus {
     color: #2c5999;
     outline: none; }
+}
+
+.button.pill { margin-right: 10px; }
 
 hr {
   border-bottom: 1px solid #dddddd;
