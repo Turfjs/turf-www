@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.nearest</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.nearest</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,7 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Returns the <a href="global.html#Point">Point</a> feature closest to the input.</p></p>
             
 
             
@@ -84,13 +84,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>point</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type"><a href="global.html#Point">Point</a></span>
 
 
             
@@ -100,7 +100,31 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"><p>the reference point</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>against</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>a collection of <a href="global.html#Feature">features</a>
+with <a href="global.html#Point">Point</a> geometries</p></td>
         </tr>
 
     
@@ -165,27 +189,17 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#Feature">Feature</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>the closest point feature to point</p>
 </p>
 
 
     
 </div>
 
-
-
-    <h3>Example</h3>
-    
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
 
 
 

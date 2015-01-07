@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.kinks</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.kinks</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,7 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Takes a polygon and detects all self-intersections.</p></p>
             
 
             
@@ -84,13 +84,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>polygon</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type"><a href="global.html#Polygon">Polygon</a></span>
 
 
             
@@ -100,7 +100,7 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -165,12 +165,11 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>self-intersections as a FeatureCollection of Point Features</p>
 </p>
 
 
@@ -181,11 +180,37 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
+    <pre class="prettyprint"><code>var poly = {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+         -12.034835815429688,
+           8.901183448260598
+         ],
+         [
+           -12.060413360595701,
+           8.899826693726117
+         ],
+         [
+           -12.036380767822266,
+           8.873199368734273
+         ],
+         [
+           -12.059383392333983,
+           8.871418491385919
+         ],
+         [
+           -12.034835815429688,
+           8.901183448260598
+         ]
+       ]
+     ]
+   }
+
+var result = turf.kinks(poly)
+
+console.log(result)</code></pre>
 
 
 

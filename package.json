@@ -4,7 +4,7 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf docs && jsdoc -t ./node_modules/turf-jsdoc/ node_modules/turf/node_modules/turf-*/index.js -c jsdoc.conf.json -d docs"
+    "build": "rm -rf docs && jsdoc -t ./node_modules/turf-jsdoc/ ./geojson.js node_modules/turf/node_modules/turf-*/index.js -c jsdoc.conf.json -d docs"
   },
   "repository": {
     "type": "git",

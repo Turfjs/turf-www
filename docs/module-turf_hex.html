@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.hex</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.hex</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,9 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Creates a <a href="global.html#FeatureCollection">FeatureCollection</a> of flat-topped
+hexagons aligned in an &quot;odd-q&quot; vertical grid as
+described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Grids</a></p></p>
             
 
             
@@ -84,13 +86,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>bbox</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type">Array.&lt;number></span>
 
 
             
@@ -100,7 +102,30 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"><p>in [minX, minY, maxX, maxY] order</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>size of cells in degrees</p></td>
         </tr>
 
     
@@ -165,12 +190,11 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>output</p>
 </p>
 
 
@@ -181,11 +205,7 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
+    <pre class="prettyprint"><code>var hexgrid = turf.hex([0,0,10,10], 1)</code></pre>
 
 
 

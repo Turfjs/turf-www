@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: Source: geojson.js</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,198 +22,72 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>Source: geojson.js</h2>
         <div class='prose'>
             
 
 
 
-
-<section>
-
-
-            
-                
-            
     
-
-<div>
-    <div class=''>
-        <div class="container-overview">
-        
-            
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
-            
-
-            
-                
-
-
-
-
-
-
-
-
-
-
-
-    <div class='space-bottom1'>
-        <h3>Parameters</h3>
-        
-
-<table>
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>input</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">GeoJSON-Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    </div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='space-bottom1'>
-<h3>Returns</h3>
-
-        
-<p class="param-desc">
-    
-        
-<span class="param-type">Array.&lt;number></span>
-
-
-    
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
-</p>
-
-
-    
-</div>
-
-
-
-    <h3>Example</h3>
-    
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
-
-
-
-            
-        
-        </div>
-
-        
-
-        
-
-        
-
-         
-
-        
-
-        
-
-        
-
-        
-
-        
-    </div>
-</div>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @typedef {Object} Polygon
+ * @description [GeoJSON Polygon geometry](http://geojson.org/geojson-spec.html#polygon):
+ * typically contained within a GeoJSON Feature
+ */
+
+/**
+ * @typedef {Object} Point
+ * @description [GeoJSON Point geometry](http://geojson.org/geojson-spec.html#point):
+ * typically contained within a GeoJSON Feature
+ */
+
+/**
+ * @typedef {Object} GeometryCollection
+ * @description [GeoJSON GeometryCollection](http://geojson.org/geojson-spec.html#geometrycollection)
+ */
+
+/**
+ * @typedef {Object} MultiLineString
+ * @description [GeoJSON MultiLineString geometry](http://geojson.org/geojson-spec.html#multilinestring):
+ * typically contained within a GeoJSON Feature
+ */
+
+/**
+ * @typedef {Object} MultiPoint
+ * @description [GeoJSON MultiPoint geometry](http://geojson.org/geojson-spec.html#multipoint):
+ * typically contained within a GeoJSON Feature
+ */
+
+/**
+ * @typedef {Object} LineString
+ * @description [GeoJSON LineString geometry](http://geojson.org/geojson-spec.html#linestring):
+ * typically contained within a GeoJSON Feature
+ */
+
+/**
+ * @typedef {Object} Feature
+ * @description [GeoJSON Feature](http://geojson.org/geojson-spec.html#feature-objects)
+ */
+
+/**
+ * @typedef {Object} FeatureCollection
+ * @description [GeoJSON FeatureCollection](http://geojson.org/geojson-spec.html#feature-collection-objects)
+ */
+
+/**
+ * @typedef {Object} Feature
+ * @description [GeoJSON Feature](http://geojson.org/geojson-spec.html#feature-objects)
+ */
+
+/**
+ * @typedef {Object} MultiPolygon
+ * @description [GeoJSON MultiPolygon](http://geojson.org/geojson-spec.html#multipolygon)
+ */
+</code></pre>
+        </article>
+    </section>
 
 
 

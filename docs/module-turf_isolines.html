@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.isolines</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.isolines</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,10 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Takes a <a href="global.html#FeatureCollection">FeatureCollection</a> of points with z values and an array of
+value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolines</a>.
+These are commonly used to create elevation maps, but can be used
+for general data interpolation as well.</p></p>
             
 
             
@@ -84,13 +87,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>points</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
             
@@ -100,7 +103,77 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"><p>a collection containing only Features with
+<a href="global.html#Point">Point</a> geometries</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>field in properties to contour</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>breaks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>at which to draw contours</p></td>
         </tr>
 
     
@@ -165,12 +238,11 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>isolines</p>
 </p>
 
 
@@ -181,11 +253,13 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
+    <pre class="prettyprint"><code>var fs = require('fs')
+var z = 'elevation'
+var resolution = 15
+var breaks = [.1, 22, 45, 55, 65, 85,  95, 105, 120, 180]
+var points = JSON.parse(fs.readFileSync('/path/to/points.geojson'))
+var isolined = turf.isolines(points, z, resolution, breaks)
+console.log(isolined)</code></pre>
 
 
 

@@ -42,3 +42,13 @@
  * @typedef {Object} FeatureCollection
  * @description [GeoJSON FeatureCollection](http://geojson.org/geojson-spec.html#feature-collection-objects)
  */
+
+/**
+ * @typedef {Object} Feature
+ * @description [GeoJSON Feature](http://geojson.org/geojson-spec.html#feature-objects)
+ */
+
+/**
+ * @typedef {Object} MultiPolygon
+ * @description [GeoJSON MultiPolygon](http://geojson.org/geojson-spec.html#multipolygon)
+ */

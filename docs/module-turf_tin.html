@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.tin</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.tin</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,10 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Takes a set of points and the name of a z-value property and
+creates a <a href="http://en.wikipedia.org/wiki/Triangulated_irregular_network">Triangulated Irregular Network</a>,
+or a TIN for short. These are often used
+for developing elevation contour maps or stepped heat visualizations.</p></p>
             
 
             
@@ -84,13 +87,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>points</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
             
@@ -100,7 +103,31 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"><p>a GeoJSON FeatureCollection containing
+Features with <a href="global.html#Point">Point</a> geometries</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>propertyName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>name of the property from which to pull z values</p></td>
         </tr>
 
     
@@ -165,12 +192,11 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>output</p>
 </p>
 
 
@@ -181,11 +207,11 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
+    <pre class="prettyprint"><code>var fs = require('fs')
+var z = 'elevation'
+var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
+var tinPolys = turf.tin(pts, z)
+console.log(tinPolys)</code></pre>
 
 
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.extent</title>
+    <title>turf: turf.simplify</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class='pad1y pad2x col9 fill-white'>
-        <h2>turf.extent</h2>
+        <h2>turf.simplify</h2>
         <div class='prose'>
             
 
@@ -42,7 +42,9 @@
         <div class="container-overview">
         
             
-                <p><p>Calculates the extent of all features and returns a bounding box.</p></p>
+                <p><p>Simplifies a <a href="global.html#Feature">Feature</a> containing a <a href="global.html#LineString">LineString</a> or
+<a href="global.html#Polygon">Polygon</a> geometry. Internally uses <a href="http://mourner.github.io/simplify-js/">simplify-js</a>
+to perform simplification.</p></p>
             
 
             
@@ -84,13 +86,13 @@
 
         <tr>
             
-                <td class="name"><code>input</code></td>
+                <td class="name"><code>feature</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">GeoJSON-Object</span>
+<span class="param-type"><a href="global.html#Feature">Feature</a></span>
 
 
             
@@ -100,7 +102,54 @@
 
             
 
-            <td class="description last"><p>any valid GeoJSON Object</p></td>
+            <td class="description last"><p>a feature to be simplified</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tolerance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>simplification tolerance</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highQuality</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>whether or not to spend more time to create
+a higher-quality simplification with a different algorithm</p></td>
         </tr>
 
     
@@ -165,12 +214,11 @@
 <p class="param-desc">
     
         
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type"><a href="global.html#Feature">Feature</a></span>
 
 
     
-    <p>extent - the bounding box of the GeoJSON given
-as an array in WSEN order.</p>
+    <p>output</p>
 </p>
 
 
@@ -181,11 +229,9 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var extent = require('turf-extent')
-var fs = require('fs')
-var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
-var bbox = extent(fc)
-console.log(bbox) // [minX, minY, maxX, maxY]</code></pre>
+    <pre class="prettyprint"><code>var quantization = 50;
+var minimumArea = 0;
+var simplified = turf.simplify(polys, quantization, minimumArea);</code></pre>
 
 
 
