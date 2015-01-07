@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.point</title>
+    <title>turf: turf.distance</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -23,7 +23,7 @@
     </div>
     <div class='pad1y pad2x col9 fill-white'>
         <div class='prose'>
-            <h2>turf.point</h2>
+            <h2>turf.distance</h2>
             
 
 
@@ -42,8 +42,9 @@
         <div class="container-overview">
         
             
-                <p><p>Generates a new <a href="global.html#Point">Point</a> feature, given coordinates
-and, optionally, properties.</p></p>
+                <p><p>Calculates the distance between two <a href="global.html#Point">Point</a> features in degrees,
+radians, miles, or kilometers. This uses the <a href="http://en.wikipedia.org/wiki/Haversine_formula">haversine formula</a>
+to account for global curvature.</p></p>
             
 
             
@@ -85,13 +86,13 @@ and, optionally, properties.</p></p>
 
         <tr>
             
-                <td class="name"><code>longitude</code></td>
+                <td class="name"><code>from</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="global.html#Point">Point</a></span>
 
 
             
@@ -101,20 +102,20 @@ and, optionally, properties.</p></p>
 
             
 
-            <td class="description last"><p>position west to east in decimal degrees</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>latitude</code></td>
+                <td class="name"><code>to</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="global.html#Point">Point</a></span>
 
 
             
@@ -124,20 +125,20 @@ and, optionally, properties.</p></p>
 
             
 
-            <td class="description last"><p>position south to north in decimal degrees</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>properties</code></td>
+                <td class="name"><code>units</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">string</span>
 
 
             
@@ -212,11 +213,11 @@ and, optionally, properties.</p></p>
 <p class="param-desc">
     
         
-<span class="param-type"><a href="global.html#Point">Point</a></span>
+<span class="param-type">number</span>
 
 
     
-    <p>output</p>
+    <p>distance</p>
 </p>
 
 
@@ -227,7 +228,10 @@ and, optionally, properties.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var pt1 = turf.point(-75.343, 39.984)</code></pre>
+    <pre class="prettyprint"><code>var point1 = turf.point(-75.343, 39.984)
+var point2 = turf.point(-75.534, 39.123)
+var units = 'miles' // or 'kilometers', 'degrees', 'radians'
+var distance = turf.distance(point1, point2, units)</code></pre>
 
 
 

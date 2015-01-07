@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.point</title>
+    <title>turf: turf.tag</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -23,7 +23,7 @@
     </div>
     <div class='pad1y pad2x col9 fill-white'>
         <div class='prose'>
-            <h2>turf.point</h2>
+            <h2>turf.tag</h2>
             
 
 
@@ -42,8 +42,7 @@
         <div class="container-overview">
         
             
-                <p><p>Generates a new <a href="global.html#Point">Point</a> feature, given coordinates
-and, optionally, properties.</p></p>
+                <p><p>Performs a spatial join on a set of points from a set of polygons.</p></p>
             
 
             
@@ -85,13 +84,13 @@ and, optionally, properties.</p></p>
 
         <tr>
             
-                <td class="name"><code>longitude</code></td>
+                <td class="name"><code>points</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
             
@@ -101,20 +100,21 @@ and, optionally, properties.</p></p>
 
             
 
-            <td class="description last"><p>position west to east in decimal degrees</p></td>
+            <td class="description last"><p>a collection of Features with <a href="global.html#Point">Point</a>
+geometries</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>latitude</code></td>
+                <td class="name"><code>polygons</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
             
@@ -124,20 +124,44 @@ and, optionally, properties.</p></p>
 
             
 
-            <td class="description last"><p>position south to north in decimal degrees</p></td>
+            <td class="description last"><p>collection of Features with <a href="global.html#Polygon">Polygon</a>
+geometries</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>properties</code></td>
+                <td class="name"><code>polyId</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>containingPolyId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -212,7 +236,7 @@ and, optionally, properties.</p></p>
 <p class="param-desc">
     
         
-<span class="param-type"><a href="global.html#Point">Point</a></span>
+<span class="param-type"><a href="global.html#LineString">LineString</a></span>
 
 
     
@@ -227,7 +251,14 @@ and, optionally, properties.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var pt1 = turf.point(-75.343, 39.984)</code></pre>
+    <pre class="prettyprint"><code>var tag = require('turf-tag')
+var fs = require('fs')
+t.load('./testIn/tagPoints.geojson', function(err, points){
+  t.load('./testIn/tagPolygons.geojson', function(err, polygons){
+var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
+var polys = JSON.parse(fs.readFileSync('/path/to/polys.geojson'))
+var tagged = tag(points, polygons, 'polyID', 'containingPolyID')
+console.log(taggedPoints)</code></pre>
 
 
 

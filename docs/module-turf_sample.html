@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.point</title>
+    <title>turf: turf.sample</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -23,7 +23,7 @@
     </div>
     <div class='pad1y pad2x col9 fill-white'>
         <div class='prose'>
-            <h2>turf.point</h2>
+            <h2>turf.sample</h2>
             
 
 
@@ -42,8 +42,8 @@
         <div class="container-overview">
         
             
-                <p><p>Generates a new <a href="global.html#Point">Point</a> feature, given coordinates
-and, optionally, properties.</p></p>
+                <p><p>Selects a given number of <a href="global.html#Feature">features</a> from a <a href="global.html#FeatureCollection">FeatureCollection</a>
+at random.</p></p>
             
 
             
@@ -85,59 +85,13 @@ and, optionally, properties.</p></p>
 
         <tr>
             
-                <td class="name"><code>longitude</code></td>
+                <td class="name"><code>features</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>position west to east in decimal degrees</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>latitude</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>position south to north in decimal degrees</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
             
@@ -148,6 +102,29 @@ and, optionally, properties.</p></p>
             
 
             <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>number of features to select</p></td>
         </tr>
 
     
@@ -212,7 +189,7 @@ and, optionally, properties.</p></p>
 <p class="param-desc">
     
         
-<span class="param-type"><a href="global.html#Point">Point</a></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
@@ -227,7 +204,10 @@ and, optionally, properties.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var pt1 = turf.point(-75.343, 39.984)</code></pre>
+    <pre class="prettyprint"><code>var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
+var num = 10
+var sampled = turf.sample(pts, num)
+console.log(sampled)</code></pre>
 
 
 

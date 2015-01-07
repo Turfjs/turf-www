@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>turf: turf.point</title>
+    <title>turf: turf.grid</title>
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -23,7 +23,7 @@
     </div>
     <div class='pad1y pad2x col9 fill-white'>
         <div class='prose'>
-            <h2>turf.point</h2>
+            <h2>turf.grid</h2>
             
 
 
@@ -42,8 +42,7 @@
         <div class="container-overview">
         
             
-                <p><p>Generates a new <a href="global.html#Point">Point</a> feature, given coordinates
-and, optionally, properties.</p></p>
+                <p><p>Takes a bounding box and a cell depth and outputs points in a grid.</p></p>
             
 
             
@@ -85,7 +84,30 @@ and, optionally, properties.</p></p>
 
         <tr>
             
-                <td class="name"><code>longitude</code></td>
+                <td class="name"><code>extent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>extent in [xmin, ymin, xmax, ymax] order</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
             
 
             <td class="type">
@@ -101,53 +123,7 @@ and, optionally, properties.</p></p>
 
             
 
-            <td class="description last"><p>position west to east in decimal degrees</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>latitude</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>position south to north in decimal degrees</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last"><p>how many cells to output</p></td>
         </tr>
 
     
@@ -212,11 +188,12 @@ and, optionally, properties.</p></p>
 <p class="param-desc">
     
         
-<span class="param-type"><a href="global.html#Point">Point</a></span>
+<span class="param-type"><a href="global.html#FeatureCollection">FeatureCollection</a></span>
 
 
     
-    <p>output</p>
+    <p>output filled with features with <a href="global.html#Point">Point</a>
+geometries</p>
 </p>
 
 
@@ -227,7 +204,7 @@ and, optionally, properties.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var pt1 = turf.point(-75.343, 39.984)</code></pre>
+    <pre class="prettyprint"><code>turf.grid([0,0,10,10], 10)</code></pre>
 
 
 
