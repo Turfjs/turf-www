@@ -29,19 +29,15 @@ they're just static files once baked.
 
 ### Testing Documentation
 
-To test changes to docs without re-releasing modules, use [`npm link`](https://docs.npmjs.com/cli/link):
+To test changes to docs without re-releasing modules:
 
-* In a separate directory, clone the main [turfjs/turf](https://github.com/Turfjs/turf) repo
-  * Run `npm install` in that cloned repo
-  * Run `npm link .` in that repo
-* In a separate directory, clone the module you're documenting, like [turfjs/turf-average](https://github.com/Turfjs/turf-average)
-  * Run `npm install` in that repo
-  * Run `npm link .` in that repo
-* Go back to your `turf` checkout
-  * Run `npm link turf-average` (or whatever turf module you cloned instead of turf-average)
-* Go to your `turf-www` checkout
-  * Run `npm link turf`
+Clone this repo and then
 
-Now you should be able to run & re-run the `npm run build` command that builds
-documentation and your changes to `turf-average` (or whatever repo you cloned)
-will be immediately available as documentation fuel.
+```sh
+$ npm install
+$ cd node_modules/turf
+$ npm install -g turf-runner
+$ turf-modules-as-clones
+```
+
+Now all of your turf modules are checked out into `turf_modules` as git repos.    
