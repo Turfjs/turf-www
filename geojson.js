@@ -44,11 +44,11 @@
  */
 
 /**
- * @typedef {Object} Feature
- * @description [GeoJSON Feature](http://geojson.org/geojson-spec.html#feature-objects)
- */
-
-/**
  * @typedef {Object} MultiPolygon
  * @description [GeoJSON MultiPolygon](http://geojson.org/geojson-spec.html#multipolygon)
+ */
+
+ /**
+ * @typedef {Object} GeoJSON
+ * @description [GeoJSON Generic](http://geojson.org/geojson-spec.html)
  */
