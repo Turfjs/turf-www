@@ -42,3 +42,9 @@
  * @typedef {Object} FeatureCollection
  * @description [GeoJSON FeatureCollection](http://geojson.org/geojson-spec.html#feature-collection-objects)
  */
+ 
+ /**
+ * @typedef {Object} GeoJSON
+ * @description [GeoJSON Generic](http://geojson.org/geojson-spec.html)
+ */
+ 
