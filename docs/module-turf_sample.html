@@ -206,10 +206,12 @@ at random.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="rpl-run">var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
+    <div class='pad1 keyline-all'>
+        <pre class="rpl-run">var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
 var num = 10
 var sampled = turf.sample(pts, num)
 console.log(sampled)</pre>
+    </div>
 
 
 

@@ -183,11 +183,13 @@ as an array in WSEN order.</p>
 
     <h3>Example</h3>
     
-    <pre class="rpl-run">var extent = require('turf-extent')
+    <div class='pad1 keyline-all'>
+        <pre class="rpl-run">var extent = require('turf-extent')
 var fs = require('fs')
 var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
 var bbox = extent(fc)
 console.log(bbox) // [minX, minY, maxX, maxY]</pre>
+    </div>
 
 
 

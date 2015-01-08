@@ -209,11 +209,13 @@ Features with <a href="global.html#Point">Point</a> geometries</p></td>
 
     <h3>Example</h3>
     
-    <pre class="rpl-run">var fs = require('fs')
+    <div class='pad1 keyline-all'>
+        <pre class="rpl-run">var fs = require('fs')
 var z = 'elevation'
 var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
 var tinPolys = turf.tin(pts, z)
 console.log(tinPolys)</pre>
+    </div>
 
 
 
