@@ -27,6 +27,13 @@ To build docs:
 This will build docs to the `/docs` directory in this website. Docs _do not use Jekyll_:
 they're just static files once baked.
 
+### Structure
+
+This is all built with modules:
+
+* turf-www is the website and the part that generates docs from turf
+* turf-www **requires** turf so that it has code to generate documentation from
+
 ### Testing Documentation
 
 To test changes to docs without re-releasing modules:
