@@ -6,10 +6,12 @@
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/rpl-www.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -207,11 +209,12 @@ Features with <a href="global.html#Point">Point</a> geometries</p></td>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var fs = require('fs')
+    <pre class="rpl-run">var fs = require('fs')
 var z = 'elevation'
 var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
 var tinPolys = turf.tin(pts, z)
-console.log(tinPolys)</code></pre>
+console.log(tinPolys)</pre>
+
 
 
 
@@ -249,5 +252,6 @@ console.log(tinPolys)</code></pre>
 </div>
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="scripts/run.js"> </script>
 </body>
 </html>

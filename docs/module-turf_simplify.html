@@ -6,10 +6,12 @@
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/rpl-www.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -229,9 +231,10 @@ a higher-quality simplification with a different algorithm</p></td>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var quantization = 50;
+    <pre class="rpl-run">var quantization = 50;
 var minimumArea = 0;
-var simplified = turf.simplify(polys, quantization, minimumArea);</code></pre>
+var simplified = turf.simplify(polys, quantization, minimumArea);</pre>
+
 
 
 
@@ -269,5 +272,6 @@ var simplified = turf.simplify(polys, quantization, minimumArea);</code></pre>
 </div>
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="scripts/run.js"> </script>
 </body>
 </html>

@@ -6,10 +6,12 @@
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/rpl-www.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -204,11 +206,12 @@ coordinate array. Properties can be added optionally.</p></p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var linestring1 = turf.linestring([[102.0, -10.0], [103.0, 1.0], [104.0, 0.0], [130.0, 4.0]])
+    <pre class="rpl-run">var linestring1 = turf.linestring([[102.0, -10.0], [103.0, 1.0], [104.0, 0.0], [130.0, 4.0]])
 var linestring2 = turf.linestring([[102.0, -10.0], [103.0, 1.0], [104.0, 0.0], [130.0, 4.0]],
   {name: 'line 1', distance: 145})
 console.log(linestring1)
-console.log(linestring2)</code></pre>
+console.log(linestring2)</pre>
+
 
 
 
@@ -246,5 +249,6 @@ console.log(linestring2)</code></pre>
 </div>
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="scripts/run.js"> </script>
 </body>
 </html>

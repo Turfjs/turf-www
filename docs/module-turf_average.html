@@ -6,10 +6,12 @@
     <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/rpl-www.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -253,7 +255,7 @@ geometries and the value of <code>outField</code> set to an average.</p>
 
     <h3>Example</h3>
     
-    <pre class="prettyprint"><code>var poly1 = turf.polygon([[[0,0],[10,0],[10,10], [0,10]]])
+    <pre class="rpl-run">var poly1 = turf.polygon([[[0,0],[10,0],[10,10], [0,10]]])
 var poly2 = turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])
 var polyFC = turf.featurecollection([poly1, poly2])
 var pt1 = turf.point(5,5, {population: 200})
@@ -264,7 +266,8 @@ var pt5 = turf.point(19,7, {population: 300})
 var ptFC = turf.featurecollection([pt1, pt2, pt3, pt4, pt5])
 var averaged = turf.average(polyFC, ptFC, 'population', 'pop_avg')
 console.log(averaged.features[0].properties.pop_avg) // 400
-console.log(averaged.features[1].properties.pop_avg) // 200</code></pre>
+console.log(averaged.features[1].properties.pop_avg) // 200</pre>
+
 
 
 
@@ -302,5 +305,6 @@ console.log(averaged.features[1].properties.pop_avg) // 200</code></pre>
 </div>
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="scripts/run.js"> </script>
 </body>
 </html>
