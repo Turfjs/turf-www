@@ -1,0 +1,19 @@
+{
+  "source": "./_posts",
+  "destination": "./_site",
+  "metadata": {
+    "title": "turf",
+    "description": "My second, super-cool, Jekyll-powered blog."
+  },
+  "plugins": {
+    "metalsmith-markdown": {},
+    "metalsmith-serve": {},
+    "metalsmith-permalinks": {
+      "pattern": ":title"
+    },
+    "metalsmith-templates": {
+      "engine": "underscore",
+      "directory": "_layouts"
+    }
+  }
+}
