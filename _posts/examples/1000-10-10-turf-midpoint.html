@@ -1,0 +1,56 @@
+---
+template: example.html
+title: turf-midpoint
+description: Takes two point features and returns the mid point.
+tags:
+    - measurement
+---
+<div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([35.465453, -97.513914], 15);
+
+var pt1 = turf.point(-97.514914, 35.463453, {
+    "marker-color": "#6BC65F",
+});
+var pt2 = turf.point(-97.517839, 35.466998, {
+    "marker-color": "#6BC65F",
+});
+var pts = turf.featurecollection([pt1, pt2]);
+
+var ptsLayer = L.mapbox.featureLayer().setGeoJSON(pts);
+var midPointLayer = L.mapbox.featureLayer().addTo(map);
+var lineLayer = L.mapbox.featureLayer().addTo(map);
+
+ptsLayer.eachLayer(function(layer) {
+    layer.options.draggable = true;
+    layer.on('drag', function(e) {
+        calculateMidpoint();
+    });
+});
+
+ptsLayer.addTo(map);
+calculateMidpoint();
+
+function calculateMidpoint() {
+    var pt1 = ptsLayer.getLayers()[0].toGeoJSON();
+    var pt2 = ptsLayer.getLayers()[1].toGeoJSON();
+    var linestring = turf.linestring([pt1.geometry.coordinates, pt2.geometry.coordinates], 
+        {
+            "stroke": "#6BC65F",
+            "stroke-width": 5
+        });
+    lineLayer.setGeoJSON(linestring);
+
+    var midpoint = turf.midpoint(pt1, pt2);
+    midpoint.properties = {
+        "marker-color": "#25561F",
+        "marker-size": "large",
+        "marker-symbol": "star-stroked"
+    }
+    midPointLayer.setGeoJSON(midpoint);
+}
+</script>

@@ -1,0 +1,50 @@
+---
+template: example.html
+title: turf-min
+description: Calculates the min value of a field for points within a set of polygons.
+tags:
+    - aggregation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([35.466453, -97.514914], 4);
+
+var polys = [
+    turf.polygon([[
+        [ -93.515625, 25.64152637306577 ],
+        [ -93.515625, 40.84706035607122 ],
+        [ -76.640625, 40.84706035607122 ],
+        [ -76.640625, 25.64152637306577 ],
+        [ -93.515625, 25.64152637306577 ]]
+    ], {
+        "fill": "#6BC65F",
+        "stroke": "#6BC65F",
+        "stroke-width": 5,
+        "title": "Min pressure of points in poly"
+    }),
+    turf.polygon([[
+        [-123.74999999999999, 29.075375179558346],
+        [-123.74999999999999, 42.81152174509788],
+        [-96.328125, 42.81152174509788],
+        [-96.328125, 29.075375179558346],
+        [-123.74999999999999,29.075375179558346]]
+    ], {
+        "fill": "#25561F",
+        "stroke": "#25561F",
+        "stroke-width": 5,
+        "title": "Min pressure of points in poly"
+    })
+];
+var poly_fc = turf.featurecollection(polys);
+var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json').addTo(map);
+points_layer.on('ready', function () {
+
+var min = turf.min(poly_fc, points_layer.toGeoJSON(), 'pressure', 'description');
+
+L.mapbox.featureLayer().setGeoJSON(min).addTo(map);
+});
+</script>

@@ -1,0 +1,186 @@
+---
+template: example.html
+title: turf-tin
+description: Takes a set of points and the name of a z-value property and creates a tin (Triangulated Irregular Network). These are often used for developing elevation contour maps or stepped heat visualizations.
+tags:
+    - interpolation
+---
+<div id='map'></div>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+var pts = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.00830078125,
+          33.02708758002871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.76611328125,
+          34.397844946449865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.88818359375,
+          33.284619968887675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.6787109375,
+          35.7286770448517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.5791015625,
+          36.89719446989036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.79931640625,
+          37.52715361723378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.51416015625,
+          38.87392853923629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.73388671874999,
+          39.825413103424786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.5244140625,
+          38.87392853923629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.62451171875,
+          39.8928799002948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.107421875,
+          34.30714385628804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.228515625,
+          32.62087018318113
+        ]
+      }
+    }
+  ]
+};
+pts.features.forEach(function(pt){
+    pt.properties = {
+        "marker-color": "#6BC65F",
+        "marker-size": "small"
+    };
+});
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([35.463453, -97.508014], 5);
+
+var ptsLayer = L.mapbox.featureLayer().setGeoJSON(pts);
+var tinLayer = L.mapbox.featureLayer().addTo(map);
+
+ptsLayer.eachLayer(function(layer) {
+    layer.options.draggable = true;
+    layer.on('drag', function(e) {
+        calculateTIN();
+    });
+});
+
+ptsLayer.addTo(map);
+calculateTIN();
+
+function calculateTIN() {
+    var pts = turf.featurecollection(ptsLayer.getLayers().map(function(pt){
+            return pt.toGeoJSON()
+        }));
+    var tin = turf.tin(pts, 'elevation');
+    tin.properties = {
+        "fill": "#6BC65F",
+        "stroke": "#25561F",
+        "stroke-width": 2
+    };
+    tinLayer.setGeoJSON(tin);
+}
+</script>
