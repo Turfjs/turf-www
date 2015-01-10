@@ -1,0 +1,47 @@
+<html>
+<head>
+<link rel='icon' type='image/ico' href='{{site.baseurl}}/favicon.ico'>
+<title><%= title %></title>
+<link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+<link href='/assets/css/main.css' rel='stylesheet' />
+<script src='//api.tiles.mapbox.com/mapbox.js/plugins/turf/v1.3.0/turf.min.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+</head>
+<body>
+<div class='limiter'>
+  <div class='pad2y'>
+    <div class='col10 margin1 clearfix'>
+      <div class='round clearfix fill-turf-green dark center'>
+        <a href='/'>
+          <img
+          width=80
+          class='logo' href='http://turfjs.org' src='https://raw.githubusercontent.com/Turfjs/turf/9a1d5e8d99564d4080f1e2bf1517ed41d18012fa/logo.png' alt='turf'>
+        </a>
+        <div class='inline pad2y'>
+          <div class='tabs'>
+            <a href='/docs/' class=''>API Docs</a><a href='/examples.html' class='active'>Examples</a><a
+              href='https://github.com/Turfjs/turf' class='icon github' target="_blank">Source</a>
+          </div>
+        </div>
+      </div>
+      <div class='col12'>
+        <div class='col4 pad4y'>
+          <ul>
+            <% examples.map(function(example) { %>
+            <li>
+            <a href='/<%= example.path %>'><%= example.title %></a></li>
+            <% }) %>
+          </ul>
+        </div>
+        <div class='col8 prose clearfix fill-white'>
+          <div class='pad4y'>
+            <div>
+              <%= contents %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
