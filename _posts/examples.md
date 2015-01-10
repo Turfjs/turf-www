@@ -11,7 +11,7 @@ the data to be standard WGS84 longitude, latitude coordinates. Check out
 [geojson.io](http://geojson.io/) for a tool to easily create this data.
 
 Most Turf functions work with GeoJSON features. These are are pieces of data
-that represent a collection of properties (ie: population, elevation, zipcode, etc.)
+that represent a collection of properties (e.g., population, elevation, zipcode)
 along with a geometry. GeoJSON has several geometry types such as: 
 `Point`, `LineString` `Polygon`.
 Turf provides a few geometry functions of its own. These are nothing more than
