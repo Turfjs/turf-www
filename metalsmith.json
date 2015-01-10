@@ -3,17 +3,25 @@
   "destination": "./_site",
   "metadata": {
     "title": "turf",
-    "description": "My second, super-cool, Jekyll-powered blog."
+    "description": "GIS For Web Maps"
   },
+  "path": ["assets"],
   "plugins": {
     "metalsmith-markdown": {},
-    "metalsmith-serve": {},
     "metalsmith-permalinks": {
       "pattern": ":title"
     },
+    "metalsmith-serve": {},
+    "metalsmith-assets": {
+      "source": "docs/",
+      "destination": "docs/"
+    },
+    "metalsmith-watch": {
+      "livereload": true,
+      "pattern": "**/*"
+    },
     "metalsmith-templates": {
-      "engine": "underscore",
-      "directory": "_layouts"
+      "engine": "underscore"
     }
   }
 }
