@@ -8,17 +8,17 @@
   "path": ["assets"],
   "plugins": {
     "metalsmith-markdown": {},
-    "metalsmith-permalinks": {
-      "pattern": ":title"
+    "metalsmith-collections": {
+      "examples": {
+        "pattern": "examples/*"
+      }
     },
-    "metalsmith-serve": {},
+    "metalsmith-permalinks": {
+      "pattern": ":path/:title"
+    },
     "metalsmith-assets": {
       "source": "docs/",
       "destination": "docs/"
-    },
-    "metalsmith-watch": {
-      "livereload": true,
-      "pattern": "**/*"
     },
     "metalsmith-templates": {
       "engine": "underscore"

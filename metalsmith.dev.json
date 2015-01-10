@@ -1,0 +1,32 @@
+{
+  "source": "./_posts",
+  "destination": "./_site",
+  "metadata": {
+    "title": "turf",
+    "description": "GIS For Web Maps"
+  },
+  "path": ["assets"],
+  "plugins": {
+    "metalsmith-markdown": {},
+    "metalsmith-collections": {
+      "examples": {
+        "pattern": "examples/*"
+      }
+    },
+    "metalsmith-permalinks": {
+      "pattern": ":path/:title"
+    },
+    "metalsmith-serve": {},
+    "metalsmith-assets": {
+      "source": "docs/",
+      "destination": "docs/"
+    },
+    "metalsmith-watch": {
+      "livereload": true,
+      "pattern": "**/*"
+    },
+    "metalsmith-templates": {
+      "engine": "underscore"
+    }
+  }
+}
