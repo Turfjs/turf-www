@@ -47,4 +47,13 @@ $ npm install -g turf-runner
 $ turf-modules-as-clones
 ```
 
-Now all of your turf modules are checked out into `turf_modules` as git repos.    
+Now all of your turf modules are checked out into `turf_modules` as git repos.
+
+## Deploying Documentation
+
+We manage **source** in the `master` branch and treat `gh-pages` as a
+produced artifact _only_.
+
+    npm install
+    npm run build
+    ./deploy.sh
