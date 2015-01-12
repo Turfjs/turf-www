@@ -11,17 +11,17 @@ tags:
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
-    .setView([35.466453, -97.514914], 4);
+    .setView([39.1950, -106.8370], 10);
 
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
 points_layer.on('ready', function () {
     var resolution = 100;
-    var percentiles = [1,5,10,20,30,40,50,60,70,80,90,99];
-    var quantile = turf.quantile(points_layer.toGeoJSON(), 'pressure', percentiles);
-    var isolines = turf.isolines(points_layer.toGeoJSON(), 'pressure', resolution, quantile);
+    var percentiles = [10,20,30,40,50,60,70,80,90];
+    var quantile = turf.quantile(points_layer.toGeoJSON(), 'elevation', percentiles);
+    var isolines = turf.isolines(points_layer.toGeoJSON(), 'elevation', resolution, quantile);
     isolines.features.forEach(function (feature) {
         feature.properties["stroke"] = "#25561F";
-        feature.properties["stroke-width"] = 5;
+        feature.properties["stroke-width"] = 1;
     });
 
     L.mapbox.featureLayer().setGeoJSON(isolines).addTo(map);
