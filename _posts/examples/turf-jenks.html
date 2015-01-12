@@ -15,7 +15,7 @@ var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
 
 var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
 points_layer.on('ready', function () {
-    var resolution = 100;
+    var resolution = 25;
     var jenks = turf.jenks(points_layer.toGeoJSON(), 'elevation', 15);
     var isolines = turf.isolines(points_layer.toGeoJSON(), 'elevation', resolution, jenks);
     isolines.features.forEach(function (feature) {
