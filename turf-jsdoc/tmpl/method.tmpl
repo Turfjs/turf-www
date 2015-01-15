@@ -43,7 +43,9 @@ var self = this;
 <?js if (data.params && params.length) { ?>
     <div class='space-bottom1'>
         <h3>Parameters</h3>
-        <?js= this.partial('params.tmpl', params) ?>
+        <div class='small'>
+            <?js= this.partial('params.tmpl', params) ?>
+        </div>
     </div>
 <?js } ?>
 

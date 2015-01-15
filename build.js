@@ -10,13 +10,11 @@ console.log(prod ? 'Building for PRODUCTION' : 'Building for DEVELOPMENT');
 
 var buildDocJS = throttle(function() {
     console.time('bundle js');
-    var b = browserify(['./turf-jsdoc/static/scripts/index.js'])
-        .bundle()
-        .on('end', function() {
-            console.log('bundle bundled');
+    exec('./node_modules/.bin/browserify ./turf-jsdoc/static/scripts/index.js > ' +
+        './turf-jsdoc/static/scripts/run.js', function() {
+            buildDocs();
             console.timeEnd('bundle js');
-        })
-        .pipe(fs.createWriteStream('./turf-jsdoc/static/scripts/bundle.min.js'));
+        });
 }, 1000);
 
 var buildDocs = throttle(function() {
@@ -70,6 +68,7 @@ if (!prod) {
     chokidar.watch('./turf-jsdoc/static/scripts/index.js').on('change', throttle(buildDocJS, 100));
     chokidar.watch('./templates').on('change', throttle(buildSite, 100));
     chokidar.watch('./node_modules/turf').on('change', throttle(buildDocs, 100));
+    chokidar.watch('./turf-jsdoc/').on('change', throttle(buildDocs, 100));
 }
 
 function noop(a, b, next) { next(); }
