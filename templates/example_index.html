@@ -28,10 +28,13 @@
       <div class='col12'>
         <div class='col4 pad4y'>
           <ul>
-            <% examples.map(function(example) { %>
+            <% examples.sort(function(a, b) {
+              return +(a.title > b.title) || +(a.title === b.title)-1;
+            }).map(function(example) { %>
             <li>
-            <a href='/<%= example.path %>'><%= example.title %></a></li>
-            <% }) %>
+              <a href='/<%= example.path %>'><%= example.title %></a>
+            </li>
+            <% }); %>
           </ul>
         </div>
         <div class='col8 prose clearfix fill-white'>
