@@ -11,15 +11,15 @@ tags:
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
-    .setView([35.466453, -97.514914], 4);
+    .setView([39.2350, -106.8370], 10);
 
 var polys = [
     turf.polygon([[
-        [ -93.515625, 25.64152637306577 ],
-        [ -93.515625, 40.84706035607122 ],
-        [ -76.640625, 40.84706035607122 ],
-        [ -76.640625, 25.64152637306577 ],
-        [ -93.515625, 25.64152637306577 ]]
+        [ -106.9200, 39.24152637306577 ],
+        [ -106.9200, 39.3300 ],
+        [ -106.7200, 39.3300 ],
+        [ -106.7200, 39.24152637306577 ],
+        [ -106.9200, 39.24152637306577 ]]
     ], {
         "fill": "#6BC65F",
         "stroke": "#6BC65F",
@@ -27,11 +27,11 @@ var polys = [
         "title": "Aggregate"
     }),
     turf.polygon([[
-        [-123.74999999999999, 29.075375179558346],
-        [-123.74999999999999, 42.81152174509788],
-        [-96.328125, 42.81152174509788],
-        [-96.328125, 29.075375179558346],
-        [-123.74999999999999,29.075375179558346]]
+      [ -106.9200, 39.1200 ],
+      [ -106.9200, 39.24152637306577 ],
+      [ -106.7200, 39.24152637306577 ],
+      [ -106.7200, 39.1200 ],
+      [ -106.9200, 39.1200 ]]
     ], {
         "fill": "#25561F",
         "stroke": "#25561F",
@@ -43,38 +43,38 @@ var poly_fc = turf.featurecollection(polys);
 var aggregations = [
   {
     aggregation: 'sum',
-    inField: 'pressure',
-    outField: 'pressure_sum'
+    inField: 'elevation',
+    outField: 'elevation_sum'
   },
   {
     aggregation: 'average',
-    inField: 'pressure',
-    outField: 'pressure_avg'
+    inField: 'elevation',
+    outField: 'elevation_avg'
   },
   {
     aggregation: 'median',
-    inField: 'pressure',
-    outField: 'pressure_median'
+    inField: 'elevation',
+    outField: 'elevation_median'
   },
   {
     aggregation: 'min',
-    inField: 'pressure',
-    outField: 'pressure_min'
+    inField: 'elevation',
+    outField: 'elevation_min'
   },
   {
     aggregation: 'max',
-    inField: 'pressure',
-    outField: 'pressure_max'
+    inField: 'elevation',
+    outField: 'elevation_max'
   },
   {
     aggregation: 'deviation',
-    inField: 'pressure',
-    outField: 'pressure_deviation'
+    inField: 'elevation',
+    outField: 'elevation_deviation'
   },
   {
     aggregation: 'variance',
-    inField: 'pressure',
-    outField: 'pressure_variance'
+    inField: 'elevation',
+    outField: 'elevation_variance'
   },
   {
     aggregation: 'count',
@@ -82,19 +82,19 @@ var aggregations = [
     outField: 'point_count'
   }
 ];
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json').addTo(map);
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json').addTo(map);
 points_layer.on('ready', function () {
 
 var aggregate = turf.aggregate(poly_fc, points_layer.toGeoJSON(), aggregations);
 
 aggregate.features.forEach(function (feature) {
-    feature.properties.description = "sum = " + feature.properties.pressure_sum + "<br/>" +
-    "avg = " + feature.properties.pressure_avg + "<br/>" +
-    "median = " + feature.properties.pressure_median + "<br/>" +
-    "min = " + feature.properties.pressure_min + "<br/>" +
-    "max = " + feature.properties.pressure_max + "<br/>" +
-    "deviation = " + feature.properties.pressure_deviation + "<br/>" +
-    "variance = " + feature.properties.pressure_variance + "<br/>" +
+    feature.properties.description = "sum = " + feature.properties.elevation_sum + "<br/>" +
+    "avg = " + feature.properties.elevation_avg + "<br/>" +
+    "median = " + feature.properties.elevation_median + "<br/>" +
+    "min = " + feature.properties.elevation_min + "<br/>" +
+    "max = " + feature.properties.elevation_max + "<br/>" +
+    "deviation = " + feature.properties.elevation_deviation + "<br/>" +
+    "variance = " + feature.properties.elevation_variance + "<br/>" +
     "count = " + feature.properties.point_count + "<br/>";
 });
 

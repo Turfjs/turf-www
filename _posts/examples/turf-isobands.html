@@ -11,17 +11,17 @@ tags:
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
-    .setView([35.466453, -97.514914], 4);
+    .setView([39.2350, -106.8370], 10);
 
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
 points_layer.on('ready', function () {
     var resolution = 100;
-    var breaks = [980, 985, 990, 995, 1000, 1005, 1010, 1015, 1020, 1025, 1030];
-    var isobands = turf.isobands(points_layer.toGeoJSON(), 'pressure', resolution, breaks);
+    var breaks = [500,2000,4000,5000,6000,8000,9000,10000,11000,12000,15000];
+    var isobands = turf.isobands(points_layer.toGeoJSON(), 'elevation', resolution, breaks);
     isobands.features.forEach(function (feature) {
         feature.properties["fill"] = "none";
         feature.properties["stroke"] = "#25561F";
-        feature.properties["stroke-width"] = 5;
+        feature.properties["stroke-width"] = 1;
     });
 
     L.mapbox.featureLayer().setGeoJSON(isobands).addTo(map);

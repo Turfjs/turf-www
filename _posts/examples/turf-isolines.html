@@ -13,7 +13,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.Fu
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([39.236242036607756,-106.80770874023438], 11);
 
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/elevation.json');
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
 points_layer.on('ready', function () {
     var resolution = 30;
     var breaks = [500,2000,4000,5000,6000,8000,9000,10000,11000,12000,15000];
