@@ -19,13 +19,10 @@ sending it to jsdoc.
   geometries and so on - each uppercase value of the `type` property of a GeoJSON
   type should be included.
 
-To build docs:
+To build & test the site:
 
     npm install
     npm run build
-
-This will build docs to the `/docs` directory in this website. Docs _do not use Jekyll_:
-they're just static files once baked.
 
 ### Structure
 
@@ -55,5 +52,5 @@ We manage **source** in the `master` branch and treat `gh-pages` as a
 produced artifact _only_.
 
     npm install
-    npm run build
+    npm run build-production
     ./deploy.sh
