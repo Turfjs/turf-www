@@ -11,13 +11,13 @@ tags:
 L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
 
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
-    .setView([38.466453, -106.514914], 5);
+    .setView([39.2350, -106.8370], 10);
 
-var points_layer = L.mapbox.featureLayer().loadURL('{{site.baseurl}}/assets/js/pressure.json');
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
 points_layer.on('ready', function () {
-    var resolution = 100;
-    var jenks = turf.jenks(points_layer.toGeoJSON(), 'pressure', 15);
-    var isolines = turf.isolines(points_layer.toGeoJSON(), 'pressure', resolution, jenks);
+    var resolution = 25;
+    var jenks = turf.jenks(points_layer.toGeoJSON(), 'elevation', 15);
+    var isolines = turf.isolines(points_layer.toGeoJSON(), 'elevation', resolution, jenks);
     isolines.features.forEach(function (feature) {
         feature.properties["stroke"] = "#25561F";
         feature.properties["stroke-width"] = 1;
