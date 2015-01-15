@@ -10,7 +10,7 @@ function buildDocs() {
     console.log('rebuilding docs');
     console.time('doc rebuild');
     exec('jsdoc ' +
-    '-t ./node_modules/turf-jsdoc/ ./typedefs/geojson.js ' +
+    '-t ./turf-jsdoc/ ./typedefs/geojson.js ' +
     'node_modules/turf/node_modules/turf-*/index.js -c ' +
     'jsdoc.conf.json -d static/docs/', function(err) {
         console.timeEnd('doc rebuild');

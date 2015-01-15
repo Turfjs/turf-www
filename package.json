@@ -27,14 +27,15 @@
     "metalsmith": "^1.0.1",
     "metalsmith-assets": "^0.1.0",
     "metalsmith-collections": "^0.6.0",
-    "metalsmith-watch": "^0.2.0",
-    "turf": "^1.3.0",
     "metalsmith-markdown": "^0.2.1",
     "metalsmith-permalinks": "^0.4.0",
     "metalsmith-serve": "0.0.3",
     "metalsmith-templates": "^0.6.0",
-    "underscore": "^1.7.0",
-    "turf-jsdoc": "^1.0.3"
+    "metalsmith-watch": "^0.2.0",
+    "rpl-www": "0.0.3",
+    "taffydb": "^2.7.2",
+    "turf": "^1.3.0",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "chokidar": "^0.12.6",
