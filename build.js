@@ -1,13 +1,25 @@
 var Metalsmith = require('metalsmith'),
-    debounce = require('lodash').debounce,
+    throttle = require('lodash').throttle,
+    browserify = require('browserify'),
+    fs = require('fs'),
     exec = require('child_process').exec,
     chokidar = require('chokidar');
 
 var prod = process.argv[2] === 'production';
 console.log(prod ? 'Building for PRODUCTION' : 'Building for DEVELOPMENT');
 
-function buildDocs() {
-    console.log('rebuilding docs');
+var buildDocJS = throttle(function() {
+    console.time('bundle js');
+    var b = browserify(['./turf-jsdoc/static/scripts/index.js'])
+        .bundle()
+        .on('end', function() {
+            console.log('bundle bundled');
+            console.timeEnd('bundle js');
+        })
+        .pipe(fs.createWriteStream('./turf-jsdoc/static/scripts/bundle.min.js'));
+}, 1000);
+
+var buildDocs = throttle(function() {
     console.time('doc rebuild');
     exec('jsdoc ' +
     '-t ./turf-jsdoc/ ./typedefs/geojson.js ' +
@@ -18,15 +30,7 @@ function buildDocs() {
         else console.log('docs built');
         buildSite();
     });
-}
-
-if (!prod) {
-    chokidar.watch('./templates').on('change', debounce(buildSite, 100));
-    chokidar.watch('./node_modules/turf').on('change', debounce(buildDocs, 100));
-}
-
-function noop(a, b, next) { next(); }
-function maybeIf(condition, value) { return condition ? value : noop; }
+}, 1000);
 
 var pipeline = Metalsmith(__dirname)
   .use(require('metalsmith-collections')({
@@ -49,13 +53,24 @@ var pipeline = Metalsmith(__dirname)
     pattern: '**/*'
   })));
 
-buildDocs();
-buildSite();
-
-function buildSite() {
+var buildSite = throttle(function() {
+    console.log('building site ' + new Date());
     console.time('site built');
     pipeline.build(function printError(err) {
       if (err) throw err;
         console.timeEnd('site built');
     });
+}, 1000);
+
+buildDocJS();
+buildDocs();
+buildSite();
+
+if (!prod) {
+    chokidar.watch('./turf-jsdoc/static/scripts/index.js').on('change', throttle(buildDocJS, 100));
+    chokidar.watch('./templates').on('change', throttle(buildSite, 100));
+    chokidar.watch('./node_modules/turf').on('change', throttle(buildDocs, 100));
 }
+
+function noop(a, b, next) { next(); }
+function maybeIf(condition, value) { return condition ? value : noop; }
