@@ -2925,7 +2925,7 @@ Rpl.prototype.setupEditor = function (element) {
 
 Rpl.prototype.makeWidget = function (values) {
   var value = values[values.length - 1],
-      msg = ce("div", "data"),
+      msg = ce("div", "rpl-data"),
       n = msg.appendChild(ce("div", "data-name", value.name)),
       name = n.appendChild(ce("span", "data-var"));
   try {
@@ -2945,6 +2945,11 @@ Rpl.prototype.fillWidget = function (container, value) {
         map = L.mapbox.map(element, this.options.mapid, {
       zoomControl: false, maxZoom: 15, scrollWheelZoom: false
     }).addLayer(featureLayer);
+    featureLayer.eachLayer(function (layer) {
+      if (Object.keys(layer.feature.properties).length) {
+        layer.bindPopup("<pre>" + JSON.stringify(layer.feature.properties, null, 2) + "</pre>");
+      }
+    });
     container.onadd = function () {
       map.fitBounds(featureLayer.getBounds());
       map.invalidateSize();
@@ -41842,9 +41847,9 @@ var extent = require('turf-extent'),
  * ];
  * var fc = turf.featurecollection(features);
  * var centerPt = turf.center(fc);
- *
- * var result = turf.featurecollection(fc.features.concat(centerPt.features));
- *
+ * centerPt.properties['marker-size'] = 'large';
+ * centerPt.properties['marker-color'] = '#000';
+ * var result = turf.featurecollection(fc.features.concat(centerPt));
  * //=result
  */
 
@@ -49252,7 +49257,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var features = [\n    turf.point(-97.522259, 35.469100),\n    turf.point(-97.502754, 35.463455),\n    turf.point(-97.508269, 35.463245),\n    turf.point(-97.516809, 35.465779),\n    turf.point(-97.515372, 35.467072),\n    turf.point(-97.509363, 35.463053),\n    turf.point(-97.511123, 35.466601),\n    turf.point(-97.518547, 35.469327),\n    turf.point(-97.519706, 35.469659),\n    turf.point(-97.517839, 35.466998),\n    turf.point(-97.508678, 35.464942),\n    turf.point(-97.514914, 35.463453)\n];\nvar fc = turf.featurecollection(features);\nvar centerPt = turf.center(fc);\n\nvar result = turf.featurecollection(fc.features.concat(centerPt.features));\n\n//=result"
+                "var features = [\n    turf.point(-97.522259, 35.469100),\n    turf.point(-97.502754, 35.463455),\n    turf.point(-97.508269, 35.463245),\n    turf.point(-97.516809, 35.465779),\n    turf.point(-97.515372, 35.467072),\n    turf.point(-97.509363, 35.463053),\n    turf.point(-97.511123, 35.466601),\n    turf.point(-97.518547, 35.469327),\n    turf.point(-97.519706, 35.469659),\n    turf.point(-97.517839, 35.466998),\n    turf.point(-97.508678, 35.464942),\n    turf.point(-97.514914, 35.463453)\n];\nvar fc = turf.featurecollection(features);\nvar centerPt = turf.center(fc);\ncenterPt.properties['marker-size'] = 'large';\ncenterPt.properties['marker-color'] = '#000';\nvar result = turf.featurecollection(fc.features.concat(centerPt));\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
