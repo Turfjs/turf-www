@@ -77,8 +77,6 @@ var buildSite = throttle(function() {
 
 buildDocsJSON(function() {
     buildDocJS();
-    buildDocs();
-    buildSite();
 });
 
 if (!prod) {
