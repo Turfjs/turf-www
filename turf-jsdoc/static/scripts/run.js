@@ -2780,74 +2780,41 @@ function hasOwnProperty(obj, prop) {
 },{"./support/isBuffer":10,"_process":9,"inherits":7}],12:[function(require,module,exports){
 "use strict";
 
-/* global L */
-require("mapbox.js");
-var geojsonhint = require("geojsonhint").hint,
-    highlight = require("highlight.js");
-
-L.mapbox.accessToken = "pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ";
-
-function ce(_, c) {
-  var elem = document.createElement(_);
-  elem.className = c || "";
-  return elem;
-}
-
-module.exports = function (container, value) {
-  if (!geojsonhint(JSON.stringify(value)).length) {
-    var element = container.appendChild(document.createElement("div"));
-    element.className = "map-viewer";
-    var featureLayer = L.mapbox.featureLayer(value);
-    var map = L.mapbox.map(element, "tmcw.map-7s15q36b", {
-      zoomControl: false, maxZoom: 15
-    }).addLayer(featureLayer);
-    element.onadd = function () {
-      map.fitBounds(featureLayer.getBounds());
-      map.invalidateSize();
-    };
-    return element;
+var _slicedToArray = function (arr, i) {
+  if (Array.isArray(arr)) {
+    return arr;
   } else {
-    var pre = container.appendChild(document.createElement("pre"));
-    pre.className = "json-viewer";
-    pre.innerHTML = JSON.stringify(value, null, 2);
-    highlight.highlightBlock(pre);
-    pre.onadd = function () {};
-    return pre;
+    var _arr = [];
+
+    for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
+      _arr.push(_step.value);
+
+      if (i && _arr.length === i) break;
+    }
+
+    return _arr;
   }
 };
 
-},{"geojsonhint":18,"highlight.js":21,"mapbox.js":147}],13:[function(require,module,exports){
-"use strict";
-
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+/* global L */
+require("codemirror/mode/javascript/javascript");
+require("mapbox.js");
 
 var debounce = require("debounce"),
-    createWidget = require("./create_widget"),
     CodeMirror = require("codemirror"),
-    Terrarium = require("terrarium").Browser;
-
-require("codemirror/mode/javascript/javascript");
+    Terrarium = require("terrarium").Browser,
+    geojsonhint = require("geojsonhint").hint;
 
 var pairs = function (o) {
   return Object.keys(o).map(function (k) {
     return [k, o[k]];
   });
 };
-var values = function (o) {
-  return pairs(o).map(function (k) {
-    return k[1];
-  });
-};
 
-function $(_) {
-  return document.getElementById(_);
-}
-function ce(_, c) {
+function ce(_, c, inner) {
   var elem = document.createElement(_);
   elem.className = c || "";
+  if (inner) elem.innerHTML = inner;
   return elem;
 }
 
@@ -2856,115 +2823,139 @@ function ce(_, c) {
  * DOM element (probably a div) with some content, which it will
  * replace with an editable CodeMirror with live annotations.
  */
-var Rpl = (function () {
-  function Rpl(element, options) {
-    var widgets = [], errors = [], delayedClear, terrarium;
+var Rpl = function Rpl(element, options) {
+  this.element = element;
+  this.options = options || {};
+  this.options.tips = this.options.tips || [];
+  this.options.mapid = this.options.mapid || "tmcw.map-7s15q36b";
+  this.options.accessToken = this.options.accessToken || "pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ";
+  this.widgets = [];
+  this.errors = [];
+  this.delayedClear = null;
+  this.terrarium = null;
+  this.inlineStyle = document.body.appendChild(document.createElement("style"));
+  this.editor = this.setupEditor(this.element);
+  this.editor.on("change", debounce(this.onchange.bind(this), 200));
+  this.onchange();
+};
 
-    var editor = this.setupEditor(element);
-    editor.on("change", debounce(onchange, 200));
-    onchange();
-
-    function onchange() {
-      clearTimeout(delayedClear);
-      joinWidgets([]);
-      if (terrarium) {
-        terrarium.destroy();
-      }
-      terrarium = new Terrarium(options);
-      terrarium.on("data", ondata).on("err", onerr).run(editor.getValue());
-    }
-
-    function ondata(d) {
-      clearTimeout(delayedClear);
-      if (d.error) {} else {
-        // error.style.display = 'none';
-        joinWidgets(d);
-      }
-    }
-
-    function onerr(err) {
-      errors.forEach(function (e) {
-        return editor.removeLineWidget(e);
-      });
-      if (err instanceof Error || err instanceof ReferenceError ||
-      // this window's ReferenceError class is not the same
-      // as the iframe's
-      err.toString().match(/ReferenceError/)) {
-        var elem = document.createElement("div");
-        elem.innerHTML = err.message;
-        elem.className = "rpl-error";
-        var widget = editor.addLineWidget(err.lineNumber || 0, elem, { coverGutter: false, noHScroll: true });
-        errors.push(widget);
-      }
-    }
-
-    function joinWidgets(newData) {
-      newData = newData || {};
-      // remove old widgets
-      widgets.forEach(function (widget) {
-        return editor.removeLineWidget(widget);
-      });
-      errors.forEach(function (e) {
-        return editor.removeLineWidget(e);
-      });
-      widgets = pairs(newData).map(function (p) {
-        return addWidget(p[1], p[0]);
-      });
-
-      function addWidget(val, id) {
-        var line = val[val.length - 1].line - 1;
-        var el = makeWidget(val);
-        var widget = editor.addLineWidget(line, el, { coverGutter: false, noHScroll: true });
-        if (el.widget.onadd) {
-          el.widget.onadd();
-        }
-        return widget;
-      }
-    }
+Rpl.prototype.onchange = function () {
+  clearTimeout(this.delayedClear);
+  this.joinWidgets({});
+  if (this.terrarium) {
+    this.terrarium.destroy();
   }
+  this.terrarium = new Terrarium(this.options);
+  this.terrarium.on("data", this.ondata.bind(this)).on("err", this.onerr.bind(this)).run(this.editor.getValue());
+  this.addMarks();
+};
 
-  _prototypeProperties(Rpl, null, {
-    setupEditor: {
-      value: function setupEditor(element) {
-        return CodeMirror(function (elt) {
-          element.parentNode.replaceChild(elt, element);
-        }, { value: element.textContent || element.innerText }, {
-          indentUnit: 2, mode: "text/javascript",
-          viewportMargin: Infinity
+Rpl.prototype.addMarks = function () {
+  var _this = this;
+  if (!this.options.tips.length) return;
+  var cssContent = {};
+  this.editor.eachLine(function (lineHandle) {
+    _this.options.tips.forEach(function (tip) {
+      var ch = lineHandle.text.indexOf(tip[0]);
+      if (ch !== -1) {
+        var line = _this.editor.getLineNumber(lineHandle);
+        var classHash = "c-" + window.btoa(tip[1]).replace(/(=|\/|\+)/g, "");
+        cssContent[classHash] = tip[1];
+        _this.editor.markText({ line: line, ch: ch }, { line: line, ch: ch + tip[0].length }, {
+          className: "has-tip " + classHash
         });
-      },
-      writable: true,
-      enumerable: true,
-      configurable: true
-    }
+      }
+    });
   });
+  var cssString = "";
+  for (var k in cssContent) {
+    cssString += "." + k + ":hover:after{content:" + JSON.stringify(cssContent[k]) + ";}";
+  }
+  this.inlineStyle.innerHTML = cssString;
+};
 
-  return Rpl;
-})();
+Rpl.prototype.onerr = function (err) {
+  this.clearErrors();
+  if (err.message) {
+    var elem = ce("div", "rpl-error", err.toString());
+    this.errors.push(this.editor.addLineWidget(err.lineNumber || 0, elem, { coverGutter: false, noHScroll: true }));
+  }
+};
 
-function makeWidget(values) {
+Rpl.prototype.ondata = function (d) {
+  clearTimeout(this.delayedClear);
+  this.joinWidgets(d);
+};
+
+Rpl.prototype.clearErrors = function () {
+  this.errors.forEach(this.editor.removeLineWidget);
+  this.errors = [];
+};
+
+Rpl.prototype.clearWidgets = function () {
+  this.widgets.forEach(this.editor.removeLineWidget);
+  this.widgets = [];
+};
+
+Rpl.prototype.joinWidgets = function (newData) {
+  var _this2 = this;
+  this.clearWidgets();
+  this.clearErrors();
+  this.widgets = pairs(newData || {}).map(function (p) {
+    var _p = _slicedToArray(p, 2);
+
+    var id = _p[0];
+    var val = _p[1];
+    var line = val[val.length - 1].line - 1;
+    var el = _this2.makeWidget(val);
+    var widget = _this2.editor.addLineWidget(line, el, { coverGutter: false, noHScroll: true });
+    if (el.onadd) el.onadd();
+    return widget;
+  });
+};
+
+Rpl.prototype.setupEditor = function (element) {
+  return CodeMirror(function (elt) {
+    element.parentNode.replaceChild(elt, element);
+  }, { value: element.textContent || element.innerText }, {
+    indentUnit: 2, mode: "text/javascript",
+    viewportMargin: Infinity
+  });
+};
+
+Rpl.prototype.makeWidget = function (values) {
   var value = values[values.length - 1],
-      msg = ce("div"),
-      div = msg.appendChild(ce("div")),
-      n = msg.appendChild(ce("div", "data-name")),
+      msg = ce("div", "data"),
+      n = msg.appendChild(ce("div", "data-name", value.name)),
       name = n.appendChild(ce("span", "data-var"));
-  n.className = "data-name";
-  name.innerHTML = value.name;
-  msg.className = "data";
   try {
-    msg.widget = createWidget(div, value.val);
+    this.fillWidget(msg, value.val);
+    return msg;
   } catch (e) {
     console.error(e);
   }
   return msg;
-}
+};
+
+Rpl.prototype.fillWidget = function (container, value) {
+  L.mapbox.accessToken = this.options.accessToken;
+  if (value && !geojsonhint(JSON.stringify(value)).length) {
+    var element = container.appendChild(ce("div", "map-viewer")),
+        featureLayer = L.mapbox.featureLayer(value),
+        map = L.mapbox.map(element, this.options.mapid, {
+      zoomControl: false, maxZoom: 15, scrollWheelZoom: false
+    }).addLayer(featureLayer);
+    container.onadd = function () {
+      map.fitBounds(featureLayer.getBounds());
+      map.invalidateSize();
+    };
+  }
+  var pre = container.appendChild(ce("pre", typeof value === "object" ? "json-viewer" : "json-viewer big", JSON.stringify(value, null, 2)));
+};
 
 module.exports = Rpl;
-// error.style.display = 'block';
-// error.innerHTML = d.error;
-// delayedClear = setTimeout(joinWidgets, 1000);
 
-},{"./create_widget":12,"codemirror":14,"codemirror/mode/javascript/javascript":15,"debounce":16,"terrarium":182}],14:[function(require,module,exports){
+},{"codemirror":13,"codemirror/mode/javascript/javascript":14,"debounce":15,"geojsonhint":17,"mapbox.js":32,"terrarium":66}],13:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -3686,7 +3677,7 @@ module.exports = Rpl;
     // width and height.
     removeChildren(display.cursorDiv);
     removeChildren(display.selectionDiv);
-    display.gutters.style.height = 0;
+    display.heightForcer.style.top = display.gutters.style.height = 0;
 
     if (different) {
       display.lastWrapHeight = update.wrapperHeight;
@@ -3744,9 +3735,9 @@ module.exports = Rpl;
 
   function setDocumentHeight(cm, measure) {
     cm.display.sizer.style.minHeight = measure.docHeight + "px";
-    var total = measure.docHeight + cm.display.barHeight;
-    cm.display.heightForcer.style.top = total + "px";
-    cm.display.gutters.style.height = Math.max(total + scrollGap(cm), measure.clientHeight) + "px";
+    var plusGap = measure.docHeight + scrollGap(cm);
+    cm.display.heightForcer.style.top = plusGap + "px";
+    cm.display.gutters.style.height = Math.max(plusGap, measure.clientHeight) + "px";
   }
 
   // Read the actual heights of the rendered lines, and update their
@@ -10990,12 +10981,12 @@ module.exports = Rpl;
 
   // THE END
 
-  CodeMirror.version = "4.11.0";
+  CodeMirror.version = "4.10.0";
 
   return CodeMirror;
 });
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -11683,7 +11674,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 });
 
-},{"../../lib/codemirror":14}],16:[function(require,module,exports){
+},{"../../lib/codemirror":13}],15:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11738,14 +11729,14 @@ module.exports = function debounce(func, wait, immediate){
   };
 };
 
-},{"date-now":17}],17:[function(require,module,exports){
+},{"date-now":16}],16:[function(require,module,exports){
 module.exports = Date.now || now
 
 function now() {
     return new Date().getTime()
 }
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var jsonlint = require('jsonlint-lines');
 
 function hint(str) {
@@ -12064,7 +12055,7 @@ function hint(str) {
 
 module.exports.hint = hint;
 
-},{"jsonlint-lines":19}],19:[function(require,module,exports){
+},{"jsonlint-lines":18}],18:[function(require,module,exports){
 (function (process){
 /* parser generated by jison 0.4.6 */
 /*
@@ -12721,9857 +12712,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 }
 }).call(this,require('_process'))
-},{"_process":9,"fs":1,"path":8}],20:[function(require,module,exports){
-/*
-Syntax highlighting with language autodetection.
-https://highlightjs.org/
-*/
-
-(function(factory) {
-
-  // Setup highlight.js for different environments. First is Node.js or
-  // CommonJS.
-  if(typeof exports !== 'undefined') {
-    factory(exports);
-  } else {
-    // Export hljs globally even when using AMD for cases when this script
-    // is loaded with others that may still expect a global hljs.
-    window.hljs = factory({});
-
-    // Finally register the global hljs with AMD.
-    if(typeof define === 'function' && define.amd) {
-      define([], function() {
-        return window.hljs;
-      });
-    }
-  }
-
-}(function(hljs) {
-
-  /* Utility functions */
-
-  function escape(value) {
-    return value.replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;');
-  }
-
-  function tag(node) {
-    return node.nodeName.toLowerCase();
-  }
-
-  function testRe(re, lexeme) {
-    var match = re && re.exec(lexeme);
-    return match && match.index == 0;
-  }
-
-  function blockLanguage(block) {
-    var classes = (block.className + ' ' + (block.parentNode ? block.parentNode.className : '')).split(/\s+/);
-    classes = classes.map(function(c) {return c.replace(/^lang(uage)?-/, '');});
-    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight/.test(c);})[0];
-  }
-
-  function inherit(parent, obj) {
-    var result = {};
-    for (var key in parent)
-      result[key] = parent[key];
-    if (obj)
-      for (var key in obj)
-        result[key] = obj[key];
-    return result;
-  };
-
-  /* Stream merging */
-
-  function nodeStream(node) {
-    var result = [];
-    (function _nodeStream(node, offset) {
-      for (var child = node.firstChild; child; child = child.nextSibling) {
-        if (child.nodeType == 3)
-          offset += child.nodeValue.length;
-        else if (child.nodeType == 1) {
-          result.push({
-            event: 'start',
-            offset: offset,
-            node: child
-          });
-          offset = _nodeStream(child, offset);
-          // Prevent void elements from having an end tag that would actually
-          // double them in the output. There are more void elements in HTML
-          // but we list only those realistically expected in code display.
-          if (!tag(child).match(/br|hr|img|input/)) {
-            result.push({
-              event: 'stop',
-              offset: offset,
-              node: child
-            });
-          }
-        }
-      }
-      return offset;
-    })(node, 0);
-    return result;
-  }
-
-  function mergeStreams(original, highlighted, value) {
-    var processed = 0;
-    var result = '';
-    var nodeStack = [];
-
-    function selectStream() {
-      if (!original.length || !highlighted.length) {
-        return original.length ? original : highlighted;
-      }
-      if (original[0].offset != highlighted[0].offset) {
-        return (original[0].offset < highlighted[0].offset) ? original : highlighted;
-      }
-
-      /*
-      To avoid starting the stream just before it should stop the order is
-      ensured that original always starts first and closes last:
-
-      if (event1 == 'start' && event2 == 'start')
-        return original;
-      if (event1 == 'start' && event2 == 'stop')
-        return highlighted;
-      if (event1 == 'stop' && event2 == 'start')
-        return original;
-      if (event1 == 'stop' && event2 == 'stop')
-        return highlighted;
-
-      ... which is collapsed to:
-      */
-      return highlighted[0].event == 'start' ? original : highlighted;
-    }
-
-    function open(node) {
-      function attr_str(a) {return ' ' + a.nodeName + '="' + escape(a.value) + '"';}
-      result += '<' + tag(node) + Array.prototype.map.call(node.attributes, attr_str).join('') + '>';
-    }
-
-    function close(node) {
-      result += '</' + tag(node) + '>';
-    }
-
-    function render(event) {
-      (event.event == 'start' ? open : close)(event.node);
-    }
-
-    while (original.length || highlighted.length) {
-      var stream = selectStream();
-      result += escape(value.substr(processed, stream[0].offset - processed));
-      processed = stream[0].offset;
-      if (stream == original) {
-        /*
-        On any opening or closing tag of the original markup we first close
-        the entire highlighted node stack, then render the original tag along
-        with all the following original tags at the same offset and then
-        reopen all the tags on the highlighted stack.
-        */
-        nodeStack.reverse().forEach(close);
-        do {
-          render(stream.splice(0, 1)[0]);
-          stream = selectStream();
-        } while (stream == original && stream.length && stream[0].offset == processed);
-        nodeStack.reverse().forEach(open);
-      } else {
-        if (stream[0].event == 'start') {
-          nodeStack.push(stream[0].node);
-        } else {
-          nodeStack.pop();
-        }
-        render(stream.splice(0, 1)[0]);
-      }
-    }
-    return result + escape(value.substr(processed));
-  }
-
-  /* Initialization */
-
-  function compileLanguage(language) {
-
-    function reStr(re) {
-        return (re && re.source) || re;
-    }
-
-    function langRe(value, global) {
-      return RegExp(
-        reStr(value),
-        'm' + (language.case_insensitive ? 'i' : '') + (global ? 'g' : '')
-      );
-    }
-
-    function compileMode(mode, parent) {
-      if (mode.compiled)
-        return;
-      mode.compiled = true;
-
-      mode.keywords = mode.keywords || mode.beginKeywords;
-      if (mode.keywords) {
-        var compiled_keywords = {};
-
-        var flatten = function(className, str) {
-          if (language.case_insensitive) {
-            str = str.toLowerCase();
-          }
-          str.split(' ').forEach(function(kw) {
-            var pair = kw.split('|');
-            compiled_keywords[pair[0]] = [className, pair[1] ? Number(pair[1]) : 1];
-          });
-        };
-
-        if (typeof mode.keywords == 'string') { // string
-          flatten('keyword', mode.keywords);
-        } else {
-          Object.keys(mode.keywords).forEach(function (className) {
-            flatten(className, mode.keywords[className]);
-          });
-        }
-        mode.keywords = compiled_keywords;
-      }
-      mode.lexemesRe = langRe(mode.lexemes || /\b[A-Za-z0-9_]+\b/, true);
-
-      if (parent) {
-        if (mode.beginKeywords) {
-          mode.begin = '\\b(' + mode.beginKeywords.split(' ').join('|') + ')\\b';
-        }
-        if (!mode.begin)
-          mode.begin = /\B|\b/;
-        mode.beginRe = langRe(mode.begin);
-        if (!mode.end && !mode.endsWithParent)
-          mode.end = /\B|\b/;
-        if (mode.end)
-          mode.endRe = langRe(mode.end);
-        mode.terminator_end = reStr(mode.end) || '';
-        if (mode.endsWithParent && parent.terminator_end)
-          mode.terminator_end += (mode.end ? '|' : '') + parent.terminator_end;
-      }
-      if (mode.illegal)
-        mode.illegalRe = langRe(mode.illegal);
-      if (mode.relevance === undefined)
-        mode.relevance = 1;
-      if (!mode.contains) {
-        mode.contains = [];
-      }
-      var expanded_contains = [];
-      mode.contains.forEach(function(c) {
-        if (c.variants) {
-          c.variants.forEach(function(v) {expanded_contains.push(inherit(c, v));});
-        } else {
-          expanded_contains.push(c == 'self' ? mode : c);
-        }
-      });
-      mode.contains = expanded_contains;
-      mode.contains.forEach(function(c) {compileMode(c, mode);});
-
-      if (mode.starts) {
-        compileMode(mode.starts, parent);
-      }
-
-      var terminators =
-        mode.contains.map(function(c) {
-          return c.beginKeywords ? '\\.?(' + c.begin + ')\\.?' : c.begin;
-        })
-        .concat([mode.terminator_end, mode.illegal])
-        .map(reStr)
-        .filter(Boolean);
-      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(s) {return null;}};
-    }
-
-    compileMode(language);
-  }
-
-  /*
-  Core highlighting function. Accepts a language name, or an alias, and a
-  string with the code to highlight. Returns an object with the following
-  properties:
-
-  - relevance (int)
-  - value (an HTML string with highlighting markup)
-
-  */
-  function highlight(name, value, ignore_illegals, continuation) {
-
-    function subMode(lexeme, mode) {
-      for (var i = 0; i < mode.contains.length; i++) {
-        if (testRe(mode.contains[i].beginRe, lexeme)) {
-          return mode.contains[i];
-        }
-      }
-    }
-
-    function endOfMode(mode, lexeme) {
-      if (testRe(mode.endRe, lexeme)) {
-        return mode;
-      }
-      if (mode.endsWithParent) {
-        return endOfMode(mode.parent, lexeme);
-      }
-    }
-
-    function isIllegal(lexeme, mode) {
-      return !ignore_illegals && testRe(mode.illegalRe, lexeme);
-    }
-
-    function keywordMatch(mode, match) {
-      var match_str = language.case_insensitive ? match[0].toLowerCase() : match[0];
-      return mode.keywords.hasOwnProperty(match_str) && mode.keywords[match_str];
-    }
-
-    function buildSpan(classname, insideSpan, leaveOpen, noPrefix) {
-      var classPrefix = noPrefix ? '' : options.classPrefix,
-          openSpan    = '<span class="' + classPrefix,
-          closeSpan   = leaveOpen ? '' : '</span>';
-
-      openSpan += classname + '">';
-
-      return openSpan + insideSpan + closeSpan;
-    }
-
-    function processKeywords() {
-      if (!top.keywords)
-        return escape(mode_buffer);
-      var result = '';
-      var last_index = 0;
-      top.lexemesRe.lastIndex = 0;
-      var match = top.lexemesRe.exec(mode_buffer);
-      while (match) {
-        result += escape(mode_buffer.substr(last_index, match.index - last_index));
-        var keyword_match = keywordMatch(top, match);
-        if (keyword_match) {
-          relevance += keyword_match[1];
-          result += buildSpan(keyword_match[0], escape(match[0]));
-        } else {
-          result += escape(match[0]);
-        }
-        last_index = top.lexemesRe.lastIndex;
-        match = top.lexemesRe.exec(mode_buffer);
-      }
-      return result + escape(mode_buffer.substr(last_index));
-    }
-
-    function processSubLanguage() {
-      if (top.subLanguage && !languages[top.subLanguage]) {
-        return escape(mode_buffer);
-      }
-      var result = top.subLanguage ? highlight(top.subLanguage, mode_buffer, true, continuations[top.subLanguage]) : highlightAuto(mode_buffer);
-      // Counting embedded language score towards the host language may be disabled
-      // with zeroing the containing mode relevance. Usecase in point is Markdown that
-      // allows XML everywhere and makes every XML snippet to have a much larger Markdown
-      // score.
-      if (top.relevance > 0) {
-        relevance += result.relevance;
-      }
-      if (top.subLanguageMode == 'continuous') {
-        continuations[top.subLanguage] = result.top;
-      }
-      return buildSpan(result.language, result.value, false, true);
-    }
-
-    function processBuffer() {
-      return top.subLanguage !== undefined ? processSubLanguage() : processKeywords();
-    }
-
-    function startNewMode(mode, lexeme) {
-      var markup = mode.className? buildSpan(mode.className, '', true): '';
-      if (mode.returnBegin) {
-        result += markup;
-        mode_buffer = '';
-      } else if (mode.excludeBegin) {
-        result += escape(lexeme) + markup;
-        mode_buffer = '';
-      } else {
-        result += markup;
-        mode_buffer = lexeme;
-      }
-      top = Object.create(mode, {parent: {value: top}});
-    }
-
-    function processLexeme(buffer, lexeme) {
-
-      mode_buffer += buffer;
-      if (lexeme === undefined) {
-        result += processBuffer();
-        return 0;
-      }
-
-      var new_mode = subMode(lexeme, top);
-      if (new_mode) {
-        result += processBuffer();
-        startNewMode(new_mode, lexeme);
-        return new_mode.returnBegin ? 0 : lexeme.length;
-      }
-
-      var end_mode = endOfMode(top, lexeme);
-      if (end_mode) {
-        var origin = top;
-        if (!(origin.returnEnd || origin.excludeEnd)) {
-          mode_buffer += lexeme;
-        }
-        result += processBuffer();
-        do {
-          if (top.className) {
-            result += '</span>';
-          }
-          relevance += top.relevance;
-          top = top.parent;
-        } while (top != end_mode.parent);
-        if (origin.excludeEnd) {
-          result += escape(lexeme);
-        }
-        mode_buffer = '';
-        if (end_mode.starts) {
-          startNewMode(end_mode.starts, '');
-        }
-        return origin.returnEnd ? 0 : lexeme.length;
-      }
-
-      if (isIllegal(lexeme, top))
-        throw new Error('Illegal lexeme "' + lexeme + '" for mode "' + (top.className || '<unnamed>') + '"');
-
-      /*
-      Parser should not reach this point as all types of lexemes should be caught
-      earlier, but if it does due to some bug make sure it advances at least one
-      character forward to prevent infinite looping.
-      */
-      mode_buffer += lexeme;
-      return lexeme.length || 1;
-    }
-
-    var language = getLanguage(name);
-    if (!language) {
-      throw new Error('Unknown language: "' + name + '"');
-    }
-
-    compileLanguage(language);
-    var top = continuation || language;
-    var continuations = {}; // keep continuations for sub-languages
-    var result = '';
-    for(var current = top; current != language; current = current.parent) {
-      if (current.className) {
-        result = buildSpan(current.className, '', true) + result;
-      }
-    }
-    var mode_buffer = '';
-    var relevance = 0;
-    try {
-      var match, count, index = 0;
-      while (true) {
-        top.terminators.lastIndex = index;
-        match = top.terminators.exec(value);
-        if (!match)
-          break;
-        count = processLexeme(value.substr(index, match.index - index), match[0]);
-        index = match.index + count;
-      }
-      processLexeme(value.substr(index));
-      for(var current = top; current.parent; current = current.parent) { // close dangling modes
-        if (current.className) {
-          result += '</span>';
-        }
-      };
-      return {
-        relevance: relevance,
-        value: result,
-        language: name,
-        top: top
-      };
-    } catch (e) {
-      if (e.message.indexOf('Illegal') != -1) {
-        return {
-          relevance: 0,
-          value: escape(value)
-        };
-      } else {
-        throw e;
-      }
-    }
-  }
-
-  /*
-  Highlighting with language detection. Accepts a string with the code to
-  highlight. Returns an object with the following properties:
-
-  - language (detected language)
-  - relevance (int)
-  - value (an HTML string with highlighting markup)
-  - second_best (object with the same structure for second-best heuristically
-    detected language, may be absent)
-
-  */
-  function highlightAuto(text, languageSubset) {
-    languageSubset = languageSubset || options.languages || Object.keys(languages);
-    var result = {
-      relevance: 0,
-      value: escape(text)
-    };
-    var second_best = result;
-    languageSubset.forEach(function(name) {
-      if (!getLanguage(name)) {
-        return;
-      }
-      var current = highlight(name, text, false);
-      current.language = name;
-      if (current.relevance > second_best.relevance) {
-        second_best = current;
-      }
-      if (current.relevance > result.relevance) {
-        second_best = result;
-        result = current;
-      }
-    });
-    if (second_best.language) {
-      result.second_best = second_best;
-    }
-    return result;
-  }
-
-  /*
-  Post-processing of the highlighted markup:
-
-  - replace TABs with something more useful
-  - replace real line-breaks with '<br>' for non-pre containers
-
-  */
-  function fixMarkup(value) {
-    if (options.tabReplace) {
-      value = value.replace(/^((<[^>]+>|\t)+)/gm, function(match, p1, offset, s) {
-        return p1.replace(/\t/g, options.tabReplace);
-      });
-    }
-    if (options.useBR) {
-      value = value.replace(/\n/g, '<br>');
-    }
-    return value;
-  }
-
-  function buildClassName(prevClassName, currentLang, resultLang) {
-    var language = currentLang ? aliases[currentLang] : resultLang,
-        result   = [prevClassName.trim()];
-
-    if (!prevClassName.match(/(\s|^)hljs(\s|$)/)) {
-      result.push('hljs');
-    }
-
-    if (language) {
-      result.push(language);
-    }
-
-    return result.join(' ').trim();
-  }
-
-  /*
-  Applies highlighting to a DOM node containing code. Accepts a DOM node and
-  two optional parameters for fixMarkup.
-  */
-  function highlightBlock(block) {
-    var language = blockLanguage(block);
-    if (/no(-?)highlight/.test(language))
-        return;
-
-    var node;
-    if (options.useBR) {
-      node = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-      node.innerHTML = block.innerHTML.replace(/\n/g, '').replace(/<br[ \/]*>/g, '\n');
-    } else {
-      node = block;
-    }
-    var text = node.textContent;
-    var result = language ? highlight(language, text, true) : highlightAuto(text);
-
-    var originalStream = nodeStream(node);
-    if (originalStream.length) {
-      var resultNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-      resultNode.innerHTML = result.value;
-      result.value = mergeStreams(originalStream, nodeStream(resultNode), text);
-    }
-    result.value = fixMarkup(result.value);
-
-    block.innerHTML = result.value;
-    block.className = buildClassName(block.className, language, result.language);
-    block.result = {
-      language: result.language,
-      re: result.relevance
-    };
-    if (result.second_best) {
-      block.second_best = {
-        language: result.second_best.language,
-        re: result.second_best.relevance
-      };
-    }
-  }
-
-  var options = {
-    classPrefix: 'hljs-',
-    tabReplace: null,
-    useBR: false,
-    languages: undefined
-  };
-
-  /*
-  Updates highlight.js global options with values passed in the form of an object
-  */
-  function configure(user_options) {
-    options = inherit(options, user_options);
-  }
-
-  /*
-  Applies highlighting to all <pre><code>..</code></pre> blocks on a page.
-  */
-  function initHighlighting() {
-    if (initHighlighting.called)
-      return;
-    initHighlighting.called = true;
-
-    var blocks = document.querySelectorAll('pre code');
-    Array.prototype.forEach.call(blocks, highlightBlock);
-  }
-
-  /*
-  Attaches highlighting to the page load event.
-  */
-  function initHighlightingOnLoad() {
-    addEventListener('DOMContentLoaded', initHighlighting, false);
-    addEventListener('load', initHighlighting, false);
-  }
-
-  var languages = {};
-  var aliases = {};
-
-  function registerLanguage(name, language) {
-    var lang = languages[name] = language(hljs);
-    if (lang.aliases) {
-      lang.aliases.forEach(function(alias) {aliases[alias] = name;});
-    }
-  }
-
-  function listLanguages() {
-    return Object.keys(languages);
-  }
-
-  function getLanguage(name) {
-    return languages[name] || languages[aliases[name]];
-  }
-
-  /* Interface definition */
-
-  hljs.highlight = highlight;
-  hljs.highlightAuto = highlightAuto;
-  hljs.fixMarkup = fixMarkup;
-  hljs.highlightBlock = highlightBlock;
-  hljs.configure = configure;
-  hljs.initHighlighting = initHighlighting;
-  hljs.initHighlightingOnLoad = initHighlightingOnLoad;
-  hljs.registerLanguage = registerLanguage;
-  hljs.listLanguages = listLanguages;
-  hljs.getLanguage = getLanguage;
-  hljs.inherit = inherit;
-
-  // Common regexps
-  hljs.IDENT_RE = '[a-zA-Z][a-zA-Z0-9_]*';
-  hljs.UNDERSCORE_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*';
-  hljs.NUMBER_RE = '\\b\\d+(\\.\\d+)?';
-  hljs.C_NUMBER_RE = '(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
-  hljs.BINARY_NUMBER_RE = '\\b(0b[01]+)'; // 0b...
-  hljs.RE_STARTERS_RE = '!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~';
-
-  // Common modes
-  hljs.BACKSLASH_ESCAPE = {
-    begin: '\\\\[\\s\\S]', relevance: 0
-  };
-  hljs.APOS_STRING_MODE = {
-    className: 'string',
-    begin: '\'', end: '\'',
-    illegal: '\\n',
-    contains: [hljs.BACKSLASH_ESCAPE]
-  };
-  hljs.QUOTE_STRING_MODE = {
-    className: 'string',
-    begin: '"', end: '"',
-    illegal: '\\n',
-    contains: [hljs.BACKSLASH_ESCAPE]
-  };
-  hljs.PHRASAL_WORDS_MODE = {
-    begin: /\b(a|an|the|are|I|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such)\b/
-  };
-  hljs.C_LINE_COMMENT_MODE = {
-    className: 'comment',
-    begin: '//', end: '$',
-    contains: [hljs.PHRASAL_WORDS_MODE]
-  };
-  hljs.C_BLOCK_COMMENT_MODE = {
-    className: 'comment',
-    begin: '/\\*', end: '\\*/',
-    contains: [hljs.PHRASAL_WORDS_MODE]
-  };
-  hljs.HASH_COMMENT_MODE = {
-    className: 'comment',
-    begin: '#', end: '$',
-    contains: [hljs.PHRASAL_WORDS_MODE]
-  };
-  hljs.NUMBER_MODE = {
-    className: 'number',
-    begin: hljs.NUMBER_RE,
-    relevance: 0
-  };
-  hljs.C_NUMBER_MODE = {
-    className: 'number',
-    begin: hljs.C_NUMBER_RE,
-    relevance: 0
-  };
-  hljs.BINARY_NUMBER_MODE = {
-    className: 'number',
-    begin: hljs.BINARY_NUMBER_RE,
-    relevance: 0
-  };
-  hljs.CSS_NUMBER_MODE = {
-    className: 'number',
-    begin: hljs.NUMBER_RE + '(' +
-      '%|em|ex|ch|rem'  +
-      '|vw|vh|vmin|vmax' +
-      '|cm|mm|in|pt|pc|px' +
-      '|deg|grad|rad|turn' +
-      '|s|ms' +
-      '|Hz|kHz' +
-      '|dpi|dpcm|dppx' +
-      ')?',
-    relevance: 0
-  };
-  hljs.REGEXP_MODE = {
-    className: 'regexp',
-    begin: /\//, end: /\/[gimuy]*/,
-    illegal: /\n/,
-    contains: [
-      hljs.BACKSLASH_ESCAPE,
-      {
-        begin: /\[/, end: /\]/,
-        relevance: 0,
-        contains: [hljs.BACKSLASH_ESCAPE]
-      }
-    ]
-  };
-  hljs.TITLE_MODE = {
-    className: 'title',
-    begin: hljs.IDENT_RE,
-    relevance: 0
-  };
-  hljs.UNDERSCORE_TITLE_MODE = {
-    className: 'title',
-    begin: hljs.UNDERSCORE_IDENT_RE,
-    relevance: 0
-  };
-
-  return hljs;
-}));
-
-},{}],21:[function(require,module,exports){
-var hljs = require('./highlight');
-
-hljs.registerLanguage('1c', require('./languages/1c'));
-hljs.registerLanguage('actionscript', require('./languages/actionscript'));
-hljs.registerLanguage('apache', require('./languages/apache'));
-hljs.registerLanguage('applescript', require('./languages/applescript'));
-hljs.registerLanguage('xml', require('./languages/xml'));
-hljs.registerLanguage('asciidoc', require('./languages/asciidoc'));
-hljs.registerLanguage('aspectj', require('./languages/aspectj'));
-hljs.registerLanguage('autohotkey', require('./languages/autohotkey'));
-hljs.registerLanguage('avrasm', require('./languages/avrasm'));
-hljs.registerLanguage('axapta', require('./languages/axapta'));
-hljs.registerLanguage('bash', require('./languages/bash'));
-hljs.registerLanguage('brainfuck', require('./languages/brainfuck'));
-hljs.registerLanguage('capnproto', require('./languages/capnproto'));
-hljs.registerLanguage('clojure', require('./languages/clojure'));
-hljs.registerLanguage('clojure-repl', require('./languages/clojure-repl'));
-hljs.registerLanguage('cmake', require('./languages/cmake'));
-hljs.registerLanguage('coffeescript', require('./languages/coffeescript'));
-hljs.registerLanguage('cpp', require('./languages/cpp'));
-hljs.registerLanguage('cs', require('./languages/cs'));
-hljs.registerLanguage('css', require('./languages/css'));
-hljs.registerLanguage('d', require('./languages/d'));
-hljs.registerLanguage('markdown', require('./languages/markdown'));
-hljs.registerLanguage('dart', require('./languages/dart'));
-hljs.registerLanguage('delphi', require('./languages/delphi'));
-hljs.registerLanguage('diff', require('./languages/diff'));
-hljs.registerLanguage('django', require('./languages/django'));
-hljs.registerLanguage('dos', require('./languages/dos'));
-hljs.registerLanguage('dust', require('./languages/dust'));
-hljs.registerLanguage('elixir', require('./languages/elixir'));
-hljs.registerLanguage('ruby', require('./languages/ruby'));
-hljs.registerLanguage('erb', require('./languages/erb'));
-hljs.registerLanguage('erlang-repl', require('./languages/erlang-repl'));
-hljs.registerLanguage('erlang', require('./languages/erlang'));
-hljs.registerLanguage('fix', require('./languages/fix'));
-hljs.registerLanguage('fsharp', require('./languages/fsharp'));
-hljs.registerLanguage('gcode', require('./languages/gcode'));
-hljs.registerLanguage('gherkin', require('./languages/gherkin'));
-hljs.registerLanguage('glsl', require('./languages/glsl'));
-hljs.registerLanguage('go', require('./languages/go'));
-hljs.registerLanguage('gradle', require('./languages/gradle'));
-hljs.registerLanguage('groovy', require('./languages/groovy'));
-hljs.registerLanguage('haml', require('./languages/haml'));
-hljs.registerLanguage('handlebars', require('./languages/handlebars'));
-hljs.registerLanguage('haskell', require('./languages/haskell'));
-hljs.registerLanguage('haxe', require('./languages/haxe'));
-hljs.registerLanguage('http', require('./languages/http'));
-hljs.registerLanguage('ini', require('./languages/ini'));
-hljs.registerLanguage('java', require('./languages/java'));
-hljs.registerLanguage('javascript', require('./languages/javascript'));
-hljs.registerLanguage('json', require('./languages/json'));
-hljs.registerLanguage('lasso', require('./languages/lasso'));
-hljs.registerLanguage('less', require('./languages/less'));
-hljs.registerLanguage('lisp', require('./languages/lisp'));
-hljs.registerLanguage('livecodeserver', require('./languages/livecodeserver'));
-hljs.registerLanguage('livescript', require('./languages/livescript'));
-hljs.registerLanguage('lua', require('./languages/lua'));
-hljs.registerLanguage('makefile', require('./languages/makefile'));
-hljs.registerLanguage('mathematica', require('./languages/mathematica'));
-hljs.registerLanguage('matlab', require('./languages/matlab'));
-hljs.registerLanguage('mel', require('./languages/mel'));
-hljs.registerLanguage('mercury', require('./languages/mercury'));
-hljs.registerLanguage('mizar', require('./languages/mizar'));
-hljs.registerLanguage('monkey', require('./languages/monkey'));
-hljs.registerLanguage('nginx', require('./languages/nginx'));
-hljs.registerLanguage('nimrod', require('./languages/nimrod'));
-hljs.registerLanguage('nix', require('./languages/nix'));
-hljs.registerLanguage('nsis', require('./languages/nsis'));
-hljs.registerLanguage('objectivec', require('./languages/objectivec'));
-hljs.registerLanguage('ocaml', require('./languages/ocaml'));
-hljs.registerLanguage('oxygene', require('./languages/oxygene'));
-hljs.registerLanguage('parser3', require('./languages/parser3'));
-hljs.registerLanguage('perl', require('./languages/perl'));
-hljs.registerLanguage('php', require('./languages/php'));
-hljs.registerLanguage('powershell', require('./languages/powershell'));
-hljs.registerLanguage('processing', require('./languages/processing'));
-hljs.registerLanguage('profile', require('./languages/profile'));
-hljs.registerLanguage('protobuf', require('./languages/protobuf'));
-hljs.registerLanguage('puppet', require('./languages/puppet'));
-hljs.registerLanguage('python', require('./languages/python'));
-hljs.registerLanguage('q', require('./languages/q'));
-hljs.registerLanguage('r', require('./languages/r'));
-hljs.registerLanguage('rib', require('./languages/rib'));
-hljs.registerLanguage('roboconf', require('./languages/roboconf'));
-hljs.registerLanguage('rsl', require('./languages/rsl'));
-hljs.registerLanguage('ruleslanguage', require('./languages/ruleslanguage'));
-hljs.registerLanguage('rust', require('./languages/rust'));
-hljs.registerLanguage('scala', require('./languages/scala'));
-hljs.registerLanguage('scheme', require('./languages/scheme'));
-hljs.registerLanguage('scilab', require('./languages/scilab'));
-hljs.registerLanguage('scss', require('./languages/scss'));
-hljs.registerLanguage('smali', require('./languages/smali'));
-hljs.registerLanguage('smalltalk', require('./languages/smalltalk'));
-hljs.registerLanguage('sml', require('./languages/sml'));
-hljs.registerLanguage('sql', require('./languages/sql'));
-hljs.registerLanguage('stata', require('./languages/stata'));
-hljs.registerLanguage('step21', require('./languages/step21'));
-hljs.registerLanguage('stylus', require('./languages/stylus'));
-hljs.registerLanguage('swift', require('./languages/swift'));
-hljs.registerLanguage('tcl', require('./languages/tcl'));
-hljs.registerLanguage('tex', require('./languages/tex'));
-hljs.registerLanguage('thrift', require('./languages/thrift'));
-hljs.registerLanguage('twig', require('./languages/twig'));
-hljs.registerLanguage('typescript', require('./languages/typescript'));
-hljs.registerLanguage('vala', require('./languages/vala'));
-hljs.registerLanguage('vbnet', require('./languages/vbnet'));
-hljs.registerLanguage('vbscript', require('./languages/vbscript'));
-hljs.registerLanguage('vbscript-html', require('./languages/vbscript-html'));
-hljs.registerLanguage('verilog', require('./languages/verilog'));
-hljs.registerLanguage('vhdl', require('./languages/vhdl'));
-hljs.registerLanguage('vim', require('./languages/vim'));
-hljs.registerLanguage('x86asm', require('./languages/x86asm'));
-hljs.registerLanguage('xl', require('./languages/xl'));
-
-module.exports = hljs;
-},{"./highlight":20,"./languages/1c":22,"./languages/actionscript":23,"./languages/apache":24,"./languages/applescript":25,"./languages/asciidoc":26,"./languages/aspectj":27,"./languages/autohotkey":28,"./languages/avrasm":29,"./languages/axapta":30,"./languages/bash":31,"./languages/brainfuck":32,"./languages/capnproto":33,"./languages/clojure":35,"./languages/clojure-repl":34,"./languages/cmake":36,"./languages/coffeescript":37,"./languages/cpp":38,"./languages/cs":39,"./languages/css":40,"./languages/d":41,"./languages/dart":42,"./languages/delphi":43,"./languages/diff":44,"./languages/django":45,"./languages/dos":46,"./languages/dust":47,"./languages/elixir":48,"./languages/erb":49,"./languages/erlang":51,"./languages/erlang-repl":50,"./languages/fix":52,"./languages/fsharp":53,"./languages/gcode":54,"./languages/gherkin":55,"./languages/glsl":56,"./languages/go":57,"./languages/gradle":58,"./languages/groovy":59,"./languages/haml":60,"./languages/handlebars":61,"./languages/haskell":62,"./languages/haxe":63,"./languages/http":64,"./languages/ini":65,"./languages/java":66,"./languages/javascript":67,"./languages/json":68,"./languages/lasso":69,"./languages/less":70,"./languages/lisp":71,"./languages/livecodeserver":72,"./languages/livescript":73,"./languages/lua":74,"./languages/makefile":75,"./languages/markdown":76,"./languages/mathematica":77,"./languages/matlab":78,"./languages/mel":79,"./languages/mercury":80,"./languages/mizar":81,"./languages/monkey":82,"./languages/nginx":83,"./languages/nimrod":84,"./languages/nix":85,"./languages/nsis":86,"./languages/objectivec":87,"./languages/ocaml":88,"./languages/oxygene":89,"./languages/parser3":90,"./languages/perl":91,"./languages/php":92,"./languages/powershell":93,"./languages/processing":94,"./languages/profile":95,"./languages/protobuf":96,"./languages/puppet":97,"./languages/python":98,"./languages/q":99,"./languages/r":100,"./languages/rib":101,"./languages/roboconf":102,"./languages/rsl":103,"./languages/ruby":104,"./languages/ruleslanguage":105,"./languages/rust":106,"./languages/scala":107,"./languages/scheme":108,"./languages/scilab":109,"./languages/scss":110,"./languages/smali":111,"./languages/smalltalk":112,"./languages/sml":113,"./languages/sql":114,"./languages/stata":115,"./languages/step21":116,"./languages/stylus":117,"./languages/swift":118,"./languages/tcl":119,"./languages/tex":120,"./languages/thrift":121,"./languages/twig":122,"./languages/typescript":123,"./languages/vala":124,"./languages/vbnet":125,"./languages/vbscript":127,"./languages/vbscript-html":126,"./languages/verilog":128,"./languages/vhdl":129,"./languages/vim":130,"./languages/x86asm":131,"./languages/xl":132,"./languages/xml":133}],22:[function(require,module,exports){
-module.exports = function(hljs){
-  var IDENT_RE_RU = '[a-zA-Zа-яА-Я][a-zA-Z0-9_а-яА-Я]*';
-  var OneS_KEYWORDS = 'возврат дата для если и или иначе иначеесли исключение конецесли ' +
-    'конецпопытки конецпроцедуры конецфункции конеццикла константа не перейти перем ' +
-    'перечисление по пока попытка прервать продолжить процедура строка тогда фс функция цикл ' +
-    'число экспорт';
-  var OneS_BUILT_IN = 'ansitooem oemtoansi ввестивидсубконто ввестидату ввестизначение ' +
-    'ввестиперечисление ввестипериод ввестиплансчетов ввестистроку ввестичисло вопрос ' +
-    'восстановитьзначение врег выбранныйплансчетов вызватьисключение датагод датамесяц ' +
-    'датачисло добавитьмесяц завершитьработусистемы заголовоксистемы записьжурналарегистрации ' +
-    'запуститьприложение зафиксироватьтранзакцию значениевстроку значениевстрокувнутр ' +
-    'значениевфайл значениеизстроки значениеизстрокивнутр значениеизфайла имякомпьютера ' +
-    'имяпользователя каталогвременныхфайлов каталогиб каталогпользователя каталогпрограммы ' +
-    'кодсимв командасистемы конгода конецпериодаби конецрассчитанногопериодаби ' +
-    'конецстандартногоинтервала конквартала конмесяца коннедели лев лог лог10 макс ' +
-    'максимальноеколичествосубконто мин монопольныйрежим названиеинтерфейса названиенабораправ ' +
-    'назначитьвид назначитьсчет найти найтипомеченныенаудаление найтиссылки началопериодаби ' +
-    'началостандартногоинтервала начатьтранзакцию начгода начквартала начмесяца начнедели ' +
-    'номерднягода номерднянедели номернеделигода нрег обработкаожидания окр описаниеошибки ' +
-    'основнойжурналрасчетов основнойплансчетов основнойязык открытьформу открытьформумодально ' +
-    'отменитьтранзакцию очиститьокносообщений периодстр полноеимяпользователя получитьвремята ' +
-    'получитьдатута получитьдокументта получитьзначенияотбора получитьпозициюта ' +
-    'получитьпустоезначение получитьта прав праводоступа предупреждение префиксавтонумерации ' +
-    'пустаястрока пустоезначение рабочаядаттьпустоезначение рабочаядата разделительстраниц ' +
-    'разделительстрок разм разобратьпозициюдокумента рассчитатьрегистрына ' +
-    'рассчитатьрегистрыпо сигнал симв символтабуляции создатьобъект сокрл сокрлп сокрп ' +
-    'сообщить состояние сохранитьзначение сред статусвозврата стрдлина стрзаменить ' +
-    'стрколичествострок стрполучитьстроку  стрчисловхождений сформироватьпозициюдокумента ' +
-    'счетпокоду текущаядата текущеевремя типзначения типзначениястр удалитьобъекты ' +
-    'установитьтана установитьтапо фиксшаблон формат цел шаблон';
-  var DQUOTE =  {className: 'dquote',  begin: '""'};
-  var STR_START = {
-      className: 'string',
-      begin: '"', end: '"|$',
-      contains: [DQUOTE]
-    };
-  var STR_CONT = {
-    className: 'string',
-    begin: '\\|', end: '"|$',
-    contains: [DQUOTE]
-  };
-
-  return {
-    case_insensitive: true,
-    lexemes: IDENT_RE_RU,
-    keywords: {keyword: OneS_KEYWORDS, built_in: OneS_BUILT_IN},
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.NUMBER_MODE,
-      STR_START, STR_CONT,
-      {
-        className: 'function',
-        begin: '(процедура|функция)', end: '$',
-        lexemes: IDENT_RE_RU,
-        keywords: 'процедура функция',
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: IDENT_RE_RU}),
-          {
-            className: 'tail',
-            endsWithParent: true,
-            contains: [
-              {
-                className: 'params',
-                begin: '\\(', end: '\\)',
-                lexemes: IDENT_RE_RU,
-                keywords: 'знач',
-                contains: [STR_START, STR_CONT]
-              },
-              {
-                className: 'export',
-                begin: 'экспорт', endsWithParent: true,
-                lexemes: IDENT_RE_RU,
-                keywords: 'экспорт',
-                contains: [hljs.C_LINE_COMMENT_MODE]
-              }
-            ]
-          },
-          hljs.C_LINE_COMMENT_MODE
-        ]
-      },
-      {className: 'preprocessor', begin: '#', end: '$'},
-      {className: 'date', begin: '\'\\d{2}\\.\\d{2}\\.(\\d{2}|\\d{4})\''}
-    ]
-  };
-};
-},{}],23:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
-  var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
-
-  var AS3_REST_ARG_MODE = {
-    className: 'rest_arg',
-    begin: '[.]{3}', end: IDENT_RE,
-    relevance: 10
-  };
-
-  return {
-    aliases: ['as'],
-    keywords: {
-      keyword: 'as break case catch class const continue default delete do dynamic each ' +
-        'else extends final finally for function get if implements import in include ' +
-        'instanceof interface internal is namespace native new override package private ' +
-        'protected public return set static super switch this throw try typeof use var void ' +
-        'while with',
-      literal: 'true false null undefined'
-    },
-    contains: [
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'package',
-        beginKeywords: 'package', end: '{',
-        contains: [hljs.TITLE_MODE]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '{', excludeEnd: true,
-        contains: [
-          {
-            beginKeywords: 'extends implements'
-          },
-          hljs.TITLE_MODE
-        ]
-      },
-      {
-        className: 'preprocessor',
-        beginKeywords: 'import include', end: ';'
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: '[{;]', excludeEnd: true,
-        illegal: '\\S',
-        contains: [
-          hljs.TITLE_MODE,
-          {
-            className: 'params',
-            begin: '\\(', end: '\\)',
-            contains: [
-              hljs.APOS_STRING_MODE,
-              hljs.QUOTE_STRING_MODE,
-              hljs.C_LINE_COMMENT_MODE,
-              hljs.C_BLOCK_COMMENT_MODE,
-              AS3_REST_ARG_MODE
-            ]
-          },
-          {
-            className: 'type',
-            begin: ':',
-            end: IDENT_FUNC_RETURN_TYPE_RE,
-            relevance: 10
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],24:[function(require,module,exports){
-module.exports = function(hljs) {
-  var NUMBER = {className: 'number', begin: '[\\$%]\\d+'};
-  return {
-    aliases: ['apacheconf'],
-    case_insensitive: true,
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      {className: 'tag', begin: '</?', end: '>'},
-      {
-        className: 'keyword',
-        begin: /\w+/,
-        relevance: 0,
-        // keywords aren’t needed for highlighting per se, they only boost relevance
-        // for a very generally defined mode (starts with a word, ends with line-end
-        keywords: {
-          common:
-            'order deny allow setenv rewriterule rewriteengine rewritecond documentroot ' +
-            'sethandler errordocument loadmodule options header listen serverroot ' +
-            'servername'
-        },
-        starts: {
-          end: /$/,
-          relevance: 0,
-          keywords: {
-            literal: 'on off all'
-          },
-          contains: [
-            {
-              className: 'sqbracket',
-              begin: '\\s\\[', end: '\\]$'
-            },
-            {
-              className: 'cbracket',
-              begin: '[\\$%]\\{', end: '\\}',
-              contains: ['self', NUMBER]
-            },
-            NUMBER,
-            hljs.QUOTE_STRING_MODE
-          ]
-        }
-      }
-    ],
-    illegal: /\S/
-  };
-};
-},{}],25:[function(require,module,exports){
-module.exports = function(hljs) {
-  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: ''});
-  var PARAMS = {
-    className: 'params',
-    begin: '\\(', end: '\\)',
-    contains: ['self', hljs.C_NUMBER_MODE, STRING]
-  };
-  var COMMENTS = [
-    {
-      className: 'comment',
-      begin: '--', end: '$'
-    },
-    {
-      className: 'comment',
-      begin: '\\(\\*', end: '\\*\\)',
-      contains: ['self', {begin: '--', end: '$'}] //allow nesting
-    },
-    hljs.HASH_COMMENT_MODE
-  ];
-
-  return {
-    aliases: ['osascript'],
-    keywords: {
-      keyword:
-        'about above after against and around as at back before beginning ' +
-        'behind below beneath beside between but by considering ' +
-        'contain contains continue copy div does eighth else end equal ' +
-        'equals error every exit fifth first for fourth from front ' +
-        'get given global if ignoring in into is it its last local me ' +
-        'middle mod my ninth not of on onto or over prop property put ref ' +
-        'reference repeat returning script second set seventh since ' +
-        'sixth some tell tenth that the|0 then third through thru ' +
-        'timeout times to transaction try until where while whose with ' +
-        'without',
-      constant:
-        'AppleScript false linefeed return pi quote result space tab true',
-      type:
-        'alias application boolean class constant date file integer list ' +
-        'number real record string text',
-      command:
-        'activate beep count delay launch log offset read round ' +
-        'run say summarize write',
-      property:
-        'character characters contents day frontmost id item length ' +
-        'month name paragraph paragraphs rest reverse running time version ' +
-        'weekday word words year'
-    },
-    contains: [
-      STRING,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'type',
-        begin: '\\bPOSIX file\\b'
-      },
-      {
-        className: 'command',
-        begin:
-          '\\b(clipboard info|the clipboard|info for|list (disks|folder)|' +
-          'mount volume|path to|(close|open for) access|(get|set) eof|' +
-          'current date|do shell script|get volume settings|random number|' +
-          'set volume|system attribute|system info|time to GMT|' +
-          '(load|run|store) script|scripting components|' +
-          'ASCII (character|number)|localized string|' +
-          'choose (application|color|file|file name|' +
-          'folder|from list|remote application|URL)|' +
-          'display (alert|dialog))\\b|^\\s*return\\b'
-      },
-      {
-        className: 'constant',
-        begin:
-          '\\b(text item delimiters|current application|missing value)\\b'
-      },
-      {
-        className: 'keyword',
-        begin:
-          '\\b(apart from|aside from|instead of|out of|greater than|' +
-          "isn't|(doesn't|does not) (equal|come before|come after|contain)|" +
-          '(greater|less) than( or equal)?|(starts?|ends|begins?) with|' +
-          'contained by|comes (before|after)|a (ref|reference))\\b'
-      },
-      {
-        className: 'property',
-        begin:
-          '\\b(POSIX path|(date|time) string|quoted form)\\b'
-      },
-      {
-        className: 'function_start',
-        beginKeywords: 'on',
-        illegal: '[${=;\\n]',
-        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
-      }
-    ].concat(COMMENTS),
-    illegal: '//|->|=>'
-  };
-};
-},{}],26:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    contains: [
-      // block comment
-      {
-        className: 'comment',
-        begin: '^/{4,}\\n',
-        end: '\\n/{4,}$',
-        // can also be done as...
-        //begin: '^/{4,}$',
-        //end: '^/{4,}$',
-        relevance: 10
-      },
-      // line comment
-      {
-        className: 'comment',
-        begin: '^//',
-        end: '$',
-        relevance: 0
-      },
-      // title
-      {
-        className: 'title',
-        begin: '^\\.\\w.*$'
-      },
-      // example, admonition & sidebar blocks
-      {
-        begin: '^[=\\*]{4,}\\n',
-        end: '\\n^[=\\*]{4,}$',
-        relevance: 10
-      },
-      // headings
-      {
-        className: 'header',
-        begin: '^(={1,5}) .+?( \\1)?$',
-        relevance: 10
-      },
-      {
-        className: 'header',
-        begin: '^[^\\[\\]\\n]+?\\n[=\\-~\\^\\+]{2,}$',
-        relevance: 10
-      },
-      // document attributes
-      {
-        className: 'attribute',
-        begin: '^:.+?:',
-        end: '\\s',
-        excludeEnd: true,
-        relevance: 10
-      },
-      // block attributes
-      {
-        className: 'attribute',
-        begin: '^\\[.+?\\]$',
-        relevance: 0
-      },
-      // quoteblocks
-      {
-        className: 'blockquote',
-        begin: '^_{4,}\\n',
-        end: '\\n_{4,}$',
-        relevance: 10
-      },
-      // listing and literal blocks
-      {
-        className: 'code',
-        begin: '^[\\-\\.]{4,}\\n',
-        end: '\\n[\\-\\.]{4,}$',
-        relevance: 10
-      },
-      // passthrough blocks
-      {
-        begin: '^\\+{4,}\\n',
-        end: '\\n\\+{4,}$',
-        contains: [
-          {
-            begin: '<', end: '>',
-            subLanguage: 'xml',
-            relevance: 0
-          }
-        ],
-        relevance: 10
-      },
-      // lists (can only capture indicators)
-      {
-        className: 'bullet',
-        begin: '^(\\*+|\\-+|\\.+|[^\\n]+?::)\\s+'
-      },
-      // admonition
-      {
-        className: 'label',
-        begin: '^(NOTE|TIP|IMPORTANT|WARNING|CAUTION):\\s+',
-        relevance: 10
-      },
-      // inline strong
-      {
-        className: 'strong',
-        // must not follow a word character or be followed by an asterisk or space
-        begin: '\\B\\*(?![\\*\\s])',
-        end: '(\\n{2}|\\*)',
-        // allow escaped asterisk followed by word char
-        contains: [
-          {
-            begin: '\\\\*\\w',
-            relevance: 0
-          }
-        ]
-      },
-      // inline emphasis
-      {
-        className: 'emphasis',
-        // must not follow a word character or be followed by a single quote or space
-        begin: '\\B\'(?![\'\\s])',
-        end: '(\\n{2}|\')',
-        // allow escaped single quote followed by word char
-        contains: [
-          {
-            begin: '\\\\\'\\w',
-            relevance: 0
-          }
-        ],
-        relevance: 0
-      },
-      // inline emphasis (alt)
-      {
-        className: 'emphasis',
-        // must not follow a word character or be followed by an underline or space
-        begin: '_(?![_\\s])',
-        end: '(\\n{2}|_)',
-        relevance: 0
-      },
-      // inline smart quotes
-      {
-        className: 'smartquote',
-        variants: [
-          {begin: "``.+?''"},
-          {begin: "`.+?'"}
-        ]
-      },
-      // inline code snippets (TODO should get same treatment as strong and emphasis)
-      {
-        className: 'code',
-        begin: '(`.+?`|\\+.+?\\+)',
-        relevance: 0
-      },
-      // indented literal block
-      {
-        className: 'code',
-        begin: '^[ \\t]',
-        end: '$',
-        relevance: 0
-      },
-      // horizontal rules
-      {
-        className: 'horizontal_rule',
-        begin: '^\'{3,}[ \\t]*$',
-        relevance: 10
-      },
-      // images and links
-      {
-        begin: '(link:)?(http|https|ftp|file|irc|image:?):\\S+\\[.*?\\]',
-        returnBegin: true,
-        contains: [
-          {
-            //className: 'macro',
-            begin: '(link|image:?):',
-            relevance: 0
-          },
-          {
-            className: 'link_url',
-            begin: '\\w',
-            end: '[^\\[]+',
-            relevance: 0
-          },
-          {
-            className: 'link_label',
-            begin: '\\[',
-            end: '\\]',
-            excludeBegin: true,
-            excludeEnd: true,
-            relevance: 0
-          }
-        ],
-        relevance: 10
-      }
-    ]
-  };
-};
-},{}],27:[function(require,module,exports){
-module.exports = function (hljs) {
-  var KEYWORDS =
-    'false synchronized int abstract float private char boolean static null if const ' +
-    'for true while long throw strictfp finally protected import native final return void ' +
-    'enum else extends implements break transient new catch instanceof byte super volatile case ' +
-    'assert short package default double public try this switch continue throws privileged ' +
-    'aspectOf adviceexecution proceed cflowbelow cflow initialization preinitialization ' +
-    'staticinitialization withincode target within execution getWithinTypeName handler ' +
-    'thisJoinPoint thisJoinPointStaticPart thisEnclosingJoinPointStaticPart declare parents '+
-    'warning error soft precedence';
-  var SHORTKEYS = 'get set args call';
-  return {
-    keywords : KEYWORDS,
-    illegal : /<\//,
-    contains : [
-      {
-        className : 'javadoc',
-        begin : '/\\*\\*',
-        end : '\\*/',
-        relevance : 0,
-        contains : [{
-          className : 'javadoctag',
-          begin : '(^|\\s)@[A-Za-z]+'
-        }]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className : 'aspect',
-        beginKeywords : 'aspect',
-        end : /[{;=]/,
-        excludeEnd : true,
-        illegal : /[:;"\[\]]/,
-        contains : [{
-            beginKeywords : 'extends implements pertypewithin perthis pertarget percflowbelow percflow issingleton'
-          },
-          hljs.UNDERSCORE_TITLE_MODE,
-          {
-            begin : /\([^\)]*/,
-            end : /[)]+/,
-            keywords : KEYWORDS + ' ' + SHORTKEYS,
-            excludeEnd : false
-          }
-        ]
-      },
-      {
-        className : 'class',
-        beginKeywords : 'class interface',
-        end : /[{;=]/,
-        excludeEnd : true,
-        relevance: 0,
-        keywords : 'class interface',
-        illegal : /[:"\[\]]/,
-        contains : [
-          {beginKeywords : 'extends implements'},
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      {
-        // AspectJ Constructs
-        beginKeywords : 'pointcut after before around throwing returning',
-        end : /[)]/,
-        excludeEnd : false,
-        illegal : /["\[\]]/,
-        contains : [
-          {
-            begin : hljs.UNDERSCORE_IDENT_RE + '\\s*\\(',
-            returnBegin : true,
-            contains : [hljs.UNDERSCORE_TITLE_MODE]
-          }
-        ]
-      },
-      {
-        begin : /[:]/,
-        returnBegin : true,
-        end : /[{;]/,
-        relevance: 0,
-        excludeEnd : false,
-        keywords : KEYWORDS,
-        illegal : /["\[\]]/,
-        contains : [
-          {
-            begin : hljs.UNDERSCORE_IDENT_RE + '\\s*\\(',
-            keywords : KEYWORDS + ' ' + SHORTKEYS
-          },
-          hljs.QUOTE_STRING_MODE
-        ]
-      },
-      {
-        // this prevents 'new Name(...), or throw ...' from being recognized as a function definition
-        beginKeywords : 'new throw',
-        relevance : 0
-      },
-      {
-        // the function class is a bit different for AspectJ compared to the Java language
-        className : 'function',
-        begin : /\w+ +\w+(\.)?\w+\s*\([^\)]*\)\s*((throws)[\w\s\,]+)?[\{\;]/,
-        returnBegin : true,
-        end : /[{;=]/,
-        keywords : KEYWORDS,
-        excludeEnd : true,
-        contains : [
-          {
-            begin : hljs.UNDERSCORE_IDENT_RE + '\\s*\\(',
-            returnBegin : true,
-            relevance: 0,
-            contains : [hljs.UNDERSCORE_TITLE_MODE]
-          },
-          {
-            className : 'params',
-            begin : /\(/, end : /\)/,
-            relevance: 0,
-            keywords : KEYWORDS,
-            contains : [
-              hljs.APOS_STRING_MODE,
-              hljs.QUOTE_STRING_MODE,
-              hljs.C_NUMBER_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ]
-          },
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      },
-      hljs.C_NUMBER_MODE,
-      {
-        // annotation is also used in this language
-        className : 'annotation',
-        begin : '@[A-Za-z]+'
-      }
-    ]
-  };
-};
-},{}],28:[function(require,module,exports){
-module.exports = function(hljs) {
-  var BACKTICK_ESCAPE = {
-    className: 'escape',
-    begin: '`[\\s\\S]'
-  };
-  var COMMENTS = {
-    className: 'comment',
-    begin: ';', end: '$',
-    relevance: 0
-  };
-  var BUILT_IN = [
-    {
-      className: 'built_in',
-      begin: 'A_[a-zA-Z0-9]+'
-    },
-    {
-      className: 'built_in',
-      beginKeywords: 'ComSpec Clipboard ClipboardAll ErrorLevel'
-    }
-  ];
-
-  return {
-    case_insensitive: true,
-    keywords: {
-      keyword: 'Break Continue Else Gosub If Loop Return While',
-      literal: 'A true false NOT AND OR'
-    },
-    contains: BUILT_IN.concat([
-      BACKTICK_ESCAPE,
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [BACKTICK_ESCAPE]}),
-      COMMENTS,
-      {
-        className: 'number',
-        begin: hljs.NUMBER_RE,
-        relevance: 0
-      },
-      {
-        className: 'var_expand', // FIXME
-        begin: '%', end: '%',
-        illegal: '\\n',
-        contains: [BACKTICK_ESCAPE]
-      },
-      {
-        className: 'label',
-        contains: [BACKTICK_ESCAPE],
-        variants: [
-          {begin: '^[^\\n";]+::(?!=)'},
-          {begin: '^[^\\n";]+:(?!=)', relevance: 0} // zero relevance as it catches a lot of things
-                                                    // followed by a single ':' in many languages
-        ]
-      },
-      {
-        // consecutive commas, not for highlighting but just for relevance
-        begin: ',\\s*,',
-        relevance: 10
-      }
-    ])
-  }
-};
-},{}],29:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    case_insensitive: true,
-    lexemes: '\\.?' + hljs.IDENT_RE,
-    keywords: {
-      keyword:
-        /* mnemonic */
-        'adc add adiw and andi asr bclr bld brbc brbs brcc brcs break breq brge brhc brhs ' +
-        'brid brie brlo brlt brmi brne brpl brsh brtc brts brvc brvs bset bst call cbi cbr ' +
-        'clc clh cli cln clr cls clt clv clz com cp cpc cpi cpse dec eicall eijmp elpm eor ' +
-        'fmul fmuls fmulsu icall ijmp in inc jmp ld ldd ldi lds lpm lsl lsr mov movw mul ' +
-        'muls mulsu neg nop or ori out pop push rcall ret reti rjmp rol ror sbc sbr sbrc sbrs ' +
-        'sec seh sbi sbci sbic sbis sbiw sei sen ser ses set sev sez sleep spm st std sts sub ' +
-        'subi swap tst wdr',
-      built_in:
-        /* general purpose registers */
-        'r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21 r22 ' +
-        'r23 r24 r25 r26 r27 r28 r29 r30 r31 x|0 xh xl y|0 yh yl z|0 zh zl ' +
-        /* IO Registers (ATMega128) */
-        'ucsr1c udr1 ucsr1a ucsr1b ubrr1l ubrr1h ucsr0c ubrr0h tccr3c tccr3a tccr3b tcnt3h ' +
-        'tcnt3l ocr3ah ocr3al ocr3bh ocr3bl ocr3ch ocr3cl icr3h icr3l etimsk etifr tccr1c ' +
-        'ocr1ch ocr1cl twcr twdr twar twsr twbr osccal xmcra xmcrb eicra spmcsr spmcr portg ' +
-        'ddrg ping portf ddrf sreg sph spl xdiv rampz eicrb eimsk gimsk gicr eifr gifr timsk ' +
-        'tifr mcucr mcucsr tccr0 tcnt0 ocr0 assr tccr1a tccr1b tcnt1h tcnt1l ocr1ah ocr1al ' +
-        'ocr1bh ocr1bl icr1h icr1l tccr2 tcnt2 ocr2 ocdr wdtcr sfior eearh eearl eedr eecr ' +
-        'porta ddra pina portb ddrb pinb portc ddrc pinc portd ddrd pind spdr spsr spcr udr0 ' +
-        'ucsr0a ucsr0b ubrr0l acsr admux adcsr adch adcl porte ddre pine pinf',
-      preprocessor:
-        '.byte .cseg .db .def .device .dseg .dw .endmacro .equ .eseg .exit .include .list ' +
-        '.listmac .macro .nolist .org .set'
-    },
-    contains: [
-      hljs.C_BLOCK_COMMENT_MODE,
-      {className: 'comment', begin: ';',  end: '$', relevance: 0},
-      hljs.C_NUMBER_MODE, // 0x..., decimal, float
-      hljs.BINARY_NUMBER_MODE, // 0b...
-      {
-        className: 'number',
-        begin: '\\b(\\$[a-zA-Z0-9]+|0o[0-7]+)' // $..., 0o...
-      },
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        begin: '\'', end: '[^\\\\]\'',
-        illegal: '[^\\\\][^\']'
-      },
-      {className: 'label',  begin: '^[A-Za-z0-9_.$]+:'},
-      {className: 'preprocessor', begin: '#', end: '$'},
-      {  // подстановка в «.macro»
-        className: 'localvars',
-        begin: '@[0-9]+'
-      }
-    ]
-  };
-};
-},{}],30:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: 'false int abstract private char boolean static null if for true ' +
-      'while long throw finally protected final return void enum else ' +
-      'break new catch byte super case short default double public try this switch ' +
-      'continue reverse firstfast firstonly forupdate nofetch sum avg minof maxof count ' +
-      'order group by asc desc index hint like dispaly edit client server ttsbegin ' +
-      'ttscommit str real date container anytype common div mod',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$'
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '{', excludeEnd: true,
-        illegal: ':',
-        contains: [
-          {beginKeywords: 'extends implements'},
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      }
-    ]
-  };
-};
-},{}],31:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VAR = {
-    className: 'variable',
-    variants: [
-      {begin: /\$[\w\d#@][\w\d_]*/},
-      {begin: /\$\{(.*?)\}/}
-    ]
-  };
-  var QUOTE_STRING = {
-    className: 'string',
-    begin: /"/, end: /"/,
-    contains: [
-      hljs.BACKSLASH_ESCAPE,
-      VAR,
-      {
-        className: 'variable',
-        begin: /\$\(/, end: /\)/,
-        contains: [hljs.BACKSLASH_ESCAPE]
-      }
-    ]
-  };
-  var APOS_STRING = {
-    className: 'string',
-    begin: /'/, end: /'/
-  };
-
-  return {
-    aliases: ['sh', 'zsh'],
-    lexemes: /-?[a-z\.]+/,
-    keywords: {
-      keyword:
-        'if then else elif fi for while in do done case esac function',
-      literal:
-        'true false',
-      built_in:
-        // Shell built-ins
-        // http://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html
-        'break cd continue eval exec exit export getopts hash pwd readonly return shift test times ' +
-        'trap umask unset ' +
-        // Bash built-ins
-        'alias bind builtin caller command declare echo enable help let local logout mapfile printf ' +
-        'read readarray source type typeset ulimit unalias ' +
-        // Shell modifiers
-        'set shopt ' +
-        // Zsh built-ins
-        'autoload bg bindkey bye cap chdir clone comparguments compcall compctl compdescribe compfiles ' +
-        'compgroups compquote comptags comptry compvalues dirs disable disown echotc echoti emulate ' +
-        'fc fg float functions getcap getln history integer jobs kill limit log noglob popd print ' +
-        'pushd pushln rehash sched setcap setopt stat suspend ttyctl unfunction unhash unlimit ' +
-        'unsetopt vared wait whence where which zcompile zformat zftp zle zmodload zparseopts zprof ' +
-        'zpty zregexparse zsocket zstyle ztcp',
-      operator:
-        '-ne -eq -lt -gt -f -d -e -s -l -a' // relevance booster
-    },
-    contains: [
-      {
-        className: 'shebang',
-        begin: /^#![^\n]+sh\s*$/,
-        relevance: 10
-      },
-      {
-        className: 'function',
-        begin: /\w[\w\d_]*\s*\(\s*\)\s*\{/,
-        returnBegin: true,
-        contains: [hljs.inherit(hljs.TITLE_MODE, {begin: /\w[\w\d_]*/})],
-        relevance: 0
-      },
-      hljs.HASH_COMMENT_MODE,
-      hljs.NUMBER_MODE,
-      QUOTE_STRING,
-      APOS_STRING,
-      VAR
-    ]
-  };
-};
-},{}],32:[function(require,module,exports){
-module.exports = function(hljs){
-  var LITERAL = {
-    className: 'literal',
-    begin: '[\\+\\-]',
-    relevance: 0
-  };
-  return {
-    aliases: ['bf'],
-    contains: [
-      {
-        className: 'comment',
-        begin: '[^\\[\\]\\.,\\+\\-<> \r\n]',
-        returnEnd: true,
-        end: '[\\[\\]\\.,\\+\\-<> \r\n]',
-        relevance: 0
-      },
-      {
-        className: 'title',
-        begin: '[\\[\\]]',
-        relevance: 0
-      },
-      {
-        className: 'string',
-        begin: '[\\.,]',
-        relevance: 0
-      },
-      {
-        // this mode works as the only relevance counter
-        begin: /\+\+|\-\-/, returnBegin: true,
-        contains: [LITERAL]
-      },
-      LITERAL
-    ]
-  };
-};
-},{}],33:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['capnp'],
-    keywords: {
-      keyword:
-        'struct enum interface union group import using const annotation extends in of on as with from fixed',
-      built_in:
-        'Void Bool Int8 Int16 Int32 Int64 UInt8 UInt16 UInt32 UInt64 Float32 Float64 ' +
-        'Text Data AnyPointer AnyStruct Capability List',
-      literal:
-        'true false'
-    },
-    contains: [
-      hljs.QUOTE_STRING_MODE,
-      hljs.NUMBER_MODE,
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'shebang',
-        begin: /@0x[\w\d]{16};/,
-        illegal: /\n/
-      },
-      {
-        className: 'number',
-        begin: /@\d+\b/
-      },
-      {
-        className: 'class',
-        beginKeywords: 'struct enum', end: /\{/,
-        illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'interface', end: /\{/,
-        illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
-      }
-    ]
-  };
-};
-},{}],34:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    contains: [
-      {
-        className: 'prompt',
-        begin: /^([\w.-]+|\s*#_)=>/,
-        starts: {
-          end: /$/,
-          subLanguage: 'clojure', subLanguageMode: 'continuous'
-        }
-      }
-    ]
-  }
-};
-},{}],35:[function(require,module,exports){
-module.exports = function(hljs) {
-  var keywords = {
-    built_in:
-      // Clojure keywords
-      'def cond apply if-not if-let if not not= = < > <= >= == + / * - rem '+
-      'quot neg? pos? delay? symbol? keyword? true? false? integer? empty? coll? list? '+
-      'set? ifn? fn? associative? sequential? sorted? counted? reversible? number? decimal? '+
-      'class? distinct? isa? float? rational? reduced? ratio? odd? even? char? seq? vector? '+
-      'string? map? nil? contains? zero? instance? not-every? not-any? libspec? -> ->> .. . '+
-      'inc compare do dotimes mapcat take remove take-while drop letfn drop-last take-last '+
-      'drop-while while intern condp case reduced cycle split-at split-with repeat replicate '+
-      'iterate range merge zipmap declare line-seq sort comparator sort-by dorun doall nthnext '+
-      'nthrest partition eval doseq await await-for let agent atom send send-off release-pending-sends '+
-      'add-watch mapv filterv remove-watch agent-error restart-agent set-error-handler error-handler '+
-      'set-error-mode! error-mode shutdown-agents quote var fn loop recur throw try monitor-enter '+
-      'monitor-exit defmacro defn defn- macroexpand macroexpand-1 for dosync and or '+
-      'when when-not when-let comp juxt partial sequence memoize constantly complement identity assert '+
-      'peek pop doto proxy defstruct first rest cons defprotocol cast coll deftype defrecord last butlast '+
-      'sigs reify second ffirst fnext nfirst nnext defmulti defmethod meta with-meta ns in-ns create-ns import '+
-      'refer keys select-keys vals key val rseq name namespace promise into transient persistent! conj! '+
-      'assoc! dissoc! pop! disj! use class type num float double short byte boolean bigint biginteger '+
-      'bigdec print-method print-dup throw-if printf format load compile get-in update-in pr pr-on newline '+
-      'flush read slurp read-line subvec with-open memfn time re-find re-groups rand-int rand mod locking '+
-      'assert-valid-fdecl alias resolve ref deref refset swap! reset! set-validator! compare-and-set! alter-meta! '+
-      'reset-meta! commute get-validator alter ref-set ref-history-count ref-min-history ref-max-history ensure sync io! '+
-      'new next conj set! to-array future future-call into-array aset gen-class reduce map filter find empty '+
-      'hash-map hash-set sorted-map sorted-map-by sorted-set sorted-set-by vec vector seq flatten reverse assoc dissoc list '+
-      'disj get union difference intersection extend extend-type extend-protocol int nth delay count concat chunk chunk-buffer '+
-      'chunk-append chunk-first chunk-rest max min dec unchecked-inc-int unchecked-inc unchecked-dec-inc unchecked-dec unchecked-negate '+
-      'unchecked-add-int unchecked-add unchecked-subtract-int unchecked-subtract chunk-next chunk-cons chunked-seq? prn vary-meta '+
-      'lazy-seq spread list* str find-keyword keyword symbol gensym force rationalize'
-   };
-
-  var SYMBOLSTART = 'a-zA-Z_\\-!.?+*=<>&#\'';
-  var SYMBOL_RE = '[' + SYMBOLSTART + '][' + SYMBOLSTART + '0-9/;:]*';
-  var SIMPLE_NUMBER_RE = '[-+]?\\d+(\\.\\d+)?';
-
-  var SYMBOL = {
-    begin: SYMBOL_RE,
-    relevance: 0
-  };
-  var NUMBER = {
-    className: 'number', begin: SIMPLE_NUMBER_RE,
-    relevance: 0
-  };
-  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-  var COMMENT = {
-    className: 'comment',
-    begin: ';', end: '$',
-    relevance: 0
-  };
-  var LITERAL = {
-    className: 'literal',
-    begin: /\b(true|false|nil)\b/
-  }
-  var COLLECTION = {
-    className: 'collection',
-    begin: '[\\[\\{]', end: '[\\]\\}]'
-  };
-  var HINT = {
-    className: 'comment',
-    begin: '\\^' + SYMBOL_RE
-  };
-  var HINT_COL = {
-    className: 'comment',
-    begin: '\\^\\{', end: '\\}'
-
-  };
-  var KEY = {
-    className: 'attribute',
-    begin: '[:]' + SYMBOL_RE
-  };
-  var LIST = {
-    className: 'list',
-    begin: '\\(', end: '\\)'
-  };
-  var BODY = {
-    endsWithParent: true,
-    relevance: 0
-  };
-  var NAME = {
-    keywords: keywords,
-    lexemes: SYMBOL_RE,
-    className: 'keyword', begin: SYMBOL_RE,
-    starts: BODY
-  };
-  var DEFAULT_CONTAINS = [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL, SYMBOL];
-
-  LIST.contains = [{className: 'comment', begin: 'comment'}, NAME, BODY];
-  BODY.contains = DEFAULT_CONTAINS;
-  COLLECTION.contains = DEFAULT_CONTAINS;
-
-  return {
-    aliases: ['clj'],
-    illegal: /\S/,
-    contains: [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
-  }
-};
-},{}],36:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['cmake.in'],
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'add_custom_command add_custom_target add_definitions add_dependencies ' +
-        'add_executable add_library add_subdirectory add_test aux_source_directory ' +
-        'break build_command cmake_minimum_required cmake_policy configure_file ' +
-        'create_test_sourcelist define_property else elseif enable_language enable_testing ' +
-        'endforeach endfunction endif endmacro endwhile execute_process export find_file ' +
-        'find_library find_package find_path find_program fltk_wrap_ui foreach function ' +
-        'get_cmake_property get_directory_property get_filename_component get_property ' +
-        'get_source_file_property get_target_property get_test_property if include ' +
-        'include_directories include_external_msproject include_regular_expression install ' +
-        'link_directories load_cache load_command macro mark_as_advanced message option ' +
-        'output_required_files project qt_wrap_cpp qt_wrap_ui remove_definitions return ' +
-        'separate_arguments set set_directory_properties set_property ' +
-        'set_source_files_properties set_target_properties set_tests_properties site_name ' +
-        'source_group string target_link_libraries try_compile try_run unset variable_watch ' +
-        'while build_name exec_program export_library_dependencies install_files ' +
-        'install_programs install_targets link_libraries make_directory remove subdir_depends ' +
-        'subdirs use_mangled_mesa utility_source variable_requires write_file ' +
-        'qt5_use_modules qt5_use_package qt5_wrap_cpp on off true false and or',
-      operator:
-        'equal less greater strless strgreater strequal matches'
-    },
-    contains: [
-      {
-        className: 'envvar',
-        begin: '\\${', end: '}'
-      },
-      hljs.HASH_COMMENT_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.NUMBER_MODE
-    ]
-  };
-};
-},{}],37:[function(require,module,exports){
-module.exports = function(hljs) {
-  var KEYWORDS = {
-    keyword:
-      // JS keywords
-      'in if for while finally new do return else break catch instanceof throw try this ' +
-      'switch continue typeof delete debugger super ' +
-      // Coffee keywords
-      'then unless until loop of by when and or is isnt not',
-    literal:
-      // JS literals
-      'true false null undefined ' +
-      // Coffee literals
-      'yes no on off',
-    reserved:
-      'case default function var void with const let enum export import native ' +
-      '__hasProp __extends __slice __bind __indexOf',
-    built_in:
-      'npm require console print module global window document'
-  };
-  var JS_IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
-  var SUBST = {
-    className: 'subst',
-    begin: /#\{/, end: /}/,
-    keywords: KEYWORDS
-  };
-  var EXPRESSIONS = [
-    hljs.BINARY_NUMBER_MODE,
-    hljs.inherit(hljs.C_NUMBER_MODE, {starts: {end: '(\\s*/)?', relevance: 0}}), // a number tries to eat the following slash to prevent treating it as a regexp
-    {
-      className: 'string',
-      variants: [
-        {
-          begin: /'''/, end: /'''/,
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: /'/, end: /'/,
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: /"""/, end: /"""/,
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-        },
-        {
-          begin: /"/, end: /"/,
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-        }
-      ]
-    },
-    {
-      className: 'regexp',
-      variants: [
-        {
-          begin: '///', end: '///',
-          contains: [SUBST, hljs.HASH_COMMENT_MODE]
-        },
-        {
-          begin: '//[gim]*',
-          relevance: 0
-        },
-        {
-          // regex can't start with space to parse x / 2 / 3 as two divisions
-          // regex can't start with *, and it supports an "illegal" in the main mode
-          begin: /\/(?![ *])(\\\/|.)*?\/[gim]*(?=\W|$)/
-        }
-      ]
-    },
-    {
-      className: 'property',
-      begin: '@' + JS_IDENT_RE
-    },
-    {
-      begin: '`', end: '`',
-      excludeBegin: true, excludeEnd: true,
-      subLanguage: 'javascript'
-    }
-  ];
-  SUBST.contains = EXPRESSIONS;
-
-  var TITLE = hljs.inherit(hljs.TITLE_MODE, {begin: JS_IDENT_RE});
-  var PARAMS_RE = '(\\(.*\\))?\\s*\\B[-=]>';
-  var PARAMS = {
-    className: 'params',
-    begin: '\\([^\\(]', returnBegin: true,
-    /* We need another contained nameless mode to not have every nested
-    pair of parens to be called "params" */
-    contains: [{
-      begin: /\(/, end: /\)/,
-      keywords: KEYWORDS,
-      contains: ['self'].concat(EXPRESSIONS)
-    }]
-  };
-
-  return {
-    aliases: ['coffee', 'cson', 'iced'],
-    keywords: KEYWORDS,
-    illegal: /\/\*/,
-    contains: EXPRESSIONS.concat([
-      {
-        className: 'comment',
-        begin: '###', end: '###',
-        contains: [hljs.PHRASAL_WORDS_MODE]
-      },
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'function',
-        begin: '^\\s*' + JS_IDENT_RE + '\\s*=\\s*' + PARAMS_RE, end: '[-=]>',
-        returnBegin: true,
-        contains: [TITLE, PARAMS]
-      },
-      {
-        // anonymous function start
-        begin: /[:\(,=]\s*/,
-        relevance: 0,
-        contains: [
-          {
-            className: 'function',
-            begin: PARAMS_RE, end: '[-=]>',
-            returnBegin: true,
-            contains: [PARAMS]
-          }
-        ]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class',
-        end: '$',
-        illegal: /[:="\[\]]/,
-        contains: [
-          {
-            beginKeywords: 'extends',
-            endsWithParent: true,
-            illegal: /[:="\[\]]/,
-            contains: [TITLE]
-          },
-          TITLE
-        ]
-      },
-      {
-        className: 'attribute',
-        begin: JS_IDENT_RE + ':', end: ':',
-        returnBegin: true, returnEnd: true,
-        relevance: 0
-      }
-    ])
-  };
-};
-},{}],38:[function(require,module,exports){
-module.exports = function(hljs) {
-  var CPP_KEYWORDS = {
-    keyword: 'false int float while private char catch export virtual operator sizeof ' +
-      'dynamic_cast|10 typedef const_cast|10 const struct for static_cast|10 union namespace ' +
-      'unsigned long volatile static protected bool template mutable if public friend ' +
-      'do goto auto void enum else break extern using true class asm case typeid ' +
-      'short reinterpret_cast|10 default double register explicit signed typename try this ' +
-      'switch continue wchar_t inline delete alignof char16_t char32_t constexpr decltype ' +
-      'noexcept nullptr static_assert thread_local restrict _Bool complex _Complex _Imaginary' +
-      'intmax_t uintmax_t int8_t uint8_t int16_t uint16_t int32_t uint32_t  int64_t uint64_t' +
-      'int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t uint_least32_t' +
-      'int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t int_fast32_t' +
-      'uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t atomic_bool atomic_char atomic_schar' +
-      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong' +
-      'atomic_ullong atomic_wchar_t atomic_char16_t atomic_char32_t atomic_intmax_t atomic_uintmax_t' +
-      'atomic_intptr_t atomic_uintptr_t atomic_size_t atomic_ptrdiff_t atomic_int_least8_t atomic_int_least16_t' +
-      'atomic_int_least32_t atomic_int_least64_t atomic_uint_least8_t atomic_uint_least16_t atomic_uint_least32_t' +
-      'atomic_uint_least64_t atomic_int_fast8_t atomic_int_fast16_t atomic_int_fast32_t atomic_int_fast64_t' +
-      'atomic_uint_fast8_t atomic_uint_fast16_t atomic_uint_fast32_t atomic_uint_fast64_t',
-    built_in: 'std string cin cout cerr clog stringstream istringstream ostringstream ' +
-      'auto_ptr deque list queue stack vector map set bitset multiset multimap unordered_set ' +
-      'unordered_map unordered_multiset unordered_multimap array shared_ptr abort abs acos ' +
-      'asin atan2 atan calloc ceil cosh cos exit exp fabs floor fmod fprintf fputs free frexp ' +
-      'fscanf isalnum isalpha iscntrl isdigit isgraph islower isprint ispunct isspace isupper ' +
-      'isxdigit tolower toupper labs ldexp log10 log malloc memchr memcmp memcpy memset modf pow ' +
-      'printf putchar puts scanf sinh sin snprintf sprintf sqrt sscanf strcat strchr strcmp ' +
-      'strcpy strcspn strlen strncat strncmp strncpy strpbrk strrchr strspn strstr tanh tan ' +
-      'vfprintf vprintf vsprintf'
-  };
-  return {
-    aliases: ['c', 'h', 'c++', 'h++'],
-    keywords: CPP_KEYWORDS,
-    illegal: '</',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        begin: '\'\\\\?.', end: '\'',
-        illegal: '.'
-      },
-      {
-        className: 'number',
-        begin: '\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)'
-      },
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$',
-        keywords: 'if else elif endif define undef warning error line pragma',
-        contains: [
-          {
-            begin: 'include\\s*[<"]', end: '[>"]',
-            keywords: 'include',
-            illegal: '\\n'
-          },
-          hljs.C_LINE_COMMENT_MODE
-        ]
-      },
-      {
-        className: 'stl_container',
-        begin: '\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<', end: '>',
-        keywords: CPP_KEYWORDS,
-        contains: ['self']
-      },
-      {
-        begin: hljs.IDENT_RE + '::'
-      },
-      {
-        // Expression keywords prevent 'keyword Name(...)' from being
-        // recognized as a function definition
-        beginKeywords: 'new throw return',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        begin: '(' + hljs.IDENT_RE + '\\s+)+' + hljs.IDENT_RE + '\\s*\\(', returnBegin: true, end: /[{;=]/,
-        excludeEnd: true,
-        keywords: CPP_KEYWORDS,
-        contains: [
-          {
-            begin: hljs.IDENT_RE + '\\s*\\(', returnBegin: true,
-            contains: [hljs.TITLE_MODE],
-            relevance: 0
-          },
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            keywords: CPP_KEYWORDS,
-            relevance: 0,
-            contains: [
-              hljs.C_BLOCK_COMMENT_MODE
-            ]
-          },
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      }
-    ]
-  };
-};
-},{}],39:[function(require,module,exports){
-module.exports = function(hljs) {
-  var KEYWORDS =
-    // Normal keywords.
-    'abstract as base bool break byte case catch char checked const continue decimal ' +
-    'default delegate do double else enum event explicit extern false finally fixed float ' +
-    'for foreach goto if implicit in int interface internal is lock long null ' +
-    'object operator out override params private protected public readonly ref sbyte ' +
-    'sealed short sizeof stackalloc static string struct switch this true try typeof ' +
-    'uint ulong unchecked unsafe ushort using virtual volatile void while async ' +
-    'protected public private internal ' +
-    // Contextual keywords.
-    'ascending descending from get group into join let orderby partial select set value var ' +
-    'where yield';
-  var GENERIC_IDENT_RE = hljs.IDENT_RE + '(<' + hljs.IDENT_RE + '>)?';
-  return {
-    aliases: ['csharp'],
-    keywords: KEYWORDS,
-    illegal: /::/,
-    contains: [
-      {
-        className: 'comment',
-        begin: '///', end: '$', returnBegin: true,
-        contains: [
-          {
-            className: 'xmlDocTag',
-            variants: [
-              {
-                begin: '///', relevance: 0
-              },
-              {
-                begin: '<!--|-->'
-              },
-              {
-                begin: '</?', end: '>'
-              }
-            ]
-          }
-        ]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$',
-        keywords: 'if else elif endif define undef warning error line region endregion pragma checksum'
-      },
-      {
-        className: 'string',
-        begin: '@"', end: '"',
-        contains: [{begin: '""'}]
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        beginKeywords: 'class namespace interface', end: /[{;=]/,
-        illegal: /[^\s:]/,
-        contains: [
-          hljs.TITLE_MODE,
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      },
-      {
-        // Expression keywords prevent 'keyword Name(...)' from being
-        // recognized as a function definition
-        beginKeywords: 'new return throw await',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        begin: '(' + GENERIC_IDENT_RE + '\\s+)+' + hljs.IDENT_RE + '\\s*\\(', returnBegin: true, end: /[{;=]/,
-        excludeEnd: true,
-        keywords: KEYWORDS,
-        contains: [
-          {
-            begin: hljs.IDENT_RE + '\\s*\\(', returnBegin: true,
-            contains: [hljs.TITLE_MODE],
-            relevance: 0
-          },
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            keywords: KEYWORDS,
-            relevance: 0,
-            contains: [
-              hljs.APOS_STRING_MODE,
-              hljs.QUOTE_STRING_MODE,
-              hljs.C_NUMBER_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ]
-          },
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      }
-    ]
-  };
-};
-},{}],40:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
-  var FUNCTION = {
-    className: 'function',
-    begin: IDENT_RE + '\\(',
-    returnBegin: true,
-    excludeEnd: true,
-    end: '\\('
-  };
-  return {
-    case_insensitive: true,
-    illegal: '[=/|\']',
-    contains: [
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'id', begin: '\\#[A-Za-z0-9_-]+'
-      },
-      {
-        className: 'class', begin: '\\.[A-Za-z0-9_-]+',
-        relevance: 0
-      },
-      {
-        className: 'attr_selector',
-        begin: '\\[', end: '\\]',
-        illegal: '$'
-      },
-      {
-        className: 'pseudo',
-        begin: ':(:)?[a-zA-Z0-9\\_\\-\\+\\(\\)\\"\\\']+'
-      },
-      {
-        className: 'at_rule',
-        begin: '@(font-face|page)',
-        lexemes: '[a-z-]+',
-        keywords: 'font-face page'
-      },
-      {
-        className: 'at_rule',
-        begin: '@', end: '[{;]', // at_rule eating first "{" is a good thing
-                                 // because it doesn’t let it to be parsed as
-                                 // a rule set but instead drops parser into
-                                 // the default mode which is how it should be.
-        contains: [
-          {
-            className: 'keyword',
-            begin: /\S+/
-          },
-          {
-            begin: /\s/, endsWithParent: true, excludeEnd: true,
-            relevance: 0,
-            contains: [
-              FUNCTION,
-              hljs.APOS_STRING_MODE, hljs.QUOTE_STRING_MODE,
-              hljs.CSS_NUMBER_MODE
-            ]
-          }
-        ]
-      },
-      {
-        className: 'tag', begin: IDENT_RE,
-        relevance: 0
-      },
-      {
-        className: 'rules',
-        begin: '{', end: '}',
-        illegal: '[^\\s]',
-        relevance: 0,
-        contains: [
-          hljs.C_BLOCK_COMMENT_MODE,
-          {
-            className: 'rule',
-            begin: '[^\\s]', returnBegin: true, end: ';', endsWithParent: true,
-            contains: [
-              {
-                className: 'attribute',
-                begin: '[A-Z\\_\\.\\-]+', end: ':',
-                excludeEnd: true,
-                illegal: '[^\\s]',
-                starts: {
-                  className: 'value',
-                  endsWithParent: true, excludeEnd: true,
-                  contains: [
-                    FUNCTION,
-                    hljs.CSS_NUMBER_MODE,
-                    hljs.QUOTE_STRING_MODE,
-                    hljs.APOS_STRING_MODE,
-                    hljs.C_BLOCK_COMMENT_MODE,
-                    {
-                      className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
-                    },
-                    {
-                      className: 'important', begin: '!important'
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],41:[function(require,module,exports){
-module.exports = /**
- * Known issues:
- *
- * - invalid hex string literals will be recognized as a double quoted strings
- *   but 'x' at the beginning of string will not be matched
- *
- * - delimited string literals are not checked for matching end delimiter
- *   (not possible to do with js regexp)
- *
- * - content of token string is colored as a string (i.e. no keyword coloring inside a token string)
- *   also, content of token string is not validated to contain only valid D tokens
- *
- * - special token sequence rule is not strictly following D grammar (anything following #line
- *   up to the end of line is matched as special token sequence)
- */
-
-function(hljs) {
-  /**
-   * Language keywords
-   *
-   * @type {Object}
-   */
-  var D_KEYWORDS = {
-    keyword:
-      'abstract alias align asm assert auto body break byte case cast catch class ' +
-      'const continue debug default delete deprecated do else enum export extern final ' +
-      'finally for foreach foreach_reverse|10 goto if immutable import in inout int ' +
-      'interface invariant is lazy macro mixin module new nothrow out override package ' +
-      'pragma private protected public pure ref return scope shared static struct ' +
-      'super switch synchronized template this throw try typedef typeid typeof union ' +
-      'unittest version void volatile while with __FILE__ __LINE__ __gshared|10 ' +
-      '__thread __traits __DATE__ __EOF__ __TIME__ __TIMESTAMP__ __VENDOR__ __VERSION__',
-    built_in:
-      'bool cdouble cent cfloat char creal dchar delegate double dstring float function ' +
-      'idouble ifloat ireal long real short string ubyte ucent uint ulong ushort wchar ' +
-      'wstring',
-    literal:
-      'false null true'
-  };
-
-  /**
-   * Number literal regexps
-   *
-   * @type {String}
-   */
-  var decimal_integer_re = '(0|[1-9][\\d_]*)',
-    decimal_integer_nosus_re = '(0|[1-9][\\d_]*|\\d[\\d_]*|[\\d_]+?\\d)',
-    binary_integer_re = '0[bB][01_]+',
-    hexadecimal_digits_re = '([\\da-fA-F][\\da-fA-F_]*|_[\\da-fA-F][\\da-fA-F_]*)',
-    hexadecimal_integer_re = '0[xX]' + hexadecimal_digits_re,
-
-    decimal_exponent_re = '([eE][+-]?' + decimal_integer_nosus_re + ')',
-    decimal_float_re = '(' + decimal_integer_nosus_re + '(\\.\\d*|' + decimal_exponent_re + ')|' +
-                '\\d+\\.' + decimal_integer_nosus_re + decimal_integer_nosus_re + '|' +
-                '\\.' + decimal_integer_re + decimal_exponent_re + '?' +
-              ')',
-    hexadecimal_float_re = '(0[xX](' +
-                  hexadecimal_digits_re + '\\.' + hexadecimal_digits_re + '|'+
-                  '\\.?' + hexadecimal_digits_re +
-                 ')[pP][+-]?' + decimal_integer_nosus_re + ')',
-
-    integer_re = '(' +
-      decimal_integer_re + '|' +
-      binary_integer_re  + '|' +
-       hexadecimal_integer_re   +
-    ')',
-
-    float_re = '(' +
-      hexadecimal_float_re + '|' +
-      decimal_float_re  +
-    ')';
-
-  /**
-   * Escape sequence supported in D string and character literals
-   *
-   * @type {String}
-   */
-  var escape_sequence_re = '\\\\(' +
-              '[\'"\\?\\\\abfnrtv]|' +  // common escapes
-              'u[\\dA-Fa-f]{4}|' +     // four hex digit unicode codepoint
-              '[0-7]{1,3}|' +       // one to three octal digit ascii char code
-              'x[\\dA-Fa-f]{2}|' +    // two hex digit ascii char code
-              'U[\\dA-Fa-f]{8}' +      // eight hex digit unicode codepoint
-              ')|' +
-              '&[a-zA-Z\\d]{2,};';      // named character entity
-
-  /**
-   * D integer number literals
-   *
-   * @type {Object}
-   */
-  var D_INTEGER_MODE = {
-    className: 'number',
-      begin: '\\b' + integer_re + '(L|u|U|Lu|LU|uL|UL)?',
-      relevance: 0
-  };
-
-  /**
-   * [D_FLOAT_MODE description]
-   * @type {Object}
-   */
-  var D_FLOAT_MODE = {
-    className: 'number',
-    begin: '\\b(' +
-        float_re + '([fF]|L|i|[fF]i|Li)?|' +
-        integer_re + '(i|[fF]i|Li)' +
-      ')',
-    relevance: 0
-  };
-
-  /**
-   * D character literal
-   *
-   * @type {Object}
-   */
-  var D_CHARACTER_MODE = {
-    className: 'string',
-    begin: '\'(' + escape_sequence_re + '|.)', end: '\'',
-    illegal: '.'
-  };
-
-  /**
-   * D string escape sequence
-   *
-   * @type {Object}
-   */
-  var D_ESCAPE_SEQUENCE = {
-    begin: escape_sequence_re,
-    relevance: 0
-  };
-
-  /**
-   * D double quoted string literal
-   *
-   * @type {Object}
-   */
-  var D_STRING_MODE = {
-    className: 'string',
-    begin: '"',
-    contains: [D_ESCAPE_SEQUENCE],
-    end: '"[cwd]?'
-  };
-
-  /**
-   * D wysiwyg and delimited string literals
-   *
-   * @type {Object}
-   */
-  var D_WYSIWYG_DELIMITED_STRING_MODE = {
-    className: 'string',
-    begin: '[rq]"',
-    end: '"[cwd]?',
-    relevance: 5
-  };
-
-  /**
-   * D alternate wysiwyg string literal
-   *
-   * @type {Object}
-   */
-  var D_ALTERNATE_WYSIWYG_STRING_MODE = {
-    className: 'string',
-    begin: '`',
-    end: '`[cwd]?'
-  };
-
-  /**
-   * D hexadecimal string literal
-   *
-   * @type {Object}
-   */
-  var D_HEX_STRING_MODE = {
-    className: 'string',
-    begin: 'x"[\\da-fA-F\\s\\n\\r]*"[cwd]?',
-    relevance: 10
-  };
-
-  /**
-   * D delimited string literal
-   *
-   * @type {Object}
-   */
-  var D_TOKEN_STRING_MODE = {
-    className: 'string',
-    begin: 'q"\\{',
-    end: '\\}"'
-  };
-
-  /**
-   * Hashbang support
-   *
-   * @type {Object}
-   */
-  var D_HASHBANG_MODE = {
-    className: 'shebang',
-    begin: '^#!',
-    end: '$',
-    relevance: 5
-  };
-
-  /**
-   * D special token sequence
-   *
-   * @type {Object}
-   */
-  var D_SPECIAL_TOKEN_SEQUENCE_MODE = {
-    className: 'preprocessor',
-    begin: '#(line)',
-    end: '$',
-    relevance: 5
-  };
-
-  /**
-   * D attributes
-   *
-   * @type {Object}
-   */
-  var D_ATTRIBUTE_MODE = {
-    className: 'keyword',
-    begin: '@[a-zA-Z_][a-zA-Z_\\d]*'
-  };
-
-  /**
-   * D nesting comment
-   *
-   * @type {Object}
-   */
-  var D_NESTING_COMMENT_MODE = {
-    className: 'comment',
-    begin: '\\/\\+',
-    contains: ['self'],
-    end: '\\+\\/',
-    relevance: 10
-  };
-
-  return {
-    lexemes: hljs.UNDERSCORE_IDENT_RE,
-    keywords: D_KEYWORDS,
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-        hljs.C_BLOCK_COMMENT_MODE,
-        D_NESTING_COMMENT_MODE,
-        D_HEX_STRING_MODE,
-        D_STRING_MODE,
-        D_WYSIWYG_DELIMITED_STRING_MODE,
-        D_ALTERNATE_WYSIWYG_STRING_MODE,
-        D_TOKEN_STRING_MODE,
-        D_FLOAT_MODE,
-        D_INTEGER_MODE,
-        D_CHARACTER_MODE,
-        D_HASHBANG_MODE,
-        D_SPECIAL_TOKEN_SEQUENCE_MODE,
-        D_ATTRIBUTE_MODE
-    ]
-  };
-};
-},{}],42:[function(require,module,exports){
-module.exports = function (hljs) {
-  var SUBST = {
-    className: 'subst',
-    begin: '\\$\\{', end: '}',
-    keywords: 'true false null this is new super'
-  };
-
-  var STRING = {
-    className: 'string',
-    variants: [
-      {
-        begin: 'r\'\'\'', end: '\'\'\''
-      },
-      {
-        begin: 'r"""', end: '"""'
-      },
-      {
-        begin: 'r\'', end: '\'',
-        illegal: '\\n'
-      },
-      {
-        begin: 'r"', end: '"',
-        illegal: '\\n'
-      },
-      {
-        begin: '\'\'\'', end: '\'\'\'',
-        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-      },
-      {
-        begin: '"""', end: '"""',
-        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-      },
-      {
-        begin: '\'', end: '\'',
-        illegal: '\\n',
-        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-      },
-      {
-        begin: '"', end: '"',
-        illegal: '\\n',
-        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
-      }
-    ]
-  };
-  SUBST.contains = [
-    hljs.C_NUMBER_MODE, STRING
-  ];
-
-  var KEYWORDS = {
-    keyword: 'assert break case catch class const continue default do else enum extends false final finally for if ' +
-      'in is new null rethrow return super switch this throw true try var void while with',
-    literal: 'abstract as dynamic export external factory get implements import library operator part set static typedef',
-    built_in:
-      // dart:core
-      'print Comparable DateTime Duration Function Iterable Iterator List Map Match Null Object Pattern RegExp Set ' +
-      'Stopwatch String StringBuffer StringSink Symbol Type Uri bool double int num ' +
-      // dart:html
-      'document window querySelector querySelectorAll Element ElementList'
-  };
-
-  return {
-    keywords: KEYWORDS,
-    contains: [
-      STRING,
-      {
-        className: 'dartdoc',
-        begin: '/\\*\\*', end: '\\*/',
-        subLanguage: 'markdown',
-        subLanguageMode: 'continuous'
-      },
-      {
-        className: 'dartdoc',
-        begin: '///', end: '$',
-        subLanguage: 'markdown',
-        subLanguageMode: 'continuous'
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '{', excludeEnd: true,
-        contains: [
-          {
-            beginKeywords: 'extends implements'
-          },
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'annotation', begin: '@[A-Za-z]+'
-      },
-      {
-        begin: '=>' // No markup, just a relevance booster
-      }
-    ]
-  }
-};
-},{}],43:[function(require,module,exports){
-module.exports = function(hljs) {
-  var KEYWORDS =
-    'exports register file shl array record property for mod while set ally label uses raise not ' +
-    'stored class safecall var interface or private static exit index inherited to else stdcall ' +
-    'override shr asm far resourcestring finalization packed virtual out and protected library do ' +
-    'xorwrite goto near function end div overload object unit begin string on inline repeat until ' +
-    'destructor write message program with read initialization except default nil if case cdecl in ' +
-    'downto threadvar of try pascal const external constructor type public then implementation ' +
-    'finally published procedure';
-  var COMMENT =  {
-    className: 'comment',
-    variants: [
-      {begin: /\{/, end: /\}/, relevance: 0},
-      {begin: /\(\*/, end: /\*\)/, relevance: 10}
-    ]
-  };
-  var STRING = {
-    className: 'string',
-    begin: /'/, end: /'/,
-    contains: [{begin: /''/}]
-  };
-  var CHAR_STRING = {
-    className: 'string', begin: /(#\d+)+/
-  };
-  var CLASS = {
-    begin: hljs.IDENT_RE + '\\s*=\\s*class\\s*\\(', returnBegin: true,
-    contains: [
-      hljs.TITLE_MODE
-    ]
-  };
-  var FUNCTION = {
-    className: 'function',
-    beginKeywords: 'function constructor destructor procedure', end: /[:;]/,
-    keywords: 'function constructor|10 destructor|10 procedure|10',
-    contains: [
-      hljs.TITLE_MODE,
-      {
-        className: 'params',
-        begin: /\(/, end: /\)/,
-        keywords: KEYWORDS,
-        contains: [STRING, CHAR_STRING]
-      },
-      COMMENT
-    ]
-  };
-  return {
-    case_insensitive: true,
-    keywords: KEYWORDS,
-    illegal: /"|\$[G-Zg-z]|\/\*|<\/|\|/,
-    contains: [
-      COMMENT, hljs.C_LINE_COMMENT_MODE,
-      STRING, CHAR_STRING,
-      hljs.NUMBER_MODE,
-      CLASS,
-      FUNCTION
-    ]
-  };
-};
-},{}],44:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['patch'],
-    contains: [
-      {
-        className: 'chunk',
-        relevance: 10,
-        variants: [
-          {begin: /^\@\@ +\-\d+,\d+ +\+\d+,\d+ +\@\@$/},
-          {begin: /^\*\*\* +\d+,\d+ +\*\*\*\*$/},
-          {begin: /^\-\-\- +\d+,\d+ +\-\-\-\-$/}
-        ]
-      },
-      {
-        className: 'header',
-        variants: [
-          {begin: /Index: /, end: /$/},
-          {begin: /=====/, end: /=====$/},
-          {begin: /^\-\-\-/, end: /$/},
-          {begin: /^\*{3} /, end: /$/},
-          {begin: /^\+\+\+/, end: /$/},
-          {begin: /\*{5}/, end: /\*{5}$/}
-        ]
-      },
-      {
-        className: 'addition',
-        begin: '^\\+', end: '$'
-      },
-      {
-        className: 'deletion',
-        begin: '^\\-', end: '$'
-      },
-      {
-        className: 'change',
-        begin: '^\\!', end: '$'
-      }
-    ]
-  };
-};
-},{}],45:[function(require,module,exports){
-module.exports = function(hljs) {
-  var FILTER = {
-    className: 'filter',
-    begin: /\|[A-Za-z]+\:?/,
-    keywords:
-      'truncatewords removetags linebreaksbr yesno get_digit timesince random striptags ' +
-      'filesizeformat escape linebreaks length_is ljust rjust cut urlize fix_ampersands ' +
-      'title floatformat capfirst pprint divisibleby add make_list unordered_list urlencode ' +
-      'timeuntil urlizetrunc wordcount stringformat linenumbers slice date dictsort ' +
-      'dictsortreversed default_if_none pluralize lower join center default ' +
-      'truncatewords_html upper length phone2numeric wordwrap time addslashes slugify first ' +
-      'escapejs force_escape iriencode last safe safeseq truncatechars localize unlocalize ' +
-      'localtime utc timezone',
-    contains: [
-      {className: 'argument', begin: /"/, end: /"/},
-      {className: 'argument', begin: /'/, end: /'/}
-    ]
-  };
-
-  return {
-    aliases: ['jinja'],
-    case_insensitive: true,
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        className: 'comment',
-        begin: /\{%\s*comment\s*%}/, end: /\{%\s*endcomment\s*%}/
-      },
-      {
-        className: 'comment',
-        begin: /\{#/, end: /#}/
-      },
-      {
-        className: 'template_tag',
-        begin: /\{%/, end: /%}/,
-        keywords:
-          'comment endcomment load templatetag ifchanged endifchanged if endif firstof for ' +
-          'endfor in ifnotequal endifnotequal widthratio extends include spaceless ' +
-          'endspaceless regroup by as ifequal endifequal ssi now with cycle url filter ' +
-          'endfilter debug block endblock else autoescape endautoescape csrf_token empty elif ' +
-          'endwith static trans blocktrans endblocktrans get_static_prefix get_media_prefix ' +
-          'plural get_current_language language get_available_languages ' +
-          'get_current_language_bidi get_language_info get_language_info_list localize ' +
-          'endlocalize localtime endlocaltime timezone endtimezone get_current_timezone ' +
-          'verbatim',
-        contains: [FILTER]
-      },
-      {
-        className: 'variable',
-        begin: /\{\{/, end: /}}/,
-        contains: [FILTER]
-      }
-    ]
-  };
-};
-},{}],46:[function(require,module,exports){
-module.exports = function(hljs) {
-  var COMMENT = {
-    className: 'comment',
-    begin: /@?rem\b/, end: /$/,
-    relevance: 10
-  };
-  var LABEL = {
-    className: 'label',
-    begin: '^\\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\\s+label)',
-    relevance: 0
-  };
-  return {
-    aliases: ['bat', 'cmd'],
-    case_insensitive: true,
-    keywords: {
-      flow: 'if else goto for in do call exit not exist errorlevel defined',
-      operator: 'equ neq lss leq gtr geq',
-      keyword: 'shift cd dir echo setlocal endlocal set pause copy',
-      stream: 'prn nul lpt3 lpt2 lpt1 con com4 com3 com2 com1 aux',
-      winutils: 'ping net ipconfig taskkill xcopy ren del',
-      built_in: 'append assoc at attrib break cacls cd chcp chdir chkdsk chkntfs cls cmd color ' +
-        'comp compact convert date dir diskcomp diskcopy doskey erase fs ' +
-        'find findstr format ftype graftabl help keyb label md mkdir mode more move path ' +
-        'pause print popd pushd promt rd recover rem rename replace restore rmdir shift' +
-        'sort start subst time title tree type ver verify vol',
-    },
-    contains: [
-      {
-        className: 'envvar', begin: /%%[^ ]|%[^ ]+?%|![^ ]+?!/
-      },
-      {
-        className: 'function',
-        begin: LABEL.begin, end: 'goto:eof',
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: '([_a-zA-Z]\\w*\\.)*([_a-zA-Z]\\w*:)?[_a-zA-Z]\\w*'}),
-          COMMENT
-        ]
-      },
-      {
-        className: 'number', begin: '\\b\\d+',
-        relevance: 0
-      },
-      COMMENT
-    ]
-  };
-};
-},{}],47:[function(require,module,exports){
-module.exports = function(hljs) {
-  var EXPRESSION_KEYWORDS = 'if eq ne lt lte gt gte select default math sep';
-  return {
-    aliases: ['dst'],
-    case_insensitive: true,
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        className: 'expression',
-        begin: '{', end: '}',
-        relevance: 0,
-        contains: [
-          {
-            className: 'begin-block', begin: '\#[a-zA-Z\-\ \.]+',
-            keywords: EXPRESSION_KEYWORDS
-          },
-          {
-            className: 'string',
-            begin: '"', end: '"'
-          },
-          {
-            className: 'end-block', begin: '\\\/[a-zA-Z\-\ \.]+',
-            keywords: EXPRESSION_KEYWORDS
-          },
-          {
-            className: 'variable', begin: '[a-zA-Z\-\.]+',
-            keywords: EXPRESSION_KEYWORDS,
-            relevance: 0
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],48:[function(require,module,exports){
-module.exports = function(hljs) {
-  var ELIXIR_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*(\\!|\\?)?';
-  var ELIXIR_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
-  var ELIXIR_KEYWORDS =
-    'and false then defined module in return redo retry end for true self when ' +
-    'next until do begin unless nil break not case cond alias while ensure or ' +
-    'include use alias fn quote';
-  var SUBST = {
-    className: 'subst',
-    begin: '#\\{', end: '}',
-    lexemes: ELIXIR_IDENT_RE,
-    keywords: ELIXIR_KEYWORDS
-  };
-  var STRING = {
-    className: 'string',
-    contains: [hljs.BACKSLASH_ESCAPE, SUBST],
-    variants: [
-      {
-        begin: /'/, end: /'/
-      },
-      {
-        begin: /"/, end: /"/
-      }
-    ]
-  };
-  var PARAMS = {
-    endsWithParent: true, returnEnd: true,
-    lexemes: ELIXIR_IDENT_RE,
-    keywords: ELIXIR_KEYWORDS,
-    relevance: 0
-  };
-  var FUNCTION = {
-    className: 'function',
-    beginKeywords: 'def defmacro', end: /\bdo\b/,
-    contains: [
-      hljs.inherit(hljs.TITLE_MODE, {
-        begin: ELIXIR_METHOD_RE,
-        starts: PARAMS
-      })
-    ]
-  };
-  var CLASS = hljs.inherit(FUNCTION, {
-    className: 'class',
-    beginKeywords: 'defmodule defrecord', end: /\bdo\b|$|;/
-  })
-  var ELIXIR_DEFAULT_CONTAINS = [
-    STRING,
-    hljs.HASH_COMMENT_MODE,
-    CLASS,
-    FUNCTION,
-    {
-      className: 'constant',
-      begin: '(\\b[A-Z_]\\w*(.)?)+',
-      relevance: 0
-    },
-    {
-      className: 'symbol',
-      begin: ':',
-      contains: [STRING, {begin: ELIXIR_METHOD_RE}],
-      relevance: 0
-    },
-    {
-      className: 'symbol',
-      begin: ELIXIR_IDENT_RE + ':',
-      relevance: 0
-    },
-    {
-      className: 'number',
-      begin: '(\\b0[0-7_]+)|(\\b0x[0-9a-fA-F_]+)|(\\b[1-9][0-9_]*(\\.[0-9_]+)?)|[0_]\\b',
-      relevance: 0
-    },
-    {
-      className: 'variable',
-      begin: '(\\$\\W)|((\\$|\\@\\@?)(\\w+))'
-    },
-    {
-      begin: '->'
-    },
-    { // regexp container
-      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
-      contains: [
-        hljs.HASH_COMMENT_MODE,
-        {
-          className: 'regexp',
-          illegal: '\\n',
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST],
-          variants: [
-            {
-              begin: '/', end: '/[a-z]*'
-            },
-            {
-              begin: '%r\\[', end: '\\][a-z]*'
-            }
-          ]
-        }
-      ],
-      relevance: 0
-    }
-  ];
-  SUBST.contains = ELIXIR_DEFAULT_CONTAINS;
-  PARAMS.contains = ELIXIR_DEFAULT_CONTAINS;
-
-  return {
-    lexemes: ELIXIR_IDENT_RE,
-    keywords: ELIXIR_KEYWORDS,
-    contains: ELIXIR_DEFAULT_CONTAINS
-  };
-};
-},{}],49:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        className: 'comment',
-        begin: '<%#', end: '%>',
-      },
-      {
-        begin: '<%[%=-]?', end: '[%-]?%>',
-        subLanguage: 'ruby',
-        excludeBegin: true,
-        excludeEnd: true
-      }
-    ]
-  };
-};
-},{}],50:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      special_functions:
-        'spawn spawn_link self',
-      reserved:
-        'after and andalso|10 band begin bnot bor bsl bsr bxor case catch cond div end fun if ' +
-        'let not of or orelse|10 query receive rem try when xor'
-    },
-    contains: [
-      {
-        className: 'prompt', begin: '^[0-9]+> ',
-        relevance: 10
-      },
-      {
-        className: 'comment',
-        begin: '%', end: '$'
-      },
-      {
-        className: 'number',
-        begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
-        relevance: 0
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'constant', begin: '\\?(::)?([A-Z]\\w*(::)?)+'
-      },
-      {
-        className: 'arrow', begin: '->'
-      },
-      {
-        className: 'ok', begin: 'ok'
-      },
-      {
-        className: 'exclamation_mark', begin: '!'
-      },
-      {
-        className: 'function_or_atom',
-        begin: '(\\b[a-z\'][a-zA-Z0-9_\']*:[a-z\'][a-zA-Z0-9_\']*)|(\\b[a-z\'][a-zA-Z0-9_\']*)',
-        relevance: 0
-      },
-      {
-        className: 'variable',
-        begin: '[A-Z][a-zA-Z0-9_\']*',
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],51:[function(require,module,exports){
-module.exports = function(hljs) {
-  var BASIC_ATOM_RE = '[a-z\'][a-zA-Z0-9_\']*';
-  var FUNCTION_NAME_RE = '(' + BASIC_ATOM_RE + ':' + BASIC_ATOM_RE + '|' + BASIC_ATOM_RE + ')';
-  var ERLANG_RESERVED = {
-    keyword:
-      'after and andalso|10 band begin bnot bor bsl bzr bxor case catch cond div end fun if ' +
-      'let not of orelse|10 query receive rem try when xor',
-    literal:
-      'false true'
-  };
-
-  var COMMENT = {
-    className: 'comment',
-    begin: '%', end: '$'
-  };
-  var NUMBER = {
-    className: 'number',
-    begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
-    relevance: 0
-  };
-  var NAMED_FUN = {
-    begin: 'fun\\s+' + BASIC_ATOM_RE + '/\\d+'
-  };
-  var FUNCTION_CALL = {
-    begin: FUNCTION_NAME_RE + '\\(', end: '\\)',
-    returnBegin: true,
-    relevance: 0,
-    contains: [
-      {
-        className: 'function_name', begin: FUNCTION_NAME_RE,
-        relevance: 0
-      },
-      {
-        begin: '\\(', end: '\\)', endsWithParent: true,
-        returnEnd: true,
-        relevance: 0
-        // "contains" defined later
-      }
-    ]
-  };
-  var TUPLE = {
-    className: 'tuple',
-    begin: '{', end: '}',
-    relevance: 0
-    // "contains" defined later
-  };
-  var VAR1 = {
-    className: 'variable',
-    begin: '\\b_([A-Z][A-Za-z0-9_]*)?',
-    relevance: 0
-  };
-  var VAR2 = {
-    className: 'variable',
-    begin: '[A-Z][a-zA-Z0-9_]*',
-    relevance: 0
-  };
-  var RECORD_ACCESS = {
-    begin: '#' + hljs.UNDERSCORE_IDENT_RE,
-    relevance: 0,
-    returnBegin: true,
-    contains: [
-      {
-        className: 'record_name',
-        begin: '#' + hljs.UNDERSCORE_IDENT_RE,
-        relevance: 0
-      },
-      {
-        begin: '{', end: '}',
-        relevance: 0
-        // "contains" defined later
-      }
-    ]
-  };
-
-  var BLOCK_STATEMENTS = {
-    beginKeywords: 'fun receive if try case', end: 'end',
-    keywords: ERLANG_RESERVED
-  };
-  BLOCK_STATEMENTS.contains = [
-    COMMENT,
-    NAMED_FUN,
-    hljs.inherit(hljs.APOS_STRING_MODE, {className: ''}),
-    BLOCK_STATEMENTS,
-    FUNCTION_CALL,
-    hljs.QUOTE_STRING_MODE,
-    NUMBER,
-    TUPLE,
-    VAR1, VAR2,
-    RECORD_ACCESS
-  ];
-
-  var BASIC_MODES = [
-    COMMENT,
-    NAMED_FUN,
-    BLOCK_STATEMENTS,
-    FUNCTION_CALL,
-    hljs.QUOTE_STRING_MODE,
-    NUMBER,
-    TUPLE,
-    VAR1, VAR2,
-    RECORD_ACCESS
-  ];
-  FUNCTION_CALL.contains[1].contains = BASIC_MODES;
-  TUPLE.contains = BASIC_MODES;
-  RECORD_ACCESS.contains[1].contains = BASIC_MODES;
-
-  var PARAMS = {
-    className: 'params',
-    begin: '\\(', end: '\\)',
-    contains: BASIC_MODES
-  };
-  return {
-    aliases: ['erl'],
-    keywords: ERLANG_RESERVED,
-    illegal: '(</|\\*=|\\+=|-=|/\\*|\\*/|\\(\\*|\\*\\))',
-    contains: [
-      {
-        className: 'function',
-        begin: '^' + BASIC_ATOM_RE + '\\s*\\(', end: '->',
-        returnBegin: true,
-        illegal: '\\(|#|//|/\\*|\\\\|:|;',
-        contains: [
-          PARAMS,
-          hljs.inherit(hljs.TITLE_MODE, {begin: BASIC_ATOM_RE})
-        ],
-        starts: {
-          end: ';|\\.',
-          keywords: ERLANG_RESERVED,
-          contains: BASIC_MODES
-        }
-      },
-      COMMENT,
-      {
-        className: 'pp',
-        begin: '^-', end: '\\.',
-        relevance: 0,
-        excludeEnd: true,
-        returnBegin: true,
-        lexemes: '-' + hljs.IDENT_RE,
-        keywords:
-          '-module -record -undef -export -ifdef -ifndef -author -copyright -doc -vsn ' +
-          '-import -include -include_lib -compile -define -else -endif -file -behaviour ' +
-          '-behavior -spec',
-        contains: [PARAMS]
-      },
-      NUMBER,
-      hljs.QUOTE_STRING_MODE,
-      RECORD_ACCESS,
-      VAR1, VAR2,
-      TUPLE,
-      {begin: /\.$/} // relevance booster
-    ]
-  };
-};
-},{}],52:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    contains: [
-    {
-      begin: /[^\u2401\u0001]+/,
-      end: /[\u2401\u0001]/,
-      excludeEnd: true,
-      returnBegin: true,
-      returnEnd: false,
-      contains: [
-      {
-        begin: /([^\u2401\u0001=]+)/,
-        end: /=([^\u2401\u0001=]+)/,
-        returnEnd: true,
-        returnBegin: false,
-        className: 'attribute'
-      },
-      {
-        begin: /=/,
-        end: /([\u2401\u0001])/,
-        excludeEnd: true,
-        excludeBegin: true,
-        className: 'string'
-      }]
-    }],
-    case_insensitive: true
-  };
-};
-},{}],53:[function(require,module,exports){
-module.exports = function(hljs) {
-  var TYPEPARAM = {
-    begin: '<', end: '>',
-    contains: [
-      hljs.inherit(hljs.TITLE_MODE, {begin: /'[a-zA-Z0-9_]+/})
-    ]
-  };
-
-  return {
-    aliases: ['fs'],
-    keywords:
-      // monad builder keywords (at top, matches before non-bang kws)
-      'yield! return! let! do!' +
-      // regular keywords
-      'abstract and as assert base begin class default delegate do done ' +
-      'downcast downto elif else end exception extern false finally for ' +
-      'fun function global if in inherit inline interface internal lazy let ' +
-      'match member module mutable namespace new null of open or ' +
-      'override private public rec return sig static struct then to ' +
-      'true try type upcast use val void when while with yield',
-    contains: [
-      {
-        className: 'string',
-        begin: '@"', end: '"',
-        contains: [{begin: '""'}]
-      },
-      {
-        className: 'string',
-        begin: '"""', end: '"""'
-      },
-      {
-        className: 'comment',
-        begin: '\\(\\*', end: '\\*\\)'
-      },
-      {
-        className: 'class',
-        beginKeywords: 'type', end: '\\(|=|$', excludeEnd: true,
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE,
-          TYPEPARAM
-        ]
-      },
-      {
-        className: 'annotation',
-        begin: '\\[<', end: '>\\]',
-        relevance: 10
-      },
-      {
-        className: 'attribute',
-        begin: '\\B(\'[A-Za-z])\\b',
-        contains: [hljs.BACKSLASH_ESCAPE]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-      hljs.C_NUMBER_MODE
-    ]
-  };
-};
-},{}],54:[function(require,module,exports){
-module.exports = function(hljs) {
-    var GCODE_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
-    var GCODE_CLOSE_RE = '\\%';
-    var GCODE_KEYWORDS = {
-        literal:
-            '',
-        built_in:
-            '',
-        keyword:
-            'IF DO WHILE ENDWHILE CALL ENDIF SUB ENDSUB GOTO REPEAT ENDREPEAT ' +
-            'EQ LT GT NE GE LE OR XOR'
-    };
-    var GCODE_START = {
-        className: 'preprocessor',
-        begin: '([O])([0-9]+)'
-    };
-    var GCODE_CODE = [
-        hljs.C_LINE_COMMENT_MODE,
-        {
-            className: 'comment',
-            begin: /\(/, end: /\)/,
-            contains: [hljs.PHRASAL_WORDS_MODE]
-        },
-        hljs.C_BLOCK_COMMENT_MODE,
-        hljs.inherit(hljs.C_NUMBER_MODE, {begin: '([-+]?([0-9]*\\.?[0-9]+\\.?))|' + hljs.C_NUMBER_RE}),
-        hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
-        hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-        {
-            className: 'keyword',
-            begin: '([G])([0-9]+\\.?[0-9]?)'
-        },
-        {
-            className: 'title',
-            begin: '([M])([0-9]+\\.?[0-9]?)'
-        },
-        {
-            className: 'title',
-            begin: '(VC|VS|#)',
-            end: '(\\d+)'
-        },
-        {
-            className: 'title',
-            begin: '(VZOFX|VZOFY|VZOFZ)'
-        },
-        {
-            className: 'built_in',
-            begin: '(ATAN|ABS|ACOS|ASIN|SIN|COS|EXP|FIX|FUP|ROUND|LN|TAN)(\\[)',
-            end: '([-+]?([0-9]*\\.?[0-9]+\\.?))(\\])'
-        },
-        {
-            className: 'label',
-            variants: [
-                {
-                    begin: 'N', end: '\\d+',
-                    illegal: '\\W'
-                }
-            ]
-        }
-    ];
-
-    return {
-        aliases: ['nc'],
-        // Some implementations (CNC controls) of G-code are interoperable with uppercase and lowercase letters seamlessly.
-        // However, most prefer all uppercase and uppercase is customary.
-        case_insensitive: true,
-        lexemes: GCODE_IDENT_RE,
-        keywords: GCODE_KEYWORDS,
-        contains: [
-            {
-                className: 'preprocessor',
-                begin: GCODE_CLOSE_RE
-            },
-            GCODE_START
-        ].concat(GCODE_CODE)
-    };
-};
-},{}],55:[function(require,module,exports){
-module.exports = function (hljs) {
-  return {
-    aliases: ['feature'],
-    keywords: 'Feature Background Ability Business\ Need Scenario Scenarios Scenario\ Outline Scenario\ Template Examples Given And Then But When',
-    contains: [
-      {
-        className: 'keyword',
-        begin: '\\*'
-      },
-      {
-        className: 'comment',
-        begin: '@[^@\r\n\t ]+', end: '$'
-      },
-      {
-        className: 'string',
-        begin: '\\|', end: '\\$'
-      },
-      {
-        className: 'variable',
-        begin: '<', end: '>',
-      },
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'string',
-        begin: '"""', end: '"""'
-      },
-      hljs.QUOTE_STRING_MODE
-    ]
-  };
-};
-},{}],56:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword:
-        'atomic_uint attribute bool break bvec2 bvec3 bvec4 case centroid coherent const continue default ' +
-        'discard dmat2 dmat2x2 dmat2x3 dmat2x4 dmat3 dmat3x2 dmat3x3 dmat3x4 dmat4 dmat4x2 dmat4x3 ' +
-        'dmat4x4 do double dvec2 dvec3 dvec4 else flat float for highp if iimage1D iimage1DArray ' +
-        'iimage2D iimage2DArray iimage2DMS iimage2DMSArray iimage2DRect iimage3D iimageBuffer iimageCube ' +
-        'iimageCubeArray image1D image1DArray image2D image2DArray image2DMS image2DMSArray image2DRect ' +
-        'image3D imageBuffer imageCube imageCubeArray in inout int invariant isampler1D isampler1DArray ' +
-        'isampler2D isampler2DArray isampler2DMS isampler2DMSArray isampler2DRect isampler3D isamplerBuffer ' +
-        'isamplerCube isamplerCubeArray ivec2 ivec3 ivec4 layout lowp mat2 mat2x2 mat2x3 mat2x4 mat3 mat3x2 ' +
-        'mat3x3 mat3x4 mat4 mat4x2 mat4x3 mat4x4 mediump noperspective out patch precision readonly restrict ' +
-        'return sample sampler1D sampler1DArray sampler1DArrayShadow sampler1DShadow sampler2D sampler2DArray ' +
-        'sampler2DArrayShadow sampler2DMS sampler2DMSArray sampler2DRect sampler2DRectShadow sampler2DShadow ' +
-        'sampler3D samplerBuffer samplerCube samplerCubeArray samplerCubeArrayShadow samplerCubeShadow smooth ' +
-        'struct subroutine switch uimage1D uimage1DArray uimage2D uimage2DArray uimage2DMS uimage2DMSArray ' +
-        'uimage2DRect uimage3D uimageBuffer uimageCube uimageCubeArray uint uniform usampler1D usampler1DArray ' +
-        'usampler2D usampler2DArray usampler2DMS usampler2DMSArray usampler2DRect usampler3D usamplerBuffer ' +
-        'usamplerCube usamplerCubeArray uvec2 uvec3 uvec4 varying vec2 vec3 vec4 void volatile while writeonly',
-      built_in:
-        'gl_BackColor gl_BackLightModelProduct gl_BackLightProduct gl_BackMaterial ' +
-        'gl_BackSecondaryColor gl_ClipDistance gl_ClipPlane gl_ClipVertex gl_Color ' +
-        'gl_DepthRange gl_EyePlaneQ gl_EyePlaneR gl_EyePlaneS gl_EyePlaneT gl_Fog gl_FogCoord ' +
-        'gl_FogFragCoord gl_FragColor gl_FragCoord gl_FragData gl_FragDepth gl_FrontColor ' +
-        'gl_FrontFacing gl_FrontLightModelProduct gl_FrontLightProduct gl_FrontMaterial ' +
-        'gl_FrontSecondaryColor gl_InstanceID gl_InvocationID gl_Layer gl_LightModel ' +
-        'gl_LightSource gl_MaxAtomicCounterBindings gl_MaxAtomicCounterBufferSize ' +
-        'gl_MaxClipDistances gl_MaxClipPlanes gl_MaxCombinedAtomicCounterBuffers ' +
-        'gl_MaxCombinedAtomicCounters gl_MaxCombinedImageUniforms gl_MaxCombinedImageUnitsAndFragmentOutputs ' +
-        'gl_MaxCombinedTextureImageUnits gl_MaxDrawBuffers gl_MaxFragmentAtomicCounterBuffers ' +
-        'gl_MaxFragmentAtomicCounters gl_MaxFragmentImageUniforms gl_MaxFragmentInputComponents ' +
-        'gl_MaxFragmentUniformComponents gl_MaxFragmentUniformVectors gl_MaxGeometryAtomicCounterBuffers ' +
-        'gl_MaxGeometryAtomicCounters gl_MaxGeometryImageUniforms gl_MaxGeometryInputComponents ' +
-        'gl_MaxGeometryOutputComponents gl_MaxGeometryOutputVertices gl_MaxGeometryTextureImageUnits ' +
-        'gl_MaxGeometryTotalOutputComponents gl_MaxGeometryUniformComponents gl_MaxGeometryVaryingComponents ' +
-        'gl_MaxImageSamples gl_MaxImageUnits gl_MaxLights gl_MaxPatchVertices gl_MaxProgramTexelOffset ' +
-        'gl_MaxTessControlAtomicCounterBuffers gl_MaxTessControlAtomicCounters gl_MaxTessControlImageUniforms ' +
-        'gl_MaxTessControlInputComponents gl_MaxTessControlOutputComponents gl_MaxTessControlTextureImageUnits ' +
-        'gl_MaxTessControlTotalOutputComponents gl_MaxTessControlUniformComponents ' +
-        'gl_MaxTessEvaluationAtomicCounterBuffers gl_MaxTessEvaluationAtomicCounters ' +
-        'gl_MaxTessEvaluationImageUniforms gl_MaxTessEvaluationInputComponents gl_MaxTessEvaluationOutputComponents ' +
-        'gl_MaxTessEvaluationTextureImageUnits gl_MaxTessEvaluationUniformComponents ' +
-        'gl_MaxTessGenLevel gl_MaxTessPatchComponents gl_MaxTextureCoords gl_MaxTextureImageUnits ' +
-        'gl_MaxTextureUnits gl_MaxVaryingComponents gl_MaxVaryingFloats gl_MaxVaryingVectors ' +
-        'gl_MaxVertexAtomicCounterBuffers gl_MaxVertexAtomicCounters gl_MaxVertexAttribs ' +
-        'gl_MaxVertexImageUniforms gl_MaxVertexOutputComponents gl_MaxVertexTextureImageUnits ' +
-        'gl_MaxVertexUniformComponents gl_MaxVertexUniformVectors gl_MaxViewports gl_MinProgramTexelOffset'+
-        'gl_ModelViewMatrix gl_ModelViewMatrixInverse gl_ModelViewMatrixInverseTranspose ' +
-        'gl_ModelViewMatrixTranspose gl_ModelViewProjectionMatrix gl_ModelViewProjectionMatrixInverse ' +
-        'gl_ModelViewProjectionMatrixInverseTranspose gl_ModelViewProjectionMatrixTranspose ' +
-        'gl_MultiTexCoord0 gl_MultiTexCoord1 gl_MultiTexCoord2 gl_MultiTexCoord3 gl_MultiTexCoord4 ' +
-        'gl_MultiTexCoord5 gl_MultiTexCoord6 gl_MultiTexCoord7 gl_Normal gl_NormalMatrix ' +
-        'gl_NormalScale gl_ObjectPlaneQ gl_ObjectPlaneR gl_ObjectPlaneS gl_ObjectPlaneT gl_PatchVerticesIn ' +
-        'gl_PerVertex gl_Point gl_PointCoord gl_PointSize gl_Position gl_PrimitiveID gl_PrimitiveIDIn ' +
-        'gl_ProjectionMatrix gl_ProjectionMatrixInverse gl_ProjectionMatrixInverseTranspose ' +
-        'gl_ProjectionMatrixTranspose gl_SampleID gl_SampleMask gl_SampleMaskIn gl_SamplePosition ' +
-        'gl_SecondaryColor gl_TessCoord gl_TessLevelInner gl_TessLevelOuter gl_TexCoord gl_TextureEnvColor ' +
-        'gl_TextureMatrixInverseTranspose gl_TextureMatrixTranspose gl_Vertex gl_VertexID ' +
-        'gl_ViewportIndex gl_in gl_out EmitStreamVertex EmitVertex EndPrimitive EndStreamPrimitive ' +
-        'abs acos acosh all any asin asinh atan atanh atomicCounter atomicCounterDecrement ' +
-        'atomicCounterIncrement barrier bitCount bitfieldExtract bitfieldInsert bitfieldReverse ' +
-        'ceil clamp cos cosh cross dFdx dFdy degrees determinant distance dot equal exp exp2 faceforward ' +
-        'findLSB findMSB floatBitsToInt floatBitsToUint floor fma fract frexp ftransform fwidth greaterThan ' +
-        'greaterThanEqual imageAtomicAdd imageAtomicAnd imageAtomicCompSwap imageAtomicExchange ' +
-        'imageAtomicMax imageAtomicMin imageAtomicOr imageAtomicXor imageLoad imageStore imulExtended ' +
-        'intBitsToFloat interpolateAtCentroid interpolateAtOffset interpolateAtSample inverse inversesqrt ' +
-        'isinf isnan ldexp length lessThan lessThanEqual log log2 matrixCompMult max memoryBarrier ' +
-        'min mix mod modf noise1 noise2 noise3 noise4 normalize not notEqual outerProduct packDouble2x32 ' +
-        'packHalf2x16 packSnorm2x16 packSnorm4x8 packUnorm2x16 packUnorm4x8 pow radians reflect refract ' +
-        'round roundEven shadow1D shadow1DLod shadow1DProj shadow1DProjLod shadow2D shadow2DLod shadow2DProj ' +
-        'shadow2DProjLod sign sin sinh smoothstep sqrt step tan tanh texelFetch texelFetchOffset texture ' +
-        'texture1D texture1DLod texture1DProj texture1DProjLod texture2D texture2DLod texture2DProj ' +
-        'texture2DProjLod texture3D texture3DLod texture3DProj texture3DProjLod textureCube textureCubeLod ' +
-        'textureGather textureGatherOffset textureGatherOffsets textureGrad textureGradOffset textureLod ' +
-        'textureLodOffset textureOffset textureProj textureProjGrad textureProjGradOffset textureProjLod ' +
-        'textureProjLodOffset textureProjOffset textureQueryLod textureSize transpose trunc uaddCarry ' +
-        'uintBitsToFloat umulExtended unpackDouble2x32 unpackHalf2x16 unpackSnorm2x16 unpackSnorm4x8 ' +
-        'unpackUnorm2x16 unpackUnorm4x8 usubBorrow gl_TextureMatrix gl_TextureMatrixInverse',
-      literal: 'true false'
-    },
-    illegal: '"',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$'
-      }
-    ]
-  };
-};
-},{}],57:[function(require,module,exports){
-module.exports = function(hljs) {
-  var GO_KEYWORDS = {
-    keyword:
-      'break default func interface select case map struct chan else goto package switch ' +
-      'const fallthrough if range type continue for import return var go defer',
-    constant:
-       'true false iota nil',
-    typename:
-      'bool byte complex64 complex128 float32 float64 int8 int16 int32 int64 string uint8 ' +
-      'uint16 uint32 uint64 int uint uintptr rune',
-    built_in:
-      'append cap close complex copy imag len make new panic print println real recover delete'
-  };
-  return {
-    aliases: ["golang"],
-    keywords: GO_KEYWORDS,
-    illegal: '</',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        begin: '\'', end: '[^\\\\]\''
-      },
-      {
-        className: 'string',
-        begin: '`', end: '`'
-      },
-      {
-        className: 'number',
-        begin: hljs.C_NUMBER_RE + '[dflsi]?',
-        relevance: 0
-      },
-      hljs.C_NUMBER_MODE
-    ]
-  };
-};
-},{}],58:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'task project allprojects subprojects artifacts buildscript configurations ' +
-        'dependencies repositories sourceSets description delete from into include ' +
-        'exclude source classpath destinationDir includes options sourceCompatibility ' +
-        'targetCompatibility group flatDir doLast doFirst flatten todir fromdir ant ' +
-        'def abstract break case catch continue default do else extends final finally ' +
-        'for if implements instanceof native new private protected public return static ' +
-        'switch synchronized throw throws transient try volatile while strictfp package ' +
-        'import false null super this true antlrtask checkstyle codenarc copy boolean ' +
-        'byte char class double float int interface long short void compile runTime ' +
-        'file fileTree abs any append asList asWritable call collect compareTo count ' +
-        'div dump each eachByte eachFile eachLine every find findAll flatten getAt ' +
-        'getErr getIn getOut getText grep immutable inject inspect intersect invokeMethods ' +
-        'isCase join leftShift minus multiply newInputStream newOutputStream newPrintWriter ' +
-        'newReader newWriter next plus pop power previous print println push putAt read ' +
-        'readBytes readLines reverse reverseEach round size sort splitEachLine step subMap ' +
-        'times toInteger toList tokenize upto waitForOrKill withPrintWriter withReader ' +
-        'withStream withWriter withWriterAppend write writeLine'
-    },
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.NUMBER_MODE,
-      hljs.REGEXP_MODE
-
-    ]
-  }
-};
-},{}],59:[function(require,module,exports){
-module.exports = function(hljs) {
-    return {
-        keywords: {
-            typename: 'byte short char int long boolean float double void',
-            literal : 'true false null',
-            keyword:
-                // groovy specific keywords
-            'def as in assert trait ' +
-                // common keywords with Java
-            'super this abstract static volatile transient public private protected synchronized final ' +
-            'class interface enum if else for while switch case break default continue ' +
-            'throw throws try catch finally implements extends new import package return instanceof'
-        },
-
-        contains: [
-            hljs.C_LINE_COMMENT_MODE,
-            {
-                className: 'javadoc',
-                begin: '/\\*\\*', end: '\\*//*',
-                relevance: 0,
-                contains: [
-                    {
-                        className: 'javadoctag', begin: '(^|\\s)@[A-Za-z]+'
-                    }
-                ]
-            },
-            hljs.C_BLOCK_COMMENT_MODE,
-            {
-                className: 'string',
-                begin: '"""', end: '"""'
-            },
-            {
-                className: 'string',
-                begin: "'''", end: "'''"
-            },
-            {
-                className: 'string',
-                begin: "\\$/", end: "/\\$",
-                relevance: 10
-            },
-            hljs.APOS_STRING_MODE,
-            {
-                className: 'regexp',
-                begin: /~?\/[^\/\n]+\//,
-                contains: [
-                    hljs.BACKSLASH_ESCAPE
-                ]
-            },
-            hljs.QUOTE_STRING_MODE,
-            {
-                className: 'shebang',
-                begin: "^#!/usr/bin/env", end: '$',
-                illegal: '\n'
-            },
-            hljs.BINARY_NUMBER_MODE,
-            {
-                className: 'class',
-                beginKeywords: 'class interface trait enum', end: '{',
-                illegal: ':',
-                contains: [
-                    {beginKeywords: 'extends implements'},
-                    hljs.UNDERSCORE_TITLE_MODE,
-                ]
-            },
-            hljs.C_NUMBER_MODE,
-            {
-                className: 'annotation', begin: '@[A-Za-z]+'
-            },
-            {
-                // highlight map keys and named parameters as strings
-                className: 'string', begin: /[^\?]{0}[A-Za-z0-9_$]+ *:/
-            },
-            {
-                // catch middle element of the ternary operator
-                // to avoid highlight it as a label, named parameter, or map key
-                begin: /\?/, end: /\:/
-            },
-            {
-                // highlight labeled statements
-                className: 'label', begin: '^\\s*[A-Za-z0-9_$]+:',
-                relevance: 0
-            },
-        ]
-    }
-};
-},{}],60:[function(require,module,exports){
-module.exports = // TODO support filter tags like :javascript, support inline HTML
-function(hljs) {
-  return {
-    case_insensitive: true,
-    contains: [
-      {
-        className: 'doctype',
-        begin: '^!!!( (5|1\\.1|Strict|Frameset|Basic|Mobile|RDFa|XML\\b.*))?$',
-        relevance: 10
-      },
-      {
-        className: 'comment',
-        // FIXME these comments should be allowed to span indented lines
-        begin: '^\\s*(!=#|=#|-#|/).*$',
-        relevance: 0
-      },
-      {
-        begin: '^\\s*(-|=|!=)(?!#)',
-        starts: {
-          end: '\\n',
-          subLanguage: 'ruby'
-        }
-      },
-      {
-        className: 'tag',
-        begin: '^\\s*%',
-        contains: [
-          {
-            className: 'title',
-            begin: '\\w+'
-          },
-          {
-            className: 'value',
-            begin: '[#\\.]\\w+'
-          },
-          {
-            begin: '{\\s*',
-            end: '\\s*}',
-            excludeEnd: true,
-            contains: [
-              {
-                //className: 'attribute',
-                begin: ':\\w+\\s*=>',
-                end: ',\\s+',
-                returnBegin: true,
-                endsWithParent: true,
-                contains: [
-                  {
-                    className: 'symbol',
-                    begin: ':\\w+'
-                  },
-                  {
-                    className: 'string',
-                    begin: '"',
-                    end: '"'
-                  },
-                  {
-                    className: 'string',
-                    begin: '\'',
-                    end: '\''
-                  },
-                  {
-                    begin: '\\w+',
-                    relevance: 0
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            begin: '\\(\\s*',
-            end: '\\s*\\)',
-            excludeEnd: true,
-            contains: [
-              {
-                //className: 'attribute',
-                begin: '\\w+\\s*=',
-                end: '\\s+',
-                returnBegin: true,
-                endsWithParent: true,
-                contains: [
-                  {
-                    className: 'attribute',
-                    begin: '\\w+',
-                    relevance: 0
-                  },
-                  {
-                    className: 'string',
-                    begin: '"',
-                    end: '"'
-                  },
-                  {
-                    className: 'string',
-                    begin: '\'',
-                    end: '\''
-                  },
-                  {
-                    begin: '\\w+',
-                    relevance: 0
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        className: 'bullet',
-        begin: '^\\s*[=~]\\s*',
-        relevance: 0
-      },
-      {
-        begin: '#{',
-        starts: {
-          end: '}',
-          subLanguage: 'ruby'
-        }
-      }
-    ]
-  };
-};
-},{}],61:[function(require,module,exports){
-module.exports = function(hljs) {
-  var EXPRESSION_KEYWORDS = 'each in with if else unless bindattr action collection debugger log outlet template unbound view yield';
-  return {
-    aliases: ['hbs', 'html.hbs', 'html.handlebars'],
-    case_insensitive: true,
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        className: 'expression',
-        begin: '{{', end: '}}',
-        contains: [
-          {
-            className: 'begin-block', begin: '\#[a-zA-Z\-\ \.]+',
-            keywords: EXPRESSION_KEYWORDS
-          },
-          {
-            className: 'string',
-            begin: '"', end: '"'
-          },
-          {
-            className: 'end-block', begin: '\\\/[a-zA-Z\-\ \.]+',
-            keywords: EXPRESSION_KEYWORDS
-          },
-          {
-            className: 'variable', begin: '[a-zA-Z\-\.]+',
-            keywords: EXPRESSION_KEYWORDS
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],62:[function(require,module,exports){
-module.exports = function(hljs) {
-
-  var COMMENT = {
-    className: 'comment',
-    variants: [
-      { begin: '--', end: '$' },
-      { begin: '{-', end: '-}'
-      , contains: ['self']
-      }
-    ]
-  };
-
-  var PRAGMA = {
-    className: 'pragma',
-    begin: '{-#', end: '#-}'
-  };
-
-  var PREPROCESSOR = {
-    className: 'preprocessor',
-    begin: '^#', end: '$'
-  };
-
-  var CONSTRUCTOR = {
-    className: 'type',
-    begin: '\\b[A-Z][\\w\']*', // TODO: other constructors (build-in, infix).
-    relevance: 0
-  };
-
-  var LIST = {
-    className: 'container',
-    begin: '\\(', end: '\\)',
-    illegal: '"',
-    contains: [
-      PRAGMA,
-      COMMENT,
-      PREPROCESSOR,
-      {className: 'type', begin: '\\b[A-Z][\\w]*(\\((\\.\\.|,|\\w+)\\))?'},
-      hljs.inherit(hljs.TITLE_MODE, {begin: '[_a-z][\\w\']*'})
-    ]
-  };
-
-  var RECORD = {
-    className: 'container',
-    begin: '{', end: '}',
-    contains: LIST.contains
-  };
-
-  return {
-    aliases: ['hs'],
-    keywords:
-      'let in if then else case of where do module import hiding ' +
-      'qualified type data newtype deriving class instance as default ' +
-      'infix infixl infixr foreign export ccall stdcall cplusplus ' +
-      'jvm dotnet safe unsafe family forall mdo proc rec',
-    contains: [
-
-      // Top-level constructions.
-
-      {
-        className: 'module',
-        begin: '\\bmodule\\b', end: 'where',
-        keywords: 'module where',
-        contains: [LIST, COMMENT],
-        illegal: '\\W\\.|;'
-      },
-      {
-        className: 'import',
-        begin: '\\bimport\\b', end: '$',
-        keywords: 'import|0 qualified as hiding',
-        contains: [LIST, COMMENT],
-        illegal: '\\W\\.|;'
-      },
-
-      {
-        className: 'class',
-        begin: '^(\\s*)?(class|instance)\\b', end: 'where',
-        keywords: 'class family instance where',
-        contains: [CONSTRUCTOR, LIST, COMMENT]
-      },
-      {
-        className: 'typedef',
-        begin: '\\b(data|(new)?type)\\b', end: '$',
-        keywords: 'data family type newtype deriving',
-        contains: [PRAGMA, COMMENT, CONSTRUCTOR, LIST, RECORD]
-      },
-      {
-        className: 'default',
-        beginKeywords: 'default', end: '$',
-        contains: [CONSTRUCTOR, LIST, COMMENT]
-      },
-      {
-        className: 'infix',
-        beginKeywords: 'infix infixl infixr', end: '$',
-        contains: [hljs.C_NUMBER_MODE, COMMENT]
-      },
-      {
-        className: 'foreign',
-        begin: '\\bforeign\\b', end: '$',
-        keywords: 'foreign import export ccall stdcall cplusplus jvm ' +
-                  'dotnet safe unsafe',
-        contains: [CONSTRUCTOR, hljs.QUOTE_STRING_MODE, COMMENT]
-      },
-      {
-        className: 'shebang',
-        begin: '#!\\/usr\\/bin\\/env\ runhaskell', end: '$'
-      },
-
-      // "Whitespaces".
-
-      PRAGMA,
-      COMMENT,
-      PREPROCESSOR,
-
-      // Literals and names.
-
-      // TODO: characters.
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      CONSTRUCTOR,
-      hljs.inherit(hljs.TITLE_MODE, {begin: '^[_a-z][\\w\']*'}),
-
-      {begin: '->|<-'} // No markup, relevance booster
-    ]
-  };
-};
-},{}],63:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
-  var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
-
-  return {
-    aliases: ['hx'],
-    keywords: {
-      keyword: 'break callback case cast catch class continue default do dynamic else enum extends extern ' +
-    'for function here if implements import in inline interface never new override package private ' +
-    'public return static super switch this throw trace try typedef untyped using var while',
-      literal: 'true false null'
-    },
-    contains: [
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '{', excludeEnd: true,
-        contains: [
-          {
-            beginKeywords: 'extends implements'
-          },
-          hljs.TITLE_MODE
-        ]
-      },
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$',
-        keywords: 'if else elseif end error'
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: '[{;]', excludeEnd: true,
-        illegal: '\\S',
-        contains: [
-          hljs.TITLE_MODE,
-          {
-            className: 'params',
-            begin: '\\(', end: '\\)',
-            contains: [
-              hljs.APOS_STRING_MODE,
-              hljs.QUOTE_STRING_MODE,
-              hljs.C_LINE_COMMENT_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ]
-          },
-          {
-            className: 'type',
-            begin: ':',
-            end: IDENT_FUNC_RETURN_TYPE_RE,
-            relevance: 10
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],64:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    illegal: '\\S',
-    contains: [
-      {
-        className: 'status',
-        begin: '^HTTP/[0-9\\.]+', end: '$',
-        contains: [{className: 'number', begin: '\\b\\d{3}\\b'}]
-      },
-      {
-        className: 'request',
-        begin: '^[A-Z]+ (.*?) HTTP/[0-9\\.]+$', returnBegin: true, end: '$',
-        contains: [
-          {
-            className: 'string',
-            begin: ' ', end: ' ',
-            excludeBegin: true, excludeEnd: true
-          }
-        ]
-      },
-      {
-        className: 'attribute',
-        begin: '^\\w', end: ': ', excludeEnd: true,
-        illegal: '\\n|\\s|=',
-        starts: {className: 'string', end: '$'}
-      },
-      {
-        begin: '\\n\\n',
-        starts: {subLanguage: '', endsWithParent: true}
-      }
-    ]
-  };
-};
-},{}],65:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    case_insensitive: true,
-    illegal: /\S/,
-    contains: [
-      {
-        className: 'comment',
-        begin: ';', end: '$'
-      },
-      {
-        className: 'title',
-        begin: '^\\[', end: '\\]'
-      },
-      {
-        className: 'setting',
-        begin: '^[a-z0-9\\[\\]_-]+[ \\t]*=[ \\t]*', end: '$',
-        contains: [
-          {
-            className: 'value',
-            endsWithParent: true,
-            keywords: 'on off true false yes no',
-            contains: [hljs.QUOTE_STRING_MODE, hljs.NUMBER_MODE],
-            relevance: 0
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],66:[function(require,module,exports){
-module.exports = function(hljs) {
-  var GENERIC_IDENT_RE = hljs.UNDERSCORE_IDENT_RE + '(<' + hljs.UNDERSCORE_IDENT_RE + '>)?';
-  var KEYWORDS =
-    'false synchronized int abstract float private char boolean static null if const ' +
-    'for true while long strictfp finally protected import native final void ' +
-    'enum else break transient catch instanceof byte super volatile case assert short ' +
-    'package default double public try this switch continue throws protected public private';
-
-  // https://docs.oracle.com/javase/7/docs/technotes/guides/language/underscores-literals.html
-  var JAVA_NUMBER_RE = '(\\b(0b[01_]+)|\\b0[xX][a-fA-F0-9_]+|(\\b[\\d_]+(\\.[\\d_]*)?|\\.[\\d_]+)([eE][-+]?\\d+)?)[lLfF]?'; // 0b..., 0x..., 0..., decimal, float
-  var JAVA_NUMBER_MODE = {
-    className: 'number',
-    begin: JAVA_NUMBER_RE,
-    relevance: 0
-  };
-
-  return {
-    aliases: ['jsp'],
-    keywords: KEYWORDS,
-    illegal: /<\//,
-    contains: [
-      {
-        className: 'javadoc',
-        begin: '/\\*\\*', end: '\\*/',
-        relevance: 0,
-        contains: [{
-          className: 'javadoctag', begin: '(^|\\s)@[A-Za-z]+'
-        }]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: /[{;=]/, excludeEnd: true,
-        keywords: 'class interface',
-        illegal: /[:"\[\]]/,
-        contains: [
-          {beginKeywords: 'extends implements'},
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      {
-        // Expression keywords prevent 'keyword Name(...)' from being
-        // recognized as a function definition
-        beginKeywords: 'new throw return',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        begin: '(' + GENERIC_IDENT_RE + '\\s+)+' + hljs.UNDERSCORE_IDENT_RE + '\\s*\\(', returnBegin: true, end: /[{;=]/,
-        excludeEnd: true,
-        keywords: KEYWORDS,
-        contains: [
-          {
-            begin: hljs.UNDERSCORE_IDENT_RE + '\\s*\\(', returnBegin: true,
-            relevance: 0,
-            contains: [hljs.UNDERSCORE_TITLE_MODE]
-          },
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            keywords: KEYWORDS,
-            relevance: 0,
-            contains: [
-              hljs.APOS_STRING_MODE,
-              hljs.QUOTE_STRING_MODE,
-              hljs.C_NUMBER_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ]
-          },
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      },
-      JAVA_NUMBER_MODE,
-      {
-        className: 'annotation', begin: '@[A-Za-z]+'
-      }
-    ]
-  };
-};
-},{}],67:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['js'],
-    keywords: {
-      keyword:
-        'in if for while finally var new function do return void else break catch ' +
-        'instanceof with throw case default try this switch continue typeof delete ' +
-        'let yield const class',
-      literal:
-        'true false null undefined NaN Infinity',
-      built_in:
-        'eval isFinite isNaN parseFloat parseInt decodeURI decodeURIComponent ' +
-        'encodeURI encodeURIComponent escape unescape Object Function Boolean Error ' +
-        'EvalError InternalError RangeError ReferenceError StopIteration SyntaxError ' +
-        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
-        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
-        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-        'module console window document'
-    },
-    contains: [
-      {
-        className: 'pi',
-        relevance: 10,
-        variants: [
-          {begin: /^\s*('|")use strict('|")/},
-          {begin: /^\s*('|")use asm('|")/}
-        ]
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      { // "value" container
-        begin: '(' + hljs.RE_STARTERS_RE + '|\\b(case|return|throw)\\b)\\s*',
-        keywords: 'return throw case',
-        contains: [
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE,
-          hljs.REGEXP_MODE,
-          { // E4X
-            begin: /</, end: />;/,
-            relevance: 0,
-            subLanguage: 'xml'
-          }
-        ],
-        relevance: 0
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: /\{/, excludeEnd: true,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: /[A-Za-z$_][0-9A-Za-z$_]*/}),
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            contains: [
-              hljs.C_LINE_COMMENT_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ],
-            illegal: /["'\(]/
-          }
-        ],
-        illegal: /\[|%/
-      },
-      {
-        begin: /\$[(.]/ // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
-      },
-      {
-        begin: '\\.' + hljs.IDENT_RE, relevance: 0 // hack: prevents detection of keywords after dots
-      }
-    ]
-  };
-};
-},{}],68:[function(require,module,exports){
-module.exports = function(hljs) {
-  var LITERALS = {literal: 'true false null'};
-  var TYPES = [
-    hljs.QUOTE_STRING_MODE,
-    hljs.C_NUMBER_MODE
-  ];
-  var VALUE_CONTAINER = {
-    className: 'value',
-    end: ',', endsWithParent: true, excludeEnd: true,
-    contains: TYPES,
-    keywords: LITERALS
-  };
-  var OBJECT = {
-    begin: '{', end: '}',
-    contains: [
-      {
-        className: 'attribute',
-        begin: '\\s*"', end: '"\\s*:\\s*', excludeBegin: true, excludeEnd: true,
-        contains: [hljs.BACKSLASH_ESCAPE],
-        illegal: '\\n',
-        starts: VALUE_CONTAINER
-      }
-    ],
-    illegal: '\\S'
-  };
-  var ARRAY = {
-    begin: '\\[', end: '\\]',
-    contains: [hljs.inherit(VALUE_CONTAINER, {className: null})], // inherit is also a workaround for a bug that makes shared modes with endsWithParent compile only the ending of one of the parents
-    illegal: '\\S'
-  };
-  TYPES.splice(TYPES.length, 0, OBJECT, ARRAY);
-  return {
-    contains: TYPES,
-    keywords: LITERALS,
-    illegal: '\\S'
-  };
-};
-},{}],69:[function(require,module,exports){
-module.exports = function(hljs) {
-  var LASSO_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_.]*';
-  var LASSO_ANGLE_RE = '<\\?(lasso(script)?|=)';
-  var LASSO_CLOSE_RE = '\\]|\\?>';
-  var LASSO_KEYWORDS = {
-    literal:
-      'true false none minimal full all void and or not ' +
-      'bw nbw ew new cn ncn lt lte gt gte eq neq rx nrx ft',
-    built_in:
-      'array date decimal duration integer map pair string tag xml null ' +
-      'boolean bytes keyword list locale queue set stack staticarray ' +
-      'local var variable global data self inherited',
-    keyword:
-      'error_code error_msg error_pop error_push error_reset cache ' +
-      'database_names database_schemanames database_tablenames define_tag ' +
-      'define_type email_batch encode_set html_comment handle handle_error ' +
-      'header if inline iterate ljax_target link link_currentaction ' +
-      'link_currentgroup link_currentrecord link_detail link_firstgroup ' +
-      'link_firstrecord link_lastgroup link_lastrecord link_nextgroup ' +
-      'link_nextrecord link_prevgroup link_prevrecord log loop ' +
-      'namespace_using output_none portal private protect records referer ' +
-      'referrer repeating resultset rows search_args search_arguments ' +
-      'select sort_args sort_arguments thread_atomic value_list while ' +
-      'abort case else if_empty if_false if_null if_true loop_abort ' +
-      'loop_continue loop_count params params_up return return_value ' +
-      'run_children soap_definetag soap_lastrequest soap_lastresponse ' +
-      'tag_name ascending average by define descending do equals ' +
-      'frozen group handle_failure import in into join let match max ' +
-      'min on order parent protected provide public require returnhome ' +
-      'skip split_thread sum take thread to trait type where with ' +
-      'yield yieldhome'
-  };
-  var HTML_COMMENT = {
-    className: 'comment',
-    begin: '<!--', end: '-->',
-    relevance: 0
-  };
-  var LASSO_NOPROCESS = {
-    className: 'preprocessor',
-    begin: '\\[noprocess\\]',
-    starts: {
-      className: 'markup',
-      end: '\\[/noprocess\\]',
-      returnEnd: true,
-      contains: [HTML_COMMENT]
-    }
-  };
-  var LASSO_START = {
-    className: 'preprocessor',
-    begin: '\\[/noprocess|' + LASSO_ANGLE_RE
-  };
-  var LASSO_DATAMEMBER = {
-    className: 'variable',
-    begin: '\'' + LASSO_IDENT_RE + '\''
-  };
-  var LASSO_CODE = [
-    hljs.C_LINE_COMMENT_MODE,
-    {
-      className: 'javadoc',
-      begin: '/\\*\\*!', end: '\\*/',
-      contains: [hljs.PHRASAL_WORDS_MODE]
-    },
-    hljs.C_BLOCK_COMMENT_MODE,
-    hljs.inherit(hljs.C_NUMBER_MODE, {begin: hljs.C_NUMBER_RE + '|(-?infinity|nan)\\b'}),
-    hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
-    hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-    {
-      className: 'string',
-      begin: '`', end: '`'
-    },
-    {
-      className: 'variable',
-      variants: [
-        {
-          begin: '[#$]' + LASSO_IDENT_RE
-        },
-        {
-          begin: '#', end: '\\d+',
-          illegal: '\\W'
-        }
-      ]
-    },
-    {
-      className: 'tag',
-      begin: '::\\s*', end: LASSO_IDENT_RE,
-      illegal: '\\W'
-    },
-    {
-      className: 'attribute',
-      variants: [
-        {
-          begin: '-' + hljs.UNDERSCORE_IDENT_RE,
-          relevance: 0
-        },
-        {
-          begin: '(\\.\\.\\.)'
-        }
-      ]
-    },
-    {
-      className: 'subst',
-      variants: [
-        {
-          begin: '->\\s*',
-          contains: [LASSO_DATAMEMBER]
-        },
-        {
-          begin: ':=|/(?!\\w)=?|[-+*%=<>&|!?\\\\]+',
-          relevance: 0
-        }
-      ]
-    },
-    {
-      className: 'built_in',
-      begin: '\\.\\.?\\s*',
-      relevance: 0,
-      contains: [LASSO_DATAMEMBER]
-    },
-    {
-      className: 'class',
-      beginKeywords: 'define',
-      returnEnd: true, end: '\\(|=>',
-      contains: [
-        hljs.inherit(hljs.TITLE_MODE, {begin: hljs.UNDERSCORE_IDENT_RE + '(=(?!>))?'})
-      ]
-    }
-  ];
-  return {
-    aliases: ['ls', 'lassoscript'],
-    case_insensitive: true,
-    lexemes: LASSO_IDENT_RE + '|&[lg]t;',
-    keywords: LASSO_KEYWORDS,
-    contains: [
-      {
-        className: 'preprocessor',
-        begin: LASSO_CLOSE_RE,
-        relevance: 0,
-        starts: {
-          className: 'markup',
-          end: '\\[|' + LASSO_ANGLE_RE,
-          returnEnd: true,
-          relevance: 0,
-          contains: [HTML_COMMENT]
-        }
-      },
-      LASSO_NOPROCESS,
-      LASSO_START,
-      {
-        className: 'preprocessor',
-        begin: '\\[no_square_brackets',
-        starts: {
-          end: '\\[/no_square_brackets\\]', // not implemented in the language
-          lexemes: LASSO_IDENT_RE + '|&[lg]t;',
-          keywords: LASSO_KEYWORDS,
-          contains: [
-            {
-              className: 'preprocessor',
-              begin: LASSO_CLOSE_RE,
-              relevance: 0,
-              starts: {
-                className: 'markup',
-                end: '\\[noprocess\\]|' + LASSO_ANGLE_RE,
-                returnEnd: true,
-                contains: [HTML_COMMENT]
-              }
-            },
-            LASSO_NOPROCESS,
-            LASSO_START
-          ].concat(LASSO_CODE)
-        }
-      },
-      {
-        className: 'preprocessor',
-        begin: '\\[',
-        relevance: 0
-      },
-      {
-        className: 'shebang',
-        begin: '^#!.+lasso9\\b',
-        relevance: 10
-      }
-    ].concat(LASSO_CODE)
-  };
-};
-},{}],70:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
-  var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})+';
-
-  /* Generic Modes */
-
-  var RULES = [], VALUE = []; // forward def. for recursive modes
-
-  var STRING_MODE = function(c) { return {
-    // Less strings are not multiline (also include '~' for more consistent coloring of "escaped" strings)
-    className: 'string', begin: '~?' + c + '.*?' + c
-  };};
-
-  var IDENT_MODE = function(name, begin, relevance) { return {
-    className: name, begin: begin, relevance: relevance
-  };};
-
-  var FUNCT_MODE = function(name, ident, obj) {
-    return hljs.inherit({
-        className: name, begin: ident + '\\(', end: '\\(',
-        returnBegin: true, excludeEnd: true, relevance: 0
-    }, obj);
-  };
-
-  var PARENS_MODE = {
-    // used only to properly balance nested parens inside mixin call, def. arg list
-    begin: '\\(', end: '\\)', contains: VALUE, relevance: 0
-  };
-
-  // generic Less highlighter (used almost everywhere except selectors):
-  VALUE.push(
-    hljs.C_LINE_COMMENT_MODE,
-    hljs.C_BLOCK_COMMENT_MODE,
-    STRING_MODE("'"),
-    STRING_MODE('"'),
-    hljs.CSS_NUMBER_MODE, // fixme: it does not include dot for numbers like .5em :(
-    IDENT_MODE('hexcolor', '#[0-9A-Fa-f]+\\b'),
-    FUNCT_MODE('function', '(url|data-uri)', {
-      starts: {className: 'string', end: '[\\)\\n]', excludeEnd: true}
-    }),
-    FUNCT_MODE('function', IDENT_RE),
-    PARENS_MODE,
-    IDENT_MODE('variable', '@@?' + IDENT_RE, 10),
-    IDENT_MODE('variable', '@{'  + IDENT_RE + '}'),
-    IDENT_MODE('built_in', '~?`[^`]*?`'), // inline javascript (or whatever host language) *multiline* string
-    { // @media features (it’s here to not duplicate things in AT_RULE_MODE with extra PARENS_MODE overriding):
-      className: 'attribute', begin: IDENT_RE + '\\s*:', end: ':', returnBegin: true, excludeEnd: true
-    }
-  );
-
-  var VALUE_WITH_RULESETS = VALUE.concat({
-    begin: '{', end: '}', contains: RULES,
-  });
-
-  var MIXIN_GUARD_MODE = {
-    beginKeywords: 'when', endsWithParent: true,
-    contains: [{beginKeywords: 'and not'}].concat(VALUE) // using this form to override VALUE’s 'function' match
-  };
-
-  /* Rule-Level Modes */
-
-  var RULE_MODE = {
-    className: 'attribute',
-    begin: INTERP_IDENT_RE, end: ':', excludeEnd: true,
-    contains: [hljs.C_LINE_COMMENT_MODE, hljs.C_BLOCK_COMMENT_MODE],
-    illegal: /\S/,
-    starts: {end: '[;}]', returnEnd: true, contains: VALUE, illegal: '[<=$]'}
-  };
-
-  var AT_RULE_MODE = {
-    className: 'at_rule', // highlight only at-rule keyword
-    begin: '@(import|media|charset|font-face|(-[a-z]+-)?keyframes|supports|document|namespace|page|viewport|host)\\b',
-    starts: {end: '[;{}]', returnEnd: true, contains: VALUE, relevance: 0}
-  };
-
-  // variable definitions and calls
-  var VAR_RULE_MODE = {
-    className: 'variable',
-    variants: [
-      // using more strict pattern for higher relevance to increase chances of Less detection.
-      // this is *the only* Less specific statement used in most of the sources, so...
-      // (we’ll still often loose to the css-parser unless there's '//' comment,
-      // simply because 1 variable just can't beat 99 properties :)
-      {begin: '@' + IDENT_RE + '\\s*:', relevance: 15},
-      {begin: '@' + IDENT_RE}
-    ],
-    starts: {end: '[;}]', returnEnd: true, contains: VALUE_WITH_RULESETS}
-  };
-
-  var SELECTOR_MODE = {
-    // first parse unambiguous selectors (i.e. those not starting with tag)
-    // then fall into the scary lookahead-discriminator variant.
-    // this mode also handles mixin definitions and calls
-    variants: [{
-      begin: '[\\.#:&\\[]', end: '[;{}]'  // mixin calls end with ';'
-      }, {
-      begin: INTERP_IDENT_RE + '[^;]*{',
-      end: '{'
-    }],
-    returnBegin: true,
-    returnEnd:   true,
-    illegal: '[<=\'$"]',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      MIXIN_GUARD_MODE,
-      IDENT_MODE('keyword',  'all\\b'),
-      IDENT_MODE('variable', '@{'  + IDENT_RE + '}'),     // otherwise it’s identified as tag
-      IDENT_MODE('tag',       INTERP_IDENT_RE + '%?', 0), // '%' for more consistent coloring of @keyframes "tags"
-      IDENT_MODE('id',       '#'   + INTERP_IDENT_RE),
-      IDENT_MODE('class',    '\\.' + INTERP_IDENT_RE, 0),
-      IDENT_MODE('keyword',  '&', 0),
-      FUNCT_MODE('pseudo',   ':not'),
-      FUNCT_MODE('keyword',  ':extend'),
-      IDENT_MODE('pseudo',   '::?' + INTERP_IDENT_RE),
-      {className: 'attr_selector', begin: '\\[', end: '\\]'},
-      {begin: '\\(', end: '\\)', contains: VALUE_WITH_RULESETS}, // argument list of parametric mixins
-      {begin: '!important'} // eat !important after mixin call or it will be colored as tag
-    ]
-  };
-
-  RULES.push(
-    hljs.C_LINE_COMMENT_MODE,
-    hljs.C_BLOCK_COMMENT_MODE,
-    AT_RULE_MODE,
-    VAR_RULE_MODE,
-    SELECTOR_MODE,
-    RULE_MODE
-  );
-
-  return {
-    case_insensitive: true,
-    illegal: '[=>\'/<($"]',
-    contains: RULES
-  };
-};
-},{}],71:[function(require,module,exports){
-module.exports = function(hljs) {
-  var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
-  var MEC_RE = '\\|[^]*?\\|';
-  var LISP_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+(\\.\\d+|\\/\\d+)?((d|e|f|l|s)(\\+|\\-)?\\d+)?';
-  var SHEBANG = {
-    className: 'shebang',
-    begin: '^#!', end: '$'
-  };
-  var LITERAL = {
-    className: 'literal',
-    begin: '\\b(t{1}|nil)\\b'
-  };
-  var NUMBER = {
-    className: 'number',
-    variants: [
-      {begin: LISP_SIMPLE_NUMBER_RE, relevance: 0},
-      {begin: '#b[0-1]+(/[0-1]+)?'},
-      {begin: '#o[0-7]+(/[0-7]+)?'},
-      {begin: '#x[0-9a-f]+(/[0-9a-f]+)?'},
-      {begin: '#c\\(' + LISP_SIMPLE_NUMBER_RE + ' +' + LISP_SIMPLE_NUMBER_RE, end: '\\)'}
-    ]
-  };
-  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-  var COMMENT = {
-    className: 'comment',
-    begin: ';', end: '$', relevance: 0
-  };
-  var VARIABLE = {
-    className: 'variable',
-    begin: '\\*', end: '\\*'
-  };
-  var KEYWORD = {
-    className: 'keyword',
-    begin: '[:&]' + LISP_IDENT_RE
-  };
-  var MEC = {
-    begin: MEC_RE
-  };
-  var QUOTED_LIST = {
-    begin: '\\(', end: '\\)',
-    contains: ['self', LITERAL, STRING, NUMBER]
-  };
-  var QUOTED = {
-    className: 'quoted',
-    contains: [NUMBER, STRING, VARIABLE, KEYWORD, QUOTED_LIST],
-    variants: [
-      {
-        begin: '[\'`]\\(', end: '\\)'
-      },
-      {
-        begin: '\\(quote ', end: '\\)',
-        keywords: 'quote'
-      },
-      {
-        begin: '\'' + MEC_RE
-      }
-    ]
-  };
-  var QUOTED_ATOM = {
-    className: 'quoted',
-    begin: '\'' + LISP_IDENT_RE
-  };
-  var LIST = {
-    className: 'list',
-    begin: '\\(', end: '\\)'
-  };
-  var BODY = {
-    endsWithParent: true,
-    relevance: 0
-  };
-  LIST.contains = [
-    {
-      className: 'keyword',
-      variants: [
-        {begin: LISP_IDENT_RE},
-        {begin: MEC_RE}
-      ]
-    },
-    BODY
-  ];
-  BODY.contains = [QUOTED, QUOTED_ATOM, LIST, LITERAL, NUMBER, STRING, COMMENT, VARIABLE, KEYWORD, MEC];
-
-  return {
-    illegal: /\S/,
-    contains: [
-      NUMBER,
-      SHEBANG,
-      LITERAL,
-      STRING,
-      COMMENT,
-      QUOTED,
-      QUOTED_ATOM,
-      LIST
-    ]
-  };
-};
-},{}],72:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VARIABLE = {
-    className: 'variable', begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
-    relevance: 0
-  };
-  var COMMENT = {
-    className: 'comment', end: '$',
-    variants: [
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.HASH_COMMENT_MODE,
-      {
-        begin: '--'
-      },
-      {
-        begin: '[^:]//'
-      }
-    ]
-  };
-  var TITLE1 = hljs.inherit(hljs.TITLE_MODE, {
-    variants: [
-      {begin: '\\b_*rig[A-Z]+[A-Za-z0-9_\\-]*'},
-      {begin: '\\b_[a-z0-9\\-]+'}
-    ]
-  });
-  var TITLE2 = hljs.inherit(hljs.TITLE_MODE, {begin: '\\b([A-Za-z0-9_\\-]+)\\b'});
-  return {
-    case_insensitive: false,
-    keywords: {
-      keyword:
-        'after byte bytes english the until http forever descending using line real8 with seventh ' +
-        'for stdout finally element word fourth before black ninth sixth characters chars stderr ' +
-        'uInt1 uInt1s uInt2 uInt2s stdin string lines relative rel any fifth items from middle mid ' +
-        'at else of catch then third it file milliseconds seconds second secs sec int1 int1s int4 ' +
-        'int4s internet int2 int2s normal text item last long detailed effective uInt4 uInt4s repeat ' +
-        'end repeat URL in try into switch to words https token binfile each tenth as ticks tick ' +
-        'system real4 by dateItems without char character ascending eighth whole dateTime numeric short ' +
-        'first ftp integer abbreviated abbr abbrev private case while if',
-      constant:
-        'SIX TEN FORMFEED NINE ZERO NONE SPACE FOUR FALSE COLON CRLF PI COMMA ENDOFFILE EOF EIGHT FIVE ' +
-        'QUOTE EMPTY ONE TRUE RETURN CR LINEFEED RIGHT BACKSLASH NULL SEVEN TAB THREE TWO ' +
-        'six ten formfeed nine zero none space four false colon crlf pi comma endoffile eof eight five ' +
-        'quote empty one true return cr linefeed right backslash null seven tab three two ' +
-        'RIVERSION RISTATE FILE_READ_MODE FILE_WRITE_MODE FILE_WRITE_MODE DIR_WRITE_MODE FILE_READ_UMASK ' +
-        'FILE_WRITE_UMASK DIR_READ_UMASK DIR_WRITE_UMASK',
-      operator:
-        'div mod wrap and or bitAnd bitNot bitOr bitXor among not in a an within ' +
-        'contains ends with begins the keys of keys',
-      built_in:
-        'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg base64Decode ' +
-        'base64Encode baseConvert binaryDecode binaryEncode byteToNum cachedURL cachedURLs charToNum ' +
-        'cipherNames commandNames compound compress constantNames cos date dateFormat decompress directories ' +
-        'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames global ' +
-        'globals hasMemory hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
-        'keys len length libURLErrorData libUrlFormData libURLftpCommand libURLLastHTTPHeaders libURLLastRHHeaders ' +
-        'libUrlMultipartFormAddPart libUrlMultipartFormData libURLVersion lineOffset ln ln1 localNames log log2 log10 ' +
-        'longFilePath lower macToISO matchChunk matchText matrixMultiply max md5Digest median merge millisec ' +
-        'millisecs millisecond milliseconds min monthNames num number numToByte numToChar offset open openfiles ' +
-        'openProcesses openProcessIDs openSockets paramCount param params peerAddress pendingMessages platform ' +
-        'processID random randomBytes replaceText result revCreateXMLTree revCreateXMLTreeFromFile revCurrentRecord ' +
-        'revCurrentRecordIsFirst revCurrentRecordIsLast revDatabaseColumnCount revDatabaseColumnIsNull ' +
-        'revDatabaseColumnLengths revDatabaseColumnNames revDatabaseColumnNamed revDatabaseColumnNumbered ' +
-        'revDatabaseColumnTypes revDatabaseConnectResult revDatabaseCursors revDatabaseID revDatabaseTableNames ' +
-        'revDatabaseType revDataFromQuery revdb_closeCursor revdb_columnbynumber revdb_columncount revdb_columnisnull ' +
-        'revdb_columnlengths revdb_columnnames revdb_columntypes revdb_commit revdb_connect revdb_connections ' +
-        'revdb_connectionerr revdb_currentrecord revdb_cursorconnection revdb_cursorerr revdb_cursors revdb_dbtype ' +
-        'revdb_disconnect revdb_execute revdb_iseof revdb_isbof revdb_movefirst revdb_movelast revdb_movenext ' +
-        'revdb_moveprev revdb_query revdb_querylist revdb_recordcount revdb_rollback revdb_tablenames ' +
-        'revGetDatabaseDriverPath revNumberOfRecords revOpenDatabase revOpenDatabases revQueryDatabase ' +
-        'revQueryDatabaseBlob revQueryResult revQueryIsAtStart revQueryIsAtEnd revUnixFromMacPath ' +
-        'revXMLAttribute revXMLAttributes revXMLAttributeValues revXMLChildContents revXMLChildNames ' +
-        'revXMLFirstChild revXMLMatchingNode revXMLNextSibling revXMLNodeContents revXMLNumberOfChildren ' +
-        'revXMLParent revXMLPreviousSibling revXMLRootNode revXMLRPC_CreateRequest revXMLRPC_Documents ' +
-        'revXMLRPC_Error revXMLRPC_Execute revXMLRPC_GetHost revXMLRPC_GetMethod revXMLRPC_GetParam revXMLText ' +
-        'revXMLRPC_GetParamCount revXMLRPC_GetParamNode revXMLRPC_GetParamType revXMLRPC_GetPath revXMLRPC_GetPort ' +
-        'revXMLRPC_GetProtocol revXMLRPC_GetRequest revXMLRPC_GetResponse revXMLRPC_GetSocket revXMLTree ' +
-        'revXMLTrees revXMLValidateDTD revZipDescribeItem revZipEnumerateItems revZipOpenArchives round ' +
-        'sec secs seconds sha1Digest shell shortFilePath sin specialFolderPath sqrt standardDeviation statRound ' +
-        'stdDev sum sysError systemVersion tan tempName tick ticks time to toLower toUpper transpose trunc ' +
-        'uniDecode uniEncode upper URLDecode URLEncode URLStatus value variableNames version waitDepth weekdayNames wordOffset ' +
-        'add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
-        'combine constant convert create new alias folder directory decrypt delete variable word line folder ' +
-        'directory URL dispatch divide do encrypt filter get include intersect kill libURLDownloadToFile ' +
-        'libURLFollowHttpRedirects libURLftpUpload libURLftpUploadFile libURLresetAll libUrlSetAuthCallback ' +
-        'libURLSetCustomHTTPHeaders libUrlSetExpect100 libURLSetFTPListCommand libURLSetFTPMode libURLSetFTPStopTime ' +
-        'libURLSetStatusCallback load multiply socket process post seek rel relative read from process rename ' +
-        'replace require resetAll revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
-        'revCopyFile revCopyFolder revCopyXMLNode revDeleteFolder revDeleteXMLNode revDeleteAllXMLTrees ' +
-        'revDeleteXMLTree revExecuteSQL revGoURL revInsertXMLNode revMoveFolder revMoveToFirstRecord revMoveToLastRecord ' +
-        'revMoveToNextRecord revMoveToPreviousRecord revMoveToRecord revMoveXMLNode revPutIntoXMLNode revRollBackDatabase ' +
-        'revSetDatabaseDriverPath revSetXMLAttribute revXMLRPC_AddParam revXMLRPC_DeleteAllDocuments revXMLAddDTD ' +
-        'revXMLRPC_Free revXMLRPC_FreeAll revXMLRPC_DeleteDocument revXMLRPC_DeleteParam revXMLRPC_SetHost ' +
-        'revXMLRPC_SetMethod revXMLRPC_SetPort revXMLRPC_SetProtocol revXMLRPC_SetSocket revZipAddItemWithData ' +
-        'revZipAddItemWithFile revZipAddUncompressedItemWithData revZipAddUncompressedItemWithFile revZipCancel ' +
-        'revZipCloseArchive revZipDeleteItem revZipExtractItemToFile revZipExtractItemToVariable revZipSetProgressCallback ' +
-        'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split ' +
-        'subtract union unload wait write'
-    },
-    contains: [
-      VARIABLE,
-      {
-        className: 'keyword',
-        begin: '\\bend\\sif\\b'
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: '$',
-        contains: [
-          VARIABLE,
-          TITLE2,
-          hljs.APOS_STRING_MODE,
-          hljs.QUOTE_STRING_MODE,
-          hljs.BINARY_NUMBER_MODE,
-          hljs.C_NUMBER_MODE,
-          TITLE1
-        ]
-      },
-      {
-        className: 'function',
-        beginKeywords: 'end', end: '$',
-        contains: [
-          TITLE2,
-          TITLE1
-        ]
-      },
-      {
-        className: 'command',
-        beginKeywords: 'command on', end: '$',
-        contains: [
-          VARIABLE,
-          TITLE2,
-          hljs.APOS_STRING_MODE,
-          hljs.QUOTE_STRING_MODE,
-          hljs.BINARY_NUMBER_MODE,
-          hljs.C_NUMBER_MODE,
-          TITLE1
-        ]
-      },
-      {
-        className: 'command',
-        beginKeywords: 'end', end: '$',
-        contains: [
-          TITLE2,
-          TITLE1
-        ]
-      },
-      {
-        className: 'preprocessor',
-        begin: '<\\?rev|<\\?lc|<\\?livecode',
-        relevance: 10
-      },
-      {
-        className: 'preprocessor',
-        begin: '<\\?'
-      },
-      {
-        className: 'preprocessor',
-        begin: '\\?>'
-      },
-      COMMENT,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.BINARY_NUMBER_MODE,
-      hljs.C_NUMBER_MODE,
-      TITLE1
-    ],
-    illegal: ';$|^\\[|^='
-  };
-};
-},{}],73:[function(require,module,exports){
-module.exports = function(hljs) {
-  var KEYWORDS = {
-    keyword:
-      // JS keywords
-      'in if for while finally new do return else break catch instanceof throw try this ' +
-      'switch continue typeof delete debugger case default function var with ' +
-      // LiveScript keywords
-      'then unless until loop of by when and or is isnt not it that otherwise from to til fallthrough super ' +
-      'case default function var void const let enum export import native ' +
-      '__hasProp __extends __slice __bind __indexOf',
-    literal:
-      // JS literals
-      'true false null undefined ' +
-      // LiveScript literals
-      'yes no on off it that void',
-    built_in:
-      'npm require console print module global window document'
-  };
-  var JS_IDENT_RE = '[A-Za-z$_](?:\-[0-9A-Za-z$_]|[0-9A-Za-z$_])*';
-  var TITLE = hljs.inherit(hljs.TITLE_MODE, {begin: JS_IDENT_RE});
-  var SUBST = {
-    className: 'subst',
-    begin: /#\{/, end: /\}/,
-    keywords: KEYWORDS
-  };
-  var SUBST_SIMPLE = {
-    className: 'subst',
-    begin: /#[A-Za-z$_]/, end: /(?:\-[0-9A-Za-z$_]|[0-9A-Za-z$_])*/,
-    keywords: KEYWORDS
-  };
-  var EXPRESSIONS = [
-    hljs.BINARY_NUMBER_MODE,
-    {
-      className: 'number',
-      begin: '(\\b0[xX][a-fA-F0-9_]+)|(\\b\\d(\\d|_\\d)*(\\.(\\d(\\d|_\\d)*)?)?(_*[eE]([-+]\\d(_\\d|\\d)*)?)?[_a-z]*)',
-      relevance: 0,
-      starts: {end: '(\\s*/)?', relevance: 0} // a number tries to eat the following slash to prevent treating it as a regexp
-    },
-    {
-      className: 'string',
-      variants: [
-        {
-          begin: /'''/, end: /'''/,
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: /'/, end: /'/,
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: /"""/, end: /"""/,
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST, SUBST_SIMPLE]
-        },
-        {
-          begin: /"/, end: /"/,
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST, SUBST_SIMPLE]
-        },
-        {
-          begin: /\\/, end: /(\s|$)/,
-          excludeEnd: true
-        }
-      ]
-    },
-    {
-      className: 'pi',
-      variants: [
-        {
-          begin: '//', end: '//[gim]*',
-          contains: [SUBST, hljs.HASH_COMMENT_MODE]
-        },
-        {
-          // regex can't start with space to parse x / 2 / 3 as two divisions
-          // regex can't start with *, and it supports an "illegal" in the main mode
-          begin: /\/(?![ *])(\\\/|.)*?\/[gim]*(?=\W|$)/
-        }
-      ]
-    },
-    {
-      className: 'property',
-      begin: '@' + JS_IDENT_RE
-    },
-    {
-      begin: '``', end: '``',
-      excludeBegin: true, excludeEnd: true,
-      subLanguage: 'javascript'
-    }
-  ];
-  SUBST.contains = EXPRESSIONS;
-
-  var PARAMS = {
-    className: 'params',
-    begin: '\\(', returnBegin: true,
-    /* We need another contained nameless mode to not have every nested
-    pair of parens to be called "params" */
-    contains: [
-      {
-        begin: /\(/, end: /\)/,
-        keywords: KEYWORDS,
-        contains: ['self'].concat(EXPRESSIONS)
-      }
-    ]
-  };
-
-  return {
-    aliases: ['ls'],
-    keywords: KEYWORDS,
-    illegal: /\/\*/,
-    contains: EXPRESSIONS.concat([
-      {
-        className: 'comment',
-        begin: '\\/\\*', end: '\\*\\/'
-      },
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'function',
-        contains: [TITLE, PARAMS],
-        returnBegin: true,
-        variants: [
-          {
-            begin: '(' + JS_IDENT_RE + '\\s*(?:=|:=)\\s*)?(\\(.*\\))?\\s*\\B\\->\\*?', end: '\\->\\*?'
-          },
-          {
-            begin: '(' + JS_IDENT_RE + '\\s*(?:=|:=)\\s*)?!?(\\(.*\\))?\\s*\\B[-~]{1,2}>\\*?', end: '[-~]{1,2}>\\*?'
-          },
-          {
-            begin: '(' + JS_IDENT_RE + '\\s*(?:=|:=)\\s*)?(\\(.*\\))?\\s*\\B!?[-~]{1,2}>\\*?', end: '!?[-~]{1,2}>\\*?'
-          }
-        ]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class',
-        end: '$',
-        illegal: /[:="\[\]]/,
-        contains: [
-          {
-            beginKeywords: 'extends',
-            endsWithParent: true,
-            illegal: /[:="\[\]]/,
-            contains: [TITLE]
-          },
-          TITLE
-        ]
-      },
-      {
-        className: 'attribute',
-        begin: JS_IDENT_RE + ':', end: ':',
-        returnBegin: true, returnEnd: true,
-        relevance: 0
-      }
-    ])
-  };
-};
-},{}],74:[function(require,module,exports){
-module.exports = function(hljs) {
-  var OPENING_LONG_BRACKET = '\\[=*\\[';
-  var CLOSING_LONG_BRACKET = '\\]=*\\]';
-  var LONG_BRACKETS = {
-    begin: OPENING_LONG_BRACKET, end: CLOSING_LONG_BRACKET,
-    contains: ['self']
-  };
-  var COMMENTS = [
-    {
-      className: 'comment',
-      begin: '--(?!' + OPENING_LONG_BRACKET + ')', end: '$'
-    },
-    {
-      className: 'comment',
-      begin: '--' + OPENING_LONG_BRACKET, end: CLOSING_LONG_BRACKET,
-      contains: [LONG_BRACKETS],
-      relevance: 10
-    }
-  ]
-  return {
-    lexemes: hljs.UNDERSCORE_IDENT_RE,
-    keywords: {
-      keyword:
-        'and break do else elseif end false for if in local nil not or repeat return then ' +
-        'true until while',
-      built_in:
-        '_G _VERSION assert collectgarbage dofile error getfenv getmetatable ipairs load ' +
-        'loadfile loadstring module next pairs pcall print rawequal rawget rawset require ' +
-        'select setfenv setmetatable tonumber tostring type unpack xpcall coroutine debug ' +
-        'io math os package string table'
-    },
-    contains: COMMENTS.concat([
-      {
-        className: 'function',
-        beginKeywords: 'function', end: '\\)',
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: '([_a-zA-Z]\\w*\\.)*([_a-zA-Z]\\w*:)?[_a-zA-Z]\\w*'}),
-          {
-            className: 'params',
-            begin: '\\(', endsWithParent: true,
-            contains: COMMENTS
-          }
-        ].concat(COMMENTS)
-      },
-      hljs.C_NUMBER_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        begin: OPENING_LONG_BRACKET, end: CLOSING_LONG_BRACKET,
-        contains: [LONG_BRACKETS],
-        relevance: 5
-      }
-    ])
-  };
-};
-},{}],75:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VARIABLE = {
-    className: 'variable',
-    begin: /\$\(/, end: /\)/,
-    contains: [hljs.BACKSLASH_ESCAPE]
-  };
-  return {
-    aliases: ['mk', 'mak'],
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      {
-        begin: /^\w+\s*\W*=/, returnBegin: true,
-        relevance: 0,
-        starts: {
-          className: 'constant',
-          end: /\s*\W*=/, excludeEnd: true,
-          starts: {
-            end: /$/,
-            relevance: 0,
-            contains: [
-              VARIABLE
-            ]
-          }
-        }
-      },
-      {
-        className: 'title',
-        begin: /^[\w]+:\s*$/
-      },
-      {
-        className: 'phony',
-        begin: /^\.PHONY:/, end: /$/,
-        keywords: '.PHONY', lexemes: /[\.\w]+/
-      },
-      {
-        begin: /^\t+/, end: /$/,
-        relevance: 0,
-        contains: [
-          hljs.QUOTE_STRING_MODE,
-          VARIABLE
-        ]
-      }
-    ]
-  };
-};
-},{}],76:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['md', 'mkdown', 'mkd'],
-    contains: [
-      // highlight headers
-      {
-        className: 'header',
-        variants: [
-          { begin: '^#{1,6}', end: '$' },
-          { begin: '^.+?\\n[=-]{2,}$' }
-        ]
-      },
-      // inline html
-      {
-        begin: '<', end: '>',
-        subLanguage: 'xml',
-        relevance: 0
-      },
-      // lists (indicators only)
-      {
-        className: 'bullet',
-        begin: '^([*+-]|(\\d+\\.))\\s+'
-      },
-      // strong segments
-      {
-        className: 'strong',
-        begin: '[*_]{2}.+?[*_]{2}'
-      },
-      // emphasis segments
-      {
-        className: 'emphasis',
-        variants: [
-          { begin: '\\*.+?\\*' },
-          { begin: '_.+?_'
-          , relevance: 0
-          }
-        ]
-      },
-      // blockquotes
-      {
-        className: 'blockquote',
-        begin: '^>\\s+', end: '$'
-      },
-      // code snippets
-      {
-        className: 'code',
-        variants: [
-          { begin: '`.+?`' },
-          { begin: '^( {4}|\t)', end: '$'
-          , relevance: 0
-          }
-        ]
-      },
-      // horizontal rules
-      {
-        className: 'horizontal_rule',
-        begin: '^[-\\*]{3,}', end: '$'
-      },
-      // using links - title and link
-      {
-        begin: '\\[.+?\\][\\(\\[].*?[\\)\\]]',
-        returnBegin: true,
-        contains: [
-          {
-            className: 'link_label',
-            begin: '\\[', end: '\\]',
-            excludeBegin: true,
-            returnEnd: true,
-            relevance: 0
-          },
-          {
-            className: 'link_url',
-            begin: '\\]\\(', end: '\\)',
-            excludeBegin: true, excludeEnd: true
-          },
-          {
-            className: 'link_reference',
-            begin: '\\]\\[', end: '\\]',
-            excludeBegin: true, excludeEnd: true
-          }
-        ],
-        relevance: 10
-      },
-      {
-        begin: '^\\[\.+\\]:',
-        returnBegin: true,
-        contains: [
-          {
-            className: 'link_reference',
-            begin: '\\[', end: '\\]:',
-            excludeBegin: true, excludeEnd: true,
-            starts: {
-              className: 'link_url',
-              end: '$'
-            }
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],77:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['mma'],
-    lexemes: '(\\$|\\b)' + hljs.IDENT_RE + '\\b',
-    keywords: 'AbelianGroup Abort AbortKernels AbortProtect Above Abs Absolute AbsoluteCorrelation AbsoluteCorrelationFunction AbsoluteCurrentValue AbsoluteDashing AbsoluteFileName AbsoluteOptions AbsolutePointSize AbsoluteThickness AbsoluteTime AbsoluteTiming AccountingForm Accumulate Accuracy AccuracyGoal ActionDelay ActionMenu ActionMenuBox ActionMenuBoxOptions Active ActiveItem ActiveStyle AcyclicGraphQ AddOnHelpPath AddTo AdjacencyGraph AdjacencyList AdjacencyMatrix AdjustmentBox AdjustmentBoxOptions AdjustTimeSeriesForecast AffineTransform After AiryAi AiryAiPrime AiryAiZero AiryBi AiryBiPrime AiryBiZero AlgebraicIntegerQ AlgebraicNumber AlgebraicNumberDenominator AlgebraicNumberNorm AlgebraicNumberPolynomial AlgebraicNumberTrace AlgebraicRules AlgebraicRulesData Algebraics AlgebraicUnitQ Alignment AlignmentMarker AlignmentPoint All AllowedDimensions AllowGroupClose AllowInlineCells AllowKernelInitialization AllowReverseGroupClose AllowScriptLevelChange AlphaChannel AlternatingGroup AlternativeHypothesis Alternatives AmbientLight Analytic AnchoredSearch And AndersonDarlingTest AngerJ AngleBracket AngularGauge Animate AnimationCycleOffset AnimationCycleRepetitions AnimationDirection AnimationDisplayTime AnimationRate AnimationRepetitions AnimationRunning Animator AnimatorBox AnimatorBoxOptions AnimatorElements Annotation Annuity AnnuityDue Antialiasing Antisymmetric Apart ApartSquareFree Appearance AppearanceElements AppellF1 Append AppendTo Apply ArcCos ArcCosh ArcCot ArcCoth ArcCsc ArcCsch ArcSec ArcSech ArcSin ArcSinDistribution ArcSinh ArcTan ArcTanh Arg ArgMax ArgMin ArgumentCountQ ARIMAProcess ArithmeticGeometricMean ARMAProcess ARProcess Array ArrayComponents ArrayDepth ArrayFlatten ArrayPad ArrayPlot ArrayQ ArrayReshape ArrayRules Arrays Arrow Arrow3DBox ArrowBox Arrowheads AspectRatio AspectRatioFixed Assert Assuming Assumptions AstronomicalData Asynchronous AsynchronousTaskObject AsynchronousTasks AtomQ Attributes AugmentedSymmetricPolynomial AutoAction AutoDelete AutoEvaluateEvents AutoGeneratedPackage AutoIndent AutoIndentSpacings AutoItalicWords AutoloadPath AutoMatch Automatic AutomaticImageSize AutoMultiplicationSymbol AutoNumberFormatting AutoOpenNotebooks AutoOpenPalettes AutorunSequencing AutoScaling AutoScroll AutoSpacing AutoStyleOptions AutoStyleWords Axes AxesEdge AxesLabel AxesOrigin AxesStyle Axis ' +
-      'BabyMonsterGroupB Back Background BackgroundTasksSettings Backslash Backsubstitution Backward Band BandpassFilter BandstopFilter BarabasiAlbertGraphDistribution BarChart BarChart3D BarLegend BarlowProschanImportance BarnesG BarOrigin BarSpacing BartlettHannWindow BartlettWindow BaseForm Baseline BaselinePosition BaseStyle BatesDistribution BattleLemarieWavelet Because BeckmannDistribution Beep Before Begin BeginDialogPacket BeginFrontEndInteractionPacket BeginPackage BellB BellY Below BenfordDistribution BeniniDistribution BenktanderGibratDistribution BenktanderWeibullDistribution BernoulliB BernoulliDistribution BernoulliGraphDistribution BernoulliProcess BernsteinBasis BesselFilterModel BesselI BesselJ BesselJZero BesselK BesselY BesselYZero Beta BetaBinomialDistribution BetaDistribution BetaNegativeBinomialDistribution BetaPrimeDistribution BetaRegularized BetweennessCentrality BezierCurve BezierCurve3DBox BezierCurve3DBoxOptions BezierCurveBox BezierCurveBoxOptions BezierFunction BilateralFilter Binarize BinaryFormat BinaryImageQ BinaryRead BinaryReadList BinaryWrite BinCounts BinLists Binomial BinomialDistribution BinomialProcess BinormalDistribution BiorthogonalSplineWavelet BipartiteGraphQ BirnbaumImportance BirnbaumSaundersDistribution BitAnd BitClear BitGet BitLength BitNot BitOr BitSet BitShiftLeft BitShiftRight BitXor Black BlackmanHarrisWindow BlackmanNuttallWindow BlackmanWindow Blank BlankForm BlankNullSequence BlankSequence Blend Block BlockRandom BlomqvistBeta BlomqvistBetaTest Blue Blur BodePlot BohmanWindow Bold Bookmarks Boole BooleanConsecutiveFunction BooleanConvert BooleanCountingFunction BooleanFunction BooleanGraph BooleanMaxterms BooleanMinimize BooleanMinterms Booleans BooleanTable BooleanVariables BorderDimensions BorelTannerDistribution Bottom BottomHatTransform BoundaryStyle Bounds Box BoxBaselineShift BoxData BoxDimensions Boxed Boxes BoxForm BoxFormFormatTypes BoxFrame BoxID BoxMargins BoxMatrix BoxRatios BoxRotation BoxRotationPoint BoxStyle BoxWhiskerChart Bra BracketingBar BraKet BrayCurtisDistance BreadthFirstScan Break Brown BrownForsytheTest BrownianBridgeProcess BrowserCategory BSplineBasis BSplineCurve BSplineCurve3DBox BSplineCurveBox BSplineCurveBoxOptions BSplineFunction BSplineSurface BSplineSurface3DBox BubbleChart BubbleChart3D BubbleScale BubbleSizes BulletGauge BusinessDayQ ButterflyGraph ButterworthFilterModel Button ButtonBar ButtonBox ButtonBoxOptions ButtonCell ButtonContents ButtonData ButtonEvaluator ButtonExpandable ButtonFrame ButtonFunction ButtonMargins ButtonMinHeight ButtonNote ButtonNotebook ButtonSource ButtonStyle ButtonStyleMenuListing Byte ByteCount ByteOrdering ' +
-      'C CachedValue CacheGraphics CalendarData CalendarType CallPacket CanberraDistance Cancel CancelButton CandlestickChart Cap CapForm CapitalDifferentialD CardinalBSplineBasis CarmichaelLambda Cases Cashflow Casoratian Catalan CatalanNumber Catch CauchyDistribution CauchyWindow CayleyGraph CDF CDFDeploy CDFInformation CDFWavelet Ceiling Cell CellAutoOverwrite CellBaseline CellBoundingBox CellBracketOptions CellChangeTimes CellContents CellContext CellDingbat CellDynamicExpression CellEditDuplicate CellElementsBoundingBox CellElementSpacings CellEpilog CellEvaluationDuplicate CellEvaluationFunction CellEventActions CellFrame CellFrameColor CellFrameLabelMargins CellFrameLabels CellFrameMargins CellGroup CellGroupData CellGrouping CellGroupingRules CellHorizontalScrolling CellID CellLabel CellLabelAutoDelete CellLabelMargins CellLabelPositioning CellMargins CellObject CellOpen CellPrint CellProlog Cells CellSize CellStyle CellTags CellularAutomaton CensoredDistribution Censoring Center CenterDot CentralMoment CentralMomentGeneratingFunction CForm ChampernowneNumber ChanVeseBinarize Character CharacterEncoding CharacterEncodingsPath CharacteristicFunction CharacteristicPolynomial CharacterRange Characters ChartBaseStyle ChartElementData ChartElementDataFunction ChartElementFunction ChartElements ChartLabels ChartLayout ChartLegends ChartStyle Chebyshev1FilterModel Chebyshev2FilterModel ChebyshevDistance ChebyshevT ChebyshevU Check CheckAbort CheckAll Checkbox CheckboxBar CheckboxBox CheckboxBoxOptions ChemicalData ChessboardDistance ChiDistribution ChineseRemainder ChiSquareDistribution ChoiceButtons ChoiceDialog CholeskyDecomposition Chop Circle CircleBox CircleDot CircleMinus CirclePlus CircleTimes CirculantGraph CityData Clear ClearAll ClearAttributes ClearSystemCache ClebschGordan ClickPane Clip ClipboardNotebook ClipFill ClippingStyle ClipPlanes ClipRange Clock ClockGauge ClockwiseContourIntegral Close Closed CloseKernels ClosenessCentrality Closing ClosingAutoSave ClosingEvent ClusteringComponents CMYKColor Coarse Coefficient CoefficientArrays CoefficientDomain CoefficientList CoefficientRules CoifletWavelet Collect Colon ColonForm ColorCombine ColorConvert ColorData ColorDataFunction ColorFunction ColorFunctionScaling Colorize ColorNegate ColorOutput ColorProfileData ColorQuantize ColorReplace ColorRules ColorSelectorSettings ColorSeparate ColorSetter ColorSetterBox ColorSetterBoxOptions ColorSlider ColorSpace Column ColumnAlignments ColumnBackgrounds ColumnForm ColumnLines ColumnsEqual ColumnSpacings ColumnWidths CommonDefaultFormatTypes Commonest CommonestFilter CommonUnits CommunityBoundaryStyle CommunityGraphPlot CommunityLabels CommunityRegionStyle CompatibleUnitQ CompilationOptions CompilationTarget Compile Compiled CompiledFunction Complement CompleteGraph CompleteGraphQ CompleteKaryTree CompletionsListPacket Complex Complexes ComplexExpand ComplexInfinity ComplexityFunction ComponentMeasurements ' +
-      'ComponentwiseContextMenu Compose ComposeList ComposeSeries Composition CompoundExpression CompoundPoissonDistribution CompoundPoissonProcess CompoundRenewalProcess Compress CompressedData Condition ConditionalExpression Conditioned Cone ConeBox ConfidenceLevel ConfidenceRange ConfidenceTransform ConfigurationPath Congruent Conjugate ConjugateTranspose Conjunction Connect ConnectedComponents ConnectedGraphQ ConnesWindow ConoverTest ConsoleMessage ConsoleMessagePacket ConsolePrint Constant ConstantArray Constants ConstrainedMax ConstrainedMin ContentPadding ContentsBoundingBox ContentSelectable ContentSize Context ContextMenu Contexts ContextToFilename ContextToFileName Continuation Continue ContinuedFraction ContinuedFractionK ContinuousAction ContinuousMarkovProcess ContinuousTimeModelQ ContinuousWaveletData ContinuousWaveletTransform ContourDetect ContourGraphics ContourIntegral ContourLabels ContourLines ContourPlot ContourPlot3D Contours ContourShading ContourSmoothing ContourStyle ContraharmonicMean Control ControlActive ControlAlignment ControllabilityGramian ControllabilityMatrix ControllableDecomposition ControllableModelQ ControllerDuration ControllerInformation ControllerInformationData ControllerLinking ControllerManipulate ControllerMethod ControllerPath ControllerState ControlPlacement ControlsRendering ControlType Convergents ConversionOptions ConversionRules ConvertToBitmapPacket ConvertToPostScript ConvertToPostScriptPacket Convolve ConwayGroupCo1 ConwayGroupCo2 ConwayGroupCo3 CoordinateChartData CoordinatesToolOptions CoordinateTransform CoordinateTransformData CoprimeQ Coproduct CopulaDistribution Copyable CopyDirectory CopyFile CopyTag CopyToClipboard CornerFilter CornerNeighbors Correlation CorrelationDistance CorrelationFunction CorrelationTest Cos Cosh CoshIntegral CosineDistance CosineWindow CosIntegral Cot Coth Count CounterAssignments CounterBox CounterBoxOptions CounterClockwiseContourIntegral CounterEvaluator CounterFunction CounterIncrements CounterStyle CounterStyleMenuListing CountRoots CountryData Covariance CovarianceEstimatorFunction CovarianceFunction CoxianDistribution CoxIngersollRossProcess CoxModel CoxModelFit CramerVonMisesTest CreateArchive CreateDialog CreateDirectory CreateDocument CreateIntermediateDirectories CreatePalette CreatePalettePacket CreateScheduledTask CreateTemporary CreateWindow CriticalityFailureImportance CriticalitySuccessImportance CriticalSection Cross CrossingDetect CrossMatrix Csc Csch CubeRoot Cubics Cuboid CuboidBox Cumulant CumulantGeneratingFunction Cup CupCap Curl CurlyDoubleQuote CurlyQuote CurrentImage CurrentlySpeakingPacket CurrentValue CurvatureFlowFilter CurveClosed Cyan CycleGraph CycleIndexPolynomial Cycles CyclicGroup Cyclotomic Cylinder CylinderBox CylindricalDecomposition ' +
-      'D DagumDistribution DamerauLevenshteinDistance DampingFactor Darker Dashed Dashing DataCompression DataDistribution DataRange DataReversed Date DateDelimiters DateDifference DateFunction DateList DateListLogPlot DateListPlot DatePattern DatePlus DateRange DateString DateTicksFormat DaubechiesWavelet DavisDistribution DawsonF DayCount DayCountConvention DayMatchQ DayName DayPlus DayRange DayRound DeBruijnGraph Debug DebugTag Decimal DeclareKnownSymbols DeclarePackage Decompose Decrement DedekindEta Default DefaultAxesStyle DefaultBaseStyle DefaultBoxStyle DefaultButton DefaultColor DefaultControlPlacement DefaultDuplicateCellStyle DefaultDuration DefaultElement DefaultFaceGridsStyle DefaultFieldHintStyle DefaultFont DefaultFontProperties DefaultFormatType DefaultFormatTypeForStyle DefaultFrameStyle DefaultFrameTicksStyle DefaultGridLinesStyle DefaultInlineFormatType DefaultInputFormatType DefaultLabelStyle DefaultMenuStyle DefaultNaturalLanguage DefaultNewCellStyle DefaultNewInlineCellStyle DefaultNotebook DefaultOptions DefaultOutputFormatType DefaultStyle DefaultStyleDefinitions DefaultTextFormatType DefaultTextInlineFormatType DefaultTicksStyle DefaultTooltipStyle DefaultValues Defer DefineExternal DefineInputStreamMethod DefineOutputStreamMethod Definition Degree DegreeCentrality DegreeGraphDistribution DegreeLexicographic DegreeReverseLexicographic Deinitialization Del Deletable Delete DeleteBorderComponents DeleteCases DeleteContents DeleteDirectory DeleteDuplicates DeleteFile DeleteSmallComponents DeleteWithContents DeletionWarning Delimiter DelimiterFlashTime DelimiterMatching Delimiters Denominator DensityGraphics DensityHistogram DensityPlot DependentVariables Deploy Deployed Depth DepthFirstScan Derivative DerivativeFilter DescriptorStateSpace DesignMatrix Det DGaussianWavelet DiacriticalPositioning Diagonal DiagonalMatrix Dialog DialogIndent DialogInput DialogLevel DialogNotebook DialogProlog DialogReturn DialogSymbols Diamond DiamondMatrix DiceDissimilarity DictionaryLookup DifferenceDelta DifferenceOrder DifferenceRoot DifferenceRootReduce Differences DifferentialD DifferentialRoot DifferentialRootReduce DifferentiatorFilter DigitBlock DigitBlockMinimum DigitCharacter DigitCount DigitQ DihedralGroup Dilation Dimensions DiracComb DiracDelta DirectedEdge DirectedEdges DirectedGraph DirectedGraphQ DirectedInfinity Direction Directive Directory DirectoryName DirectoryQ DirectoryStack DirichletCharacter DirichletConvolve DirichletDistribution DirichletL DirichletTransform DirichletWindow DisableConsolePrintPacket DiscreteChirpZTransform DiscreteConvolve DiscreteDelta DiscreteHadamardTransform DiscreteIndicator DiscreteLQEstimatorGains DiscreteLQRegulatorGains DiscreteLyapunovSolve DiscreteMarkovProcess DiscretePlot DiscretePlot3D DiscreteRatio DiscreteRiccatiSolve DiscreteShift DiscreteTimeModelQ DiscreteUniformDistribution DiscreteVariables DiscreteWaveletData DiscreteWaveletPacketTransform ' +
-      'DiscreteWaveletTransform Discriminant Disjunction Disk DiskBox DiskMatrix Dispatch DispersionEstimatorFunction Display DisplayAllSteps DisplayEndPacket DisplayFlushImagePacket DisplayForm DisplayFunction DisplayPacket DisplayRules DisplaySetSizePacket DisplayString DisplayTemporary DisplayWith DisplayWithRef DisplayWithVariable DistanceFunction DistanceTransform Distribute Distributed DistributedContexts DistributeDefinitions DistributionChart DistributionDomain DistributionFitTest DistributionParameterAssumptions DistributionParameterQ Dithering Div Divergence Divide DivideBy Dividers Divisible Divisors DivisorSigma DivisorSum DMSList DMSString Do DockedCells DocumentNotebook DominantColors DOSTextFormat Dot DotDashed DotEqual Dotted DoubleBracketingBar DoubleContourIntegral DoubleDownArrow DoubleLeftArrow DoubleLeftRightArrow DoubleLeftTee DoubleLongLeftArrow DoubleLongLeftRightArrow DoubleLongRightArrow DoubleRightArrow DoubleRightTee DoubleUpArrow DoubleUpDownArrow DoubleVerticalBar DoublyInfinite Down DownArrow DownArrowBar DownArrowUpArrow DownLeftRightVector DownLeftTeeVector DownLeftVector DownLeftVectorBar DownRightTeeVector DownRightVector DownRightVectorBar Downsample DownTee DownTeeArrow DownValues DragAndDrop DrawEdges DrawFrontFaces DrawHighlighted Drop DSolve Dt DualLinearProgramming DualSystemsModel DumpGet DumpSave DuplicateFreeQ Dynamic DynamicBox DynamicBoxOptions DynamicEvaluationTimeout DynamicLocation DynamicModule DynamicModuleBox DynamicModuleBoxOptions DynamicModuleParent DynamicModuleValues DynamicName DynamicNamespace DynamicReference DynamicSetting DynamicUpdating DynamicWrapper DynamicWrapperBox DynamicWrapperBoxOptions ' +
-      'E EccentricityCentrality EdgeAdd EdgeBetweennessCentrality EdgeCapacity EdgeCapForm EdgeColor EdgeConnectivity EdgeCost EdgeCount EdgeCoverQ EdgeDashing EdgeDelete EdgeDetect EdgeForm EdgeIndex EdgeJoinForm EdgeLabeling EdgeLabels EdgeLabelStyle EdgeList EdgeOpacity EdgeQ EdgeRenderingFunction EdgeRules EdgeShapeFunction EdgeStyle EdgeThickness EdgeWeight Editable EditButtonSettings EditCellTagsSettings EditDistance EffectiveInterest Eigensystem Eigenvalues EigenvectorCentrality Eigenvectors Element ElementData Eliminate EliminationOrder EllipticE EllipticExp EllipticExpPrime EllipticF EllipticFilterModel EllipticK EllipticLog EllipticNomeQ EllipticPi EllipticReducedHalfPeriods EllipticTheta EllipticThetaPrime EmitSound EmphasizeSyntaxErrors EmpiricalDistribution Empty EmptyGraphQ EnableConsolePrintPacket Enabled Encode End EndAdd EndDialogPacket EndFrontEndInteractionPacket EndOfFile EndOfLine EndOfString EndPackage EngineeringForm Enter EnterExpressionPacket EnterTextPacket Entropy EntropyFilter Environment Epilog Equal EqualColumns EqualRows EqualTilde EquatedTo Equilibrium EquirippleFilterKernel Equivalent Erf Erfc Erfi ErlangB ErlangC ErlangDistribution Erosion ErrorBox ErrorBoxOptions ErrorNorm ErrorPacket ErrorsDialogSettings EstimatedDistribution EstimatedProcess EstimatorGains EstimatorRegulator EuclideanDistance EulerE EulerGamma EulerianGraphQ EulerPhi Evaluatable Evaluate Evaluated EvaluatePacket EvaluationCell EvaluationCompletionAction EvaluationElements EvaluationMode EvaluationMonitor EvaluationNotebook EvaluationObject EvaluationOrder Evaluator EvaluatorNames EvenQ EventData EventEvaluator EventHandler EventHandlerTag EventLabels ExactBlackmanWindow ExactNumberQ ExactRootIsolation ExampleData Except ExcludedForms ExcludePods Exclusions ExclusionsStyle Exists Exit ExitDialog Exp Expand ExpandAll ExpandDenominator ExpandFileName ExpandNumerator Expectation ExpectationE ExpectedValue ExpGammaDistribution ExpIntegralE ExpIntegralEi Exponent ExponentFunction ExponentialDistribution ExponentialFamily ExponentialGeneratingFunction ExponentialMovingAverage ExponentialPowerDistribution ExponentPosition ExponentStep Export ExportAutoReplacements ExportPacket ExportString Expression ExpressionCell ExpressionPacket ExpToTrig ExtendedGCD Extension ExtentElementFunction ExtentMarkers ExtentSize ExternalCall ExternalDataCharacterEncoding Extract ExtractArchive ExtremeValueDistribution ' +
-      'FaceForm FaceGrids FaceGridsStyle Factor FactorComplete Factorial Factorial2 FactorialMoment FactorialMomentGeneratingFunction FactorialPower FactorInteger FactorList FactorSquareFree FactorSquareFreeList FactorTerms FactorTermsList Fail FailureDistribution False FARIMAProcess FEDisableConsolePrintPacket FeedbackSector FeedbackSectorStyle FeedbackType FEEnableConsolePrintPacket Fibonacci FieldHint FieldHintStyle FieldMasked FieldSize File FileBaseName FileByteCount FileDate FileExistsQ FileExtension FileFormat FileHash FileInformation FileName FileNameDepth FileNameDialogSettings FileNameDrop FileNameJoin FileNames FileNameSetter FileNameSplit FileNameTake FilePrint FileType FilledCurve FilledCurveBox Filling FillingStyle FillingTransform FilterRules FinancialBond FinancialData FinancialDerivative FinancialIndicator Find FindArgMax FindArgMin FindClique FindClusters FindCurvePath FindDistributionParameters FindDivisions FindEdgeCover FindEdgeCut FindEulerianCycle FindFaces FindFile FindFit FindGeneratingFunction FindGeoLocation FindGeometricTransform FindGraphCommunities FindGraphIsomorphism FindGraphPartition FindHamiltonianCycle FindIndependentEdgeSet FindIndependentVertexSet FindInstance FindIntegerNullVector FindKClan FindKClique FindKClub FindKPlex FindLibrary FindLinearRecurrence FindList FindMaximum FindMaximumFlow FindMaxValue FindMinimum FindMinimumCostFlow FindMinimumCut FindMinValue FindPermutation FindPostmanTour FindProcessParameters FindRoot FindSequenceFunction FindSettings FindShortestPath FindShortestTour FindThreshold FindVertexCover FindVertexCut Fine FinishDynamic FiniteAbelianGroupCount FiniteGroupCount FiniteGroupData First FirstPassageTimeDistribution FischerGroupFi22 FischerGroupFi23 FischerGroupFi24Prime FisherHypergeometricDistribution FisherRatioTest FisherZDistribution Fit FitAll FittedModel FixedPoint FixedPointList FlashSelection Flat Flatten FlattenAt FlatTopWindow FlipView Floor FlushPrintOutputPacket Fold FoldList Font FontColor FontFamily FontForm FontName FontOpacity FontPostScriptName FontProperties FontReencoding FontSize FontSlant FontSubstitutions FontTracking FontVariations FontWeight For ForAll Format FormatRules FormatType FormatTypeAutoConvert FormatValues FormBox FormBoxOptions FortranForm Forward ForwardBackward Fourier FourierCoefficient FourierCosCoefficient FourierCosSeries FourierCosTransform FourierDCT FourierDCTFilter FourierDCTMatrix FourierDST FourierDSTMatrix FourierMatrix FourierParameters FourierSequenceTransform FourierSeries FourierSinCoefficient FourierSinSeries FourierSinTransform FourierTransform FourierTrigSeries FractionalBrownianMotionProcess FractionalPart FractionBox FractionBoxOptions FractionLine Frame FrameBox FrameBoxOptions Framed FrameInset FrameLabel Frameless FrameMargins FrameStyle FrameTicks FrameTicksStyle FRatioDistribution FrechetDistribution FreeQ FrequencySamplingFilterKernel FresnelC FresnelS Friday FrobeniusNumber FrobeniusSolve ' +
-      'FromCharacterCode FromCoefficientRules FromContinuedFraction FromDate FromDigits FromDMS Front FrontEndDynamicExpression FrontEndEventActions FrontEndExecute FrontEndObject FrontEndResource FrontEndResourceString FrontEndStackSize FrontEndToken FrontEndTokenExecute FrontEndValueCache FrontEndVersion FrontFaceColor FrontFaceOpacity Full FullAxes FullDefinition FullForm FullGraphics FullOptions FullSimplify Function FunctionExpand FunctionInterpolation FunctionSpace FussellVeselyImportance ' +
-      'GaborFilter GaborMatrix GaborWavelet GainMargins GainPhaseMargins Gamma GammaDistribution GammaRegularized GapPenalty Gather GatherBy GaugeFaceElementFunction GaugeFaceStyle GaugeFrameElementFunction GaugeFrameSize GaugeFrameStyle GaugeLabels GaugeMarkers GaugeStyle GaussianFilter GaussianIntegers GaussianMatrix GaussianWindow GCD GegenbauerC General GeneralizedLinearModelFit GenerateConditions GeneratedCell GeneratedParameters GeneratingFunction Generic GenericCylindricalDecomposition GenomeData GenomeLookup GeodesicClosing GeodesicDilation GeodesicErosion GeodesicOpening GeoDestination GeodesyData GeoDirection GeoDistance GeoGridPosition GeometricBrownianMotionProcess GeometricDistribution GeometricMean GeometricMeanFilter GeometricTransformation GeometricTransformation3DBox GeometricTransformation3DBoxOptions GeometricTransformationBox GeometricTransformationBoxOptions GeoPosition GeoPositionENU GeoPositionXYZ GeoProjectionData GestureHandler GestureHandlerTag Get GetBoundingBoxSizePacket GetContext GetEnvironment GetFileName GetFrontEndOptionsDataPacket GetLinebreakInformationPacket GetMenusPacket GetPageBreakInformationPacket Glaisher GlobalClusteringCoefficient GlobalPreferences GlobalSession Glow GoldenRatio GompertzMakehamDistribution GoodmanKruskalGamma GoodmanKruskalGammaTest Goto Grad Gradient GradientFilter GradientOrientationFilter Graph GraphAssortativity GraphCenter GraphComplement GraphData GraphDensity GraphDiameter GraphDifference GraphDisjointUnion ' +
-      'GraphDistance GraphDistanceMatrix GraphElementData GraphEmbedding GraphHighlight GraphHighlightStyle GraphHub Graphics Graphics3D Graphics3DBox Graphics3DBoxOptions GraphicsArray GraphicsBaseline GraphicsBox GraphicsBoxOptions GraphicsColor GraphicsColumn GraphicsComplex GraphicsComplex3DBox GraphicsComplex3DBoxOptions GraphicsComplexBox GraphicsComplexBoxOptions GraphicsContents GraphicsData GraphicsGrid GraphicsGridBox GraphicsGroup GraphicsGroup3DBox GraphicsGroup3DBoxOptions GraphicsGroupBox GraphicsGroupBoxOptions GraphicsGrouping GraphicsHighlightColor GraphicsRow GraphicsSpacing GraphicsStyle GraphIntersection GraphLayout GraphLinkEfficiency GraphPeriphery GraphPlot GraphPlot3D GraphPower GraphPropertyDistribution GraphQ GraphRadius GraphReciprocity GraphRoot GraphStyle GraphUnion Gray GrayLevel GreatCircleDistance Greater GreaterEqual GreaterEqualLess GreaterFullEqual GreaterGreater GreaterLess GreaterSlantEqual GreaterTilde Green Grid GridBaseline GridBox GridBoxAlignment GridBoxBackground GridBoxDividers GridBoxFrame GridBoxItemSize GridBoxItemStyle GridBoxOptions GridBoxSpacings GridCreationSettings GridDefaultElement GridElementStyleOptions GridFrame GridFrameMargins GridGraph GridLines GridLinesStyle GroebnerBasis GroupActionBase GroupCentralizer GroupElementFromWord GroupElementPosition GroupElementQ GroupElements GroupElementToWord GroupGenerators GroupMultiplicationTable GroupOrbits GroupOrder GroupPageBreakWithin GroupSetwiseStabilizer GroupStabilizer GroupStabilizerChain Gudermannian GumbelDistribution ' +
-      'HaarWavelet HadamardMatrix HalfNormalDistribution HamiltonianGraphQ HammingDistance HammingWindow HankelH1 HankelH2 HankelMatrix HannPoissonWindow HannWindow HaradaNortonGroupHN HararyGraph HarmonicMean HarmonicMeanFilter HarmonicNumber Hash HashTable Haversine HazardFunction Head HeadCompose Heads HeavisideLambda HeavisidePi HeavisideTheta HeldGroupHe HeldPart HelpBrowserLookup HelpBrowserNotebook HelpBrowserSettings HermiteDecomposition HermiteH HermitianMatrixQ HessenbergDecomposition Hessian HexadecimalCharacter Hexahedron HexahedronBox HexahedronBoxOptions HiddenSurface HighlightGraph HighlightImage HighpassFilter HigmanSimsGroupHS HilbertFilter HilbertMatrix Histogram Histogram3D HistogramDistribution HistogramList HistogramTransform HistogramTransformInterpolation HitMissTransform HITSCentrality HodgeDual HoeffdingD HoeffdingDTest Hold HoldAll HoldAllComplete HoldComplete HoldFirst HoldForm HoldPattern HoldRest HolidayCalendar HomeDirectory HomePage Horizontal HorizontalForm HorizontalGauge HorizontalScrollPosition HornerForm HotellingTSquareDistribution HoytDistribution HTMLSave Hue HumpDownHump HumpEqual HurwitzLerchPhi HurwitzZeta HyperbolicDistribution HypercubeGraph HyperexponentialDistribution Hyperfactorial Hypergeometric0F1 Hypergeometric0F1Regularized Hypergeometric1F1 Hypergeometric1F1Regularized Hypergeometric2F1 Hypergeometric2F1Regularized HypergeometricDistribution HypergeometricPFQ HypergeometricPFQRegularized HypergeometricU Hyperlink HyperlinkCreationSettings Hyphenation HyphenationOptions HypoexponentialDistribution HypothesisTestData ' +
-      'I Identity IdentityMatrix If IgnoreCase Im Image Image3D Image3DSlices ImageAccumulate ImageAdd ImageAdjust ImageAlign ImageApply ImageAspectRatio ImageAssemble ImageCache ImageCacheValid ImageCapture ImageChannels ImageClip ImageColorSpace ImageCompose ImageConvolve ImageCooccurrence ImageCorners ImageCorrelate ImageCorrespondingPoints ImageCrop ImageData ImageDataPacket ImageDeconvolve ImageDemosaic ImageDifference ImageDimensions ImageDistance ImageEffect ImageFeatureTrack ImageFileApply ImageFileFilter ImageFileScan ImageFilter ImageForestingComponents ImageForwardTransformation ImageHistogram ImageKeypoints ImageLevels ImageLines ImageMargins ImageMarkers ImageMeasurements ImageMultiply ImageOffset ImagePad ImagePadding ImagePartition ImagePeriodogram ImagePerspectiveTransformation ImageQ ImageRangeCache ImageReflect ImageRegion ImageResize ImageResolution ImageRotate ImageRotated ImageScaled ImageScan ImageSize ImageSizeAction ImageSizeCache ImageSizeMultipliers ImageSizeRaw ImageSubtract ImageTake ImageTransformation ImageTrim ImageType ImageValue ImageValuePositions Implies Import ImportAutoReplacements ImportString ImprovementImportance In IncidenceGraph IncidenceList IncidenceMatrix IncludeConstantBasis IncludeFileExtension IncludePods IncludeSingularTerm Increment Indent IndentingNewlineSpacings IndentMaxFraction IndependenceTest IndependentEdgeSetQ IndependentUnit IndependentVertexSetQ Indeterminate IndexCreationOptions Indexed IndexGraph IndexTag Inequality InexactNumberQ InexactNumbers Infinity Infix Information Inherited InheritScope Initialization InitializationCell InitializationCellEvaluation InitializationCellWarning InlineCounterAssignments InlineCounterIncrements InlineRules Inner Inpaint Input InputAliases InputAssumptions InputAutoReplacements InputField InputFieldBox InputFieldBoxOptions InputForm InputGrouping InputNamePacket InputNotebook InputPacket InputSettings InputStream InputString InputStringPacket InputToBoxFormPacket Insert InsertionPointObject InsertResults Inset Inset3DBox Inset3DBoxOptions InsetBox InsetBoxOptions Install InstallService InString Integer IntegerDigits IntegerExponent IntegerLength IntegerPart IntegerPartitions IntegerQ Integers IntegerString Integral Integrate Interactive InteractiveTradingChart Interlaced Interleaving InternallyBalancedDecomposition InterpolatingFunction InterpolatingPolynomial Interpolation InterpolationOrder InterpolationPoints InterpolationPrecision Interpretation InterpretationBox InterpretationBoxOptions InterpretationFunction ' +
-      'InterpretTemplate InterquartileRange Interrupt InterruptSettings Intersection Interval IntervalIntersection IntervalMemberQ IntervalUnion Inverse InverseBetaRegularized InverseCDF InverseChiSquareDistribution InverseContinuousWaveletTransform InverseDistanceTransform InverseEllipticNomeQ InverseErf InverseErfc InverseFourier InverseFourierCosTransform InverseFourierSequenceTransform InverseFourierSinTransform InverseFourierTransform InverseFunction InverseFunctions InverseGammaDistribution InverseGammaRegularized InverseGaussianDistribution InverseGudermannian InverseHaversine InverseJacobiCD InverseJacobiCN InverseJacobiCS InverseJacobiDC InverseJacobiDN InverseJacobiDS InverseJacobiNC InverseJacobiND InverseJacobiNS InverseJacobiSC InverseJacobiSD InverseJacobiSN InverseLaplaceTransform InversePermutation InverseRadon InverseSeries InverseSurvivalFunction InverseWaveletTransform InverseWeierstrassP InverseZTransform Invisible InvisibleApplication InvisibleTimes IrreduciblePolynomialQ IsolatingInterval IsomorphicGraphQ IsotopeData Italic Item ItemBox ItemBoxOptions ItemSize ItemStyle ItoProcess ' +
-      'JaccardDissimilarity JacobiAmplitude Jacobian JacobiCD JacobiCN JacobiCS JacobiDC JacobiDN JacobiDS JacobiNC JacobiND JacobiNS JacobiP JacobiSC JacobiSD JacobiSN JacobiSymbol JacobiZeta JankoGroupJ1 JankoGroupJ2 JankoGroupJ3 JankoGroupJ4 JarqueBeraALMTest JohnsonDistribution Join Joined JoinedCurve JoinedCurveBox JoinForm JordanDecomposition JordanModelDecomposition ' +
-      'K KagiChart KaiserBesselWindow KaiserWindow KalmanEstimator KalmanFilter KarhunenLoeveDecomposition KaryTree KatzCentrality KCoreComponents KDistribution KelvinBei KelvinBer KelvinKei KelvinKer KendallTau KendallTauTest KernelExecute KernelMixtureDistribution KernelObject Kernels Ket Khinchin KirchhoffGraph KirchhoffMatrix KleinInvariantJ KnightTourGraph KnotData KnownUnitQ KolmogorovSmirnovTest KroneckerDelta KroneckerModelDecomposition KroneckerProduct KroneckerSymbol KuiperTest KumaraswamyDistribution Kurtosis KuwaharaFilter ' +
-      'Label Labeled LabeledSlider LabelingFunction LabelStyle LaguerreL LambdaComponents LambertW LanczosWindow LandauDistribution Language LanguageCategory LaplaceDistribution LaplaceTransform Laplacian LaplacianFilter LaplacianGaussianFilter Large Larger Last Latitude LatitudeLongitude LatticeData LatticeReduce Launch LaunchKernels LayeredGraphPlot LayerSizeFunction LayoutInformation LCM LeafCount LeapYearQ LeastSquares LeastSquaresFilterKernel Left LeftArrow LeftArrowBar LeftArrowRightArrow LeftDownTeeVector LeftDownVector LeftDownVectorBar LeftRightArrow LeftRightVector LeftTee LeftTeeArrow LeftTeeVector LeftTriangle LeftTriangleBar LeftTriangleEqual LeftUpDownVector LeftUpTeeVector LeftUpVector LeftUpVectorBar LeftVector LeftVectorBar LegendAppearance Legended LegendFunction LegendLabel LegendLayout LegendMargins LegendMarkers LegendMarkerSize LegendreP LegendreQ LegendreType Length LengthWhile LerchPhi Less LessEqual LessEqualGreater LessFullEqual LessGreater LessLess LessSlantEqual LessTilde LetterCharacter LetterQ Level LeveneTest LeviCivitaTensor LevyDistribution Lexicographic LibraryFunction LibraryFunctionError LibraryFunctionInformation LibraryFunctionLoad LibraryFunctionUnload LibraryLoad LibraryUnload LicenseID LiftingFilterData LiftingWaveletTransform LightBlue LightBrown LightCyan Lighter LightGray LightGreen Lighting LightingAngle LightMagenta LightOrange LightPink LightPurple LightRed LightSources LightYellow Likelihood Limit LimitsPositioning LimitsPositioningTokens LindleyDistribution Line Line3DBox LinearFilter LinearFractionalTransform LinearModelFit LinearOffsetFunction LinearProgramming LinearRecurrence LinearSolve LinearSolveFunction LineBox LineBreak LinebreakAdjustments LineBreakChart LineBreakWithin LineColor LineForm LineGraph LineIndent LineIndentMaxFraction LineIntegralConvolutionPlot LineIntegralConvolutionScale LineLegend LineOpacity LineSpacing LineWrapParts LinkActivate LinkClose LinkConnect LinkConnectedQ LinkCreate LinkError LinkFlush LinkFunction LinkHost LinkInterrupt LinkLaunch LinkMode LinkObject LinkOpen LinkOptions LinkPatterns LinkProtocol LinkRead LinkReadHeld LinkReadyQ Links LinkWrite LinkWriteHeld LiouvilleLambda List Listable ListAnimate ListContourPlot ListContourPlot3D ListConvolve ListCorrelate ListCurvePathPlot ListDeconvolve ListDensityPlot Listen ListFourierSequenceTransform ListInterpolation ListLineIntegralConvolutionPlot ListLinePlot ListLogLinearPlot ListLogLogPlot ListLogPlot ListPicker ListPickerBox ListPickerBoxBackground ListPickerBoxOptions ListPlay ListPlot ListPlot3D ListPointPlot3D ListPolarPlot ListQ ListStreamDensityPlot ListStreamPlot ListSurfacePlot3D ListVectorDensityPlot ListVectorPlot ListVectorPlot3D ListZTransform Literal LiteralSearch LocalClusteringCoefficient LocalizeVariables LocationEquivalenceTest LocationTest Locator LocatorAutoCreate LocatorBox LocatorBoxOptions LocatorCentering LocatorPane LocatorPaneBox LocatorPaneBoxOptions ' +
-      'LocatorRegion Locked Log Log10 Log2 LogBarnesG LogGamma LogGammaDistribution LogicalExpand LogIntegral LogisticDistribution LogitModelFit LogLikelihood LogLinearPlot LogLogisticDistribution LogLogPlot LogMultinormalDistribution LogNormalDistribution LogPlot LogRankTest LogSeriesDistribution LongEqual Longest LongestAscendingSequence LongestCommonSequence LongestCommonSequencePositions LongestCommonSubsequence LongestCommonSubsequencePositions LongestMatch LongForm Longitude LongLeftArrow LongLeftRightArrow LongRightArrow Loopback LoopFreeGraphQ LowerCaseQ LowerLeftArrow LowerRightArrow LowerTriangularize LowpassFilter LQEstimatorGains LQGRegulator LQOutputRegulatorGains LQRegulatorGains LUBackSubstitution LucasL LuccioSamiComponents LUDecomposition LyapunovSolve LyonsGroupLy ' +
-      'MachineID MachineName MachineNumberQ MachinePrecision MacintoshSystemPageSetup Magenta Magnification Magnify MainSolve MaintainDynamicCaches Majority MakeBoxes MakeExpression MakeRules MangoldtLambda ManhattanDistance Manipulate Manipulator MannWhitneyTest MantissaExponent Manual Map MapAll MapAt MapIndexed MAProcess MapThread MarcumQ MardiaCombinedTest MardiaKurtosisTest MardiaSkewnessTest MarginalDistribution MarkovProcessProperties Masking MatchingDissimilarity MatchLocalNameQ MatchLocalNames MatchQ Material MathematicaNotation MathieuC MathieuCharacteristicA MathieuCharacteristicB MathieuCharacteristicExponent MathieuCPrime MathieuGroupM11 MathieuGroupM12 MathieuGroupM22 MathieuGroupM23 MathieuGroupM24 MathieuS MathieuSPrime MathMLForm MathMLText Matrices MatrixExp MatrixForm MatrixFunction MatrixLog MatrixPlot MatrixPower MatrixQ MatrixRank Max MaxBend MaxDetect MaxExtraBandwidths MaxExtraConditions MaxFeatures MaxFilter Maximize MaxIterations MaxMemoryUsed MaxMixtureKernels MaxPlotPoints MaxPoints MaxRecursion MaxStableDistribution MaxStepFraction MaxSteps MaxStepSize MaxValue MaxwellDistribution McLaughlinGroupMcL Mean MeanClusteringCoefficient MeanDegreeConnectivity MeanDeviation MeanFilter MeanGraphDistance MeanNeighborDegree MeanShift MeanShiftFilter Median MedianDeviation MedianFilter Medium MeijerG MeixnerDistribution MemberQ MemoryConstrained MemoryInUse Menu MenuAppearance MenuCommandKey MenuEvaluator MenuItem MenuPacket MenuSortingValue MenuStyle MenuView MergeDifferences Mesh MeshFunctions MeshRange MeshShading MeshStyle Message MessageDialog MessageList MessageName MessageOptions MessagePacket Messages MessagesNotebook MetaCharacters MetaInformation Method MethodOptions MexicanHatWavelet MeyerWavelet Min MinDetect MinFilter MinimalPolynomial MinimalStateSpaceModel Minimize Minors MinRecursion MinSize MinStableDistribution Minus MinusPlus MinValue Missing MissingDataMethod MittagLefflerE MixedRadix MixedRadixQuantity MixtureDistribution Mod Modal Mode Modular ModularLambda Module Modulus MoebiusMu Moment Momentary MomentConvert MomentEvaluate MomentGeneratingFunction Monday Monitor MonomialList MonomialOrder MonsterGroupM MorletWavelet MorphologicalBinarize MorphologicalBranchPoints MorphologicalComponents MorphologicalEulerNumber MorphologicalGraph MorphologicalPerimeter MorphologicalTransform Most MouseAnnotation MouseAppearance MouseAppearanceTag MouseButtons Mouseover MousePointerNote MousePosition MovingAverage MovingMedian MoyalDistribution MultiedgeStyle MultilaunchWarning MultiLetterItalics MultiLetterStyle MultilineFunction Multinomial MultinomialDistribution MultinormalDistribution MultiplicativeOrder Multiplicity Multiselection MultivariateHypergeometricDistribution MultivariatePoissonDistribution MultivariateTDistribution ' +
-      'N NakagamiDistribution NameQ Names NamespaceBox Nand NArgMax NArgMin NBernoulliB NCache NDSolve NDSolveValue Nearest NearestFunction NeedCurrentFrontEndPackagePacket NeedCurrentFrontEndSymbolsPacket NeedlemanWunschSimilarity Needs Negative NegativeBinomialDistribution NegativeMultinomialDistribution NeighborhoodGraph Nest NestedGreaterGreater NestedLessLess NestedScriptRules NestList NestWhile NestWhileList NevilleThetaC NevilleThetaD NevilleThetaN NevilleThetaS NewPrimitiveStyle NExpectation Next NextPrime NHoldAll NHoldFirst NHoldRest NicholsGridLines NicholsPlot NIntegrate NMaximize NMaxValue NMinimize NMinValue NominalVariables NonAssociative NoncentralBetaDistribution NoncentralChiSquareDistribution NoncentralFRatioDistribution NoncentralStudentTDistribution NonCommutativeMultiply NonConstants None NonlinearModelFit NonlocalMeansFilter NonNegative NonPositive Nor NorlundB Norm Normal NormalDistribution NormalGrouping Normalize NormalizedSquaredEuclideanDistance NormalsFunction NormFunction Not NotCongruent NotCupCap NotDoubleVerticalBar Notebook NotebookApply NotebookAutoSave NotebookClose NotebookConvertSettings NotebookCreate NotebookCreateReturnObject NotebookDefault NotebookDelete NotebookDirectory NotebookDynamicExpression NotebookEvaluate NotebookEventActions NotebookFileName NotebookFind NotebookFindReturnObject NotebookGet NotebookGetLayoutInformationPacket NotebookGetMisspellingsPacket NotebookInformation NotebookInterfaceObject NotebookLocate NotebookObject NotebookOpen NotebookOpenReturnObject NotebookPath NotebookPrint NotebookPut NotebookPutReturnObject NotebookRead NotebookResetGeneratedCells Notebooks NotebookSave NotebookSaveAs NotebookSelection NotebookSetupLayoutInformationPacket NotebooksMenu NotebookWrite NotElement NotEqualTilde NotExists NotGreater NotGreaterEqual NotGreaterFullEqual NotGreaterGreater NotGreaterLess NotGreaterSlantEqual NotGreaterTilde NotHumpDownHump NotHumpEqual NotLeftTriangle NotLeftTriangleBar NotLeftTriangleEqual NotLess NotLessEqual NotLessFullEqual NotLessGreater NotLessLess NotLessSlantEqual NotLessTilde NotNestedGreaterGreater NotNestedLessLess NotPrecedes NotPrecedesEqual NotPrecedesSlantEqual NotPrecedesTilde NotReverseElement NotRightTriangle NotRightTriangleBar NotRightTriangleEqual NotSquareSubset NotSquareSubsetEqual NotSquareSuperset NotSquareSupersetEqual NotSubset NotSubsetEqual NotSucceeds NotSucceedsEqual NotSucceedsSlantEqual NotSucceedsTilde NotSuperset NotSupersetEqual NotTilde NotTildeEqual NotTildeFullEqual NotTildeTilde NotVerticalBar NProbability NProduct NProductFactors NRoots NSolve NSum NSumTerms Null NullRecords NullSpace NullWords Number NumberFieldClassNumber NumberFieldDiscriminant NumberFieldFundamentalUnits NumberFieldIntegralBasis NumberFieldNormRepresentatives NumberFieldRegulator NumberFieldRootsOfUnity NumberFieldSignature NumberForm NumberFormat NumberMarks NumberMultiplier NumberPadding NumberPoint NumberQ NumberSeparator ' +
-      'NumberSigns NumberString Numerator NumericFunction NumericQ NuttallWindow NValues NyquistGridLines NyquistPlot ' +
-      'O ObservabilityGramian ObservabilityMatrix ObservableDecomposition ObservableModelQ OddQ Off Offset OLEData On ONanGroupON OneIdentity Opacity Open OpenAppend Opener OpenerBox OpenerBoxOptions OpenerView OpenFunctionInspectorPacket Opening OpenRead OpenSpecialOptions OpenTemporary OpenWrite Operate OperatingSystem OptimumFlowData Optional OptionInspectorSettings OptionQ Options OptionsPacket OptionsPattern OptionValue OptionValueBox OptionValueBoxOptions Or Orange Order OrderDistribution OrderedQ Ordering Orderless OrnsteinUhlenbeckProcess Orthogonalize Out Outer OutputAutoOverwrite OutputControllabilityMatrix OutputControllableModelQ OutputForm OutputFormData OutputGrouping OutputMathEditExpression OutputNamePacket OutputResponse OutputSizeLimit OutputStream Over OverBar OverDot Overflow OverHat Overlaps Overlay OverlayBox OverlayBoxOptions Overscript OverscriptBox OverscriptBoxOptions OverTilde OverVector OwenT OwnValues ' +
-      'PackingMethod PaddedForm Padding PadeApproximant PadLeft PadRight PageBreakAbove PageBreakBelow PageBreakWithin PageFooterLines PageFooters PageHeaderLines PageHeaders PageHeight PageRankCentrality PageWidth PairedBarChart PairedHistogram PairedSmoothHistogram PairedTTest PairedZTest PaletteNotebook PalettePath Pane PaneBox PaneBoxOptions Panel PanelBox PanelBoxOptions Paneled PaneSelector PaneSelectorBox PaneSelectorBoxOptions PaperWidth ParabolicCylinderD ParagraphIndent ParagraphSpacing ParallelArray ParallelCombine ParallelDo ParallelEvaluate Parallelization Parallelize ParallelMap ParallelNeeds ParallelProduct ParallelSubmit ParallelSum ParallelTable ParallelTry Parameter ParameterEstimator ParameterMixtureDistribution ParameterVariables ParametricFunction ParametricNDSolve ParametricNDSolveValue ParametricPlot ParametricPlot3D ParentConnect ParentDirectory ParentForm Parenthesize ParentList ParetoDistribution Part PartialCorrelationFunction PartialD ParticleData Partition PartitionsP PartitionsQ ParzenWindow PascalDistribution PassEventsDown PassEventsUp Paste PasteBoxFormInlineCells PasteButton Path PathGraph PathGraphQ Pattern PatternSequence PatternTest PauliMatrix PaulWavelet Pause PausedTime PDF PearsonChiSquareTest PearsonCorrelationTest PearsonDistribution PerformanceGoal PeriodicInterpolation Periodogram PeriodogramArray PermutationCycles PermutationCyclesQ PermutationGroup PermutationLength PermutationList PermutationListQ PermutationMax PermutationMin PermutationOrder PermutationPower PermutationProduct PermutationReplace Permutations PermutationSupport Permute PeronaMalikFilter Perpendicular PERTDistribution PetersenGraph PhaseMargins Pi Pick PIDData PIDDerivativeFilter PIDFeedforward PIDTune Piecewise PiecewiseExpand PieChart PieChart3D PillaiTrace PillaiTraceTest Pink Pivoting PixelConstrained PixelValue PixelValuePositions Placed Placeholder PlaceholderReplace Plain PlanarGraphQ Play PlayRange Plot Plot3D Plot3Matrix PlotDivision PlotJoined PlotLabel PlotLayout PlotLegends PlotMarkers PlotPoints PlotRange PlotRangeClipping PlotRangePadding PlotRegion PlotStyle Plus PlusMinus Pochhammer PodStates PodWidth Point Point3DBox PointBox PointFigureChart PointForm PointLegend PointSize PoissonConsulDistribution PoissonDistribution PoissonProcess PoissonWindow PolarAxes PolarAxesOrigin PolarGridLines PolarPlot PolarTicks PoleZeroMarkers PolyaAeppliDistribution PolyGamma Polygon Polygon3DBox Polygon3DBoxOptions PolygonBox PolygonBoxOptions PolygonHoleScale PolygonIntersections PolygonScale PolyhedronData PolyLog PolynomialExtendedGCD PolynomialForm PolynomialGCD PolynomialLCM PolynomialMod PolynomialQ PolynomialQuotient PolynomialQuotientRemainder PolynomialReduce PolynomialRemainder Polynomials PopupMenu PopupMenuBox PopupMenuBoxOptions PopupView PopupWindow Position Positive PositiveDefiniteMatrixQ PossibleZeroQ Postfix PostScript Power PowerDistribution PowerExpand PowerMod PowerModList ' +
-      'PowerSpectralDensity PowersRepresentations PowerSymmetricPolynomial Precedence PrecedenceForm Precedes PrecedesEqual PrecedesSlantEqual PrecedesTilde Precision PrecisionGoal PreDecrement PredictionRoot PreemptProtect PreferencesPath Prefix PreIncrement Prepend PrependTo PreserveImageOptions Previous PriceGraphDistribution PrimaryPlaceholder Prime PrimeNu PrimeOmega PrimePi PrimePowerQ PrimeQ Primes PrimeZetaP PrimitiveRoot PrincipalComponents PrincipalValue Print PrintAction PrintForm PrintingCopies PrintingOptions PrintingPageRange PrintingStartingPageNumber PrintingStyleEnvironment PrintPrecision PrintTemporary Prism PrismBox PrismBoxOptions PrivateCellOptions PrivateEvaluationOptions PrivateFontOptions PrivateFrontEndOptions PrivateNotebookOptions PrivatePaths Probability ProbabilityDistribution ProbabilityPlot ProbabilityPr ProbabilityScalePlot ProbitModelFit ProcessEstimator ProcessParameterAssumptions ProcessParameterQ ProcessStateDomain ProcessTimeDomain Product ProductDistribution ProductLog ProgressIndicator ProgressIndicatorBox ProgressIndicatorBoxOptions Projection Prolog PromptForm Properties Property PropertyList PropertyValue Proportion Proportional Protect Protected ProteinData Pruning PseudoInverse Purple Put PutAppend Pyramid PyramidBox PyramidBoxOptions ' +
-      'QBinomial QFactorial QGamma QHypergeometricPFQ QPochhammer QPolyGamma QRDecomposition QuadraticIrrationalQ Quantile QuantilePlot Quantity QuantityForm QuantityMagnitude QuantityQ QuantityUnit Quartics QuartileDeviation Quartiles QuartileSkewness QueueingNetworkProcess QueueingProcess QueueProperties Quiet Quit Quotient QuotientRemainder ' +
-      'RadialityCentrality RadicalBox RadicalBoxOptions RadioButton RadioButtonBar RadioButtonBox RadioButtonBoxOptions Radon RamanujanTau RamanujanTauL RamanujanTauTheta RamanujanTauZ Random RandomChoice RandomComplex RandomFunction RandomGraph RandomImage RandomInteger RandomPermutation RandomPrime RandomReal RandomSample RandomSeed RandomVariate RandomWalkProcess Range RangeFilter RangeSpecification RankedMax RankedMin Raster Raster3D Raster3DBox Raster3DBoxOptions RasterArray RasterBox RasterBoxOptions Rasterize RasterSize Rational RationalFunctions Rationalize Rationals Ratios Raw RawArray RawBoxes RawData RawMedium RayleighDistribution Re Read ReadList ReadProtected Real RealBlockDiagonalForm RealDigits RealExponent Reals Reap Record RecordLists RecordSeparators Rectangle RectangleBox RectangleBoxOptions RectangleChart RectangleChart3D RecurrenceFilter RecurrenceTable RecurringDigitsForm Red Reduce RefBox ReferenceLineStyle ReferenceMarkers ReferenceMarkerStyle Refine ReflectionMatrix ReflectionTransform Refresh RefreshRate RegionBinarize RegionFunction RegionPlot RegionPlot3D RegularExpression Regularization Reinstall Release ReleaseHold ReliabilityDistribution ReliefImage ReliefPlot Remove RemoveAlphaChannel RemoveAsynchronousTask Removed RemoveInputStreamMethod RemoveOutputStreamMethod RemoveProperty RemoveScheduledTask RenameDirectory RenameFile RenderAll RenderingOptions RenewalProcess RenkoChart Repeated RepeatedNull RepeatedString Replace ReplaceAll ReplaceHeldPart ReplaceImageValue ReplaceList ReplacePart ReplacePixelValue ReplaceRepeated Resampling Rescale RescalingTransform ResetDirectory ResetMenusPacket ResetScheduledTask Residue Resolve Rest Resultant ResumePacket Return ReturnExpressionPacket ReturnInputFormPacket ReturnPacket ReturnTextPacket Reverse ReverseBiorthogonalSplineWavelet ReverseElement ReverseEquilibrium ReverseGraph ReverseUpEquilibrium RevolutionAxis RevolutionPlot3D RGBColor RiccatiSolve RiceDistribution RidgeFilter RiemannR RiemannSiegelTheta RiemannSiegelZ Riffle Right RightArrow RightArrowBar RightArrowLeftArrow RightCosetRepresentative RightDownTeeVector RightDownVector RightDownVectorBar RightTee RightTeeArrow RightTeeVector RightTriangle RightTriangleBar RightTriangleEqual RightUpDownVector RightUpTeeVector RightUpVector RightUpVectorBar RightVector RightVectorBar RiskAchievementImportance RiskReductionImportance RogersTanimotoDissimilarity Root RootApproximant RootIntervals RootLocusPlot RootMeanSquare RootOfUnityQ RootReduce Roots RootSum Rotate RotateLabel RotateLeft RotateRight RotationAction RotationBox RotationBoxOptions RotationMatrix RotationTransform Round RoundImplies RoundingRadius Row RowAlignments RowBackgrounds RowBox RowHeights RowLines RowMinHeight RowReduce RowsEqual RowSpacings RSolve RudvalisGroupRu Rule RuleCondition RuleDelayed RuleForm RulerUnits Run RunScheduledTask RunThrough RuntimeAttributes RuntimeOptions RussellRaoDissimilarity ' +
-      'SameQ SameTest SampleDepth SampledSoundFunction SampledSoundList SampleRate SamplingPeriod SARIMAProcess SARMAProcess SatisfiabilityCount SatisfiabilityInstances SatisfiableQ Saturday Save Saveable SaveAutoDelete SaveDefinitions SawtoothWave Scale Scaled ScaleDivisions ScaledMousePosition ScaleOrigin ScalePadding ScaleRanges ScaleRangeStyle ScalingFunctions ScalingMatrix ScalingTransform Scan ScheduledTaskActiveQ ScheduledTaskData ScheduledTaskObject ScheduledTasks SchurDecomposition ScientificForm ScreenRectangle ScreenStyleEnvironment ScriptBaselineShifts ScriptLevel ScriptMinSize ScriptRules ScriptSizeMultipliers Scrollbars ScrollingOptions ScrollPosition Sec Sech SechDistribution SectionGrouping SectorChart SectorChart3D SectorOrigin SectorSpacing SeedRandom Select Selectable SelectComponents SelectedCells SelectedNotebook Selection SelectionAnimate SelectionCell SelectionCellCreateCell SelectionCellDefaultStyle SelectionCellParentStyle SelectionCreateCell SelectionDebuggerTag SelectionDuplicateCell SelectionEvaluate SelectionEvaluateCreateCell SelectionMove SelectionPlaceholder SelectionSetStyle SelectWithContents SelfLoops SelfLoopStyle SemialgebraicComponentInstances SendMail Sequence SequenceAlignment SequenceForm SequenceHold SequenceLimit Series SeriesCoefficient SeriesData SessionTime Set SetAccuracy SetAlphaChannel SetAttributes Setbacks SetBoxFormNamesPacket SetDelayed SetDirectory SetEnvironment SetEvaluationNotebook SetFileDate SetFileLoadingContext SetNotebookStatusLine SetOptions SetOptionsPacket SetPrecision SetProperty SetSelectedNotebook SetSharedFunction SetSharedVariable SetSpeechParametersPacket SetStreamPosition SetSystemOptions Setter SetterBar SetterBox SetterBoxOptions Setting SetValue Shading Shallow ShannonWavelet ShapiroWilkTest Share Sharpen ShearingMatrix ShearingTransform ShenCastanMatrix Short ShortDownArrow Shortest ShortestMatch ShortestPathFunction ShortLeftArrow ShortRightArrow ShortUpArrow Show ShowAutoStyles ShowCellBracket ShowCellLabel ShowCellTags ShowClosedCellArea ShowContents ShowControls ShowCursorTracker ShowGroupOpenCloseIcon ShowGroupOpener ShowInvisibleCharacters ShowPageBreaks ShowPredictiveInterface ShowSelection ShowShortBoxForm ShowSpecialCharacters ShowStringCharacters ShowSyntaxStyles ShrinkingDelay ShrinkWrapBoundingBox SiegelTheta SiegelTukeyTest Sign Signature SignedRankTest SignificanceLevel SignPadding SignTest SimilarityRules SimpleGraph SimpleGraphQ Simplify Sin Sinc SinghMaddalaDistribution SingleEvaluation SingleLetterItalics SingleLetterStyle SingularValueDecomposition SingularValueList SingularValuePlot SingularValues Sinh SinhIntegral SinIntegral SixJSymbol Skeleton SkeletonTransform SkellamDistribution Skewness SkewNormalDistribution Skip SliceDistribution Slider Slider2D Slider2DBox Slider2DBoxOptions SliderBox SliderBoxOptions SlideView Slot SlotSequence Small SmallCircle Smaller SmithDelayCompensator SmithWatermanSimilarity ' +
-      'SmoothDensityHistogram SmoothHistogram SmoothHistogram3D SmoothKernelDistribution SocialMediaData Socket SokalSneathDissimilarity Solve SolveAlways SolveDelayed Sort SortBy Sound SoundAndGraphics SoundNote SoundVolume Sow Space SpaceForm Spacer Spacings Span SpanAdjustments SpanCharacterRounding SpanFromAbove SpanFromBoth SpanFromLeft SpanLineThickness SpanMaxSize SpanMinSize SpanningCharacters SpanSymmetric SparseArray SpatialGraphDistribution Speak SpeakTextPacket SpearmanRankTest SpearmanRho Spectrogram SpectrogramArray Specularity SpellingCorrection SpellingDictionaries SpellingDictionariesPath SpellingOptions SpellingSuggestionsPacket Sphere SphereBox SphericalBesselJ SphericalBesselY SphericalHankelH1 SphericalHankelH2 SphericalHarmonicY SphericalPlot3D SphericalRegion SpheroidalEigenvalue SpheroidalJoiningFactor SpheroidalPS SpheroidalPSPrime SpheroidalQS SpheroidalQSPrime SpheroidalRadialFactor SpheroidalS1 SpheroidalS1Prime SpheroidalS2 SpheroidalS2Prime Splice SplicedDistribution SplineClosed SplineDegree SplineKnots SplineWeights Split SplitBy SpokenString Sqrt SqrtBox SqrtBoxOptions Square SquaredEuclideanDistance SquareFreeQ SquareIntersection SquaresR SquareSubset SquareSubsetEqual SquareSuperset SquareSupersetEqual SquareUnion SquareWave StabilityMargins StabilityMarginsStyle StableDistribution Stack StackBegin StackComplete StackInhibit StandardDeviation StandardDeviationFilter StandardForm Standardize StandbyDistribution Star StarGraph StartAsynchronousTask StartingStepSize StartOfLine StartOfString StartScheduledTask StartupSound StateDimensions StateFeedbackGains StateOutputEstimator StateResponse StateSpaceModel StateSpaceRealization StateSpaceTransform StationaryDistribution StationaryWaveletPacketTransform StationaryWaveletTransform StatusArea StatusCentrality StepMonitor StieltjesGamma StirlingS1 StirlingS2 StopAsynchronousTask StopScheduledTask StrataVariables StratonovichProcess StreamColorFunction StreamColorFunctionScaling StreamDensityPlot StreamPlot StreamPoints StreamPosition Streams StreamScale StreamStyle String StringBreak StringByteCount StringCases StringCount StringDrop StringExpression StringForm StringFormat StringFreeQ StringInsert StringJoin StringLength StringMatchQ StringPosition StringQ StringReplace StringReplaceList StringReplacePart StringReverse StringRotateLeft StringRotateRight StringSkeleton StringSplit StringTake StringToStream StringTrim StripBoxes StripOnInput StripWrapperBoxes StrokeForm StructuralImportance StructuredArray StructuredSelection StruveH StruveL Stub StudentTDistribution Style StyleBox StyleBoxAutoDelete StyleBoxOptions StyleData StyleDefinitions StyleForm StyleKeyMapping StyleMenuListing StyleNameDialogSettings StyleNames StylePrint StyleSheetPath Subfactorial Subgraph SubMinus SubPlus SubresultantPolynomialRemainders ' +
-      'SubresultantPolynomials Subresultants Subscript SubscriptBox SubscriptBoxOptions Subscripted Subset SubsetEqual Subsets SubStar Subsuperscript SubsuperscriptBox SubsuperscriptBoxOptions Subtract SubtractFrom SubValues Succeeds SucceedsEqual SucceedsSlantEqual SucceedsTilde SuchThat Sum SumConvergence Sunday SuperDagger SuperMinus SuperPlus Superscript SuperscriptBox SuperscriptBoxOptions Superset SupersetEqual SuperStar Surd SurdForm SurfaceColor SurfaceGraphics SurvivalDistribution SurvivalFunction SurvivalModel SurvivalModelFit SuspendPacket SuzukiDistribution SuzukiGroupSuz SwatchLegend Switch Symbol SymbolName SymletWavelet Symmetric SymmetricGroup SymmetricMatrixQ SymmetricPolynomial SymmetricReduction Symmetrize SymmetrizedArray SymmetrizedArrayRules SymmetrizedDependentComponents SymmetrizedIndependentComponents SymmetrizedReplacePart SynchronousInitialization SynchronousUpdating Syntax SyntaxForm SyntaxInformation SyntaxLength SyntaxPacket SyntaxQ SystemDialogInput SystemException SystemHelpPath SystemInformation SystemInformationData SystemOpen SystemOptions SystemsModelDelay SystemsModelDelayApproximate SystemsModelDelete SystemsModelDimensions SystemsModelExtract SystemsModelFeedbackConnect SystemsModelLabels SystemsModelOrder SystemsModelParallelConnect SystemsModelSeriesConnect SystemsModelStateFeedbackConnect SystemStub ' +
-      'Tab TabFilling Table TableAlignments TableDepth TableDirections TableForm TableHeadings TableSpacing TableView TableViewBox TabSpacings TabView TabViewBox TabViewBoxOptions TagBox TagBoxNote TagBoxOptions TaggingRules TagSet TagSetDelayed TagStyle TagUnset Take TakeWhile Tally Tan Tanh TargetFunctions TargetUnits TautologyQ TelegraphProcess TemplateBox TemplateBoxOptions TemplateSlotSequence TemporalData Temporary TemporaryVariable TensorContract TensorDimensions TensorExpand TensorProduct TensorQ TensorRank TensorReduce TensorSymmetry TensorTranspose TensorWedge Tetrahedron TetrahedronBox TetrahedronBoxOptions TeXForm TeXSave Text Text3DBox Text3DBoxOptions TextAlignment TextBand TextBoundingBox TextBox TextCell TextClipboardType TextData TextForm TextJustification TextLine TextPacket TextParagraph TextRecognize TextRendering TextStyle Texture TextureCoordinateFunction TextureCoordinateScaling Therefore ThermometerGauge Thick Thickness Thin Thinning ThisLink ThompsonGroupTh Thread ThreeJSymbol Threshold Through Throw Thumbnail Thursday Ticks TicksStyle Tilde TildeEqual TildeFullEqual TildeTilde TimeConstrained TimeConstraint Times TimesBy TimeSeriesForecast TimeSeriesInvertibility TimeUsed TimeValue TimeZone Timing Tiny TitleGrouping TitsGroupT ToBoxes ToCharacterCode ToColor ToContinuousTimeModel ToDate ToDiscreteTimeModel ToeplitzMatrix ToExpression ToFileName Together Toggle ToggleFalse Toggler TogglerBar TogglerBox TogglerBoxOptions ToHeldExpression ToInvertibleTimeSeries TokenWords Tolerance ToLowerCase ToNumberField TooBig Tooltip TooltipBox TooltipBoxOptions TooltipDelay TooltipStyle Top TopHatTransform TopologicalSort ToRadicals ToRules ToString Total TotalHeight TotalVariationFilter TotalWidth TouchscreenAutoZoom TouchscreenControlPlacement ToUpperCase Tr Trace TraceAbove TraceAction TraceBackward TraceDepth TraceDialog TraceForward TraceInternal TraceLevel TraceOff TraceOn TraceOriginal TracePrint TraceScan TrackedSymbols TradingChart TraditionalForm TraditionalFunctionNotation TraditionalNotation TraditionalOrder TransferFunctionCancel TransferFunctionExpand TransferFunctionFactor TransferFunctionModel TransferFunctionPoles TransferFunctionTransform TransferFunctionZeros TransformationFunction TransformationFunctions TransformationMatrix TransformedDistribution TransformedField Translate TranslationTransform TransparentColor Transpose TreeForm TreeGraph TreeGraphQ TreePlot TrendStyle TriangleWave TriangularDistribution Trig TrigExpand TrigFactor TrigFactorList Trigger TrigReduce TrigToExp TrimmedMean True TrueQ TruncatedDistribution TsallisQExponentialDistribution TsallisQGaussianDistribution TTest Tube TubeBezierCurveBox TubeBezierCurveBoxOptions TubeBox TubeBSplineCurveBox TubeBSplineCurveBoxOptions Tuesday TukeyLambdaDistribution TukeyWindow Tuples TuranGraph TuringMachine ' +
-      'Transparent ' +
-      'UnateQ Uncompress Undefined UnderBar Underflow Underlined Underoverscript UnderoverscriptBox UnderoverscriptBoxOptions Underscript UnderscriptBox UnderscriptBoxOptions UndirectedEdge UndirectedGraph UndirectedGraphQ UndocumentedTestFEParserPacket UndocumentedTestGetSelectionPacket Unequal Unevaluated UniformDistribution UniformGraphDistribution UniformSumDistribution Uninstall Union UnionPlus Unique UnitBox UnitConvert UnitDimensions Unitize UnitRootTest UnitSimplify UnitStep UnitTriangle UnitVector Unprotect UnsameQ UnsavedVariables Unset UnsetShared UntrackedVariables Up UpArrow UpArrowBar UpArrowDownArrow Update UpdateDynamicObjects UpdateDynamicObjectsSynchronous UpdateInterval UpDownArrow UpEquilibrium UpperCaseQ UpperLeftArrow UpperRightArrow UpperTriangularize Upsample UpSet UpSetDelayed UpTee UpTeeArrow UpValues URL URLFetch URLFetchAsynchronous URLSave URLSaveAsynchronous UseGraphicsRange Using UsingFrontEnd ' +
-      'V2Get ValidationLength Value ValueBox ValueBoxOptions ValueForm ValueQ ValuesData Variables Variance VarianceEquivalenceTest VarianceEstimatorFunction VarianceGammaDistribution VarianceTest VectorAngle VectorColorFunction VectorColorFunctionScaling VectorDensityPlot VectorGlyphData VectorPlot VectorPlot3D VectorPoints VectorQ Vectors VectorScale VectorStyle Vee Verbatim Verbose VerboseConvertToPostScriptPacket VerifyConvergence VerifySolutions VerifyTestAssumptions Version VersionNumber VertexAdd VertexCapacity VertexColors VertexComponent VertexConnectivity VertexCoordinateRules VertexCoordinates VertexCorrelationSimilarity VertexCosineSimilarity VertexCount VertexCoverQ VertexDataCoordinates VertexDegree VertexDelete VertexDiceSimilarity VertexEccentricity VertexInComponent VertexInDegree VertexIndex VertexJaccardSimilarity VertexLabeling VertexLabels VertexLabelStyle VertexList VertexNormals VertexOutComponent VertexOutDegree VertexQ VertexRenderingFunction VertexReplace VertexShape VertexShapeFunction VertexSize VertexStyle VertexTextureCoordinates VertexWeight Vertical VerticalBar VerticalForm VerticalGauge VerticalSeparator VerticalSlider VerticalTilde ViewAngle ViewCenter ViewMatrix ViewPoint ViewPointSelectorSettings ViewPort ViewRange ViewVector ViewVertical VirtualGroupData Visible VisibleCell VoigtDistribution VonMisesDistribution ' +
-      'WaitAll WaitAsynchronousTask WaitNext WaitUntil WakebyDistribution WalleniusHypergeometricDistribution WaringYuleDistribution WatershedComponents WatsonUSquareTest WattsStrogatzGraphDistribution WaveletBestBasis WaveletFilterCoefficients WaveletImagePlot WaveletListPlot WaveletMapIndexed WaveletMatrixPlot WaveletPhi WaveletPsi WaveletScale WaveletScalogram WaveletThreshold WeaklyConnectedComponents WeaklyConnectedGraphQ WeakStationarity WeatherData WeberE Wedge Wednesday WeibullDistribution WeierstrassHalfPeriods WeierstrassInvariants WeierstrassP WeierstrassPPrime WeierstrassSigma WeierstrassZeta WeightedAdjacencyGraph WeightedAdjacencyMatrix WeightedData WeightedGraphQ Weights WelchWindow WheelGraph WhenEvent Which While White Whitespace WhitespaceCharacter WhittakerM WhittakerW WienerFilter WienerProcess WignerD WignerSemicircleDistribution WilksW WilksWTest WindowClickSelect WindowElements WindowFloating WindowFrame WindowFrameElements WindowMargins WindowMovable WindowOpacity WindowSelected WindowSize WindowStatusArea WindowTitle WindowToolbars WindowWidth With WolframAlpha WolframAlphaDate WolframAlphaQuantity WolframAlphaResult Word WordBoundary WordCharacter WordData WordSearch WordSeparators WorkingPrecision Write WriteString Wronskian ' +
-      'XMLElement XMLObject Xnor Xor ' +
-      'Yellow YuleDissimilarity ' +
-      'ZernikeR ZeroSymmetric ZeroTest ZeroWidthTimes Zeta ZetaZero ZipfDistribution ZTest ZTransform ' +
-      '$Aborted $ActivationGroupID $ActivationKey $ActivationUserRegistered $AddOnsDirectory $AssertFunction $Assumptions $AsynchronousTask $BaseDirectory $BatchInput $BatchOutput $BoxForms $ByteOrdering $Canceled $CharacterEncoding $CharacterEncodings $CommandLine $CompilationTarget $ConditionHold $ConfiguredKernels $Context $ContextPath $ControlActiveSetting $CreationDate $CurrentLink $DateStringFormat $DefaultFont $DefaultFrontEnd $DefaultImagingDevice $DefaultPath $Display $DisplayFunction $DistributedContexts $DynamicEvaluation $Echo $Epilog $ExportFormats $Failed $FinancialDataSource $FormatType $FrontEnd $FrontEndSession $GeoLocation $HistoryLength $HomeDirectory $HTTPCookies $IgnoreEOF $ImagingDevices $ImportFormats $InitialDirectory $Input $InputFileName $InputStreamMethods $Inspector $InstallationDate $InstallationDirectory $InterfaceEnvironment $IterationLimit $KernelCount $KernelID $Language $LaunchDirectory $LibraryPath $LicenseExpirationDate $LicenseID $LicenseProcesses $LicenseServer $LicenseSubprocesses $LicenseType $Line $Linked $LinkSupported $LoadedFiles $MachineAddresses $MachineDomain $MachineDomains $MachineEpsilon $MachineID $MachineName $MachinePrecision $MachineType $MaxExtraPrecision $MaxLicenseProcesses $MaxLicenseSubprocesses $MaxMachineNumber $MaxNumber $MaxPiecewiseCases $MaxPrecision $MaxRootDegree $MessageGroups $MessageList $MessagePrePrint $Messages $MinMachineNumber $MinNumber $MinorReleaseNumber $MinPrecision $ModuleNumber $NetworkLicense $NewMessage $NewSymbol $Notebooks $NumberMarks $Off $OperatingSystem $Output $OutputForms $OutputSizeLimit $OutputStreamMethods $Packages $ParentLink $ParentProcessID $PasswordFile $PatchLevelID $Path $PathnameSeparator $PerformanceGoal $PipeSupported $Post $Pre $PreferencesDirectory $PrePrint $PreRead $PrintForms $PrintLiteral $ProcessID $ProcessorCount $ProcessorType $ProductInformation $ProgramName $RandomState $RecursionLimit $ReleaseNumber $RootDirectory $ScheduledTask $ScriptCommandLine $SessionID $SetParentLink $SharedFunctions $SharedVariables $SoundDisplay $SoundDisplayFunction $SuppressInputFormHeads $SynchronousEvaluation $SyntaxHandler $System $SystemCharacterEncoding $SystemID $SystemWordLength $TemporaryDirectory $TemporaryPrefix $TextStyle $TimedOut $TimeUnit $TimeZone $TopDirectory $TraceOff $TraceOn $TracePattern $TracePostAction $TracePreAction $Urgent $UserAddOnsDirectory $UserBaseDirectory $UserDocumentsDirectory $UserName $Version $VersionNumber',
-    contains: [
-      {
-        className: "comment",
-        begin: /\(\*/, end: /\*\)/
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'list',
-        begin: /\{/, end: /\}/,
-        illegal: /:/
-      }
-    ]
-  };
-};
-},{}],78:[function(require,module,exports){
-module.exports = function(hljs) {
-  var COMMON_CONTAINS = [
-    hljs.C_NUMBER_MODE,
-    {
-      className: 'string',
-      begin: '\'', end: '\'',
-      contains: [hljs.BACKSLASH_ESCAPE, {begin: '\'\''}]
-    }
-  ];
-  var TRANSPOSE = {
-    relevance: 0,
-    contains: [
-      {
-        className: 'operator', begin: /'['\.]*/
-      }
-    ]
-  };
-
-  return {
-    keywords: {
-      keyword:
-        'break case catch classdef continue else elseif end enumerated events for function ' +
-        'global if methods otherwise parfor persistent properties return spmd switch try while',
-      built_in:
-        'sin sind sinh asin asind asinh cos cosd cosh acos acosd acosh tan tand tanh atan ' +
-        'atand atan2 atanh sec secd sech asec asecd asech csc cscd csch acsc acscd acsch cot ' +
-        'cotd coth acot acotd acoth hypot exp expm1 log log1p log10 log2 pow2 realpow reallog ' +
-        'realsqrt sqrt nthroot nextpow2 abs angle complex conj imag real unwrap isreal ' +
-        'cplxpair fix floor ceil round mod rem sign airy besselj bessely besselh besseli ' +
-        'besselk beta betainc betaln ellipj ellipke erf erfc erfcx erfinv expint gamma ' +
-        'gammainc gammaln psi legendre cross dot factor isprime primes gcd lcm rat rats perms ' +
-        'nchoosek factorial cart2sph cart2pol pol2cart sph2cart hsv2rgb rgb2hsv zeros ones ' +
-        'eye repmat rand randn linspace logspace freqspace meshgrid accumarray size length ' +
-        'ndims numel disp isempty isequal isequalwithequalnans cat reshape diag blkdiag tril ' +
-        'triu fliplr flipud flipdim rot90 find sub2ind ind2sub bsxfun ndgrid permute ipermute ' +
-        'shiftdim circshift squeeze isscalar isvector ans eps realmax realmin pi i inf nan ' +
-        'isnan isinf isfinite j why compan gallery hadamard hankel hilb invhilb magic pascal ' +
-        'rosser toeplitz vander wilkinson'
-    },
-    illegal: '(//|"|#|/\\*|\\s+/\\w+)',
-    contains: [
-      {
-        className: 'function',
-        beginKeywords: 'function', end: '$',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE,
-          {
-              className: 'params',
-              begin: '\\(', end: '\\)'
-          },
-          {
-              className: 'params',
-              begin: '\\[', end: '\\]'
-          }
-        ]
-      },
-      {
-        begin: /[a-zA-Z_][a-zA-Z_0-9]*'['\.]*/,
-        returnBegin: true,
-        relevance: 0,
-        contains: [
-          {begin: /[a-zA-Z_][a-zA-Z_0-9]*/, relevance: 0},
-          TRANSPOSE.contains[0]
-        ]
-      },
-      {
-        className: 'matrix',
-        begin: '\\[', end: '\\]',
-        contains: COMMON_CONTAINS,
-        relevance: 0,
-        starts: TRANSPOSE
-      },
-      {
-        className: 'cell',
-        begin: '\\{', end: /\}/,
-        contains: COMMON_CONTAINS,
-        relevance: 0,
-        illegal: /:/,
-        starts: TRANSPOSE
-      },
-      {
-        // transpose operators at the end of a function call
-        begin: /\)/,
-        relevance: 0,
-        starts: TRANSPOSE
-      },
-      {
-        className: 'comment',
-        begin: '\\%', end: '$'
-      }
-    ].concat(COMMON_CONTAINS)
-  };
-};
-},{}],79:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords:
-      'int float string vector matrix if else switch case default while do for in break ' +
-      'continue global proc return about abs addAttr addAttributeEditorNodeHelp addDynamic ' +
-      'addNewShelfTab addPP addPanelCategory addPrefixToName advanceToNextDrivenKey ' +
-      'affectedNet affects aimConstraint air alias aliasAttr align alignCtx alignCurve ' +
-      'alignSurface allViewFit ambientLight angle angleBetween animCone animCurveEditor ' +
-      'animDisplay animView annotate appendStringArray applicationName applyAttrPreset ' +
-      'applyTake arcLenDimContext arcLengthDimension arclen arrayMapper art3dPaintCtx ' +
-      'artAttrCtx artAttrPaintVertexCtx artAttrSkinPaintCtx artAttrTool artBuildPaintMenu ' +
-      'artFluidAttrCtx artPuttyCtx artSelectCtx artSetPaintCtx artUserPaintCtx assignCommand ' +
-      'assignInputDevice assignViewportFactories attachCurve attachDeviceAttr attachSurface ' +
-      'attrColorSliderGrp attrCompatibility attrControlGrp attrEnumOptionMenu ' +
-      'attrEnumOptionMenuGrp attrFieldGrp attrFieldSliderGrp attrNavigationControlGrp ' +
-      'attrPresetEditWin attributeExists attributeInfo attributeMenu attributeQuery ' +
-      'autoKeyframe autoPlace bakeClip bakeFluidShading bakePartialHistory bakeResults ' +
-      'bakeSimulation basename basenameEx batchRender bessel bevel bevelPlus binMembership ' +
-      'bindSkin blend2 blendShape blendShapeEditor blendShapePanel blendTwoAttr blindDataType ' +
-      'boneLattice boundary boxDollyCtx boxZoomCtx bufferCurve buildBookmarkMenu ' +
-      'buildKeyframeMenu button buttonManip CBG cacheFile cacheFileCombine cacheFileMerge ' +
-      'cacheFileTrack camera cameraView canCreateManip canvas capitalizeString catch ' +
-      'catchQuiet ceil changeSubdivComponentDisplayLevel changeSubdivRegion channelBox ' +
-      'character characterMap characterOutlineEditor characterize chdir checkBox checkBoxGrp ' +
-      'checkDefaultRenderGlobals choice circle circularFillet clamp clear clearCache clip ' +
-      'clipEditor clipEditorCurrentTimeCtx clipSchedule clipSchedulerOutliner clipTrimBefore ' +
-      'closeCurve closeSurface cluster cmdFileOutput cmdScrollFieldExecuter ' +
-      'cmdScrollFieldReporter cmdShell coarsenSubdivSelectionList collision color ' +
-      'colorAtPoint colorEditor colorIndex colorIndexSliderGrp colorSliderButtonGrp ' +
-      'colorSliderGrp columnLayout commandEcho commandLine commandPort compactHairSystem ' +
-      'componentEditor compositingInterop computePolysetVolume condition cone confirmDialog ' +
-      'connectAttr connectControl connectDynamic connectJoint connectionInfo constrain ' +
-      'constrainValue constructionHistory container containsMultibyte contextInfo control ' +
-      'convertFromOldLayers convertIffToPsd convertLightmap convertSolidTx convertTessellation ' +
-      'convertUnit copyArray copyFlexor copyKey copySkinWeights cos cpButton cpCache ' +
-      'cpClothSet cpCollision cpConstraint cpConvClothToMesh cpForces cpGetSolverAttr cpPanel ' +
-      'cpProperty cpRigidCollisionFilter cpSeam cpSetEdit cpSetSolverAttr cpSolver ' +
-      'cpSolverTypes cpTool cpUpdateClothUVs createDisplayLayer createDrawCtx createEditor ' +
-      'createLayeredPsdFile createMotionField createNewShelf createNode createRenderLayer ' +
-      'createSubdivRegion cross crossProduct ctxAbort ctxCompletion ctxEditMode ctxTraverse ' +
-      'currentCtx currentTime currentTimeCtx currentUnit curve curveAddPtCtx ' +
-      'curveCVCtx curveEPCtx curveEditorCtx curveIntersect curveMoveEPCtx curveOnSurface ' +
-      'curveSketchCtx cutKey cycleCheck cylinder dagPose date defaultLightListCheckBox ' +
-      'defaultNavigation defineDataServer defineVirtualDevice deformer deg_to_rad delete ' +
-      'deleteAttr deleteShadingGroupsAndMaterials deleteShelfTab deleteUI deleteUnusedBrushes ' +
-      'delrandstr detachCurve detachDeviceAttr detachSurface deviceEditor devicePanel dgInfo ' +
-      'dgdirty dgeval dgtimer dimWhen directKeyCtx directionalLight dirmap dirname disable ' +
-      'disconnectAttr disconnectJoint diskCache displacementToPoly displayAffected ' +
-      'displayColor displayCull displayLevelOfDetail displayPref displayRGBColor ' +
-      'displaySmoothness displayStats displayString displaySurface distanceDimContext ' +
-      'distanceDimension doBlur dolly dollyCtx dopeSheetEditor dot dotProduct ' +
-      'doubleProfileBirailSurface drag dragAttrContext draggerContext dropoffLocator ' +
-      'duplicate duplicateCurve duplicateSurface dynCache dynControl dynExport dynExpression ' +
-      'dynGlobals dynPaintEditor dynParticleCtx dynPref dynRelEdPanel dynRelEditor ' +
-      'dynamicLoad editAttrLimits editDisplayLayerGlobals editDisplayLayerMembers ' +
-      'editRenderLayerAdjustment editRenderLayerGlobals editRenderLayerMembers editor ' +
-      'editorTemplate effector emit emitter enableDevice encodeString endString endsWith env ' +
-      'equivalent equivalentTol erf error eval evalDeferred evalEcho event ' +
-      'exactWorldBoundingBox exclusiveLightCheckBox exec executeForEachObject exists exp ' +
-      'expression expressionEditorListen extendCurve extendSurface extrude fcheck fclose feof ' +
-      'fflush fgetline fgetword file fileBrowserDialog fileDialog fileExtension fileInfo ' +
-      'filetest filletCurve filter filterCurve filterExpand filterStudioImport ' +
-      'findAllIntersections findAnimCurves findKeyframe findMenuItem findRelatedSkinCluster ' +
-      'finder firstParentOf fitBspline flexor floatEq floatField floatFieldGrp floatScrollBar ' +
-      'floatSlider floatSlider2 floatSliderButtonGrp floatSliderGrp floor flow fluidCacheInfo ' +
-      'fluidEmitter fluidVoxelInfo flushUndo fmod fontDialog fopen formLayout format fprint ' +
-      'frameLayout fread freeFormFillet frewind fromNativePath fwrite gamma gauss ' +
-      'geometryConstraint getApplicationVersionAsFloat getAttr getClassification ' +
-      'getDefaultBrush getFileList getFluidAttr getInputDeviceRange getMayaPanelTypes ' +
-      'getModifiers getPanel getParticleAttr getPluginResource getenv getpid glRender ' +
-      'glRenderEditor globalStitch gmatch goal gotoBindPose grabColor gradientControl ' +
-      'gradientControlNoAttr graphDollyCtx graphSelectContext graphTrackCtx gravity grid ' +
-      'gridLayout group groupObjectsByName HfAddAttractorToAS HfAssignAS HfBuildEqualMap ' +
-      'HfBuildFurFiles HfBuildFurImages HfCancelAFR HfConnectASToHF HfCreateAttractor ' +
-      'HfDeleteAS HfEditAS HfPerformCreateAS HfRemoveAttractorFromAS HfSelectAttached ' +
-      'HfSelectAttractors HfUnAssignAS hardenPointCurve hardware hardwareRenderPanel ' +
-      'headsUpDisplay headsUpMessage help helpLine hermite hide hilite hitTest hotBox hotkey ' +
-      'hotkeyCheck hsv_to_rgb hudButton hudSlider hudSliderButton hwReflectionMap hwRender ' +
-      'hwRenderLoad hyperGraph hyperPanel hyperShade hypot iconTextButton iconTextCheckBox ' +
-      'iconTextRadioButton iconTextRadioCollection iconTextScrollList iconTextStaticLabel ' +
-      'ikHandle ikHandleCtx ikHandleDisplayScale ikSolver ikSplineHandleCtx ikSystem ' +
-      'ikSystemInfo ikfkDisplayMethod illustratorCurves image imfPlugins inheritTransform ' +
-      'insertJoint insertJointCtx insertKeyCtx insertKnotCurve insertKnotSurface instance ' +
-      'instanceable instancer intField intFieldGrp intScrollBar intSlider intSliderGrp ' +
-      'interToUI internalVar intersect iprEngine isAnimCurve isConnected isDirty isParentOf ' +
-      'isSameObject isTrue isValidObjectName isValidString isValidUiName isolateSelect ' +
-      'itemFilter itemFilterAttr itemFilterRender itemFilterType joint jointCluster jointCtx ' +
-      'jointDisplayScale jointLattice keyTangent keyframe keyframeOutliner ' +
-      'keyframeRegionCurrentTimeCtx keyframeRegionDirectKeyCtx keyframeRegionDollyCtx ' +
-      'keyframeRegionInsertKeyCtx keyframeRegionMoveKeyCtx keyframeRegionScaleKeyCtx ' +
-      'keyframeRegionSelectKeyCtx keyframeRegionSetKeyCtx keyframeRegionTrackCtx ' +
-      'keyframeStats lassoContext lattice latticeDeformKeyCtx launch launchImageEditor ' +
-      'layerButton layeredShaderPort layeredTexturePort layout layoutDialog lightList ' +
-      'lightListEditor lightListPanel lightlink lineIntersection linearPrecision linstep ' +
-      'listAnimatable listAttr listCameras listConnections listDeviceAttachments listHistory ' +
-      'listInputDeviceAxes listInputDeviceButtons listInputDevices listMenuAnnotation ' +
-      'listNodeTypes listPanelCategories listRelatives listSets listTransforms ' +
-      'listUnselected listerEditor loadFluid loadNewShelf loadPlugin ' +
-      'loadPluginLanguageResources loadPrefObjects localizedPanelLabel lockNode loft log ' +
-      'longNameOf lookThru ls lsThroughFilter lsType lsUI Mayatomr mag makeIdentity makeLive ' +
-      'makePaintable makeRoll makeSingleSurface makeTubeOn makebot manipMoveContext ' +
-      'manipMoveLimitsCtx manipOptions manipRotateContext manipRotateLimitsCtx ' +
-      'manipScaleContext manipScaleLimitsCtx marker match max memory menu menuBarLayout ' +
-      'menuEditor menuItem menuItemToShelf menuSet menuSetPref messageLine min minimizeApp ' +
-      'mirrorJoint modelCurrentTimeCtx modelEditor modelPanel mouse movIn movOut move ' +
-      'moveIKtoFK moveKeyCtx moveVertexAlongDirection multiProfileBirailSurface mute ' +
-      'nParticle nameCommand nameField namespace namespaceInfo newPanelItems newton nodeCast ' +
-      'nodeIconButton nodeOutliner nodePreset nodeType noise nonLinear normalConstraint ' +
-      'normalize nurbsBoolean nurbsCopyUVSet nurbsCube nurbsEditUV nurbsPlane nurbsSelect ' +
-      'nurbsSquare nurbsToPoly nurbsToPolygonsPref nurbsToSubdiv nurbsToSubdivPref ' +
-      'nurbsUVSet nurbsViewDirectionVector objExists objectCenter objectLayer objectType ' +
-      'objectTypeUI obsoleteProc oceanNurbsPreviewPlane offsetCurve offsetCurveOnSurface ' +
-      'offsetSurface openGLExtension openMayaPref optionMenu optionMenuGrp optionVar orbit ' +
-      'orbitCtx orientConstraint outlinerEditor outlinerPanel overrideModifier ' +
-      'paintEffectsDisplay pairBlend palettePort paneLayout panel panelConfiguration ' +
-      'panelHistory paramDimContext paramDimension paramLocator parent parentConstraint ' +
-      'particle particleExists particleInstancer particleRenderInfo partition pasteKey ' +
-      'pathAnimation pause pclose percent performanceOptions pfxstrokes pickWalk picture ' +
-      'pixelMove planarSrf plane play playbackOptions playblast plugAttr plugNode pluginInfo ' +
-      'pluginResourceUtil pointConstraint pointCurveConstraint pointLight pointMatrixMult ' +
-      'pointOnCurve pointOnSurface pointPosition poleVectorConstraint polyAppend ' +
-      'polyAppendFacetCtx polyAppendVertex polyAutoProjection polyAverageNormal ' +
-      'polyAverageVertex polyBevel polyBlendColor polyBlindData polyBoolOp polyBridgeEdge ' +
-      'polyCacheMonitor polyCheck polyChipOff polyClipboard polyCloseBorder polyCollapseEdge ' +
-      'polyCollapseFacet polyColorBlindData polyColorDel polyColorPerVertex polyColorSet ' +
-      'polyCompare polyCone polyCopyUV polyCrease polyCreaseCtx polyCreateFacet ' +
-      'polyCreateFacetCtx polyCube polyCut polyCutCtx polyCylinder polyCylindricalProjection ' +
-      'polyDelEdge polyDelFacet polyDelVertex polyDuplicateAndConnect polyDuplicateEdge ' +
-      'polyEditUV polyEditUVShell polyEvaluate polyExtrudeEdge polyExtrudeFacet ' +
-      'polyExtrudeVertex polyFlipEdge polyFlipUV polyForceUV polyGeoSampler polyHelix ' +
-      'polyInfo polyInstallAction polyLayoutUV polyListComponentConversion polyMapCut ' +
-      'polyMapDel polyMapSew polyMapSewMove polyMergeEdge polyMergeEdgeCtx polyMergeFacet ' +
-      'polyMergeFacetCtx polyMergeUV polyMergeVertex polyMirrorFace polyMoveEdge ' +
-      'polyMoveFacet polyMoveFacetUV polyMoveUV polyMoveVertex polyNormal polyNormalPerVertex ' +
-      'polyNormalizeUV polyOptUvs polyOptions polyOutput polyPipe polyPlanarProjection ' +
-      'polyPlane polyPlatonicSolid polyPoke polyPrimitive polyPrism polyProjection ' +
-      'polyPyramid polyQuad polyQueryBlindData polyReduce polySelect polySelectConstraint ' +
-      'polySelectConstraintMonitor polySelectCtx polySelectEditCtx polySeparate ' +
-      'polySetToFaceNormal polySewEdge polyShortestPathCtx polySmooth polySoftEdge ' +
-      'polySphere polySphericalProjection polySplit polySplitCtx polySplitEdge polySplitRing ' +
-      'polySplitVertex polyStraightenUVBorder polySubdivideEdge polySubdivideFacet ' +
-      'polyToSubdiv polyTorus polyTransfer polyTriangulate polyUVSet polyUnite polyWedgeFace ' +
-      'popen popupMenu pose pow preloadRefEd print progressBar progressWindow projFileViewer ' +
-      'projectCurve projectTangent projectionContext projectionManip promptDialog propModCtx ' +
-      'propMove psdChannelOutliner psdEditTextureFile psdExport psdTextureFile putenv pwd ' +
-      'python querySubdiv quit rad_to_deg radial radioButton radioButtonGrp radioCollection ' +
-      'radioMenuItemCollection rampColorPort rand randomizeFollicles randstate rangeControl ' +
-      'readTake rebuildCurve rebuildSurface recordAttr recordDevice redo reference ' +
-      'referenceEdit referenceQuery refineSubdivSelectionList refresh refreshAE ' +
-      'registerPluginResource rehash reloadImage removeJoint removeMultiInstance ' +
-      'removePanelCategory rename renameAttr renameSelectionList renameUI render ' +
-      'renderGlobalsNode renderInfo renderLayerButton renderLayerParent ' +
-      'renderLayerPostProcess renderLayerUnparent renderManip renderPartition ' +
-      'renderQualityNode renderSettings renderThumbnailUpdate renderWindowEditor ' +
-      'renderWindowSelectContext renderer reorder reorderDeformers requires reroot ' +
-      'resampleFluid resetAE resetPfxToPolyCamera resetTool resolutionNode retarget ' +
-      'reverseCurve reverseSurface revolve rgb_to_hsv rigidBody rigidSolver roll rollCtx ' +
-      'rootOf rot rotate rotationInterpolation roundConstantRadius rowColumnLayout rowLayout ' +
-      'runTimeCommand runup sampleImage saveAllShelves saveAttrPreset saveFluid saveImage ' +
-      'saveInitialState saveMenu savePrefObjects savePrefs saveShelf saveToolSettings scale ' +
-      'scaleBrushBrightness scaleComponents scaleConstraint scaleKey scaleKeyCtx sceneEditor ' +
-      'sceneUIReplacement scmh scriptCtx scriptEditorInfo scriptJob scriptNode scriptTable ' +
-      'scriptToShelf scriptedPanel scriptedPanelType scrollField scrollLayout sculpt ' +
-      'searchPathArray seed selLoadSettings select selectContext selectCurveCV selectKey ' +
-      'selectKeyCtx selectKeyframeRegionCtx selectMode selectPref selectPriority selectType ' +
-      'selectedNodes selectionConnection separator setAttr setAttrEnumResource ' +
-      'setAttrMapping setAttrNiceNameResource setConstraintRestPosition ' +
-      'setDefaultShadingGroup setDrivenKeyframe setDynamic setEditCtx setEditor setFluidAttr ' +
-      'setFocus setInfinity setInputDeviceMapping setKeyCtx setKeyPath setKeyframe ' +
-      'setKeyframeBlendshapeTargetWts setMenuMode setNodeNiceNameResource setNodeTypeFlag ' +
-      'setParent setParticleAttr setPfxToPolyCamera setPluginResource setProject ' +
-      'setStampDensity setStartupMessage setState setToolTo setUITemplate setXformManip sets ' +
-      'shadingConnection shadingGeometryRelCtx shadingLightRelCtx shadingNetworkCompare ' +
-      'shadingNode shapeCompare shelfButton shelfLayout shelfTabLayout shellField ' +
-      'shortNameOf showHelp showHidden showManipCtx showSelectionInTitle ' +
-      'showShadingGroupAttrEditor showWindow sign simplify sin singleProfileBirailSurface ' +
-      'size sizeBytes skinCluster skinPercent smoothCurve smoothTangentSurface smoothstep ' +
-      'snap2to2 snapKey snapMode snapTogetherCtx snapshot soft softMod softModCtx sort sound ' +
-      'soundControl source spaceLocator sphere sphrand spotLight spotLightPreviewPort ' +
-      'spreadSheetEditor spring sqrt squareSurface srtContext stackTrace startString ' +
-      'startsWith stitchAndExplodeShell stitchSurface stitchSurfacePoints strcmp ' +
-      'stringArrayCatenate stringArrayContains stringArrayCount stringArrayInsertAtIndex ' +
-      'stringArrayIntersector stringArrayRemove stringArrayRemoveAtIndex ' +
-      'stringArrayRemoveDuplicates stringArrayRemoveExact stringArrayToString ' +
-      'stringToStringArray strip stripPrefixFromName stroke subdAutoProjection ' +
-      'subdCleanTopology subdCollapse subdDuplicateAndConnect subdEditUV ' +
-      'subdListComponentConversion subdMapCut subdMapSewMove subdMatchTopology subdMirror ' +
-      'subdToBlind subdToPoly subdTransferUVsToCache subdiv subdivCrease ' +
-      'subdivDisplaySmoothness substitute substituteAllString substituteGeometry substring ' +
-      'surface surfaceSampler surfaceShaderList swatchDisplayPort switchTable symbolButton ' +
-      'symbolCheckBox sysFile system tabLayout tan tangentConstraint texLatticeDeformContext ' +
-      'texManipContext texMoveContext texMoveUVShellContext texRotateContext texScaleContext ' +
-      'texSelectContext texSelectShortestPathCtx texSmudgeUVContext texWinToolCtx text ' +
-      'textCurves textField textFieldButtonGrp textFieldGrp textManip textScrollList ' +
-      'textToShelf textureDisplacePlane textureHairColor texturePlacementContext ' +
-      'textureWindow threadCount threePointArcCtx timeControl timePort timerX toNativePath ' +
-      'toggle toggleAxis toggleWindowVisibility tokenize tokenizeList tolerance tolower ' +
-      'toolButton toolCollection toolDropped toolHasOptions toolPropertyWindow torus toupper ' +
-      'trace track trackCtx transferAttributes transformCompare transformLimits translator ' +
-      'trim trunc truncateFluidCache truncateHairCache tumble tumbleCtx turbulence ' +
-      'twoPointArcCtx uiRes uiTemplate unassignInputDevice undo undoInfo ungroup uniform unit ' +
-      'unloadPlugin untangleUV untitledFileName untrim upAxis updateAE userCtx uvLink ' +
-      'uvSnapshot validateShelfName vectorize view2dToolCtx viewCamera viewClipPlane ' +
-      'viewFit viewHeadOn viewLookAt viewManip viewPlace viewSet visor volumeAxis vortex ' +
-      'waitCursor warning webBrowser webBrowserPrefs whatIs window windowPref wire ' +
-      'wireContext workspace wrinkle wrinkleContext writeTake xbmLangPathList xform',
-    illegal: '</',
-    contains: [
-      hljs.C_NUMBER_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        begin: '`', end: '`',
-        contains: [hljs.BACKSLASH_ESCAPE]
-      },
-      {
-        className: 'variable',
-        variants: [
-          {begin: '\\$\\d'},
-          {begin: '[\\$\\%\\@](\\^\\w\\b|#\\w+|[^\\s\\w{]|{\\w+}|\\w+)'},
-          {begin: '\\*(\\^\\w\\b|#\\w+|[^\\s\\w{]|{\\w+}|\\w+)', relevance: 0}
-        ]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE
-    ]
-  };
-};
-},{}],80:[function(require,module,exports){
-module.exports = function(hljs) {
-  var KEYWORDS = {
-    keyword:
-      'module use_module import_module include_module end_module initialise ' +
-      'mutable initialize finalize finalise interface implementation pred ' +
-      'mode func type inst solver any_pred any_func is semidet det nondet ' +
-      'multi erroneous failure cc_nondet cc_multi typeclass instance where ' +
-      'pragma promise external trace atomic or_else require_complete_switch ' +
-      'require_det require_semidet require_multi require_nondet ' +
-      'require_cc_multi require_cc_nondet require_erroneous require_failure',
-    pragma:
-      'inline no_inline type_spec source_file fact_table obsolete memo ' +
-      'loop_check minimal_model terminates does_not_terminate ' +
-      'check_termination promise_equivalent_clauses',
-    preprocessor:
-      'foreign_proc foreign_decl foreign_code foreign_type ' +
-      'foreign_import_module foreign_export_enum foreign_export ' +
-      'foreign_enum may_call_mercury will_not_call_mercury thread_safe ' +
-      'not_thread_safe maybe_thread_safe promise_pure promise_semipure ' +
-      'tabled_for_io local untrailed trailed attach_to_io_state ' +
-      'can_pass_as_mercury_type stable will_not_throw_exception ' +
-      'may_modify_trail will_not_modify_trail may_duplicate ' +
-      'may_not_duplicate affects_liveness does_not_affect_liveness ' +
-      'doesnt_affect_liveness no_sharing unknown_sharing sharing',
-    built_in:
-      'some all not if then else true fail false try catch catch_any ' +
-      'semidet_true semidet_false semidet_fail impure_true impure semipure'
-  };
-
-  var TODO = {
-    className: 'label',
-    begin: 'XXX', end: '$', endsWithParent: true,
-    relevance: 0
-  };
-  var COMMENT = hljs.inherit(hljs.C_LINE_COMMENT_MODE, {begin: '%'});
-  var CCOMMENT = hljs.inherit(hljs.C_BLOCK_COMMENT_MODE, {relevance: 0});
-  COMMENT.contains.push(TODO);
-  CCOMMENT.contains.push(TODO);
-
-  var NUMCODE = {
-    className: 'number',
-    begin: "0'.\\|0[box][0-9a-fA-F]*"
-  };
-
-  var ATOM = hljs.inherit(hljs.APOS_STRING_MODE, {relevance: 0});
-  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {relevance: 0});
-  var STRING_FMT = {
-    className: 'constant',
-    begin: '\\\\[abfnrtv]\\|\\\\x[0-9a-fA-F]*\\\\\\|%[-+# *.0-9]*[dioxXucsfeEgGp]',
-    relevance: 0
-  };
-  STRING.contains.push(STRING_FMT);
-
-  var IMPLICATION = {
-    className: 'built_in',
-    variants: [
-      {begin: '<=>'},
-      {begin: '<=', relevance: 0},
-      {begin: '=>', relevance: 0},
-      {begin: '/\\\\'},
-      {begin: '\\\\/'}
-    ]
-  };
-
-  var HEAD_BODY_CONJUNCTION = {
-    className: 'built_in',
-    variants: [
-      {begin: ':-\\|-->'},
-      {begin: '=', relevance: 0}
-    ]
-  };
-
-  return {
-    aliases: ['m', 'moo'],
-    keywords: KEYWORDS,
-    contains: [
-      IMPLICATION,
-      HEAD_BODY_CONJUNCTION,
-      COMMENT,
-      CCOMMENT,
-      NUMCODE,
-      hljs.NUMBER_MODE,
-      ATOM,
-      STRING,
-      {begin: /:-/} // relevance booster
-    ]
-  };
-};
-},{}],81:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords:
-      'environ vocabularies notations constructors definitions ' +
-      'registrations theorems schemes requirements begin end definition ' +
-      'registration cluster existence pred func defpred deffunc theorem ' +
-      'proof let take assume then thus hence ex for st holds consider ' +
-      'reconsider such that and in provided of as from be being by means ' +
-      'equals implies iff redefine define now not or attr is mode ' +
-      'suppose per cases set thesis contradiction scheme reserve struct ' +
-      'correctness compatibility coherence symmetry assymetry ' +
-      'reflexivity irreflexivity connectedness uniqueness commutativity ' +
-      'idempotence involutiveness projectivity',
-    contains: [
-      {
-        className: 'comment',
-        begin: '::', end: '$'
-      }
-    ]
-  };
-};
-},{}],82:[function(require,module,exports){
-module.exports = function(hljs) {
-  var NUMBER = {
-    className: 'number', relevance: 0,
-    variants: [
-      {
-        begin: '[$][a-fA-F0-9]+'
-      },
-      hljs.NUMBER_MODE
-    ]
-  }
-
-  return {
-    case_insensitive: true,
-    keywords: {
-      keyword: 'public private property continue exit extern new try catch ' +
-        'eachin not abstract final select case default const local global field ' +
-        'end if then else elseif endif while wend repeat until forever for to step next return module inline throw',
-
-      built_in: 'DebugLog DebugStop Error Print ACos ACosr ASin ASinr ATan ATan2 ATan2r ATanr Abs Abs Ceil ' +
-        'Clamp Clamp Cos Cosr Exp Floor Log Max Max Min Min Pow Sgn Sgn Sin Sinr Sqrt Tan Tanr Seed PI HALFPI TWOPI',
-
-      literal: 'true false null and or shl shr mod'
-    },
-    contains: [
-      {
-        className: 'comment',
-        begin: '#rem', end: '#end'
-      },
-      {
-        className: 'comment',
-        begin: "'", end: '$',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function method', end: '[(=:]|$',
-        illegal: /\n/,
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE,
-        ]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '$',
-        contains: [
-          {
-            beginKeywords: 'extends implements'
-          },
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      {
-        className: 'variable',
-        begin: '\\b(self|super)\\b'
-      },
-      {
-        className: 'preprocessor',
-        beginKeywords: 'import',
-        end: '$'
-      },
-      {
-        className: 'preprocessor',
-        begin: '\\s*#', end: '$',
-        keywords: 'if else elseif endif end then'
-      },
-      {
-        className: 'pi',
-        begin: '^\\s*strict\\b'
-      },
-      {
-        beginKeywords: 'alias', end: '=',
-        contains: [hljs.UNDERSCORE_TITLE_MODE]
-      },
-      hljs.QUOTE_STRING_MODE,
-      NUMBER
-    ]
-  }
-};
-},{}],83:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VAR = {
-    className: 'variable',
-    variants: [
-      {begin: /\$\d+/},
-      {begin: /\$\{/, end: /}/},
-      {begin: '[\\$\\@]' + hljs.UNDERSCORE_IDENT_RE}
-    ]
-  };
-  var DEFAULT = {
-    endsWithParent: true,
-    lexemes: '[a-z/_]+',
-    keywords: {
-      built_in:
-        'on off yes no true false none blocked debug info notice warn error crit ' +
-        'select break last permanent redirect kqueue rtsig epoll poll /dev/poll'
-    },
-    relevance: 0,
-    illegal: '=>',
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'string',
-        contains: [hljs.BACKSLASH_ESCAPE, VAR],
-        variants: [
-          {begin: /"/, end: /"/},
-          {begin: /'/, end: /'/}
-        ]
-      },
-      {
-        className: 'url',
-        begin: '([a-z]+):/', end: '\\s', endsWithParent: true, excludeEnd: true,
-        contains: [VAR]
-      },
-      {
-        className: 'regexp',
-        contains: [hljs.BACKSLASH_ESCAPE, VAR],
-        variants: [
-          {begin: "\\s\\^", end: "\\s|{|;", returnEnd: true},
-          // regexp locations (~, ~*)
-          {begin: "~\\*?\\s+", end: "\\s|{|;", returnEnd: true},
-          // *.example.com
-          {begin: "\\*(\\.[a-z\\-]+)+"},
-          // sub.example.*
-          {begin: "([a-z\\-]+\\.)+\\*"}
-        ]
-      },
-      // IP
-      {
-        className: 'number',
-        begin: '\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{1,5})?\\b'
-      },
-      // units
-      {
-        className: 'number',
-        begin: '\\b\\d+[kKmMgGdshdwy]*\\b',
-        relevance: 0
-      },
-      VAR
-    ]
-  };
-
-  return {
-    aliases: ['nginxconf'],
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      {
-        begin: hljs.UNDERSCORE_IDENT_RE + '\\s', end: ';|{', returnBegin: true,
-        contains: [
-          {
-            className: 'title',
-            begin: hljs.UNDERSCORE_IDENT_RE,
-            starts: DEFAULT
-          }
-        ],
-        relevance: 0
-      }
-    ],
-    illegal: '[^\\s\\}]'
-  };
-};
-},{}],84:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword: 'addr and as asm bind block break|0 case|0 cast const|0 continue|0 converter discard distinct|10 div do elif else|0 end|0 enum|0 except export finally for from generic if|0 import|0 in include|0 interface is isnot|10 iterator|10 let|0 macro method|10 mixin mod nil not notin|10 object|0 of or out proc|10 ptr raise ref|10 return shl shr static template|10 try|0 tuple type|0 using|0 var|0 when while|0 with without xor yield',
-      literal: 'shared guarded stdin stdout stderr result|10 true false'
-    },
-    contains: [ {
-        className: 'decorator', // Actually pragma
-        begin: /{\./,
-        end: /\.}/,
-        relevance: 10
-      }, {
-        className: 'string',
-        begin: /[a-zA-Z]\w*"/,
-        end: /"/,
-        contains: [{begin: /""/}]
-      }, {
-        className: 'string',
-        begin: /([a-zA-Z]\w*)?"""/,
-        end: /"""/
-      }, {
-        className: 'string',
-        begin: /"/,
-        end: /"/,
-        illegal: /\n/,
-        contains: [{begin: /\\./}]
-      }, {
-        className: 'type',
-        begin: /\b[A-Z]\w+\b/,
-        relevance: 0
-      }, {
-        className: 'type',
-        begin: /\b(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float|float32|float64|bool|char|string|cstring|pointer|expr|stmt|void|auto|any|range|array|openarray|varargs|seq|set|clong|culong|cchar|cschar|cshort|cint|csize|clonglong|cfloat|cdouble|clongdouble|cuchar|cushort|cuint|culonglong|cstringarray|semistatic)\b/
-      }, {
-        className: 'number',
-        begin: /\b(0[xX][0-9a-fA-F][_0-9a-fA-F]*)('?[iIuU](8|16|32|64))?/,
-        relevance: 0
-      }, {
-        className: 'number',
-        begin: /\b(0o[0-7][_0-7]*)('?[iIuUfF](8|16|32|64))?/,
-        relevance: 0
-      }, {
-        className: 'number',
-        begin: /\b(0(b|B)[01][_01]*)('?[iIuUfF](8|16|32|64))?/,
-        relevance: 0
-      }, {
-        className: 'number',
-        begin: /\b(\d[_\d]*)('?[iIuUfF](8|16|32|64))?/,
-        relevance: 0
-      },
-      hljs.HASH_COMMENT_MODE
-    ]
-  }
-};
-},{}],85:[function(require,module,exports){
-module.exports = function(hljs) {
-  var NIX_KEYWORDS = {
-    keyword: 'rec with let in inherit assert if else then',
-    constant: 'true false or and null',
-    built_in:
-      'import abort baseNameOf dirOf isNull builtins map removeAttrs throw toString derivation'
-  };
-  var ANTIQUOTE = {
-    className: 'subst',
-    begin: /\$\{/,
-    end: /\}/,
-    keywords: NIX_KEYWORDS
-  };
-  var ATTRS = {
-    className: 'variable',
-    // TODO: we have to figure out a way how to exclude \s*=
-    begin: /[a-zA-Z0-9-_]+(\s*=)/
-  };
-  var SINGLE_QUOTE = {
-    className: 'string',
-    begin: "''",
-    end: "''",
-    contains: [
-      ANTIQUOTE
-    ]
-  };
-  var DOUBLE_QUOTE = {
-    className: 'string',
-    begin: '"',
-    end: '"',
-    contains: [
-      ANTIQUOTE
-    ]
-  };
-  var EXPRESSIONS = [
-    hljs.NUMBER_MODE,
-    hljs.HASH_COMMENT_MODE,
-    hljs.C_BLOCK_COMMENT_MODE,
-    SINGLE_QUOTE,
-    DOUBLE_QUOTE,
-    ATTRS
-  ];
-  ANTIQUOTE.contains = EXPRESSIONS;
-  return {
-    aliases: ["nixos"],
-    keywords: NIX_KEYWORDS,
-    contains: EXPRESSIONS
-  };
-};
-},{}],86:[function(require,module,exports){
-module.exports = function(hljs) {
-  var CONSTANTS = {
-    className: 'symbol',
-    begin: '\\$(ADMINTOOLS|APPDATA|CDBURN_AREA|CMDLINE|COMMONFILES32|COMMONFILES64|COMMONFILES|COOKIES|DESKTOP|DOCUMENTS|EXEDIR|EXEFILE|EXEPATH|FAVORITES|FONTS|HISTORY|HWNDPARENT|INSTDIR|INTERNET_CACHE|LANGUAGE|LOCALAPPDATA|MUSIC|NETHOOD|OUTDIR|PICTURES|PLUGINSDIR|PRINTHOOD|PROFILE|PROGRAMFILES32|PROGRAMFILES64|PROGRAMFILES|QUICKLAUNCH|RECENT|RESOURCES_LOCALIZED|RESOURCES|SENDTO|SMPROGRAMS|SMSTARTUP|STARTMENU|SYSDIR|TEMP|TEMPLATES|VIDEOS|WINDIR)'
-  };
-
-  var DEFINES = {
-    // ${defines}
-    className: 'constant',
-    begin: '\\$+{[a-zA-Z0-9_]+}'
-  };
-
-  var VARIABLES = {
-    // $variables
-    className: 'variable',
-    begin: '\\$+[a-zA-Z0-9_]+',
-    illegal: '\\(\\){}'
-  };
-
-  var LANGUAGES = {
-    // $(language_strings)
-    className: 'constant',
-    begin: '\\$+\\([a-zA-Z0-9_]+\\)'
-  };
-
-  var PARAMETERS = {
-    // command parameters
-    className: 'params',
-    begin: '(ARCHIVE|FILE_ATTRIBUTE_ARCHIVE|FILE_ATTRIBUTE_NORMAL|FILE_ATTRIBUTE_OFFLINE|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM|FILE_ATTRIBUTE_TEMPORARY|HKCR|HKCU|HKDD|HKEY_CLASSES_ROOT|HKEY_CURRENT_CONFIG|HKEY_CURRENT_USER|HKEY_DYN_DATA|HKEY_LOCAL_MACHINE|HKEY_PERFORMANCE_DATA|HKEY_USERS|HKLM|HKPD|HKU|IDABORT|IDCANCEL|IDIGNORE|IDNO|IDOK|IDRETRY|IDYES|MB_ABORTRETRYIGNORE|MB_DEFBUTTON1|MB_DEFBUTTON2|MB_DEFBUTTON3|MB_DEFBUTTON4|MB_ICONEXCLAMATION|MB_ICONINFORMATION|MB_ICONQUESTION|MB_ICONSTOP|MB_OK|MB_OKCANCEL|MB_RETRYCANCEL|MB_RIGHT|MB_RTLREADING|MB_SETFOREGROUND|MB_TOPMOST|MB_USERICON|MB_YESNO|NORMAL|OFFLINE|READONLY|SHCTX|SHELL_CONTEXT|SYSTEM|TEMPORARY)'
-  };
-
-  var COMPILER ={
-    // !compiler_flags
-    className: 'constant',
-    begin: '\\!(addincludedir|addplugindir|appendfile|cd|define|delfile|echo|else|endif|error|execute|finalize|getdllversionsystem|ifdef|ifmacrodef|ifmacrondef|ifndef|if|include|insertmacro|macroend|macro|makensis|packhdr|searchparse|searchreplace|tempfile|undef|verbose|warning)'
-  };
-
-  return {
-    case_insensitive: false,
-    keywords: {
-      keyword:
-      'Abort AddBrandingImage AddSize AllowRootDirInstall AllowSkipFiles AutoCloseWindow BGFont BGGradient BrandingText BringToFront Call CallInstDLL Caption ChangeUI CheckBitmap ClearErrors CompletedText ComponentText CopyFiles CRCCheck CreateDirectory CreateFont CreateShortCut Delete DeleteINISec DeleteINIStr DeleteRegKey DeleteRegValue DetailPrint DetailsButtonText DirText DirVar DirVerify EnableWindow EnumRegKey EnumRegValue Exch Exec ExecShell ExecWait ExpandEnvStrings File FileBufSize FileClose FileErrorText FileOpen FileRead FileReadByte FileReadUTF16LE FileReadWord FileSeek FileWrite FileWriteByte FileWriteUTF16LE FileWriteWord FindClose FindFirst FindNext FindWindow FlushINI FunctionEnd GetCurInstType GetCurrentAddress GetDlgItem GetDLLVersion GetDLLVersionLocal GetErrorLevel GetFileTime GetFileTimeLocal GetFullPathName GetFunctionAddress GetInstDirError GetLabelAddress GetTempFileName Goto HideWindow Icon IfAbort IfErrors IfFileExists IfRebootFlag IfSilent InitPluginsDir InstallButtonText InstallColors InstallDir InstallDirRegKey InstProgressFlags InstType InstTypeGetText InstTypeSetText IntCmp IntCmpU IntFmt IntOp IsWindow LangString LicenseBkColor LicenseData LicenseForceSelection LicenseLangString LicenseText LoadLanguageFile LockWindow LogSet LogText ManifestDPIAware ManifestSupportedOS MessageBox MiscButtonText Name Nop OutFile Page PageCallbacks PageExEnd Pop Push Quit ReadEnvStr ReadINIStr ReadRegDWORD ReadRegStr Reboot RegDLL Rename RequestExecutionLevel ReserveFile Return RMDir SearchPath SectionEnd SectionGetFlags SectionGetInstTypes SectionGetSize SectionGetText SectionGroupEnd SectionIn SectionSetFlags SectionSetInstTypes SectionSetSize SectionSetText SendMessage SetAutoClose SetBrandingImage SetCompress SetCompressor SetCompressorDictSize SetCtlColors SetCurInstType SetDatablockOptimize SetDateSave SetDetailsPrint SetDetailsView SetErrorLevel SetErrors SetFileAttributes SetFont SetOutPath SetOverwrite SetPluginUnload SetRebootFlag SetRegView SetShellVarContext SetSilent ShowInstDetails ShowUninstDetails ShowWindow SilentInstall SilentUnInstall Sleep SpaceTexts StrCmp StrCmpS StrCpy StrLen SubCaption SubSectionEnd Unicode UninstallButtonText UninstallCaption UninstallIcon UninstallSubCaption UninstallText UninstPage UnRegDLL Var VIAddVersionKey VIFileVersion VIProductVersion WindowIcon WriteINIStr WriteRegBin WriteRegDWORD WriteRegExpandStr WriteRegStr WriteUninstaller XPStyle',
-      literal:
-      'admin all auto both colored current false force hide highest lastused leave listonly none normal notset off on open print show silent silentlog smooth textonly true user '
-    },
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'string',
-        begin: '"', end: '"',
-        illegal: '\\n',
-        contains: [
-          { // $\n, $\r, $\t, $$
-            className: 'symbol',
-            begin: '\\$(\\\\(n|r|t)|\\$)'
-          },
-          CONSTANTS,
-          DEFINES,
-          VARIABLES,
-          LANGUAGES
-        ]
-      },
-      { // line comments
-        className: 'comment',
-        begin: ';', end: '$',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        beginKeywords: 'Function PageEx Section SectionGroup SubSection', end: '$'
-      },
-      COMPILER,
-      DEFINES,
-      VARIABLES,
-      LANGUAGES,
-      PARAMETERS,
-      hljs.NUMBER_MODE,
-      { // plug::ins
-        className: 'literal',
-        begin: hljs.IDENT_RE + '::' + hljs.IDENT_RE
-      }
-    ]
-  };
-};
-},{}],87:[function(require,module,exports){
-module.exports = function(hljs) {
-  var OBJC_KEYWORDS = {
-    keyword:
-      'int float while char export sizeof typedef const struct for union ' +
-      'unsigned long volatile static bool mutable if do return goto void ' +
-      'enum else break extern asm case short default double register explicit ' +
-      'signed typename this switch continue wchar_t inline readonly assign ' +
-      'readwrite self @synchronized id typeof ' +
-      'nonatomic super unichar IBOutlet IBAction strong weak copy ' +
-      'in out inout bycopy byref oneway __strong __weak __block __autoreleasing ' +
-      '@private @protected @public @try @property @end @throw @catch @finally ' +
-      '@autoreleasepool @synthesize @dynamic @selector @optional @required',
-    literal:
-      'false true FALSE TRUE nil YES NO NULL',
-    built_in:
-      'NSString NSData NSDictionary CGRect CGPoint UIButton UILabel UITextView UIWebView MKMapView ' +
-      'NSView NSViewController NSWindow NSWindowController NSSet NSUUID NSIndexSet ' +
-      'UISegmentedControl NSObject UITableViewDelegate UITableViewDataSource NSThread ' +
-      'UIActivityIndicator UITabbar UIToolBar UIBarButtonItem UIImageView NSAutoreleasePool ' +
-      'UITableView BOOL NSInteger CGFloat NSException NSLog NSMutableString NSMutableArray ' +
-      'NSMutableDictionary NSURL NSIndexPath CGSize UITableViewCell UIView UIViewController ' +
-      'UINavigationBar UINavigationController UITabBarController UIPopoverController ' +
-      'UIPopoverControllerDelegate UIImage NSNumber UISearchBar NSFetchedResultsController ' +
-      'NSFetchedResultsChangeType UIScrollView UIScrollViewDelegate UIEdgeInsets UIColor ' +
-      'UIFont UIApplication NSNotFound NSNotificationCenter NSNotification ' +
-      'UILocalNotification NSBundle NSFileManager NSTimeInterval NSDate NSCalendar ' +
-      'NSUserDefaults UIWindow NSRange NSArray NSError NSURLRequest NSURLConnection ' +
-      'NSURLSession NSURLSessionDataTask NSURLSessionDownloadTask NSURLSessionUploadTask NSURLResponse' +
-      'UIInterfaceOrientation MPMoviePlayerController dispatch_once_t ' +
-      'dispatch_queue_t dispatch_sync dispatch_async dispatch_once'
-  };
-  var LEXEMES = /[a-zA-Z@][a-zA-Z0-9_]*/;
-  var CLASS_KEYWORDS = '@interface @class @protocol @implementation';
-  return {
-    aliases: ['m', 'mm', 'objc', 'obj-c'],
-    keywords: OBJC_KEYWORDS, lexemes: LEXEMES,
-    illegal: '</',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'string',
-        variants: [
-          {
-            begin: '@"', end: '"',
-            illegal: '\\n',
-            contains: [hljs.BACKSLASH_ESCAPE]
-          },
-          {
-            begin: '\'', end: '[^\\\\]\'',
-            illegal: '[^\\\\][^\']'
-          }
-        ]
-      },
-      {
-        className: 'preprocessor',
-        begin: '#',
-        end: '$',
-        contains: [
-          {
-            className: 'title',
-            variants: [
-              { begin: '\"', end: '\"' },
-              { begin: '<', end: '>' }
-            ]
-          }
-        ]
-      },
-      {
-        className: 'class',
-        begin: '(' + CLASS_KEYWORDS.split(' ').join('|') + ')\\b', end: '({|$)', excludeEnd: true,
-        keywords: CLASS_KEYWORDS, lexemes: LEXEMES,
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      {
-        className: 'variable',
-        begin: '\\.'+hljs.UNDERSCORE_IDENT_RE,
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],88:[function(require,module,exports){
-module.exports = function(hljs) {
-  /* missing support for heredoc-like string (OCaml 4.0.2+) */
-  return {
-    aliases: ['ml'],
-    keywords: {
-      keyword:
-        'and as assert asr begin class constraint do done downto else end ' +
-        'exception external for fun function functor if in include ' +
-        'inherit! inherit initializer land lazy let lor lsl lsr lxor match method!|10 method ' +
-        'mod module mutable new object of open! open or private rec sig struct ' +
-        'then to try type val! val virtual when while with ' +
-        /* camlp4 */
-        'parser value',
-      built_in:
-        /* built-in types */
-        'array bool bytes char exn|5 float int int32 int64 list lazy_t|5 nativeint|5 string unit ' +
-        /* (some) types in Pervasives */
-        'in_channel out_channel ref',
-      literal:
-        'true false',
-    },
-    illegal: /\/\/|>>/,
-    lexemes: '[a-z_]\\w*!?',
-    contains: [
-      {
-        className: 'literal',
-        begin: '\\[(\\|\\|)?\\]|\\(\\)'
-      },
-      {
-        className: 'comment',
-        begin: '\\(\\*', end: '\\*\\)',
-        contains: ['self'],
-      },
-      { /* type variable */
-        className: 'symbol',
-        begin: '\'[A-Za-z_](?!\')[\\w\']*',
-        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
-      },
-      { /* polymorphic variant */
-        className: 'tag',
-        begin: '`[A-Z][\\w\']*',
-      },
-      { /* module or constructor */
-        className: 'type',
-        begin: '\\b[A-Z][\\w\']*',
-        relevance: 0
-      },
-      { /* don't color identifiers, but safely catch all identifiers with '*/
-        begin: '[a-z_]\\w*\'[\\w\']*'
-      },
-      hljs.inherit(hljs.APOS_STRING_MODE, {className: 'char', relevance: 0}),
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-      {
-        className: 'number',
-        begin:
-          '\\b(0[xX][a-fA-F0-9_]+[Lln]?|' +
-          '0[oO][0-7_]+[Lln]?|' +
-          '0[bB][01_]+[Lln]?|' +
-          '[0-9][0-9_]*([Lln]|(\\.[0-9_]*)?([eE][-+]?[0-9_]+)?)?)',
-        relevance: 0
-      },
-      {
-        begin: /[-=]>/ // relevance booster
-      }
-    ]
-  }
-};
-},{}],89:[function(require,module,exports){
-module.exports = function(hljs) {
-  var OXYGENE_KEYWORDS = 'abstract add and array as asc aspect assembly async begin break block by case class concat const copy constructor continue '+
-    'create default delegate desc distinct div do downto dynamic each else empty end ensure enum equals event except exit extension external false '+
-    'final finalize finalizer finally flags for forward from function future global group has if implementation implements implies in index inherited '+
-    'inline interface into invariants is iterator join locked locking loop matching method mod module namespace nested new nil not notify nullable of '+
-    'old on operator or order out override parallel params partial pinned private procedure property protected public queryable raise read readonly '+
-    'record reintroduce remove repeat require result reverse sealed select self sequence set shl shr skip static step soft take then to true try tuple '+
-    'type union unit unsafe until uses using var virtual raises volatile where while with write xor yield await mapped deprecated stdcall cdecl pascal '+
-    'register safecall overload library platform reference packed strict published autoreleasepool selector strong weak unretained';
-  var CURLY_COMMENT =  {
-    className: 'comment',
-    begin: '{', end: '}',
-    relevance: 0
-  };
-  var PAREN_COMMENT = {
-    className: 'comment',
-    begin: '\\(\\*', end: '\\*\\)',
-    relevance: 10
-  };
-  var STRING = {
-    className: 'string',
-    begin: '\'', end: '\'',
-    contains: [{begin: '\'\''}]
-  };
-  var CHAR_STRING = {
-    className: 'string', begin: '(#\\d+)+'
-  };
-  var FUNCTION = {
-    className: 'function',
-    beginKeywords: 'function constructor destructor procedure method', end: '[:;]',
-    keywords: 'function constructor|10 destructor|10 procedure|10 method|10',
-    contains: [
-      hljs.TITLE_MODE,
-      {
-        className: 'params',
-        begin: '\\(', end: '\\)',
-        keywords: OXYGENE_KEYWORDS,
-        contains: [STRING, CHAR_STRING]
-      },
-      CURLY_COMMENT, PAREN_COMMENT
-    ]
-  };
-  return {
-    case_insensitive: true,
-    keywords: OXYGENE_KEYWORDS,
-    illegal: '("|\\$[G-Zg-z]|\\/\\*|</|=>|->)',
-    contains: [
-      CURLY_COMMENT, PAREN_COMMENT, hljs.C_LINE_COMMENT_MODE,
-      STRING, CHAR_STRING,
-      hljs.NUMBER_MODE,
-      FUNCTION,
-      {
-        className: 'class',
-        begin: '=\\bclass\\b', end: 'end;',
-        keywords: OXYGENE_KEYWORDS,
-        contains: [
-          STRING, CHAR_STRING,
-          CURLY_COMMENT, PAREN_COMMENT, hljs.C_LINE_COMMENT_MODE,
-          FUNCTION
-        ]
-      }
-    ]
-  };
-};
-},{}],90:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    subLanguage: 'xml', relevance: 0,
-    contains: [
-      {
-        className: 'comment',
-        begin: '^#', end: '$'
-      },
-      {
-        className: 'comment',
-        begin: '\\^rem{', end: '}',
-        relevance: 10,
-        contains: [
-          {
-            begin: '{', end: '}',
-            contains: ['self']
-          }
-        ]
-      },
-      {
-        className: 'preprocessor',
-        begin: '^@(?:BASE|USE|CLASS|OPTIONS)$',
-        relevance: 10
-      },
-      {
-        className: 'title',
-        begin: '@[\\w\\-]+\\[[\\w^;\\-]*\\](?:\\[[\\w^;\\-]*\\])?(?:.*)$'
-      },
-      {
-        className: 'variable',
-        begin: '\\$\\{?[\\w\\-\\.\\:]+\\}?'
-      },
-      {
-        className: 'keyword',
-        begin: '\\^[\\w\\-\\.\\:]+'
-      },
-      {
-        className: 'number',
-        begin: '\\^#[0-9a-fA-F]+'
-      },
-      hljs.C_NUMBER_MODE
-    ]
-  };
-};
-},{}],91:[function(require,module,exports){
-module.exports = function(hljs) {
-  var PERL_KEYWORDS = 'getpwent getservent quotemeta msgrcv scalar kill dbmclose undef lc ' +
-    'ma syswrite tr send umask sysopen shmwrite vec qx utime local oct semctl localtime ' +
-    'readpipe do return format read sprintf dbmopen pop getpgrp not getpwnam rewinddir qq' +
-    'fileno qw endprotoent wait sethostent bless s|0 opendir continue each sleep endgrent ' +
-    'shutdown dump chomp connect getsockname die socketpair close flock exists index shmget' +
-    'sub for endpwent redo lstat msgctl setpgrp abs exit select print ref gethostbyaddr ' +
-    'unshift fcntl syscall goto getnetbyaddr join gmtime symlink semget splice x|0 ' +
-    'getpeername recv log setsockopt cos last reverse gethostbyname getgrnam study formline ' +
-    'endhostent times chop length gethostent getnetent pack getprotoent getservbyname rand ' +
-    'mkdir pos chmod y|0 substr endnetent printf next open msgsnd readdir use unlink ' +
-    'getsockopt getpriority rindex wantarray hex system getservbyport endservent int chr ' +
-    'untie rmdir prototype tell listen fork shmread ucfirst setprotoent else sysseek link ' +
-    'getgrgid shmctl waitpid unpack getnetbyname reset chdir grep split require caller ' +
-    'lcfirst until warn while values shift telldir getpwuid my getprotobynumber delete and ' +
-    'sort uc defined srand accept package seekdir getprotobyname semop our rename seek if q|0 ' +
-    'chroot sysread setpwent no crypt getc chown sqrt write setnetent setpriority foreach ' +
-    'tie sin msgget map stat getlogin unless elsif truncate exec keys glob tied closedir' +
-    'ioctl socket readlink eval xor readline binmode setservent eof ord bind alarm pipe ' +
-    'atan2 getgrent exp time push setgrent gt lt or ne m|0 break given say state when';
-  var SUBST = {
-    className: 'subst',
-    begin: '[$@]\\{', end: '\\}',
-    keywords: PERL_KEYWORDS
-  };
-  var METHOD = {
-    begin: '->{', end: '}'
-    // contains defined later
-  };
-  var VAR = {
-    className: 'variable',
-    variants: [
-      {begin: /\$\d/},
-      {begin: /[\$\%\@](\^\w\b|#\w+(\:\:\w+)*|{\w+}|\w+(\:\:\w*)*)/},
-      {begin: /[\$\%\@][^\s\w{]/, relevance: 0}
-    ]
-  };
-  var COMMENT = {
-    className: 'comment',
-    begin: '^(__END__|__DATA__)', end: '\\n$',
-    relevance: 5
-  };
-  var STRING_CONTAINS = [hljs.BACKSLASH_ESCAPE, SUBST, VAR];
-  var PERL_DEFAULT_CONTAINS = [
-    VAR,
-    hljs.HASH_COMMENT_MODE,
-    COMMENT,
-    {
-      className: 'comment',
-      begin: '^\\=\\w', end: '\\=cut', endsWithParent: true
-    },
-    METHOD,
-    {
-      className: 'string',
-      contains: STRING_CONTAINS,
-      variants: [
-        {
-          begin: 'q[qwxr]?\\s*\\(', end: '\\)',
-          relevance: 5
-        },
-        {
-          begin: 'q[qwxr]?\\s*\\[', end: '\\]',
-          relevance: 5
-        },
-        {
-          begin: 'q[qwxr]?\\s*\\{', end: '\\}',
-          relevance: 5
-        },
-        {
-          begin: 'q[qwxr]?\\s*\\|', end: '\\|',
-          relevance: 5
-        },
-        {
-          begin: 'q[qwxr]?\\s*\\<', end: '\\>',
-          relevance: 5
-        },
-        {
-          begin: 'qw\\s+q', end: 'q',
-          relevance: 5
-        },
-        {
-          begin: '\'', end: '\'',
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: '"', end: '"'
-        },
-        {
-          begin: '`', end: '`',
-          contains: [hljs.BACKSLASH_ESCAPE]
-        },
-        {
-          begin: '{\\w+}',
-          contains: [],
-          relevance: 0
-        },
-        {
-          begin: '\-?\\w+\\s*\\=\\>',
-          contains: [],
-          relevance: 0
-        }
-      ]
-    },
-    {
-      className: 'number',
-      begin: '(\\b0[0-7_]+)|(\\b0x[0-9a-fA-F_]+)|(\\b[1-9][0-9_]*(\\.[0-9_]+)?)|[0_]\\b',
-      relevance: 0
-    },
-    { // regexp container
-      begin: '(\\/\\/|' + hljs.RE_STARTERS_RE + '|\\b(split|return|print|reverse|grep)\\b)\\s*',
-      keywords: 'split return print reverse grep',
-      relevance: 0,
-      contains: [
-        hljs.HASH_COMMENT_MODE,
-        COMMENT,
-        {
-          className: 'regexp',
-          begin: '(s|tr|y)/(\\\\.|[^/])*/(\\\\.|[^/])*/[a-z]*',
-          relevance: 10
-        },
-        {
-          className: 'regexp',
-          begin: '(m|qr)?/', end: '/[a-z]*',
-          contains: [hljs.BACKSLASH_ESCAPE],
-          relevance: 0 // allows empty "//" which is a common comment delimiter in other languages
-        }
-      ]
-    },
-    {
-      className: 'sub',
-      beginKeywords: 'sub', end: '(\\s*\\(.*?\\))?[;{]',
-      relevance: 5
-    },
-    {
-      className: 'operator',
-      begin: '-\\w\\b',
-      relevance: 0
-    }
-  ];
-  SUBST.contains = PERL_DEFAULT_CONTAINS;
-  METHOD.contains = PERL_DEFAULT_CONTAINS;
-
-  return {
-    aliases: ['pl'],
-    keywords: PERL_KEYWORDS,
-    contains: PERL_DEFAULT_CONTAINS
-  };
-};
-},{}],92:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VARIABLE = {
-    className: 'variable', begin: '\\$+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*'
-  };
-  var PREPROCESSOR = {
-    className: 'preprocessor', begin: /<\?(php)?|\?>/
-  };
-  var STRING = {
-    className: 'string',
-    contains: [hljs.BACKSLASH_ESCAPE, PREPROCESSOR],
-    variants: [
-      {
-        begin: 'b"', end: '"'
-      },
-      {
-        begin: 'b\'', end: '\''
-      },
-      hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null})
-    ]
-  };
-  var NUMBER = {variants: [hljs.BINARY_NUMBER_MODE, hljs.C_NUMBER_MODE]};
-  return {
-    aliases: ['php3', 'php4', 'php5', 'php6'],
-    case_insensitive: true,
-    keywords:
-      'and include_once list abstract global private echo interface as static endswitch ' +
-      'array null if endwhile or const for endforeach self var while isset public ' +
-      'protected exit foreach throw elseif include __FILE__ empty require_once do xor ' +
-      'return parent clone use __CLASS__ __LINE__ else break print eval new ' +
-      'catch __METHOD__ case exception default die require __FUNCTION__ ' +
-      'enddeclare final try switch continue endfor endif declare unset true false ' +
-      'trait goto instanceof insteadof __DIR__ __NAMESPACE__ ' +
-      'yield finally',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.HASH_COMMENT_MODE,
-      {
-        className: 'comment',
-        begin: '/\\*', end: '\\*/',
-        contains: [
-          {
-            className: 'phpdoc',
-            begin: '\\s@[A-Za-z]+'
-          },
-          PREPROCESSOR
-        ]
-      },
-      {
-          className: 'comment',
-          begin: '__halt_compiler.+?;', endsWithParent: true,
-          keywords: '__halt_compiler', lexemes: hljs.UNDERSCORE_IDENT_RE
-      },
-      {
-        className: 'string',
-        begin: '<<<[\'"]?\\w+[\'"]?$', end: '^\\w+;',
-        contains: [hljs.BACKSLASH_ESCAPE]
-      },
-      PREPROCESSOR,
-      VARIABLE,
-      {
-        // swallow class members to avoid parsing them as keywords
-        begin: /->+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: /[;{]/, excludeEnd: true,
-        illegal: '\\$|\\[|%',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE,
-          {
-            className: 'params',
-            begin: '\\(', end: '\\)',
-            contains: [
-              'self',
-              VARIABLE,
-              hljs.C_BLOCK_COMMENT_MODE,
-              STRING,
-              NUMBER
-            ]
-          }
-        ]
-      },
-      {
-        className: 'class',
-        beginKeywords: 'class interface', end: '{', excludeEnd: true,
-        illegal: /[:\(\$"]/,
-        contains: [
-          {beginKeywords: 'extends implements'},
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      {
-        beginKeywords: 'namespace', end: ';',
-        illegal: /[\.']/,
-        contains: [hljs.UNDERSCORE_TITLE_MODE]
-      },
-      {
-        beginKeywords: 'use', end: ';',
-        contains: [hljs.UNDERSCORE_TITLE_MODE]
-      },
-      {
-        begin: '=>' // No markup, just a relevance booster
-      },
-      STRING,
-      NUMBER
-    ]
-  };
-};
-},{}],93:[function(require,module,exports){
-module.exports = function(hljs) {
-  var backtickEscape = {
-    begin: '`[\\s\\S]',
-    relevance: 0
-  };
-  var dollarEscape = {
-    begin: '\\$\\$[\\s\\S]',
-    relevance: 0
-  };
-  var VAR = {
-    className: 'variable',
-    variants: [
-      {begin: /\$[\w\d][\w\d_:]*/}
-    ]
-  };
-  var QUOTE_STRING = {
-    className: 'string',
-    begin: /"/, end: /"/,
-    contains: [
-      backtickEscape,
-      VAR,
-      {
-        className: 'variable',
-        begin: /\$[A-z]/, end: /[^A-z]/
-      }
-    ]
-  };
-  var APOS_STRING = {
-    className: 'string',
-    begin: /'/, end: /'/
-  };
-
-  return {
-    aliases: ['ps'],
-    lexemes: /-?[A-z\.\-]+/,
-    case_insensitive: true,
-    keywords: {
-      keyword: 'if else foreach return function do while until elseif begin for trap data dynamicparam end break throw param continue finally in switch exit filter try process catch',
-      literal: '$null $true $false',
-      built_in: 'Add-Content Add-History Add-Member Add-PSSnapin Clear-Content Clear-Item Clear-Item Property Clear-Variable Compare-Object ConvertFrom-SecureString Convert-Path ConvertTo-Html ConvertTo-SecureString Copy-Item Copy-ItemProperty Export-Alias Export-Clixml Export-Console Export-Csv ForEach-Object Format-Custom Format-List Format-Table Format-Wide Get-Acl Get-Alias Get-AuthenticodeSignature Get-ChildItem Get-Command Get-Content Get-Credential Get-Culture Get-Date Get-EventLog Get-ExecutionPolicy Get-Help Get-History Get-Host Get-Item Get-ItemProperty Get-Location Get-Member Get-PfxCertificate Get-Process Get-PSDrive Get-PSProvider Get-PSSnapin Get-Service Get-TraceSource Get-UICulture Get-Unique Get-Variable Get-WmiObject Group-Object Import-Alias Import-Clixml Import-Csv Invoke-Expression Invoke-History Invoke-Item Join-Path Measure-Command Measure-Object Move-Item Move-ItemProperty New-Alias New-Item New-ItemProperty New-Object New-PSDrive New-Service New-TimeSpan New-Variable Out-Default Out-File Out-Host Out-Null Out-Printer Out-String Pop-Location Push-Location Read-Host Remove-Item Remove-ItemProperty Remove-PSDrive Remove-PSSnapin Remove-Variable Rename-Item Rename-ItemProperty Resolve-Path Restart-Service Resume-Service Select-Object Select-String Set-Acl Set-Alias Set-AuthenticodeSignature Set-Content Set-Date Set-ExecutionPolicy Set-Item Set-ItemProperty Set-Location Set-PSDebug Set-Service Set-TraceSource Set-Variable Sort-Object Split-Path Start-Service Start-Sleep Start-Transcript Stop-Process Stop-Service Stop-Transcript Suspend-Service Tee-Object Test-Path Trace-Command Update-FormatData Update-TypeData Where-Object Write-Debug Write-Error Write-Host Write-Output Write-Progress Write-Verbose Write-Warning',
-      operator: '-ne -eq -lt -gt -ge -le -not -like -notlike -match -notmatch -contains -notcontains -in -notin -replace'
-    },
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      hljs.NUMBER_MODE,
-      QUOTE_STRING,
-      APOS_STRING,
-      VAR
-    ]
-  };
-};
-},{}],94:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword: 'BufferedReader PVector PFont PImage PGraphics HashMap boolean byte char color ' +
-        'double float int long String Array FloatDict FloatList IntDict IntList JSONArray JSONObject ' +
-        'Object StringDict StringList Table TableRow XML ' +
-        // Java keywords
-        'false synchronized int abstract float private char boolean static null if const ' +
-        'for true while long throw strictfp finally protected import native final return void ' +
-        'enum else break transient new catch instanceof byte super volatile case assert short ' +
-        'package default double public try this switch continue throws protected public private',
-      constant: 'P2D P3D HALF_PI PI QUARTER_PI TAU TWO_PI',
-      variable: 'displayHeight displayWidth mouseY mouseX mousePressed pmouseX pmouseY key ' +
-        'keyCode pixels focused frameCount frameRate height width',
-      title: 'setup draw',
-      built_in: 'size createGraphics beginDraw createShape loadShape PShape arc ellipse line point ' +
-        'quad rect triangle bezier bezierDetail bezierPoint bezierTangent curve curveDetail curvePoint ' +
-        'curveTangent curveTightness shape shapeMode beginContour beginShape bezierVertex curveVertex ' +
-        'endContour endShape quadraticVertex vertex ellipseMode noSmooth rectMode smooth strokeCap ' +
-        'strokeJoin strokeWeight mouseClicked mouseDragged mouseMoved mousePressed mouseReleased ' +
-        'mouseWheel keyPressed keyPressedkeyReleased keyTyped print println save saveFrame day hour ' +
-        'millis minute month second year background clear colorMode fill noFill noStroke stroke alpha ' +
-        'blue brightness color green hue lerpColor red saturation modelX modelY modelZ screenX screenY ' +
-        'screenZ ambient emissive shininess specular add createImage beginCamera camera endCamera frustum ' +
-        'ortho perspective printCamera printProjection cursor frameRate noCursor exit loop noLoop popStyle ' +
-        'pushStyle redraw binary boolean byte char float hex int str unbinary unhex join match matchAll nf ' +
-        'nfc nfp nfs split splitTokens trim append arrayCopy concat expand reverse shorten sort splice subset ' +
-        'box sphere sphereDetail createInput createReader loadBytes loadJSONArray loadJSONObject loadStrings ' +
-        'loadTable loadXML open parseXML saveTable selectFolder selectInput beginRaw beginRecord createOutput ' +
-        'createWriter endRaw endRecord PrintWritersaveBytes saveJSONArray saveJSONObject saveStream saveStrings ' +
-        'saveXML selectOutput popMatrix printMatrix pushMatrix resetMatrix rotate rotateX rotateY rotateZ scale ' +
-        'shearX shearY translate ambientLight directionalLight lightFalloff lights lightSpecular noLights normal ' +
-        'pointLight spotLight image imageMode loadImage noTint requestImage tint texture textureMode textureWrap ' +
-        'blend copy filter get loadPixels set updatePixels blendMode loadShader PShaderresetShader shader createFont ' +
-        'loadFont text textFont textAlign textLeading textMode textSize textWidth textAscent textDescent abs ceil ' +
-        'constrain dist exp floor lerp log mag map max min norm pow round sq sqrt acos asin atan atan2 cos degrees ' +
-        'radians sin tan noise noiseDetail noiseSeed random randomGaussian randomSeed'
-    },
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE
-    ]
-  };
-};
-},{}],95:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    contains: [
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'built_in',
-        begin: '{', end: '}$',
-        excludeBegin: true, excludeEnd: true,
-        contains: [hljs.APOS_STRING_MODE, hljs.QUOTE_STRING_MODE],
-        relevance: 0
-      },
-      {
-        className: 'filename',
-        begin: '[a-zA-Z_][\\da-zA-Z_]+\\.[\\da-zA-Z_]{1,3}', end: ':',
-        excludeEnd: true
-      },
-      {
-        className: 'header',
-        begin: '(ncalls|tottime|cumtime)', end: '$',
-        keywords: 'ncalls tottime|10 cumtime|10 filename',
-        relevance: 10
-      },
-      {
-        className: 'summary',
-        begin: 'function calls', end: '$',
-        contains: [hljs.C_NUMBER_MODE],
-        relevance: 10
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'function',
-        begin: '\\(', end: '\\)$',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE
-        ],
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],96:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword: 'package import option optional required repeated group',
-      built_in: 'double float int32 int64 uint32 uint64 sint32 sint64 ' +
-        'fixed32 fixed64 sfixed32 sfixed64 bool string bytes',
-      literal: 'true false'
-    },
-    contains: [
-      hljs.QUOTE_STRING_MODE,
-      hljs.NUMBER_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      {
-        className: 'class',
-        beginKeywords: 'message enum service', end: /\{/,
-        illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
-      },
-      {
-        className: 'function',
-        beginKeywords: 'rpc',
-        end: /;/, excludeEnd: true,
-        keywords: 'rpc returns'
-      },
-      {
-        className: 'constant',
-        begin: /^\s*[A-Z_]+/,
-        end: /\s*=/, excludeEnd: true
-      }
-    ]
-  };
-};
-},{}],97:[function(require,module,exports){
-module.exports = function(hljs) {
-  var PUPPET_TYPE_REFERENCE =
-      'augeas computer cron exec file filebucket host interface k5login macauthorization mailalias maillist mcx mount nagios_command ' +
-      'nagios_contact nagios_contactgroup nagios_host nagios_hostdependency nagios_hostescalation nagios_hostextinfo nagios_hostgroup nagios_service firewall ' +
-      'nagios_servicedependency nagios_serviceescalation nagios_serviceextinfo nagios_servicegroup nagios_timeperiod notify package resources ' +
-      'router schedule scheduled_task selboolean selmodule service ssh_authorized_key sshkey stage tidy user vlan yumrepo zfs zone zpool';
-
-  var PUPPET_ATTRIBUTES =
-    /* metaparameters */
-      'alias audit before loglevel noop require subscribe tag ' +
-    /* normal attributes */
-      'owner ensure group mode name|0 changes context force incl lens load_path onlyif provider returns root show_diff type_check ' +
-      'en_address ip_address realname command environment hour monute month monthday special target weekday '+
-      'creates cwd ogoutput refresh refreshonly tries try_sleep umask backup checksum content ctime force ignore ' +
-      'links mtime purge recurse recurselimit replace selinux_ignore_defaults selrange selrole seltype seluser source ' +
-      'souirce_permissions sourceselect validate_cmd validate_replacement allowdupe attribute_membership auth_membership forcelocal gid '+
-      'ia_load_module members system host_aliases ip allowed_trunk_vlans description device_url duplex encapsulation etherchannel ' +
-      'native_vlan speed principals allow_root auth_class auth_type authenticate_user k_of_n mechanisms rule session_owner shared options ' +
-      'device fstype enable hasrestart directory present absent link atboot blockdevice device dump pass remounts poller_tag use ' +
-      'message withpath adminfile allow_virtual allowcdrom category configfiles flavor install_options instance package_settings platform ' +
-      'responsefile status uninstall_options vendor unless_system_user unless_uid binary control flags hasstatus manifest pattern restart running ' +
-      'start stop allowdupe auths expiry gid groups home iterations key_membership keys managehome membership password password_max_age ' +
-      'password_min_age profile_membership profiles project purge_ssh_keys role_membership roles salt shell uid baseurl cost descr enabled ' +
-      'enablegroups exclude failovermethod gpgcheck gpgkey http_caching include includepkgs keepalive metadata_expire metalink mirrorlist ' +
-      'priority protect proxy proxy_password proxy_username repo_gpgcheck s3_enabled skip_if_unavailable sslcacert sslclientcert sslclientkey ' +
-      'sslverify mounted';
-
-  var PUPPET_KEYWORDS =
-  {
-  keyword:
-    /* language keywords */
-      'and case class default define else elsif false if in import enherits node or true undef unless main settings $string ' + PUPPET_TYPE_REFERENCE,
-  literal:
-      PUPPET_ATTRIBUTES,
-
-  built_in:
-    /* core facts */
-      'architecture augeasversion blockdevices boardmanufacturer boardproductname boardserialnumber cfkey dhcp_servers ' +
-      'domain ec2_ ec2_userdata facterversion filesystems ldom fqdn gid hardwareisa hardwaremodel hostname id|0 interfaces '+
-      'ipaddress ipaddress_ ipaddress6 ipaddress6_ iphostnumber is_virtual kernel kernelmajversion kernelrelease kernelversion ' +
-      'kernelrelease kernelversion lsbdistcodename lsbdistdescription lsbdistid lsbdistrelease lsbmajdistrelease lsbminordistrelease ' +
-      'lsbrelease macaddress macaddress_ macosx_buildversion macosx_productname macosx_productversion macosx_productverson_major ' +
-      'macosx_productversion_minor manufacturer memoryfree memorysize netmask metmask_ network_ operatingsystem operatingsystemmajrelease '+
-      'operatingsystemrelease osfamily partitions path physicalprocessorcount processor processorcount productname ps puppetversion '+
-      'rubysitedir rubyversion selinux selinux_config_mode selinux_config_policy selinux_current_mode selinux_current_mode selinux_enforced '+
-      'selinux_policyversion serialnumber sp_ sshdsakey sshecdsakey sshrsakey swapencrypted swapfree swapsize timezone type uniqueid uptime '+
-      'uptime_days uptime_hours uptime_seconds uuid virtual vlans xendomains zfs_version zonenae zones zpool_version'
-  };
-
-  var COMMENT = {
-    className: 'comment',
-    begin: '#', end: '$'
-  };
-
-  var STRING = {
-    className: 'string',
-    contains: [hljs.BACKSLASH_ESCAPE],
-    variants: [
-      {begin: /'/, end: /'/},
-      {begin: /"/, end: /"/}
-    ]
-  };
-
-  var PUPPET_DEFAULT_CONTAINS = [
-    STRING,
-    COMMENT,
-    {
-      className: 'keyword',
-      beginKeywords: 'class', end: '$|;',
-      illegal: /=/,
-      contains: [
-        hljs.inherit(hljs.TITLE_MODE, {begin: '(::)?[A-Za-z_]\\w*(::\\w+)*'}),
-        COMMENT,
-        STRING
-      ]
-    },
-    {
-      className: 'keyword',
-      begin: '([a-zA-Z_(::)]+ *\\{)',
-      contains:[STRING, COMMENT],
-      relevance: 0
-    },
-    {
-      className: 'keyword',
-      begin: '(\\}|\\{)',
-      relevance: 0
-    },
-    {
-      className: 'function',
-      begin:'[a-zA-Z_]+\\s*=>'
-    },
-    {
-      className: 'constant',
-      begin: '(::)?(\\b[A-Z][a-z_]*(::)?)+',
-      relevance: 0
-    },
-    {
-      className: 'number',
-      begin: '(\\b0[0-7_]+)|(\\b0x[0-9a-fA-F_]+)|(\\b[1-9][0-9_]*(\\.[0-9_]+)?)|[0_]\\b',
-      relevance: 0
-    }
-  ];
-
-  return {
-    aliases: ['pp'],
-    keywords: PUPPET_KEYWORDS,
-    contains: PUPPET_DEFAULT_CONTAINS
-  }
-};
-},{}],98:[function(require,module,exports){
-module.exports = function(hljs) {
-  var PROMPT = {
-    className: 'prompt',  begin: /^(>>>|\.\.\.) /
-  };
-  var STRING = {
-    className: 'string',
-    contains: [hljs.BACKSLASH_ESCAPE],
-    variants: [
-      {
-        begin: /(u|b)?r?'''/, end: /'''/,
-        contains: [PROMPT],
-        relevance: 10
-      },
-      {
-        begin: /(u|b)?r?"""/, end: /"""/,
-        contains: [PROMPT],
-        relevance: 10
-      },
-      {
-        begin: /(u|r|ur)'/, end: /'/,
-        relevance: 10
-      },
-      {
-        begin: /(u|r|ur)"/, end: /"/,
-        relevance: 10
-      },
-      {
-        begin: /(b|br)'/, end: /'/
-      },
-      {
-        begin: /(b|br)"/, end: /"/
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE
-    ]
-  };
-  var NUMBER = {
-    className: 'number', relevance: 0,
-    variants: [
-      {begin: hljs.BINARY_NUMBER_RE + '[lLjJ]?'},
-      {begin: '\\b(0o[0-7]+)[lLjJ]?'},
-      {begin: hljs.C_NUMBER_RE + '[lLjJ]?'}
-    ]
-  };
-  var PARAMS = {
-    className: 'params',
-    begin: /\(/, end: /\)/,
-    contains: ['self', PROMPT, NUMBER, STRING]
-  };
-  return {
-    aliases: ['py', 'gyp'],
-    keywords: {
-      keyword:
-        'and elif is global as in if from raise for except finally print import pass return ' +
-        'exec else break not with class assert yield try while continue del or def lambda ' +
-        'nonlocal|10 None True False',
-      built_in:
-        'Ellipsis NotImplemented'
-    },
-    illegal: /(<\/|->|\?)/,
-    contains: [
-      PROMPT,
-      NUMBER,
-      STRING,
-      hljs.HASH_COMMENT_MODE,
-      {
-        variants: [
-          {className: 'function', beginKeywords: 'def', relevance: 10},
-          {className: 'class', beginKeywords: 'class'}
-        ],
-        end: /:/,
-        illegal: /[${=;\n]/,
-        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
-      },
-      {
-        className: 'decorator',
-        begin: /@/, end: /$/
-      },
-      {
-        begin: /\b(print|exec)\(/ // don’t highlight keywords-turned-functions in Python 3
-      }
-    ]
-  };
-};
-},{}],99:[function(require,module,exports){
-module.exports = function(hljs) {
-  var Q_KEYWORDS = {
-  keyword:
-    'do while select delete by update from',
-  constant:
-    '0b 1b',
-  built_in:
-    'neg not null string reciprocal floor ceiling signum mod xbar xlog and or each scan over prior mmu lsq inv md5 ltime gtime count first var dev med cov cor all any rand sums prds mins maxs fills deltas ratios avgs differ prev next rank reverse iasc idesc asc desc msum mcount mavg mdev xrank mmin mmax xprev rotate distinct group where flip type key til get value attr cut set upsert raze union inter except cross sv vs sublist enlist read0 read1 hopen hclose hdel hsym hcount peach system ltrim rtrim trim lower upper ssr view tables views cols xcols keys xkey xcol xasc xdesc fkeys meta lj aj aj0 ij pj asof uj ww wj wj1 fby xgroup ungroup ej save load rsave rload show csv parse eval min max avg wavg wsum sin cos tan sum',
-  typename:
-    '`float `double int `timestamp `timespan `datetime `time `boolean `symbol `char `byte `short `long `real `month `date `minute `second `guid'
-  };
-  return {
-  aliases:['k', 'kdb'],
-  keywords: Q_KEYWORDS,
-  lexemes: /\b(`?)[A-Za-z0-9_]+\b/,
-  contains: [
-  hljs.C_LINE_COMMENT_MODE,
-    hljs.QUOTE_STRING_MODE,
-    hljs.C_NUMBER_MODE
-     ]
-  };
-};
-},{}],100:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE = '([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*';
-
-  return {
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      {
-        begin: IDENT_RE,
-        lexemes: IDENT_RE,
-        keywords: {
-          keyword:
-            'function if in break next repeat else for return switch while try tryCatch|10 ' +
-            'stop warning require library attach detach source setMethod setGeneric ' +
-            'setGroupGeneric setClass ...|10',
-          literal:
-            'NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 ' +
-            'NA_complex_|10'
-        },
-        relevance: 0
-      },
-      {
-        // hex value
-        className: 'number',
-        begin: "0[xX][0-9a-fA-F]+[Li]?\\b",
-        relevance: 0
-      },
-      {
-        // explicit integer
-        className: 'number',
-        begin: "\\d+(?:[eE][+\\-]?\\d*)?L\\b",
-        relevance: 0
-      },
-      {
-        // number with trailing decimal
-        className: 'number',
-        begin: "\\d+\\.(?!\\d)(?:i\\b)?",
-        relevance: 0
-      },
-      {
-        // number
-        className: 'number',
-        begin: "\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",
-        relevance: 0
-      },
-      {
-        // number with leading decimal
-        className: 'number',
-        begin: "\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",
-        relevance: 0
-      },
-
-      {
-        // escaped identifier
-        begin: '`',
-        end: '`',
-        relevance: 0
-      },
-
-      {
-        className: 'string',
-        contains: [hljs.BACKSLASH_ESCAPE],
-        variants: [
-          {begin: '"', end: '"'},
-          {begin: "'", end: "'"}
-        ]
-      }
-    ]
-  };
-};
-},{}],101:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords:
-      'ArchiveRecord AreaLightSource Atmosphere Attribute AttributeBegin AttributeEnd Basis ' +
-      'Begin Blobby Bound Clipping ClippingPlane Color ColorSamples ConcatTransform Cone ' +
-      'CoordinateSystem CoordSysTransform CropWindow Curves Cylinder DepthOfField Detail ' +
-      'DetailRange Disk Displacement Display End ErrorHandler Exposure Exterior Format ' +
-      'FrameAspectRatio FrameBegin FrameEnd GeneralPolygon GeometricApproximation Geometry ' +
-      'Hider Hyperboloid Identity Illuminate Imager Interior LightSource ' +
-      'MakeCubeFaceEnvironment MakeLatLongEnvironment MakeShadow MakeTexture Matte ' +
-      'MotionBegin MotionEnd NuPatch ObjectBegin ObjectEnd ObjectInstance Opacity Option ' +
-      'Orientation Paraboloid Patch PatchMesh Perspective PixelFilter PixelSamples ' +
-      'PixelVariance Points PointsGeneralPolygons PointsPolygons Polygon Procedural Projection ' +
-      'Quantize ReadArchive RelativeDetail ReverseOrientation Rotate Scale ScreenWindow ' +
-      'ShadingInterpolation ShadingRate Shutter Sides Skew SolidBegin SolidEnd Sphere ' +
-      'SubdivisionMesh Surface TextureCoordinates Torus Transform TransformBegin TransformEnd ' +
-      'TransformPoints Translate TrimCurve WorldBegin WorldEnd',
-    illegal: '</',
-    contains: [
-      hljs.HASH_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE
-    ]
-  };
-};
-},{}],102:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENTIFIER = '[a-zA-Z-_][^\n{\r\n]+\\{';
-
-  return {
-    aliases: ['graph', 'instances'],
-    case_insensitive: true,
-    keywords: 'import',
-    contains: [
-      // Facet sections
-      {
-        className: 'facet',
-        begin: '^facet ' + IDENTIFIER,
-        end: '}',
-        keywords: 'facet installer exports children extends',
-        contains: [
-          hljs.HASH_COMMENT_MODE
-        ]
-      },
-
-      // Instance sections
-      {
-        className: 'instance-of',
-        begin: '^instance of ' + IDENTIFIER,
-        end: '}',
-        keywords: 'name count channels instance-data instance-state instance of',
-        contains: [
-          // Instance overridden properties
-          {
-            className: 'keyword',
-            begin: '[a-zA-Z-_]+( |\t)*:'
-          },
-          hljs.HASH_COMMENT_MODE
-        ]
-      },
-
-      // Component sections
-      {
-        className: 'component',
-        begin: '^' + IDENTIFIER,
-        end: '}',
-        lexemes: '\\(?[a-zA-Z]+\\)?',
-        keywords: 'installer exports children extends imports facets alias (optional)',
-        contains: [
-          // Imported component variables
-          {
-            className: 'string',
-            begin: '\\.[a-zA-Z-_]+',
-            end: '\\s|,|;',
-            excludeEnd: true
-          },
-          hljs.HASH_COMMENT_MODE
-        ]
-      },
-
-      // Comments
-      hljs.HASH_COMMENT_MODE
-    ]
-  };
-};
-},{}],103:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword:
-        'float color point normal vector matrix while for if do return else break extern continue',
-      built_in:
-        'abs acos ambient area asin atan atmosphere attribute calculatenormal ceil cellnoise ' +
-        'clamp comp concat cos degrees depth Deriv diffuse distance Du Dv environment exp ' +
-        'faceforward filterstep floor format fresnel incident length lightsource log match ' +
-        'max min mod noise normalize ntransform opposite option phong pnoise pow printf ' +
-        'ptlined radians random reflect refract renderinfo round setcomp setxcomp setycomp ' +
-        'setzcomp shadow sign sin smoothstep specular specularbrdf spline sqrt step tan ' +
-        'texture textureinfo trace transform vtransform xcomp ycomp zcomp'
-    },
-    illegal: '</',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$'
-      },
-      {
-        className: 'shader',
-        beginKeywords: 'surface displacement light volume imager', end: '\\('
-      },
-      {
-        className: 'shading',
-        beginKeywords: 'illuminate illuminance gather', end: '\\('
-      }
-    ]
-  };
-};
-},{}],104:[function(require,module,exports){
-module.exports = function(hljs) {
-  var RUBY_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
-  var RUBY_KEYWORDS =
-    'and false then defined module in return redo if BEGIN retry end for true self when ' +
-    'next until do begin unless END rescue nil else break undef not super class case ' +
-    'require yield alias while ensure elsif or include attr_reader attr_writer attr_accessor';
-  var YARDOCTAG = {
-    className: 'yardoctag',
-    begin: '@[A-Za-z]+'
-  };
-  var IRB_OBJECT = {
-    className: 'value',
-    begin: '#<', end: '>'
-  };
-  var COMMENT = {
-    className: 'comment',
-    variants: [
-      {
-        begin: '#', end: '$',
-        contains: [YARDOCTAG]
-      },
-      {
-        begin: '^\\=begin', end: '^\\=end',
-        contains: [YARDOCTAG],
-        relevance: 10
-      },
-      {
-        begin: '^__END__', end: '\\n$'
-      }
-    ]
-  };
-  var SUBST = {
-    className: 'subst',
-    begin: '#\\{', end: '}',
-    keywords: RUBY_KEYWORDS
-  };
-  var STRING = {
-    className: 'string',
-    contains: [hljs.BACKSLASH_ESCAPE, SUBST],
-    variants: [
-      {begin: /'/, end: /'/},
-      {begin: /"/, end: /"/},
-      {begin: /`/, end: /`/},
-      {begin: '%[qQwWx]?\\(', end: '\\)'},
-      {begin: '%[qQwWx]?\\[', end: '\\]'},
-      {begin: '%[qQwWx]?{', end: '}'},
-      {begin: '%[qQwWx]?<', end: '>'},
-      {begin: '%[qQwWx]?/', end: '/'},
-      {begin: '%[qQwWx]?%', end: '%'},
-      {begin: '%[qQwWx]?-', end: '-'},
-      {begin: '%[qQwWx]?\\|', end: '\\|'},
-      {
-        // \B in the beginning suppresses recognition of ?-sequences where ?
-        // is the last character of a preceding identifier, as in: `func?4`
-        begin: /\B\?(\\\d{1,3}|\\x[A-Fa-f0-9]{1,2}|\\u[A-Fa-f0-9]{4}|\\?\S)\b/
-      }
-    ]
-  };
-  var PARAMS = {
-    className: 'params',
-    begin: '\\(', end: '\\)',
-    keywords: RUBY_KEYWORDS
-  };
-
-  var RUBY_DEFAULT_CONTAINS = [
-    STRING,
-    IRB_OBJECT,
-    COMMENT,
-    {
-      className: 'class',
-      beginKeywords: 'class module', end: '$|;',
-      illegal: /=/,
-      contains: [
-        hljs.inherit(hljs.TITLE_MODE, {begin: '[A-Za-z_]\\w*(::\\w+)*(\\?|\\!)?'}),
-        {
-          className: 'inheritance',
-          begin: '<\\s*',
-          contains: [{
-            className: 'parent',
-            begin: '(' + hljs.IDENT_RE + '::)?' + hljs.IDENT_RE
-          }]
-        },
-        COMMENT
-      ]
-    },
-    {
-      className: 'function',
-      beginKeywords: 'def', end: ' |$|;',
-      relevance: 0,
-      contains: [
-        hljs.inherit(hljs.TITLE_MODE, {begin: RUBY_METHOD_RE}),
-        PARAMS,
-        COMMENT
-      ]
-    },
-    {
-      className: 'constant',
-      begin: '(::)?(\\b[A-Z]\\w*(::)?)+',
-      relevance: 0
-    },
-    {
-      className: 'symbol',
-      begin: hljs.UNDERSCORE_IDENT_RE + '(\\!|\\?)?:',
-      relevance: 0
-    },
-    {
-      className: 'symbol',
-      begin: ':',
-      contains: [STRING, {begin: RUBY_METHOD_RE}],
-      relevance: 0
-    },
-    {
-      className: 'number',
-      begin: '(\\b0[0-7_]+)|(\\b0x[0-9a-fA-F_]+)|(\\b[1-9][0-9_]*(\\.[0-9_]+)?)|[0_]\\b',
-      relevance: 0
-    },
-    {
-      className: 'variable',
-      begin: '(\\$\\W)|((\\$|\\@\\@?)(\\w+))'
-    },
-    { // regexp container
-      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
-      contains: [
-        IRB_OBJECT,
-        COMMENT,
-        {
-          className: 'regexp',
-          contains: [hljs.BACKSLASH_ESCAPE, SUBST],
-          illegal: /\n/,
-          variants: [
-            {begin: '/', end: '/[a-z]*'},
-            {begin: '%r{', end: '}[a-z]*'},
-            {begin: '%r\\(', end: '\\)[a-z]*'},
-            {begin: '%r!', end: '![a-z]*'},
-            {begin: '%r\\[', end: '\\][a-z]*'}
-          ]
-        }
-      ],
-      relevance: 0
-    }
-  ];
-  SUBST.contains = RUBY_DEFAULT_CONTAINS;
-  PARAMS.contains = RUBY_DEFAULT_CONTAINS;
-
-  var SIMPLE_PROMPT = "[>?]>";
-  var DEFAULT_PROMPT = "[\\w#]+\\(\\w+\\):\\d+:\\d+>";
-  var RVM_PROMPT = "(\\w+-)?\\d+\\.\\d+\\.\\d(p\\d+)?[^>]+>";
-
-  var IRB_DEFAULT = [
-    {
-      begin: /^\s*=>/,
-      className: 'status',
-      starts: {
-        end: '$', contains: RUBY_DEFAULT_CONTAINS
-      }
-    },
-    {
-      className: 'prompt',
-      begin: '^('+SIMPLE_PROMPT+"|"+DEFAULT_PROMPT+'|'+RVM_PROMPT+')',
-      starts: {
-        end: '$', contains: RUBY_DEFAULT_CONTAINS
-      }
-    }
-  ];
-
-  return {
-    aliases: ['rb', 'gemspec', 'podspec', 'thor', 'irb'],
-    keywords: RUBY_KEYWORDS,
-    contains: [COMMENT].concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
-  };
-};
-},{}],105:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-       keyword: 'BILL_PERIOD BILL_START BILL_STOP RS_EFFECTIVE_START RS_EFFECTIVE_STOP RS_JURIS_CODE RS_OPCO_CODE ' +
-         'INTDADDATTRIBUTE|5 INTDADDVMSG|5 INTDBLOCKOP|5 INTDBLOCKOPNA|5 INTDCLOSE|5 INTDCOUNT|5 ' +
-         'INTDCOUNTSTATUSCODE|5 INTDCREATEMASK|5 INTDCREATEDAYMASK|5 INTDCREATEFACTORMASK|5 ' +
-         'INTDCREATEHANDLE|5 INTDCREATEOVERRIDEDAYMASK|5 INTDCREATEOVERRIDEMASK|5 ' +
-         'INTDCREATESTATUSCODEMASK|5 INTDCREATETOUPERIOD|5 INTDDELETE|5 INTDDIPTEST|5 INTDEXPORT|5 ' +
-         'INTDGETERRORCODE|5 INTDGETERRORMESSAGE|5 INTDISEQUAL|5 INTDJOIN|5 INTDLOAD|5 INTDLOADACTUALCUT|5 ' +
-         'INTDLOADDATES|5 INTDLOADHIST|5 INTDLOADLIST|5 INTDLOADLISTDATES|5 INTDLOADLISTENERGY|5 ' +
-         'INTDLOADLISTHIST|5 INTDLOADRELATEDCHANNEL|5 INTDLOADSP|5 INTDLOADSTAGING|5 INTDLOADUOM|5 ' +
-         'INTDLOADUOMDATES|5 INTDLOADUOMHIST|5 INTDLOADVERSION|5 INTDOPEN|5 INTDREADFIRST|5 INTDREADNEXT|5 ' +
-         'INTDRECCOUNT|5 INTDRELEASE|5 INTDREPLACE|5 INTDROLLAVG|5 INTDROLLPEAK|5 INTDSCALAROP|5 INTDSCALE|5 ' +
-         'INTDSETATTRIBUTE|5 INTDSETDSTPARTICIPANT|5 INTDSETSTRING|5 INTDSETVALUE|5 INTDSETVALUESTATUS|5 ' +
-         'INTDSHIFTSTARTTIME|5 INTDSMOOTH|5 INTDSORT|5 INTDSPIKETEST|5 INTDSUBSET|5 INTDTOU|5 ' +
-         'INTDTOURELEASE|5 INTDTOUVALUE|5 INTDUPDATESTATS|5 INTDVALUE|5 STDEV INTDDELETEEX|5 ' +
-         'INTDLOADEXACTUAL|5 INTDLOADEXCUT|5 INTDLOADEXDATES|5 INTDLOADEX|5 INTDLOADEXRELATEDCHANNEL|5 ' +
-         'INTDSAVEEX|5 MVLOAD|5 MVLOADACCT|5 MVLOADACCTDATES|5 MVLOADACCTHIST|5 MVLOADDATES|5 MVLOADHIST|5 ' +
-         'MVLOADLIST|5 MVLOADLISTDATES|5 MVLOADLISTHIST|5 IF FOR NEXT DONE SELECT END CALL ABORT CLEAR CHANNEL FACTOR LIST NUMBER ' +
-         'OVERRIDE SET WEEK DISTRIBUTIONNODE ELSE WHEN THEN OTHERWISE IENUM CSV INCLUDE LEAVE RIDER SAVE DELETE ' +
-         'NOVALUE SECTION WARN SAVE_UPDATE DETERMINANT LABEL REPORT REVENUE EACH ' +
-         'IN FROM TOTAL CHARGE BLOCK AND OR CSV_FILE RATE_CODE AUXILIARY_DEMAND ' +
-         'UIDACCOUNT RS BILL_PERIOD_SELECT HOURS_PER_MONTH INTD_ERROR_STOP SEASON_SCHEDULE_NAME ' +
-         'ACCOUNTFACTOR ARRAYUPPERBOUND CALLSTOREDPROC GETADOCONNECTION GETCONNECT GETDATASOURCE ' +
-         'GETQUALIFIER GETUSERID HASVALUE LISTCOUNT LISTOP LISTUPDATE LISTVALUE PRORATEFACTOR RSPRORATE ' +
-         'SETBINPATH SETDBMONITOR WQ_OPEN BILLINGHOURS DATE DATEFROMFLOAT DATETIMEFROMSTRING ' +
-         'DATETIMETOSTRING DATETOFLOAT DAY DAYDIFF DAYNAME DBDATETIME HOUR MINUTE MONTH MONTHDIFF ' +
-         'MONTHHOURS MONTHNAME ROUNDDATE SAMEWEEKDAYLASTYEAR SECOND WEEKDAY WEEKDIFF YEAR YEARDAY ' +
-         'YEARSTR COMPSUM HISTCOUNT HISTMAX HISTMIN HISTMINNZ HISTVALUE MAXNRANGE MAXRANGE MINRANGE ' +
-         'COMPIKVA COMPKVA COMPKVARFROMKQKW COMPLF IDATTR FLAG LF2KW LF2KWH MAXKW POWERFACTOR ' +
-         'READING2USAGE AVGSEASON MAXSEASON MONTHLYMERGE SEASONVALUE SUMSEASON ACCTREADDATES ' +
-         'ACCTTABLELOAD CONFIGADD CONFIGGET CREATEOBJECT CREATEREPORT EMAILCLIENT EXPBLKMDMUSAGE ' +
-         'EXPMDMUSAGE EXPORT_USAGE FACTORINEFFECT GETUSERSPECIFIEDSTOP INEFFECT ISHOLIDAY RUNRATE ' +
-         'SAVE_PROFILE SETREPORTTITLE USEREXIT WATFORRUNRATE TO TABLE ACOS ASIN ATAN ATAN2 BITAND CEIL ' +
-         'COS COSECANT COSH COTANGENT DIVQUOT DIVREM EXP FABS FLOOR FMOD FREPM FREXPN LOG LOG10 MAX MAXN ' +
-         'MIN MINNZ MODF POW ROUND ROUND2VALUE ROUNDINT SECANT SIN SINH SQROOT TAN TANH FLOAT2STRING ' +
-         'FLOAT2STRINGNC INSTR LEFT LEN LTRIM MID RIGHT RTRIM STRING STRINGNC TOLOWER TOUPPER TRIM ' +
-         'NUMDAYS READ_DATE STAGING',
-       built_in: 'IDENTIFIER OPTIONS XML_ELEMENT XML_OP XML_ELEMENT_OF DOMDOCCREATE DOMDOCLOADFILE DOMDOCLOADXML ' +
-         'DOMDOCSAVEFILE DOMDOCGETROOT DOMDOCADDPI DOMNODEGETNAME DOMNODEGETTYPE DOMNODEGETVALUE DOMNODEGETCHILDCT ' +
-         'DOMNODEGETFIRSTCHILD DOMNODEGETSIBLING DOMNODECREATECHILDELEMENT DOMNODESETATTRIBUTE ' +
-         'DOMNODEGETCHILDELEMENTCT DOMNODEGETFIRSTCHILDELEMENT DOMNODEGETSIBLINGELEMENT DOMNODEGETATTRIBUTECT ' +
-         'DOMNODEGETATTRIBUTEI DOMNODEGETATTRIBUTEBYNAME DOMNODEGETBYNAME'
-    },
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      { className: 'array',
-        begin: '\#[a-zA-Z\ \.]+'
-      }
-    ]
-  };
-};
-},{}],106:[function(require,module,exports){
-module.exports = function(hljs) {
-  var BLOCK_COMMENT = hljs.inherit(hljs.C_BLOCK_COMMENT_MODE);
-  BLOCK_COMMENT.contains.push('self');
-  return {
-    aliases: ['rs'],
-    keywords: {
-      keyword:
-        'alignof as be box break const continue crate do else enum extern ' +
-        'false fn for if impl in let loop match mod mut offsetof once priv ' +
-        'proc pub pure ref return self sizeof static struct super trait true ' +
-        'type typeof unsafe unsized use virtual while yield ' +
-        'int i8 i16 i32 i64 ' +
-        'uint u8 u32 u64 ' +
-        'float f32 f64 ' +
-        'str char bool',
-      built_in:
-        'assert! assert_eq! bitflags! bytes! cfg! col! concat! concat_idents! ' +
-        'debug_assert! debug_assert_eq! env! panic! file! format! format_args! ' +
-        'include_bin! include_str! line! local_data_key! module_path! ' +
-        'option_env! print! println! select! stringify! try! unimplemented! ' +
-        'unreachable! vec! write! writeln!'
-    },
-    lexemes: hljs.IDENT_RE + '!?',
-    illegal: '</',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      BLOCK_COMMENT,
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-      {
-        className: 'string',
-        begin: /r(#*)".*?"\1(?!#)/
-      },
-      {
-        className: 'string',
-        begin: /'\\?(x\w{2}|u\w{4}|U\w{8}|.)'/
-      },
-      {
-        begin: /'[a-zA-Z_][a-zA-Z0-9_]*/
-      },
-      {
-        className: 'number',
-        begin: /\b(0[xb][A-Za-z0-9_]+|[0-9_]+(\.[0-9_]+)?([eE][+-]?[0-9_]+)?)([uif](8|16|32|64)?)?/,
-        relevance: 0
-      },
-      {
-        className: 'function',
-        beginKeywords: 'fn', end: '(\\(|<)', excludeEnd: true,
-        contains: [hljs.UNDERSCORE_TITLE_MODE]
-      },
-      {
-        className: 'preprocessor',
-        begin: '#\\[', end: '\\]'
-      },
-      {
-        beginKeywords: 'type', end: '(=|<)',
-        contains: [hljs.UNDERSCORE_TITLE_MODE],
-        illegal: '\\S'
-      },
-      {
-        beginKeywords: 'trait enum', end: '({|<)',
-        contains: [hljs.UNDERSCORE_TITLE_MODE],
-        illegal: '\\S'
-      },
-      {
-        begin: hljs.IDENT_RE + '::'
-      },
-      {
-        begin: '->'
-      }
-    ]
-  };
-};
-},{}],107:[function(require,module,exports){
-module.exports = function(hljs) {
-
-  var ANNOTATION = {
-    className: 'annotation', begin: '@[A-Za-z]+'
-  };
-
-  var STRING = {
-    className: 'string',
-    begin: 'u?r?"""', end: '"""',
-    relevance: 10
-  };
-
-  var SYMBOL = {
-    className: 'symbol',
-    begin: '\'\\w[\\w\\d_]*(?!\')'
-  };
-
-  var TYPE = {
-    className: 'type',
-    begin: '\\b[A-Z][A-Za-z0-9_]*',
-    relevance: 0
-  };
-
-  var NAME = {
-    className: 'title',
-    begin: /[^0-9\n\t "'(),.`{}\[\]:;][^\n\t "'(),.`{}\[\]:;]+|[^0-9\n\t "'(),.`{}\[\]:;=]/,
-    relevance: 0
-  }
-
-  var CLASS = {
-    className: 'class',
-    beginKeywords: 'class object trait type',
-    end: /[:={\[(\n;]/,
-    contains: [{className: 'keyword', beginKeywords: 'extends with', relevance: 10}, NAME]
-  };
-
-  var METHOD = {
-    className: 'function',
-    beginKeywords: 'def val',
-    end: /[:={\[(\n;]/,
-    contains: [NAME]
-  };
-
-  var JAVADOC = {
-    className: 'javadoc',
-    begin: '/\\*\\*', end: '\\*/',
-    contains: [{
-      className: 'javadoctag',
-      begin: '@[A-Za-z]+'
-    }],
-    relevance: 10
-  };
-
-  return {
-    keywords: {
-      literal: 'true false null',
-      keyword: 'type yield lazy override def with val var sealed abstract private trait object if forSome for while throw finally protected extends import final return else break new catch super class case package default try this match continue throws implicit'
-    },
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      STRING,
-      hljs.QUOTE_STRING_MODE,
-      SYMBOL,
-      TYPE,
-      METHOD,
-      CLASS,
-      hljs.C_NUMBER_MODE,
-      ANNOTATION
-    ]
-  };
-};
-},{}],108:[function(require,module,exports){
-module.exports = function(hljs) {
-  var SCHEME_IDENT_RE = '[^\\(\\)\\[\\]\\{\\}",\'`;#|\\\\\\s]+';
-  var SCHEME_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+([./]\\d+)?';
-  var SCHEME_COMPLEX_NUMBER_RE = SCHEME_SIMPLE_NUMBER_RE + '[+\\-]' + SCHEME_SIMPLE_NUMBER_RE + 'i';
-  var BUILTINS = {
-    built_in:
-      'case-lambda call/cc class define-class exit-handler field import ' +
-      'inherit init-field interface let*-values let-values let/ec mixin ' +
-      'opt-lambda override protect provide public rename require ' +
-      'require-for-syntax syntax syntax-case syntax-error unit/sig unless ' +
-      'when with-syntax and begin call-with-current-continuation ' +
-      'call-with-input-file call-with-output-file case cond define ' +
-      'define-syntax delay do dynamic-wind else for-each if lambda let let* ' +
-      'let-syntax letrec letrec-syntax map or syntax-rules \' * + , ,@ - ... / ' +
-      '; < <= = => > >= ` abs acos angle append apply asin assoc assq assv atan ' +
-      'boolean? caar cadr call-with-input-file call-with-output-file ' +
-      'call-with-values car cdddar cddddr cdr ceiling char->integer ' +
-      'char-alphabetic? char-ci<=? char-ci<? char-ci=? char-ci>=? char-ci>? ' +
-      'char-downcase char-lower-case? char-numeric? char-ready? char-upcase ' +
-      'char-upper-case? char-whitespace? char<=? char<? char=? char>=? char>? ' +
-      'char? close-input-port close-output-port complex? cons cos ' +
-      'current-input-port current-output-port denominator display eof-object? ' +
-      'eq? equal? eqv? eval even? exact->inexact exact? exp expt floor ' +
-      'force gcd imag-part inexact->exact inexact? input-port? integer->char ' +
-      'integer? interaction-environment lcm length list list->string ' +
-      'list->vector list-ref list-tail list? load log magnitude make-polar ' +
-      'make-rectangular make-string make-vector max member memq memv min ' +
-      'modulo negative? newline not null-environment null? number->string ' +
-      'number? numerator odd? open-input-file open-output-file output-port? ' +
-      'pair? peek-char port? positive? procedure? quasiquote quote quotient ' +
-      'rational? rationalize read read-char real-part real? remainder reverse ' +
-      'round scheme-report-environment set! set-car! set-cdr! sin sqrt string ' +
-      'string->list string->number string->symbol string-append string-ci<=? ' +
-      'string-ci<? string-ci=? string-ci>=? string-ci>? string-copy ' +
-      'string-fill! string-length string-ref string-set! string<=? string<? ' +
-      'string=? string>=? string>? string? substring symbol->string symbol? ' +
-      'tan transcript-off transcript-on truncate values vector ' +
-      'vector->list vector-fill! vector-length vector-ref vector-set! ' +
-      'with-input-from-file with-output-to-file write write-char zero?'
-  };
-
-  var SHEBANG = {
-    className: 'shebang',
-    begin: '^#!',
-    end: '$'
-  };
-
-  var LITERAL = {
-    className: 'literal',
-    begin: '(#t|#f|#\\\\' + SCHEME_IDENT_RE + '|#\\\\.)'
-  };
-
-  var NUMBER = {
-    className: 'number',
-    variants: [
-      { begin: SCHEME_SIMPLE_NUMBER_RE, relevance: 0 },
-      { begin: SCHEME_COMPLEX_NUMBER_RE, relevance: 0 },
-      { begin: '#b[0-1]+(/[0-1]+)?' },
-      { begin: '#o[0-7]+(/[0-7]+)?' },
-      { begin: '#x[0-9a-f]+(/[0-9a-f]+)?' }
-    ]
-  };
-
-  var STRING = hljs.QUOTE_STRING_MODE;
-
-  var REGULAR_EXPRESSION = {
-    className: 'regexp',
-    begin: '#[pr]x"',
-    end: '[^\\\\]"'
-  };
-
-  var COMMENT = {
-    className: 'comment',
-    variants: [
-      { begin: ';',  end: '$', relevance: 0 },
-      { begin: '#\\|', end: '\\|#' }
-    ]
-  };
-
-  var IDENT = {
-    begin: SCHEME_IDENT_RE,
-    relevance: 0
-  };
-
-  var QUOTED_IDENT = {
-    className: 'variable',
-    begin: '\'' + SCHEME_IDENT_RE
-  };
-
-  var BODY = {
-    endsWithParent: true,
-    relevance: 0
-  };
-
-  var LIST = {
-    className: 'list',
-    variants: [
-      { begin: '\\(', end: '\\)' },
-      { begin: '\\[', end: '\\]' }
-    ],
-    contains: [
-      {
-        className: 'keyword',
-        begin: SCHEME_IDENT_RE,
-        lexemes: SCHEME_IDENT_RE,
-        keywords: BUILTINS
-      },
-      BODY
-    ]
-  };
-
-  BODY.contains = [LITERAL, NUMBER, STRING, COMMENT, IDENT, QUOTED_IDENT, LIST];
-
-  return {
-    illegal: /\S/,
-    contains: [SHEBANG, NUMBER, STRING, COMMENT, QUOTED_IDENT, LIST]
-  };
-};
-},{}],109:[function(require,module,exports){
-module.exports = function(hljs) {
-
-  var COMMON_CONTAINS = [
-    hljs.C_NUMBER_MODE,
-    {
-      className: 'string',
-      begin: '\'|\"', end: '\'|\"',
-      contains: [hljs.BACKSLASH_ESCAPE, {begin: '\'\''}]
-    }
-  ];
-
-  return {
-    aliases: ['sci'],
-    keywords: {
-      keyword: 'abort break case clear catch continue do elseif else endfunction end for function'+
-        'global if pause return resume select try then while'+
-        '%f %F %t %T %pi %eps %inf %nan %e %i %z %s',
-      built_in: // Scilab has more than 2000 functions. Just list the most commons
-       'abs and acos asin atan ceil cd chdir clearglobal cosh cos cumprod deff disp error'+
-       'exec execstr exists exp eye gettext floor fprintf fread fsolve imag isdef isempty'+
-       'isinfisnan isvector lasterror length load linspace list listfiles log10 log2 log'+
-       'max min msprintf mclose mopen ones or pathconvert poly printf prod pwd rand real'+
-       'round sinh sin size gsort sprintf sqrt strcat strcmps tring sum system tanh tan'+
-       'type typename warning zeros matrix'
-    },
-    illegal: '("|#|/\\*|\\s+/\\w+)',
-    contains: [
-      {
-        className: 'function',
-        beginKeywords: 'function endfunction', end: '$',
-        keywords: 'function endfunction|10',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE,
-          {
-            className: 'params',
-            begin: '\\(', end: '\\)'
-          }
-        ]
-      },
-      {
-        className: 'transposed_variable',
-        begin: '[a-zA-Z_][a-zA-Z_0-9]*(\'+[\\.\']*|[\\.\']+)', end: '',
-        relevance: 0
-      },
-      {
-        className: 'matrix',
-        begin: '\\[', end: '\\]\'*[\\.\']*',
-        relevance: 0,
-        contains: COMMON_CONTAINS
-      },
-      {
-        className: 'comment',
-        begin: '//', end: '$'
-      }
-    ].concat(COMMON_CONTAINS)
-  };
-};
-},{}],110:[function(require,module,exports){
-module.exports = function(hljs) {
-  var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
-  var VARIABLE = {
-    className: 'variable',
-    begin: '(\\$' + IDENT_RE + ')\\b'
-  };
-  var FUNCTION = {
-    className: 'function',
-    begin: IDENT_RE + '\\(',
-    returnBegin: true,
-    excludeEnd: true,
-    end: '\\('
-  };
-  var HEXCOLOR = {
-    className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
-  };
-  var DEF_INTERNALS = {
-    className: 'attribute',
-    begin: '[A-Z\\_\\.\\-]+', end: ':',
-    excludeEnd: true,
-    illegal: '[^\\s]',
-    starts: {
-      className: 'value',
-      endsWithParent: true, excludeEnd: true,
-      contains: [
-        FUNCTION,
-        HEXCOLOR,
-        hljs.CSS_NUMBER_MODE,
-        hljs.QUOTE_STRING_MODE,
-        hljs.APOS_STRING_MODE,
-        hljs.C_BLOCK_COMMENT_MODE,
-        {
-          className: 'important', begin: '!important'
-        }
-      ]
-    }
-  };
-  return {
-    case_insensitive: true,
-    illegal: '[=/|\']',
-    contains: [
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      FUNCTION,
-      {
-        className: 'id', begin: '\\#[A-Za-z0-9_-]+',
-        relevance: 0
-      },
-      {
-        className: 'class', begin: '\\.[A-Za-z0-9_-]+',
-        relevance: 0
-      },
-      {
-        className: 'attr_selector',
-        begin: '\\[', end: '\\]',
-        illegal: '$'
-      },
-      {
-        className: 'tag', // begin: IDENT_RE, end: '[,|\\s]'
-        begin: '\\b(a|abbr|acronym|address|area|article|aside|audio|b|base|big|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|div|dl|dt|em|embed|fieldset|figcaption|figure|footer|form|frame|frameset|(h[1-6])|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|keygen|label|legend|li|link|map|mark|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|samp|script|section|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|ul|var|video)\\b',
-        relevance: 0
-      },
-      {
-        className: 'pseudo',
-        begin: ':(visited|valid|root|right|required|read-write|read-only|out-range|optional|only-of-type|only-child|nth-of-type|nth-last-of-type|nth-last-child|nth-child|not|link|left|last-of-type|last-child|lang|invalid|indeterminate|in-range|hover|focus|first-of-type|first-line|first-letter|first-child|first|enabled|empty|disabled|default|checked|before|after|active)'
-      },
-      {
-        className: 'pseudo',
-        begin: '::(after|before|choices|first-letter|first-line|repeat-index|repeat-item|selection|value)'
-      },
-      VARIABLE,
-      {
-        className: 'attribute',
-        begin: '\\b(z-index|word-wrap|word-spacing|word-break|width|widows|white-space|visibility|vertical-align|unicode-bidi|transition-timing-function|transition-property|transition-duration|transition-delay|transition|transform-style|transform-origin|transform|top|text-underline-position|text-transform|text-shadow|text-rendering|text-overflow|text-indent|text-decoration-style|text-decoration-line|text-decoration-color|text-decoration|text-align-last|text-align|tab-size|table-layout|right|resize|quotes|position|pointer-events|perspective-origin|perspective|page-break-inside|page-break-before|page-break-after|padding-top|padding-right|padding-left|padding-bottom|padding|overflow-y|overflow-x|overflow-wrap|overflow|outline-width|outline-style|outline-offset|outline-color|outline|orphans|order|opacity|object-position|object-fit|normal|none|nav-up|nav-right|nav-left|nav-index|nav-down|min-width|min-height|max-width|max-height|mask|marks|margin-top|margin-right|margin-left|margin-bottom|margin|list-style-type|list-style-position|list-style-image|list-style|line-height|letter-spacing|left|justify-content|initial|inherit|ime-mode|image-orientation|image-resolution|image-rendering|icon|hyphens|height|font-weight|font-variant-ligatures|font-variant|font-style|font-stretch|font-size-adjust|font-size|font-language-override|font-kerning|font-feature-settings|font-family|font|float|flex-wrap|flex-shrink|flex-grow|flex-flow|flex-direction|flex-basis|flex|filter|empty-cells|display|direction|cursor|counter-reset|counter-increment|content|column-width|column-span|column-rule-width|column-rule-style|column-rule-color|column-rule|column-gap|column-fill|column-count|columns|color|clip-path|clip|clear|caption-side|break-inside|break-before|break-after|box-sizing|box-shadow|box-decoration-break|bottom|border-width|border-top-width|border-top-style|border-top-right-radius|border-top-left-radius|border-top-color|border-top|border-style|border-spacing|border-right-width|border-right-style|border-right-color|border-right|border-radius|border-left-width|border-left-style|border-left-color|border-left|border-image-width|border-image-source|border-image-slice|border-image-repeat|border-image-outset|border-image|border-color|border-collapse|border-bottom-width|border-bottom-style|border-bottom-right-radius|border-bottom-left-radius|border-bottom-color|border-bottom|border|background-size|background-repeat|background-position|background-origin|background-image|background-color|background-clip|background-attachment|background|backface-visibility|auto|animation-timing-function|animation-play-state|animation-name|animation-iteration-count|animation-fill-mode|animation-duration|animation-direction|animation-delay|animation|align-self|align-items|align-content)\\b',
-        illegal: '[^\\s]'
-      },
-      {
-        className: 'value',
-        begin: '\\b(whitespace|wait|w-resize|visible|vertical-text|vertical-ideographic|uppercase|upper-roman|upper-alpha|underline|transparent|top|thin|thick|text|text-top|text-bottom|tb-rl|table-header-group|table-footer-group|sw-resize|super|strict|static|square|solid|small-caps|separate|se-resize|scroll|s-resize|rtl|row-resize|ridge|right|repeat|repeat-y|repeat-x|relative|progress|pointer|overline|outside|outset|oblique|nowrap|not-allowed|normal|none|nw-resize|no-repeat|no-drop|newspaper|ne-resize|n-resize|move|middle|medium|ltr|lr-tb|lowercase|lower-roman|lower-alpha|loose|list-item|line|line-through|line-edge|lighter|left|keep-all|justify|italic|inter-word|inter-ideograph|inside|inset|inline|inline-block|inherit|inactive|ideograph-space|ideograph-parenthesis|ideograph-numeric|ideograph-alpha|horizontal|hidden|help|hand|groove|fixed|ellipsis|e-resize|double|dotted|distribute|distribute-space|distribute-letter|distribute-all-lines|disc|disabled|default|decimal|dashed|crosshair|collapse|col-resize|circle|char|center|capitalize|break-word|break-all|bottom|both|bolder|bold|block|bidi-override|below|baseline|auto|always|all-scroll|absolute|table|table-cell)\\b'
-      },
-      {
-        className: 'value',
-        begin: ':', end: ';',
-        contains: [
-          FUNCTION,
-          VARIABLE,
-          HEXCOLOR,
-          hljs.CSS_NUMBER_MODE,
-          hljs.QUOTE_STRING_MODE,
-          hljs.APOS_STRING_MODE,
-          {
-            className: 'important', begin: '!important'
-          }
-        ]
-      },
-      {
-        className: 'at_rule',
-        begin: '@', end: '[{;]',
-        keywords: 'mixin include extend for if else each while charset import debug media page content font-face namespace warn',
-        contains: [
-          FUNCTION,
-          VARIABLE,
-          hljs.QUOTE_STRING_MODE,
-          hljs.APOS_STRING_MODE,
-          HEXCOLOR,
-          hljs.CSS_NUMBER_MODE,
-          {
-            className: 'preprocessor',
-            begin: '\\s[A-Za-z0-9_.-]+',
-            relevance: 0
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],111:[function(require,module,exports){
-module.exports = function(hljs) {
-  var smali_instr_low_prio = ['add', 'and', 'cmp', 'cmpg', 'cmpl', 'const', 'div', 'double', 'float', 'goto', 'if', 'int', 'long', 'move', 'mul', 'neg', 'new', 'nop', 'not', 'or', 'rem', 'return', 'shl', 'shr', 'sput', 'sub', 'throw', 'ushr', 'xor'];
-  var smali_instr_high_prio = ['aget', 'aput', 'array', 'check', 'execute', 'fill', 'filled', 'goto/16', 'goto/32', 'iget', 'instance', 'invoke', 'iput', 'monitor', 'packed', 'sget', 'sparse'];
-  var smali_keywords = ['transient', 'constructor', 'abstract', 'final', 'synthetic', 'public', 'private', 'protected', 'static', 'bridge', 'system'];
-  return {
-    aliases: ['smali'],
-    contains: [
-      {
-        className: 'string',
-        begin: '"', end: '"',
-        relevance: 0
-      },
-      {
-        className: 'comment',
-        begin: '#', end: '$',
-        relevance: 0
-      },
-      {
-        className: 'keyword',
-        begin: '\\s*\\.end\\s[a-zA-Z0-9]*',
-        relevance: 1
-      },
-      {
-        className: 'keyword',
-        begin: '^[ ]*\\.[a-zA-Z]*',
-        relevance: 0
-      },
-      {
-        className: 'keyword',
-        begin: '\\s:[a-zA-Z_0-9]*',
-        relevance: 0
-      },
-      {
-        className: 'keyword',
-        begin: '\\s('+smali_keywords.join('|')+')',
-        relevance: 1
-      },
-      {
-        className: 'keyword',
-        begin: '\\[',
-        relevance: 0
-      },
-      {
-        className: 'instruction',
-        begin: '\\s('+smali_instr_low_prio.join('|')+')\\s',
-        relevance: 1
-      },
-      {
-        className: 'instruction',
-        begin: '\\s('+smali_instr_low_prio.join('|')+')((\\-|/)[a-zA-Z0-9]+)+\\s',
-        relevance: 10
-      },
-      {
-        className: 'instruction',
-        begin: '\\s('+smali_instr_high_prio.join('|')+')((\\-|/)[a-zA-Z0-9]+)*\\s',
-        relevance: 10
-      },
-      {
-        className: 'class',
-        begin: 'L[^\(;:\n]*;',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        begin: '( |->)[^(\n ;"]*\\(',
-        relevance: 0
-      },
-      {
-        className: 'function',
-        begin: '\\)',
-        relevance: 0
-      },
-      {
-        className: 'variable',
-        begin: '[vp][0-9]+',
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],112:[function(require,module,exports){
-module.exports = function(hljs) {
-  var VAR_IDENT_RE = '[a-z][a-zA-Z0-9_]*';
-  var CHAR = {
-    className: 'char',
-    begin: '\\$.{1}'
-  };
-  var SYMBOL = {
-    className: 'symbol',
-    begin: '#' + hljs.UNDERSCORE_IDENT_RE
-  };
-  return {
-    aliases: ['st'],
-    keywords: 'self super nil true false thisContext', // only 6
-    contains: [
-      {
-        className: 'comment',
-        begin: '"', end: '"'
-      },
-      hljs.APOS_STRING_MODE,
-      {
-        className: 'class',
-        begin: '\\b[A-Z][A-Za-z0-9_]*',
-        relevance: 0
-      },
-      {
-        className: 'method',
-        begin: VAR_IDENT_RE + ':',
-        relevance: 0
-      },
-      hljs.C_NUMBER_MODE,
-      SYMBOL,
-      CHAR,
-      {
-        className: 'localvars',
-        // This looks more complicated than needed to avoid combinatorial
-        // explosion under V8. It effectively means `| var1 var2 ... |` with
-        // whitespace adjacent to `|` being optional.
-        begin: '\\|[ ]*' + VAR_IDENT_RE + '([ ]+' + VAR_IDENT_RE + ')*[ ]*\\|',
-        returnBegin: true, end: /\|/,
-        illegal: /\S/,
-        contains: [{begin: '(\\|[ ]*)?' + VAR_IDENT_RE}]
-      },
-      {
-        className: 'array',
-        begin: '\\#\\(', end: '\\)',
-        contains: [
-          hljs.APOS_STRING_MODE,
-          CHAR,
-          hljs.C_NUMBER_MODE,
-          SYMBOL
-        ]
-      }
-    ]
-  };
-};
-},{}],113:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['ml'],
-    keywords: {
-      keyword:
-        /* according to Definition of Standard ML 97  */
-        'abstype and andalso as case datatype do else end eqtype ' +
-        'exception fn fun functor handle if in include infix infixr ' +
-        'let local nonfix of op open orelse raise rec sharing sig ' +
-        'signature struct structure then type val with withtype where while',
-      built_in:
-        /* built-in types according to basis library */
-        'array bool char exn int list option order real ref string substring vector unit word',
-      literal:
-        'true false NONE SOME LESS EQUAL GREATER nil',
-    },
-    illegal: /\/\/|>>/,
-    lexemes: '[a-z_]\\w*!?',
-    contains: [
-      {
-        className: 'literal',
-        begin: '\\[(\\|\\|)?\\]|\\(\\)'
-      },
-      {
-        className: 'comment',
-        begin: '\\(\\*', end: '\\*\\)',
-        contains: ['self', hljs.PHRASAL_WORDS_MODE],
-      },
-      { /* type variable */
-        className: 'symbol',
-        begin: '\'[A-Za-z_](?!\')[\\w\']*',
-        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
-      },
-      { /* polymorphic variant */
-        className: 'tag',
-        begin: '`[A-Z][\\w\']*',
-      },
-      { /* module or constructor */
-        className: 'type',
-        begin: '\\b[A-Z][\\w\']*',
-        relevance: 0
-      },
-      { /* don't color identifiers, but safely catch all identifiers with '*/
-        begin: '[a-z_]\\w*\'[\\w\']*'
-      },
-      hljs.inherit(hljs.APOS_STRING_MODE, {className: 'char', relevance: 0}),
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-      {
-        className: 'number',
-        begin:
-          '\\b(0[xX][a-fA-F0-9_]+[Lln]?|' +
-          '0[oO][0-7_]+[Lln]?|' +
-          '0[bB][01_]+[Lln]?|' +
-          '[0-9][0-9_]*([Lln]|(\\.[0-9_]*)?([eE][-+]?[0-9_]+)?)?)',
-        relevance: 0
-      },
-      {
-        begin: /[-=]>/ // relevance booster
-      }
-    ]
-  };
-};
-},{}],114:[function(require,module,exports){
-module.exports = function(hljs) {
-  var COMMENT_MODE = {
-    className: 'comment',
-    begin: '--', end: '$'
-  };
-  return {
-    case_insensitive: true,
-    illegal: /[<>]/,
-    contains: [
-      {
-        className: 'operator',
-        beginKeywords:
-          'begin end start commit rollback savepoint lock alter create drop rename call '+
-          'delete do handler insert load replace select truncate update set show pragma grant '+
-          'merge describe use explain help declare prepare execute deallocate savepoint release '+
-          'unlock purge reset change stop analyze cache flush optimize repair kill '+
-          'install uninstall checksum restore check backup',
-        end: /;/, endsWithParent: true,
-        keywords: {
-          keyword:
-            'abs absolute acos action add adddate addtime aes_decrypt aes_encrypt after aggregate all allocate alter ' +
-            'analyze and any are as asc ascii asin assertion at atan atan2 atn2 authorization authors avg backup ' +
-            'before begin benchmark between bin binlog bit_and bit_count bit_length bit_or bit_xor both by ' +
-            'cache call cascade cascaded case cast catalog ceil ceiling chain change changed char_length ' +
-            'character_length charindex charset check checksum checksum_agg choose close coalesce ' +
-            'coercibility collate collation collationproperty column columns columns_updated commit compress concat ' +
-            'concat_ws concurrent connect connection connection_id consistent constraint constraints continue ' +
-            'contributors conv convert convert_tz corresponding cos cot count count_big crc32 create cross cume_dist ' +
-            'curdate current current_date current_time current_timestamp current_user cursor curtime data database ' +
-            'databases datalength date_add date_format date_sub dateadd datediff datefromparts datename ' +
-            'datepart datetime2fromparts datetimeoffsetfromparts day dayname dayofmonth dayofweek dayofyear ' +
-            'deallocate declare decode default deferrable deferred degrees delayed delete des_decrypt ' +
-            'des_encrypt des_key_file desc describe descriptor diagnostics difference disconnect distinct ' +
-            'distinctrow div do domain double drop dumpfile each else elt enclosed encode encrypt end end-exec ' +
-            'engine engines eomonth errors escape escaped event eventdata events except exception exec execute ' +
-            'exists exp explain export_set extended external extract fast fetch field fields find_in_set ' +
-            'first first_value floor flush for force foreign format found found_rows from from_base64 ' +
-            'from_days from_unixtime full function get get_format get_lock getdate getutcdate global go goto grant ' +
-            'grants greatest group group_concat grouping grouping_id gtid_subset gtid_subtract handler having help ' +
-            'hex high_priority hosts hour ident_current ident_incr ident_seed identified identity if ifnull ignore ' +
-            'iif ilike immediate in index indicator inet6_aton inet6_ntoa inet_aton inet_ntoa infile initially inner ' +
-            'innodb input insert install instr intersect into is is_free_lock is_ipv4 ' +
-            'is_ipv4_compat is_ipv4_mapped is_not is_not_null is_used_lock isdate isnull isolation join key kill ' +
-            'language last last_day last_insert_id last_value lcase lead leading least leaves left len lenght level ' +
-            'like limit lines ln load load_file local localtime localtimestamp locate lock log log10 log2 logfile ' +
-            'logs low_priority lower lpad ltrim make_set makedate maketime master master_pos_wait match matched max ' +
-            'md5 medium merge microsecond mid min minute mod mode module month monthname mutex name_const names ' +
-            'national natural nchar next no no_write_to_binlog not now nullif nvarchar oct ' +
-            'octet_length of old_password on only open optimize option optionally or ord order outer outfile output ' +
-            'pad parse partial partition password patindex percent_rank percentile_cont percentile_disc period_add ' +
-            'period_diff pi plugin position pow power pragma precision prepare preserve primary prior privileges ' +
-            'procedure procedure_analyze processlist profile profiles public publishingservername purge quarter ' +
-            'query quick quote quotename radians rand read references regexp relative relaylog release ' +
-            'release_lock rename repair repeat replace replicate reset restore restrict return returns reverse ' +
-            'revoke right rlike rollback rollup round row row_count rows rpad rtrim savepoint schema scroll ' +
-            'sec_to_time second section select serializable server session session_user set sha sha1 sha2 share ' +
-            'show sign sin size slave sleep smalldatetimefromparts snapshot some soname soundex ' +
-            'sounds_like space sql sql_big_result sql_buffer_result sql_cache sql_calc_found_rows sql_no_cache ' +
-            'sql_small_result sql_variant_property sqlstate sqrt square start starting status std ' +
-            'stddev stddev_pop stddev_samp stdev stdevp stop str str_to_date straight_join strcmp string stuff ' +
-            'subdate substr substring subtime subtring_index sum switchoffset sysdate sysdatetime sysdatetimeoffset ' +
-            'system_user sysutcdatetime table tables tablespace tan temporary terminated tertiary_weights then time ' +
-            'time_format time_to_sec timediff timefromparts timestamp timestampadd timestampdiff timezone_hour ' +
-            'timezone_minute to to_base64 to_days to_seconds todatetimeoffset trailing transaction translation ' +
-            'trigger trigger_nestlevel triggers trim truncate try_cast try_convert try_parse ucase uncompress ' +
-            'uncompressed_length unhex unicode uninstall union unique unix_timestamp unknown unlock update upgrade ' +
-            'upped upper usage use user user_resources using utc_date utc_time utc_timestamp uuid uuid_short ' +
-            'validate_password_strength value values var var_pop var_samp variables variance varp ' +
-            'version view warnings week weekday weekofyear weight_string when whenever where with work write xml ' +
-            'xor year yearweek zon',
-          literal:
-            'true false null',
-          built_in:
-            'array bigint binary bit blob boolean char character date dec decimal float int integer interval number ' +
-            'numeric real serial smallint varchar varying int8 serial8 text'
-        },
-        contains: [
-          {
-            className: 'string',
-            begin: '\'', end: '\'',
-            contains: [hljs.BACKSLASH_ESCAPE, {begin: '\'\''}]
-          },
-          {
-            className: 'string',
-            begin: '"', end: '"',
-            contains: [hljs.BACKSLASH_ESCAPE, {begin: '""'}]
-          },
-          {
-            className: 'string',
-            begin: '`', end: '`',
-            contains: [hljs.BACKSLASH_ESCAPE]
-          },
-          hljs.C_NUMBER_MODE,
-          hljs.C_BLOCK_COMMENT_MODE,
-          COMMENT_MODE
-        ]
-      },
-      hljs.C_BLOCK_COMMENT_MODE,
-      COMMENT_MODE
-    ]
-  };
-};
-},{}],115:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['do', 'ado'],
-    case_insensitive: true,
-    keywords: 'if else in foreach for forv forva forval forvalu forvalue forvalues by bys bysort xi quietly qui capture about ac ac_7 acprplot acprplot_7 adjust ado adopath adoupdate alpha ameans an ano anov anova anova_estat anova_terms anovadef aorder ap app appe appen append arch arch_dr arch_estat arch_p archlm areg areg_p args arima arima_dr arima_estat arima_p as asmprobit asmprobit_estat asmprobit_lf asmprobit_mfx__dlg asmprobit_p ass asse asser assert avplot avplot_7 avplots avplots_7 bcskew0 bgodfrey binreg bip0_lf biplot bipp_lf bipr_lf bipr_p biprobit bitest bitesti bitowt blogit bmemsize boot bootsamp bootstrap bootstrap_8 boxco_l boxco_p boxcox boxcox_6 boxcox_p bprobit br break brier bro brow brows browse brr brrstat bs bs_7 bsampl_w bsample bsample_7 bsqreg bstat bstat_7 bstat_8 bstrap bstrap_7 ca ca_estat ca_p cabiplot camat canon canon_8 canon_8_p canon_estat canon_p cap caprojection capt captu captur capture cat cc cchart cchart_7 cci cd censobs_table centile cf char chdir checkdlgfiles checkestimationsample checkhlpfiles checksum chelp ci cii cl class classutil clear cli clis clist clo clog clog_lf clog_p clogi clogi_sw clogit clogit_lf clogit_p clogitp clogl_sw cloglog clonevar clslistarray cluster cluster_measures cluster_stop cluster_tree cluster_tree_8 clustermat cmdlog cnr cnre cnreg cnreg_p cnreg_sw cnsreg codebook collaps4 collapse colormult_nb colormult_nw compare compress conf confi confir confirm conren cons const constr constra constrai constrain constraint continue contract copy copyright copysource cor corc corr corr2data corr_anti corr_kmo corr_smc corre correl correla correlat correlate corrgram cou coun count cox cox_p cox_sw coxbase coxhaz coxvar cprplot cprplot_7 crc cret cretu cretur creturn cross cs cscript cscript_log csi ct ct_is ctset ctst_5 ctst_st cttost cumsp cumsp_7 cumul cusum cusum_7 cutil d datasig datasign datasigna datasignat datasignatu datasignatur datasignature datetof db dbeta de dec deco decod decode deff des desc descr descri describ describe destring dfbeta dfgls dfuller di di_g dir dirstats dis discard disp disp_res disp_s displ displa display distinct do doe doed doedi doedit dotplot dotplot_7 dprobit drawnorm drop ds ds_util dstdize duplicates durbina dwstat dydx e ed edi edit egen eivreg emdef en enc enco encod encode eq erase ereg ereg_lf ereg_p ereg_sw ereghet ereghet_glf ereghet_glf_sh ereghet_gp ereghet_ilf ereghet_ilf_sh ereghet_ip eret eretu eretur ereturn err erro error est est_cfexist est_cfname est_clickable est_expand est_hold est_table est_unhold est_unholdok estat estat_default estat_summ estat_vce_only esti estimates etodow etof etomdy ex exi exit expand expandcl fac fact facto factor factor_estat factor_p factor_pca_rotated factor_rotate factormat fcast fcast_compute fcast_graph fdades fdadesc fdadescr fdadescri fdadescrib fdadescribe fdasav fdasave fdause fh_st file open file read file close file filefilter fillin find_hlp_file findfile findit findit_7 fit fl fli flis flist for5_0 form forma format fpredict frac_154 frac_adj frac_chk frac_cox frac_ddp frac_dis frac_dv frac_in frac_mun frac_pp frac_pq frac_pv frac_wgt frac_xo fracgen fracplot fracplot_7 fracpoly fracpred fron_ex fron_hn fron_p fron_tn fron_tn2 frontier ftodate ftoe ftomdy ftowdate g gamhet_glf gamhet_gp gamhet_ilf gamhet_ip gamma gamma_d2 gamma_p gamma_sw gammahet gdi_hexagon gdi_spokes ge gen gene gener genera generat generate genrank genstd genvmean gettoken gl gladder gladder_7 glim_l01 glim_l02 glim_l03 glim_l04 glim_l05 glim_l06 glim_l07 glim_l08 glim_l09 glim_l10 glim_l11 glim_l12 glim_lf glim_mu glim_nw1 glim_nw2 glim_nw3 glim_p glim_v1 glim_v2 glim_v3 glim_v4 glim_v5 glim_v6 glim_v7 glm glm_6 glm_p glm_sw glmpred glo glob globa global glogit glogit_8 glogit_p gmeans gnbre_lf gnbreg gnbreg_5 gnbreg_p gomp_lf gompe_sw gomper_p gompertz gompertzhet gomphet_glf gomphet_glf_sh gomphet_gp gomphet_ilf gomphet_ilf_sh gomphet_ip gphdot gphpen gphprint gprefs gprobi_p gprobit gprobit_8 gr gr7 gr_copy gr_current gr_db gr_describe gr_dir gr_draw gr_draw_replay gr_drop gr_edit gr_editviewopts gr_example gr_example2 gr_export gr_print gr_qscheme gr_query gr_read gr_rename gr_replay gr_save gr_set gr_setscheme gr_table gr_undo gr_use graph graph7 grebar greigen greigen_7 greigen_8 grmeanby grmeanby_7 gs_fileinfo gs_filetype gs_graphinfo gs_stat gsort gwood h hadimvo hareg hausman haver he heck_d2 heckma_p heckman heckp_lf heckpr_p heckprob hel help hereg hetpr_lf hetpr_p hetprob hettest hexdump hilite hist hist_7 histogram hlogit hlu hmeans hotel hotelling hprobit hreg hsearch icd9 icd9_ff icd9p iis impute imtest inbase include inf infi infil infile infix inp inpu input ins insheet insp inspe inspec inspect integ inten intreg intreg_7 intreg_p intrg2_ll intrg_ll intrg_ll2 ipolate iqreg ir irf irf_create irfm iri is_svy is_svysum isid istdize ivprob_1_lf ivprob_lf ivprobit ivprobit_p ivreg ivreg_footnote ivtob_1_lf ivtob_lf ivtobit ivtobit_p jackknife jacknife jknife jknife_6 jknife_8 jkstat joinby kalarma1 kap kap_3 kapmeier kappa kapwgt kdensity kdensity_7 keep ksm ksmirnov ktau kwallis l la lab labe label labelbook ladder levels levelsof leverage lfit lfit_p li lincom line linktest lis list lloghet_glf lloghet_glf_sh lloghet_gp lloghet_ilf lloghet_ilf_sh lloghet_ip llogi_sw llogis_p llogist llogistic llogistichet lnorm_lf lnorm_sw lnorma_p lnormal lnormalhet lnormhet_glf lnormhet_glf_sh lnormhet_gp lnormhet_ilf lnormhet_ilf_sh lnormhet_ip lnskew0 loadingplot loc loca local log logi logis_lf logistic logistic_p logit logit_estat logit_p loglogs logrank loneway lookfor lookup lowess lowess_7 lpredict lrecomp lroc lroc_7 lrtest ls lsens lsens_7 lsens_x lstat ltable ltable_7 ltriang lv lvr2plot lvr2plot_7 m ma mac macr macro makecns man manova manova_estat manova_p manovatest mantel mark markin markout marksample mat mat_capp mat_order mat_put_rr mat_rapp mata mata_clear mata_describe mata_drop mata_matdescribe mata_matsave mata_matuse mata_memory mata_mlib mata_mosave mata_rename mata_which matalabel matcproc matlist matname matr matri matrix matrix_input__dlg matstrik mcc mcci md0_ md1_ md1debug_ md2_ md2debug_ mds mds_estat mds_p mdsconfig mdslong mdsmat mdsshepard mdytoe mdytof me_derd mean means median memory memsize meqparse mer merg merge mfp mfx mhelp mhodds minbound mixed_ll mixed_ll_reparm mkassert mkdir mkmat mkspline ml ml_5 ml_adjs ml_bhhhs ml_c_d ml_check ml_clear ml_cnt ml_debug ml_defd ml_e0 ml_e0_bfgs ml_e0_cycle ml_e0_dfp ml_e0i ml_e1 ml_e1_bfgs ml_e1_bhhh ml_e1_cycle ml_e1_dfp ml_e2 ml_e2_cycle ml_ebfg0 ml_ebfr0 ml_ebfr1 ml_ebh0q ml_ebhh0 ml_ebhr0 ml_ebr0i ml_ecr0i ml_edfp0 ml_edfr0 ml_edfr1 ml_edr0i ml_eds ml_eer0i ml_egr0i ml_elf ml_elf_bfgs ml_elf_bhhh ml_elf_cycle ml_elf_dfp ml_elfi ml_elfs ml_enr0i ml_enrr0 ml_erdu0 ml_erdu0_bfgs ml_erdu0_bhhh ml_erdu0_bhhhq ml_erdu0_cycle ml_erdu0_dfp ml_erdu0_nrbfgs ml_exde ml_footnote ml_geqnr ml_grad0 ml_graph ml_hbhhh ml_hd0 ml_hold ml_init ml_inv ml_log ml_max ml_mlout ml_mlout_8 ml_model ml_nb0 ml_opt ml_p ml_plot ml_query ml_rdgrd ml_repor ml_s_e ml_score ml_searc ml_technique ml_unhold mleval mlf_ mlmatbysum mlmatsum mlog mlogi mlogit mlogit_footnote mlogit_p mlopts mlsum mlvecsum mnl0_ mor more mov move mprobit mprobit_lf mprobit_p mrdu0_ mrdu1_ mvdecode mvencode mvreg mvreg_estat n nbreg nbreg_al nbreg_lf nbreg_p nbreg_sw nestreg net newey newey_7 newey_p news nl nl_7 nl_9 nl_9_p nl_p nl_p_7 nlcom nlcom_p nlexp2 nlexp2_7 nlexp2a nlexp2a_7 nlexp3 nlexp3_7 nlgom3 nlgom3_7 nlgom4 nlgom4_7 nlinit nllog3 nllog3_7 nllog4 nllog4_7 nlog_rd nlogit nlogit_p nlogitgen nlogittree nlpred no nobreak noi nois noisi noisil noisily note notes notes_dlg nptrend numlabel numlist odbc old_ver olo olog ologi ologi_sw ologit ologit_p ologitp on one onew onewa oneway op_colnm op_comp op_diff op_inv op_str opr opro oprob oprob_sw oprobi oprobi_p oprobit oprobitp opts_exclusive order orthog orthpoly ou out outf outfi outfil outfile outs outsh outshe outshee outsheet ovtest pac pac_7 palette parse parse_dissim pause pca pca_8 pca_display pca_estat pca_p pca_rotate pcamat pchart pchart_7 pchi pchi_7 pcorr pctile pentium pergram pergram_7 permute permute_8 personal peto_st pkcollapse pkcross pkequiv pkexamine pkexamine_7 pkshape pksumm pksumm_7 pl plo plot plugin pnorm pnorm_7 poisgof poiss_lf poiss_sw poisso_p poisson poisson_estat post postclose postfile postutil pperron pr prais prais_e prais_e2 prais_p predict predictnl preserve print pro prob probi probit probit_estat probit_p proc_time procoverlay procrustes procrustes_estat procrustes_p profiler prog progr progra program prop proportion prtest prtesti pwcorr pwd q\\s qby qbys qchi qchi_7 qladder qladder_7 qnorm qnorm_7 qqplot qqplot_7 qreg qreg_c qreg_p qreg_sw qu quadchk quantile quantile_7 que quer query range ranksum ratio rchart rchart_7 rcof recast reclink recode reg reg3 reg3_p regdw regr regre regre_p2 regres regres_p regress regress_estat regriv_p remap ren rena renam rename renpfix repeat replace report reshape restore ret retu retur return rm rmdir robvar roccomp roccomp_7 roccomp_8 rocf_lf rocfit rocfit_8 rocgold rocplot rocplot_7 roctab roctab_7 rolling rologit rologit_p rot rota rotat rotate rotatemat rreg rreg_p ru run runtest rvfplot rvfplot_7 rvpplot rvpplot_7 sa safesum sample sampsi sav save savedresults saveold sc sca scal scala scalar scatter scm_mine sco scob_lf scob_p scobi_sw scobit scor score scoreplot scoreplot_help scree screeplot screeplot_help sdtest sdtesti se search separate seperate serrbar serrbar_7 serset set set_defaults sfrancia sh she shel shell shewhart shewhart_7 signestimationsample signrank signtest simul simul_7 simulate simulate_8 sktest sleep slogit slogit_d2 slogit_p smooth snapspan so sor sort spearman spikeplot spikeplot_7 spikeplt spline_x split sqreg sqreg_p sret sretu sretur sreturn ssc st st_ct st_hc st_hcd st_hcd_sh st_is st_issys st_note st_promo st_set st_show st_smpl st_subid stack statsby statsby_8 stbase stci stci_7 stcox stcox_estat stcox_fr stcox_fr_ll stcox_p stcox_sw stcoxkm stcoxkm_7 stcstat stcurv stcurve stcurve_7 stdes stem stepwise stereg stfill stgen stir stjoin stmc stmh stphplot stphplot_7 stphtest stphtest_7 stptime strate strate_7 streg streg_sw streset sts sts_7 stset stsplit stsum sttocc sttoct stvary stweib su suest suest_8 sum summ summa summar summari summariz summarize sunflower sureg survcurv survsum svar svar_p svmat svy svy_disp svy_dreg svy_est svy_est_7 svy_estat svy_get svy_gnbreg_p svy_head svy_header svy_heckman_p svy_heckprob_p svy_intreg_p svy_ivreg_p svy_logistic_p svy_logit_p svy_mlogit_p svy_nbreg_p svy_ologit_p svy_oprobit_p svy_poisson_p svy_probit_p svy_regress_p svy_sub svy_sub_7 svy_x svy_x_7 svy_x_p svydes svydes_8 svygen svygnbreg svyheckman svyheckprob svyintreg svyintreg_7 svyintrg svyivreg svylc svylog_p svylogit svymarkout svymarkout_8 svymean svymlog svymlogit svynbreg svyolog svyologit svyoprob svyoprobit svyopts svypois svypois_7 svypoisson svyprobit svyprobt svyprop svyprop_7 svyratio svyreg svyreg_p svyregress svyset svyset_7 svyset_8 svytab svytab_7 svytest svytotal sw sw_8 swcnreg swcox swereg swilk swlogis swlogit swologit swoprbt swpois swprobit swqreg swtobit swweib symmetry symmi symplot symplot_7 syntax sysdescribe sysdir sysuse szroeter ta tab tab1 tab2 tab_or tabd tabdi tabdis tabdisp tabi table tabodds tabodds_7 tabstat tabu tabul tabula tabulat tabulate te tempfile tempname tempvar tes test testnl testparm teststd tetrachoric time_it timer tis tob tobi tobit tobit_p tobit_sw token tokeni tokeniz tokenize tostring total translate translator transmap treat_ll treatr_p treatreg trim trnb_cons trnb_mean trpoiss_d2 trunc_ll truncr_p truncreg tsappend tset tsfill tsline tsline_ex tsreport tsrevar tsrline tsset tssmooth tsunab ttest ttesti tut_chk tut_wait tutorial tw tware_st two twoway twoway__fpfit_serset twoway__function_gen twoway__histogram_gen twoway__ipoint_serset twoway__ipoints_serset twoway__kdensity_gen twoway__lfit_serset twoway__normgen_gen twoway__pci_serset twoway__qfit_serset twoway__scatteri_serset twoway__sunflower_gen twoway_ksm_serset ty typ type typeof u unab unabbrev unabcmd update us use uselabel var var_mkcompanion var_p varbasic varfcast vargranger varirf varirf_add varirf_cgraph varirf_create varirf_ctable varirf_describe varirf_dir varirf_drop varirf_erase varirf_graph varirf_ograph varirf_rename varirf_set varirf_table varlist varlmar varnorm varsoc varstable varstable_w varstable_w2 varwle vce vec vec_fevd vec_mkphi vec_p vec_p_w vecirf_create veclmar veclmar_w vecnorm vecnorm_w vecrank vecstable verinst vers versi versio version view viewsource vif vwls wdatetof webdescribe webseek webuse weib1_lf weib2_lf weib_lf weib_lf0 weibhet_glf weibhet_glf_sh weibhet_glfa weibhet_glfa_sh weibhet_gp weibhet_ilf weibhet_ilf_sh weibhet_ilfa weibhet_ilfa_sh weibhet_ip weibu_sw weibul_p weibull weibull_c weibull_s weibullhet wh whelp whi which whil while wilc_st wilcoxon win wind windo window winexec wntestb wntestb_7 wntestq xchart xchart_7 xcorr xcorr_7 xi xi_6 xmlsav xmlsave xmluse xpose xsh xshe xshel xshell xt_iis xt_tis xtab_p xtabond xtbin_p xtclog xtcloglog xtcloglog_8 xtcloglog_d2 xtcloglog_pa_p xtcloglog_re_p xtcnt_p xtcorr xtdata xtdes xtfront_p xtfrontier xtgee xtgee_elink xtgee_estat xtgee_makeivar xtgee_p xtgee_plink xtgls xtgls_p xthaus xthausman xtht_p xthtaylor xtile xtint_p xtintreg xtintreg_8 xtintreg_d2 xtintreg_p xtivp_1 xtivp_2 xtivreg xtline xtline_ex xtlogit xtlogit_8 xtlogit_d2 xtlogit_fe_p xtlogit_pa_p xtlogit_re_p xtmixed xtmixed_estat xtmixed_p xtnb_fe xtnb_lf xtnbreg xtnbreg_pa_p xtnbreg_refe_p xtpcse xtpcse_p xtpois xtpoisson xtpoisson_d2 xtpoisson_pa_p xtpoisson_refe_p xtpred xtprobit xtprobit_8 xtprobit_d2 xtprobit_re_p xtps_fe xtps_lf xtps_ren xtps_ren_8 xtrar_p xtrc xtrc_p xtrchh xtrefe_p xtreg xtreg_be xtreg_fe xtreg_ml xtreg_pa_p xtreg_re xtregar xtrere_p xtset xtsf_ll xtsf_llti xtsum xttab xttest0 xttobit xttobit_8 xttobit_p xttrans yx yxview__barlike_draw yxview_area_draw yxview_bar_draw yxview_dot_draw yxview_dropline_draw yxview_function_draw yxview_iarrow_draw yxview_ilabels_draw yxview_normal_draw yxview_pcarrow_draw yxview_pcbarrow_draw yxview_pccapsym_draw yxview_pcscatter_draw yxview_pcspike_draw yxview_rarea_draw yxview_rbar_draw yxview_rbarm_draw yxview_rcap_draw yxview_rcapsym_draw yxview_rconnected_draw yxview_rline_draw yxview_rscatter_draw yxview_rspike_draw yxview_spike_draw yxview_sunflower_draw zap_s zinb zinb_llf zinb_plf zip zip_llf zip_p zip_plf zt_ct_5 zt_hc_5 zt_hcd_5 zt_is_5 zt_iss_5 zt_sho_5 zt_smp_5 ztbase_5 ztcox_5 ztdes_5 ztereg_5 ztfill_5 ztgen_5 ztir_5 ztjoin_5 ztnb ztnb_p ztp ztp_p zts_5 ztset_5 ztspli_5 ztsum_5 zttoct_5 ztvary_5 ztweib_5',
-        contains: [
-      {
-        className: 'label',
-        variants: [
-          {begin: "\\$\\{?[a-zA-Z_]+\\}?"},
-          {begin: "`[a-zA-Z_]+'"}
-
-        ]
-      },
-      {
-        className: 'string',
-        variants: [
-          {begin: '`".*"\''},
-          {begin: '".*"'}
-        ]
-      },
-
-      {
-        className: 'literal',
-        variants: [
-          { begin: '\\b(abs|acos|asin|atan|atan2|atanh|ceil|cloglog|comb|cos|digamma|exp|floor|invcloglog|invlogit|ln|lnfact|lnfactorial|lngamma|log|log10|max|min|mod|reldif|round|sign|sin|sqrt|sum|tan|tanh|trigamma|trunc|betaden|Binomial|binorm|binormal|chi2|chi2tail|dgammapda|dgammapdada|dgammapdadx|dgammapdx|dgammapdxdx|F|Fden|Ftail|gammaden|gammap|ibeta|invbinomial|invchi2|invchi2tail|invF|invFtail|invgammap|invibeta|invnchi2|invnFtail|invnibeta|invnorm|invnormal|invttail|nbetaden|nchi2|nFden|nFtail|nibeta|norm|normal|normalden|normd|npnchi2|tden|ttail|uniform|abbrev|char|index|indexnot|length|lower|ltrim|match|plural|proper|real|regexm|regexr|regexs|reverse|rtrim|string|strlen|strlower|strltrim|strmatch|strofreal|strpos|strproper|strreverse|strrtrim|strtrim|strupper|subinstr|subinword|substr|trim|upper|word|wordcount|_caller|autocode|byteorder|chop|clip|cond|e|epsdouble|epsfloat|group|inlist|inrange|irecode|matrix|maxbyte|maxdouble|maxfloat|maxint|maxlong|mi|minbyte|mindouble|minfloat|minint|minlong|missing|r|recode|replay|return|s|scalar|d|date|day|dow|doy|halfyear|mdy|month|quarter|week|year|d|daily|dofd|dofh|dofm|dofq|dofw|dofy|h|halfyearly|hofd|m|mofd|monthly|q|qofd|quarterly|tin|twithin|w|weekly|wofd|y|yearly|yh|ym|yofd|yq|yw|cholesky|colnumb|colsof|corr|det|diag|diag0cnt|el|get|hadamard|I|inv|invsym|issym|issymmetric|J|matmissing|matuniform|mreldif|nullmat|rownumb|rowsof|sweep|syminv|trace|vec|vecdiag)(?=\\(|$)' },
-        ]
-      },
-      {
-        className: 'comment',
-        variants: [
-          { begin: '^\\*.*$' },
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      },
-
-    ]
-  };
-};
-},{}],116:[function(require,module,exports){
-module.exports = function(hljs) {
-  var STEP21_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
-  var STEP21_CLOSE_RE = 'END-ISO-10303-21;';
-  var STEP21_KEYWORDS = {
-    literal: '',
-    built_in: '',
-    keyword:
-    'HEADER ENDSEC DATA'
-  };
-  var STEP21_START = {
-    className: 'preprocessor',
-    begin: 'ISO-10303-21;',
-    relevance: 10
-  };
-  var STEP21_CODE = [
-    hljs.C_LINE_COMMENT_MODE,
-    {
-      className: 'comment',
-      begin: '/\\*\\*!', end: '\\*/',
-      contains: [hljs.PHRASAL_WORDS_MODE]
-    },
-    hljs.C_BLOCK_COMMENT_MODE,
-    hljs.C_NUMBER_MODE,
-    hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
-    hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
-    {
-      className: 'string',
-      begin: "'", end: "'"
-    },
-    {
-      className: 'label',
-      variants: [
-        {
-          begin: '#', end: '\\d+',
-          illegal: '\\W'
-        }
-      ]
-    }
-  ];
-
-  return {
-    aliases: ['p21', 'step', 'stp'],
-    case_insensitive: true, // STEP 21 is case insensitive in theory, in practice all non-comments are capitalized.
-    lexemes: STEP21_IDENT_RE,
-    keywords: STEP21_KEYWORDS,
-    contains: [
-      {
-        className: 'preprocessor',
-        begin: STEP21_CLOSE_RE,
-        relevance: 10
-      },
-      STEP21_START
-    ].concat(STEP21_CODE)
-  };
-};
-},{}],117:[function(require,module,exports){
-module.exports = function(hljs) {
-
-  var VARIABLE = {
-    className: 'variable',
-    begin: '\\$' + hljs.IDENT_RE
-  };
-
-  var HEX_COLOR = {
-    className: 'hexcolor',
-    begin: '#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})',
-    relevance: 10
-  };
-
-  var AT_KEYWORDS = [
-    'charset',
-    'css',
-    'debug',
-    'extend',
-    'font-face',
-    'for',
-    'import',
-    'include',
-    'media',
-    'mixin',
-    'page',
-    'warn',
-    'while'
-  ];
-
-  var PSEUDO_SELECTORS = [
-    'after',
-    'before',
-    'first-letter',
-    'first-line',
-    'active',
-    'first-child',
-    'focus',
-    'hover',
-    'lang',
-    'link',
-    'visited'
-  ];
-
-  var TAGS = [
-    'a',
-    'abbr',
-    'address',
-    'article',
-    'aside',
-    'audio',
-    'b',
-    'blockquote',
-    'body',
-    'button',
-    'canvas',
-    'caption',
-    'cite',
-    'code',
-    'dd',
-    'del',
-    'details',
-    'dfn',
-    'div',
-    'dl',
-    'dt',
-    'em',
-    'fieldset',
-    'figcaption',
-    'figure',
-    'footer',
-    'form',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'header',
-    'hgroup',
-    'html',
-    'i',
-    'iframe',
-    'img',
-    'input',
-    'ins',
-    'kbd',
-    'label',
-    'legend',
-    'li',
-    'mark',
-    'menu',
-    'nav',
-    'object',
-    'ol',
-    'p',
-    'q',
-    'quote',
-    'samp',
-    'section',
-    'span',
-    'strong',
-    'summary',
-    'sup',
-    'table',
-    'tbody',
-    'td',
-    'textarea',
-    'tfoot',
-    'th',
-    'thead',
-    'time',
-    'tr',
-    'ul',
-    'var',
-    'video'
-  ];
-
-  var TAG_END = '[\\.\\s\\n\\[\\:,]';
-
-  var ATTRIBUTES = [
-    'align-content',
-    'align-items',
-    'align-self',
-    'animation',
-    'animation-delay',
-    'animation-direction',
-    'animation-duration',
-    'animation-fill-mode',
-    'animation-iteration-count',
-    'animation-name',
-    'animation-play-state',
-    'animation-timing-function',
-    'auto',
-    'backface-visibility',
-    'background',
-    'background-attachment',
-    'background-clip',
-    'background-color',
-    'background-image',
-    'background-origin',
-    'background-position',
-    'background-repeat',
-    'background-size',
-    'border',
-    'border-bottom',
-    'border-bottom-color',
-    'border-bottom-left-radius',
-    'border-bottom-right-radius',
-    'border-bottom-style',
-    'border-bottom-width',
-    'border-collapse',
-    'border-color',
-    'border-image',
-    'border-image-outset',
-    'border-image-repeat',
-    'border-image-slice',
-    'border-image-source',
-    'border-image-width',
-    'border-left',
-    'border-left-color',
-    'border-left-style',
-    'border-left-width',
-    'border-radius',
-    'border-right',
-    'border-right-color',
-    'border-right-style',
-    'border-right-width',
-    'border-spacing',
-    'border-style',
-    'border-top',
-    'border-top-color',
-    'border-top-left-radius',
-    'border-top-right-radius',
-    'border-top-style',
-    'border-top-width',
-    'border-width',
-    'bottom',
-    'box-decoration-break',
-    'box-shadow',
-    'box-sizing',
-    'break-after',
-    'break-before',
-    'break-inside',
-    'caption-side',
-    'clear',
-    'clip',
-    'clip-path',
-    'color',
-    'column-count',
-    'column-fill',
-    'column-gap',
-    'column-rule',
-    'column-rule-color',
-    'column-rule-style',
-    'column-rule-width',
-    'column-span',
-    'column-width',
-    'columns',
-    'content',
-    'counter-increment',
-    'counter-reset',
-    'cursor',
-    'direction',
-    'display',
-    'empty-cells',
-    'filter',
-    'flex',
-    'flex-basis',
-    'flex-direction',
-    'flex-flow',
-    'flex-grow',
-    'flex-shrink',
-    'flex-wrap',
-    'float',
-    'font',
-    'font-family',
-    'font-feature-settings',
-    'font-kerning',
-    'font-language-override',
-    'font-size',
-    'font-size-adjust',
-    'font-stretch',
-    'font-style',
-    'font-variant',
-    'font-variant-ligatures',
-    'font-weight',
-    'height',
-    'hyphens',
-    'icon',
-    'image-orientation',
-    'image-rendering',
-    'image-resolution',
-    'ime-mode',
-    'inherit',
-    'initial',
-    'justify-content',
-    'left',
-    'letter-spacing',
-    'line-height',
-    'list-style',
-    'list-style-image',
-    'list-style-position',
-    'list-style-type',
-    'margin',
-    'margin-bottom',
-    'margin-left',
-    'margin-right',
-    'margin-top',
-    'marks',
-    'mask',
-    'max-height',
-    'max-width',
-    'min-height',
-    'min-width',
-    'nav-down',
-    'nav-index',
-    'nav-left',
-    'nav-right',
-    'nav-up',
-    'none',
-    'normal',
-    'object-fit',
-    'object-position',
-    'opacity',
-    'order',
-    'orphans',
-    'outline',
-    'outline-color',
-    'outline-offset',
-    'outline-style',
-    'outline-width',
-    'overflow',
-    'overflow-wrap',
-    'overflow-x',
-    'overflow-y',
-    'padding',
-    'padding-bottom',
-    'padding-left',
-    'padding-right',
-    'padding-top',
-    'page-break-after',
-    'page-break-before',
-    'page-break-inside',
-    'perspective',
-    'perspective-origin',
-    'pointer-events',
-    'position',
-    'quotes',
-    'resize',
-    'right',
-    'tab-size',
-    'table-layout',
-    'text-align',
-    'text-align-last',
-    'text-decoration',
-    'text-decoration-color',
-    'text-decoration-line',
-    'text-decoration-style',
-    'text-indent',
-    'text-overflow',
-    'text-rendering',
-    'text-shadow',
-    'text-transform',
-    'text-underline-position',
-    'top',
-    'transform',
-    'transform-origin',
-    'transform-style',
-    'transition',
-    'transition-delay',
-    'transition-duration',
-    'transition-property',
-    'transition-timing-function',
-    'unicode-bidi',
-    'vertical-align',
-    'visibility',
-    'white-space',
-    'widows',
-    'width',
-    'word-break',
-    'word-spacing',
-    'word-wrap',
-    'z-index'
-  ];
-
-  // illegals
-  var ILLEGAL = [
-    '\\{',
-    '\\}',
-    '\\?',
-    '(\\bReturn\\b)', // monkey
-    '(\\bEnd\\b)', // monkey
-    '(\\bend\\b)', // vbscript
-    ';', // sql
-    '#\\s', // markdown
-    '\\*\\s', // markdown
-    '===\\s', // markdown
-    '\\|'
-  ];
-
-  return {
-    aliases: ['styl'],
-    case_insensitive: false,
-    illegal: '(' + ILLEGAL.join('|') + ')',
-    keywords: 'if else for in',
-    contains: [
-
-      // strings
-      hljs.QUOTE_STRING_MODE,
-      hljs.APOS_STRING_MODE,
-
-      // comments
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-
-      // hex colors
-      HEX_COLOR,
-
-      // class tag
-      {
-        begin: '\\.[a-zA-Z][a-zA-Z0-9_-]*' + TAG_END,
-        returnBegin: true,
-        contains: [
-          {className: 'class', begin: '\\.[a-zA-Z][a-zA-Z0-9_-]*'}
-        ]
-      },
-
-      // id tag
-      {
-        begin: '\\#[a-zA-Z][a-zA-Z0-9_-]*' + TAG_END,
-        returnBegin: true,
-        contains: [
-          {className: 'id', begin: '\\#[a-zA-Z][a-zA-Z0-9_-]*'}
-        ]
-      },
-
-      // tags
-      {
-        begin: '\\b(' + TAGS.join('|') + ')' + TAG_END,
-        returnBegin: true,
-        contains: [
-          {className: 'tag', begin: '\\b[a-zA-Z][a-zA-Z0-9_-]*'}
-        ]
-      },
-
-      // psuedo selectors
-      {
-        className: 'pseudo',
-        begin: '&?:?:\\b(' + PSEUDO_SELECTORS.join('|') + ')' + TAG_END
-      },
-
-      // @ keywords
-      {
-        className: 'at_rule',
-        begin: '\@(' + AT_KEYWORDS.join('|') + ')\\b'
-      },
-
-      // variables
-      VARIABLE,
-
-      // dimension
-      hljs.CSS_NUMBER_MODE,
-
-      // number
-      hljs.NUMBER_MODE,
-
-      // functions
-      //  - only from beginning of line + whitespace
-      {
-        className: 'function',
-        begin: '\\b[a-zA-Z][a-zA-Z0-9_\-]*\\(.*\\)',
-        illegal: '[\\n]',
-        returnBegin: true,
-        contains: [
-          {className: 'title', begin: '\\b[a-zA-Z][a-zA-Z0-9_\-]*'},
-          {
-            className: 'params',
-            begin: /\(/,
-            end: /\)/,
-            contains: [
-              HEX_COLOR,
-              VARIABLE,
-              hljs.APOS_STRING_MODE,
-              hljs.CSS_NUMBER_MODE,
-              hljs.NUMBER_MODE,
-              hljs.QUOTE_STRING_MODE
-            ]
-          }
-        ]
-      },
-
-      // attributes
-      //  - only from beginning of line + whitespace
-      //  - must have whitespace after it
-      {
-        className: 'attribute',
-        begin: '\\b(' + ATTRIBUTES.reverse().join('|') + ')\\b'
-      }
-    ]
-  };
-};
-},{}],118:[function(require,module,exports){
-module.exports = function(hljs) {
-  var SWIFT_KEYWORDS = {
-      keyword: 'class deinit enum extension func import init let protocol static ' +
-        'struct subscript typealias var break case continue default do ' +
-        'else fallthrough if in for return switch where while as dynamicType ' +
-        'is new super self Self Type __COLUMN__ __FILE__ __FUNCTION__ ' +
-        '__LINE__ associativity didSet get infix inout left mutating none ' +
-        'nonmutating operator override postfix precedence prefix right set '+
-        'unowned unowned safe unsafe weak willSet',
-      literal: 'true false nil',
-      built_in: 'abs advance alignof alignofValue assert bridgeFromObjectiveC ' +
-        'bridgeFromObjectiveCUnconditional bridgeToObjectiveC ' +
-        'bridgeToObjectiveCUnconditional c contains count countElements ' +
-        'countLeadingZeros debugPrint debugPrintln distance dropFirst dropLast dump ' +
-        'encodeBitsAsWords enumerate equal false filter find getBridgedObjectiveCType ' +
-        'getVaList indices insertionSort isBridgedToObjectiveC ' +
-        'isBridgedVerbatimToObjectiveC isUniquelyReferenced join ' +
-        'lexicographicalCompare map max maxElement min minElement nil numericCast ' +
-        'partition posix print println quickSort reduce reflect reinterpretCast ' +
-        'reverse roundUpToAlignment sizeof sizeofValue sort split startsWith strideof ' +
-        'strideofValue swap swift toString transcode true underestimateCount ' +
-        'unsafeReflect withExtendedLifetime withObjectAtPlusZero withUnsafePointer ' +
-        'withUnsafePointerToObject withUnsafePointers withVaList'
-    };
-
-  var TYPE = {
-    className: 'type',
-    begin: '\\b[A-Z][\\w\']*',
-    relevance: 0
-  };
-  var BLOCK_COMMENT = {
-    className: 'comment',
-    begin: '/\\*', end: '\\*/',
-    contains: [hljs.PHRASAL_WORDS_MODE, 'self']
-  };
-  var SUBST = {
-    className: 'subst',
-    begin: /\\\(/, end: '\\)',
-    keywords: SWIFT_KEYWORDS,
-    contains: [] // assigned later
-  };
-  var NUMBERS = {
-      className: 'number',
-      begin: '\\b([\\d_]+(\\.[\\deE_]+)?|0x[a-fA-F0-9_]+(\\.[a-fA-F0-9p_]+)?|0b[01_]+|0o[0-7_]+)\\b',
-      relevance: 0
-  };
-  var QUOTE_STRING_MODE = hljs.inherit(hljs.QUOTE_STRING_MODE, {
-    contains: [SUBST, hljs.BACKSLASH_ESCAPE]
-  });
-  SUBST.contains = [NUMBERS];
-
-  return {
-    keywords: SWIFT_KEYWORDS,
-    contains: [
-      QUOTE_STRING_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      BLOCK_COMMENT,
-      TYPE,
-      NUMBERS,
-      {
-        className: 'func',
-        beginKeywords: 'func', end: '{', excludeEnd: true,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            begin: /[A-Za-z$_][0-9A-Za-z$_]*/,
-            illegal: /\(/
-          }),
-          {
-            className: 'generics',
-            begin: /\</, end: /\>/,
-            illegal: /\>/
-          },
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            keywords: SWIFT_KEYWORDS,
-            contains: [
-              'self',
-              NUMBERS,
-              QUOTE_STRING_MODE,
-              hljs.C_BLOCK_COMMENT_MODE,
-              {begin: ':'} // relevance booster
-            ],
-            illegal: /["']/
-          }
-        ],
-        illegal: /\[|%/
-      },
-      {
-        className: 'class',
-        keywords: 'struct protocol class extension enum',
-        begin: '(struct|protocol|class(?! (func|var))|extension|enum)',
-        end: '\\{',
-        excludeEnd: true,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: /[A-Za-z$_][0-9A-Za-z$_]*/})
-        ]
-      },
-      {
-        className: 'preprocessor', // @attributes
-        begin: '(@assignment|@class_protocol|@exported|@final|@lazy|@noreturn|' +
-                  '@NSCopying|@NSManaged|@objc|@optional|@required|@auto_closure|' +
-                  '@noreturn|@IBAction|@IBDesignable|@IBInspectable|@IBOutlet|' +
-                  '@infix|@prefix|@postfix)'
-      },
-    ]
-  };
-};
-},{}],119:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['tk'],
-    keywords: 'after append apply array auto_execok auto_import auto_load auto_mkindex ' +
-      'auto_mkindex_old auto_qualify auto_reset bgerror binary break catch cd chan clock ' +
-      'close concat continue dde dict encoding eof error eval exec exit expr fblocked ' +
-      'fconfigure fcopy file fileevent filename flush for foreach format gets glob global ' +
-      'history http if incr info interp join lappend|10 lassign|10 lindex|10 linsert|10 list ' +
-      'llength|10 load lrange|10 lrepeat|10 lreplace|10 lreverse|10 lsearch|10 lset|10 lsort|10 '+
-      'mathfunc mathop memory msgcat namespace open package parray pid pkg::create pkg_mkIndex '+
-      'platform platform::shell proc puts pwd read refchan regexp registry regsub|10 rename '+
-      'return safe scan seek set socket source split string subst switch tcl_endOfWord '+
-      'tcl_findLibrary tcl_startOfNextWord tcl_startOfPreviousWord tcl_wordBreakAfter '+
-      'tcl_wordBreakBefore tcltest tclvars tell time tm trace unknown unload unset update '+
-      'uplevel upvar variable vwait while',
-    contains: [
-      {
-        className: 'comment',
-        variants: [
-          {begin: ';[ \\t]*#', end: '$'},
-          {begin: '^[ \\t]*#', end: '$'}
-        ]
-      },
-      {
-        beginKeywords: 'proc',
-        end: '[\\{]',
-        excludeEnd: true,
-        contains: [
-          {
-            className: 'symbol',
-            begin: '[ \\t\\n\\r]+(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
-            end: '[ \\t\\n\\r]',
-            endsWithParent: true,
-            excludeEnd: true,
-          }
-        ]
-      },
-      {
-        className: 'variable',
-        excludeEnd: true,
-        variants: [
-          {
-            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*\\(([a-zA-Z0-9_])*\\)',
-            end: '[^a-zA-Z0-9_\\}\\$]',
-          },
-          {
-            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
-            end: '(\\))?[^a-zA-Z0-9_\\}\\$]',
-          },
-        ]
-      },
-      {
-        className: 'string',
-        contains: [hljs.BACKSLASH_ESCAPE],
-        variants: [
-          hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
-          hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null})
-        ]
-      },
-      {
-        className: 'number',
-        variants: [hljs.BINARY_NUMBER_MODE, hljs.C_NUMBER_MODE]
-      },
-    ]
-  }
-};
-},{}],120:[function(require,module,exports){
-module.exports = function(hljs) {
-  var COMMAND1 = {
-    className: 'command',
-    begin: '\\\\[a-zA-Zа-яА-я]+[\\*]?'
-  };
-  var COMMAND2 = {
-    className: 'command',
-    begin: '\\\\[^a-zA-Zа-яА-я0-9]'
-  };
-  var SPECIAL = {
-    className: 'special',
-    begin: '[{}\\[\\]\\&#~]',
-    relevance: 0
-  };
-
-  return {
-    contains: [
-      { // parameter
-        begin: '\\\\[a-zA-Zа-яА-я]+[\\*]? *= *-?\\d*\\.?\\d+(pt|pc|mm|cm|in|dd|cc|ex|em)?',
-        returnBegin: true,
-        contains: [
-          COMMAND1, COMMAND2,
-          {
-            className: 'number',
-            begin: ' *=', end: '-?\\d*\\.?\\d+(pt|pc|mm|cm|in|dd|cc|ex|em)?',
-            excludeBegin: true
-          }
-        ],
-        relevance: 10
-      },
-      COMMAND1, COMMAND2,
-      SPECIAL,
-      {
-        className: 'formula',
-        begin: '\\$\\$', end: '\\$\\$',
-        contains: [COMMAND1, COMMAND2, SPECIAL],
-        relevance: 0
-      },
-      {
-        className: 'formula',
-        begin: '\\$', end: '\\$',
-        contains: [COMMAND1, COMMAND2, SPECIAL],
-        relevance: 0
-      },
-      {
-        className: 'comment',
-        begin: '%', end: '$',
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],121:[function(require,module,exports){
-module.exports = function(hljs) {
-  var BUILT_IN_TYPES = 'bool byte i16 i32 i64 double string binary';
-  return {
-    keywords: {
-      keyword:
-        'namespace const typedef struct enum service exception void oneway set list map required optional',
-      built_in:
-        BUILT_IN_TYPES,
-      literal:
-        'true false'
-    },
-    contains: [
-      hljs.QUOTE_STRING_MODE,
-      hljs.NUMBER_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'class',
-        beginKeywords: 'struct enum service exception', end: /\{/,
-        illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
-      },
-      {
-        className: 'stl_container',
-        begin: '\\b(set|list|map)\\s*<', end: '>',
-        keywords: BUILT_IN_TYPES,
-        contains: ['self']
-      }
-    ]
-  };
-};
-},{}],122:[function(require,module,exports){
-module.exports = function(hljs) {
-  var PARAMS = {
-    className: 'params',
-    begin: '\\(', end: '\\)'
-  };
-
-  var FUNCTION_NAMES = 'attribute block constant cycle date dump include ' +
-                  'max min parent random range source template_from_string';
-
-  var FUNCTIONS = {
-    className: 'function',
-    beginKeywords: FUNCTION_NAMES,
-    relevance: 0,
-    contains: [
-      PARAMS
-    ]
-  };
-
-  var FILTER = {
-    className: 'filter',
-    begin: /\|[A-Za-z]+\:?/,
-    keywords:
-      'abs batch capitalize convert_encoding date date_modify default ' +
-      'escape first format join json_encode keys last length lower ' +
-      'merge nl2br number_format raw replace reverse round slice sort split ' +
-      'striptags title trim upper url_encode',
-    contains: [
-      FUNCTIONS
-    ]
-  };
-
-  var TAGS = 'autoescape block do embed extends filter flush for ' +
-    'if import include macro sandbox set spaceless use verbatim';
-
-  TAGS = TAGS + ' ' + TAGS.split(' ').map(function(t){return 'end' + t}).join(' ');
-
-  return {
-    aliases: ['craftcms'],
-    case_insensitive: true,
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        className: 'comment',
-        begin: /\{#/, end: /#}/
-      },
-      {
-        className: 'template_tag',
-        begin: /\{%/, end: /%}/,
-        keywords: TAGS,
-        contains: [FILTER, FUNCTIONS]
-      },
-      {
-        className: 'variable',
-        begin: /\{\{/, end: /}}/,
-        contains: [FILTER, FUNCTIONS]
-      }
-    ]
-  };
-};
-},{}],123:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['ts'],
-    keywords: {
-      keyword:
-        'in if for while finally var new function|0 do return void else break catch ' +
-        'instanceof with throw case default try this switch continue typeof delete ' +
-        'let yield const class public private get set super interface extends' +
-        'static constructor implements enum export import declare',
-      literal:
-        'true false null undefined NaN Infinity',
-      built_in:
-        'eval isFinite isNaN parseFloat parseInt decodeURI decodeURIComponent ' +
-        'encodeURI encodeURIComponent escape unescape Object Function Boolean Error ' +
-        'EvalError InternalError RangeError ReferenceError StopIteration SyntaxError ' +
-        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
-        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
-        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-        'module console window document any number boolean string void',
-    },
-    contains: [
-      {
-        className: 'pi',
-        begin: /^\s*('|")use strict('|")/,
-        relevance: 0
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_NUMBER_MODE,
-      { // "value" container
-        begin: '(' + hljs.RE_STARTERS_RE + '|\\b(case|return|throw)\\b)\\s*',
-        keywords: 'return throw case',
-        contains: [
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE,
-          hljs.REGEXP_MODE,
-          { // E4X
-            begin: /</, end: />;/,
-            relevance: 0,
-            subLanguage: 'xml'
-          }
-        ],
-        relevance: 0
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function', end: /\{/, excludeEnd: true,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {begin: /[A-Za-z$_][0-9A-Za-z$_]*/}),
-          {
-            className: 'params',
-            begin: /\(/, end: /\)/,
-            contains: [
-              hljs.C_LINE_COMMENT_MODE,
-              hljs.C_BLOCK_COMMENT_MODE
-            ],
-            illegal: /["'\(]/
-          }
-        ],
-        illegal: /\[|%/,
-        relevance: 0 // () => {} is more typical in TypeScript
-      },
-      {
-        className: 'constructor',
-        beginKeywords: 'constructor', end: /\{/, excludeEnd: true,
-        relevance: 10
-      },
-      {
-        className: 'module',
-        beginKeywords: 'module', end: /\{/, excludeEnd: true,
-      },
-      {
-        className: 'interface',
-        beginKeywords: 'interface', end: /\{/, excludeEnd: true,
-      },
-      {
-        begin: /\$[(.]/ // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
-      },
-      {
-        begin: '\\.' + hljs.IDENT_RE, relevance: 0 // hack: prevents detection of keywords after dots
-      }
-    ]
-  };
-};
-},{}],124:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    keywords: {
-      keyword:
-        // Value types
-        'char uchar unichar int uint long ulong short ushort int8 int16 int32 int64 uint8 ' +
-        'uint16 uint32 uint64 float double bool struct enum string void ' +
-        // Reference types
-        'weak unowned owned ' +
-        // Modifiers
-        'async signal static abstract interface override ' +
-        // Control Structures
-        'while do for foreach else switch case break default return try catch ' +
-        // Visibility
-        'public private protected internal ' +
-        // Other
-        'using new this get set const stdout stdin stderr var',
-      built_in:
-        'DBus GLib CCode Gee Object',
-      literal:
-        'false true null'
-    },
-    contains: [
-      {
-        className: 'class',
-        beginKeywords: 'class interface delegate namespace', end: '{', excludeEnd: true,
-        illegal: '[^,:\\n\\s\\.]',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
-      },
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.C_BLOCK_COMMENT_MODE,
-      {
-        className: 'string',
-        begin: '"""', end: '"""',
-        relevance: 5
-      },
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '^#', end: '$',
-        relevance: 2
-      },
-      {
-        className: 'constant',
-        begin: ' [A-Z_]+ ',
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],125:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['vb'],
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'addhandler addressof alias and andalso aggregate ansi as assembly auto binary by byref byval ' + /* a-b */
-        'call case catch class compare const continue custom declare default delegate dim distinct do ' + /* c-d */
-        'each equals else elseif end enum erase error event exit explicit finally for friend from function ' + /* e-f */
-        'get global goto group handles if implements imports in inherits interface into is isfalse isnot istrue ' + /* g-i */
-        'join key let lib like loop me mid mod module mustinherit mustoverride mybase myclass ' + /* j-m */
-        'namespace narrowing new next not notinheritable notoverridable ' + /* n */
-        'of off on operator option optional or order orelse overloads overridable overrides ' + /* o */
-        'paramarray partial preserve private property protected public ' + /* p */
-        'raiseevent readonly redim rem removehandler resume return ' + /* r */
-        'select set shadows shared skip static step stop structure strict sub synclock ' + /* s */
-        'take text then throw to try unicode until using when where while widening with withevents writeonly xor', /* t-x */
-      built_in:
-        'boolean byte cbool cbyte cchar cdate cdec cdbl char cint clng cobj csbyte cshort csng cstr ctype ' +  /* b-c */
-        'date decimal directcast double gettype getxmlnamespace iif integer long object ' + /* d-o */
-        'sbyte short single string trycast typeof uinteger ulong ushort', /* s-u */
-      literal:
-        'true false nothing'
-    },
-    illegal: '//|{|}|endif|gosub|variant|wend', /* reserved deprecated keywords */
-    contains: [
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-      {
-        className: 'comment',
-        begin: '\'', end: '$', returnBegin: true,
-        contains: [
-          {
-            className: 'xmlDocTag',
-            begin: '\'\'\'|<!--|-->'
-          },
-          {
-            className: 'xmlDocTag',
-            begin: '</?', end: '>'
-          }
-          ]
-      },
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$',
-        keywords: 'if else elseif end region externalsource'
-      }
-    ]
-  };
-};
-},{}],126:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    subLanguage: 'xml', subLanguageMode: 'continuous',
-    contains: [
-      {
-        begin: '<%', end: '%>',
-        subLanguage: 'vbscript'
-      }
-    ]
-  };
-};
-},{}],127:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['vbs'],
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'call class const dim do loop erase execute executeglobal exit for each next function ' +
-        'if then else on error option explicit new private property let get public randomize ' +
-        'redim rem select case set stop sub while wend with end to elseif is or xor and not ' +
-        'class_initialize class_terminate default preserve in me byval byref step resume goto',
-      built_in:
-        'lcase month vartype instrrev ubound setlocale getobject rgb getref string ' +
-        'weekdayname rnd dateadd monthname now day minute isarray cbool round formatcurrency ' +
-        'conversions csng timevalue second year space abs clng timeserial fixs len asc ' +
-        'isempty maths dateserial atn timer isobject filter weekday datevalue ccur isdate ' +
-        'instr datediff formatdatetime replace isnull right sgn array snumeric log cdbl hex ' +
-        'chr lbound msgbox ucase getlocale cos cdate cbyte rtrim join hour oct typename trim ' +
-        'strcomp int createobject loadpicture tan formatnumber mid scriptenginebuildversion ' +
-        'scriptengine split scriptengineminorversion cint sin datepart ltrim sqr ' +
-        'scriptenginemajorversion time derived eval date formatpercent exp inputbox left ascw ' +
-        'chrw regexp server response request cstr err',
-      literal:
-        'true false null nothing empty'
-    },
-    illegal: '//',
-    contains: [
-      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-      {
-        className: 'comment',
-        begin: /'/, end: /$/,
-        relevance: 0
-      },
-      hljs.C_NUMBER_MODE
-    ]
-  };
-};
-},{}],128:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    aliases: ['v'],
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'always and assign begin buf bufif0 bufif1 case casex casez cmos deassign ' +
-        'default defparam disable edge else end endcase endfunction endmodule ' +
-        'endprimitive endspecify endtable endtask event for force forever fork ' +
-        'function if ifnone initial inout input join macromodule module nand ' +
-        'negedge nmos nor not notif0 notif1 or output parameter pmos posedge ' +
-        'primitive pulldown pullup rcmos release repeat rnmos rpmos rtran ' +
-        'rtranif0 rtranif1 specify specparam table task timescale tran ' +
-        'tranif0 tranif1 wait while xnor xor',
-      typename:
-        'highz0 highz1 integer large medium pull0 pull1 real realtime reg ' +
-        'scalared signed small strong0 strong1 supply0 supply0 supply1 supply1 ' +
-        'time tri tri0 tri1 triand trior trireg vectored wand weak0 weak1 wire wor'
-    },
-    contains: [
-      hljs.C_BLOCK_COMMENT_MODE,
-      hljs.C_LINE_COMMENT_MODE,
-      hljs.QUOTE_STRING_MODE,
-      {
-        className: 'number',
-        begin: '\\b(\\d+\'(b|h|o|d|B|H|O|D))?[0-9xzXZ]+',
-        contains: [hljs.BACKSLASH_ESCAPE],
-        relevance: 0
-      },
-      /* ports in instances */
-      {
-        className: 'typename',
-        begin: '\\.\\w+',
-        relevance: 0
-      },
-      /* parameters to instances */
-      {
-        className: 'value',
-        begin: '#\\((?!parameter).+\\)'
-      },
-      /* operators */
-      {
-        className: 'keyword',
-        begin: '\\+|-|\\*|/|%|<|>|=|#|`|\\!|&|\\||@|:|\\^|~|\\{|\\}',
-        relevance: 0
-      }
-    ]
-  }; // return
-};
-},{}],129:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    case_insensitive: true,
-    keywords: {
-      keyword:
-        'abs access after alias all and architecture array assert attribute begin block ' +
-        'body buffer bus case component configuration constant context cover disconnect ' +
-        'downto default else elsif end entity exit fairness file for force function generate ' +
-        'generic group guarded if impure in inertial inout is label library linkage literal ' +
-        'loop map mod nand new next nor not null of on open or others out package port ' +
-        'postponed procedure process property protected pure range record register reject ' +
-        'release rem report restrict restrict_guarantee return rol ror select sequence ' +
-        'severity shared signal sla sll sra srl strong subtype then to transport type ' +
-        'unaffected units until use variable vmode vprop vunit wait when while with xnor xor',
-      typename:
-        'boolean bit character severity_level integer time delay_length natural positive ' +
-        'string bit_vector file_open_kind file_open_status std_ulogic std_ulogic_vector ' +
-        'std_logic std_logic_vector unsigned signed boolean_vector integer_vector ' +
-        'real_vector time_vector'
-    },
-    illegal: '{',
-    contains: [
-      hljs.C_BLOCK_COMMENT_MODE,        // VHDL-2008 block commenting.
-      {
-        className: 'comment',
-        begin: '--', end: '$'
-      },
-      hljs.QUOTE_STRING_MODE,
-      hljs.C_NUMBER_MODE,
-      {
-        className: 'literal',
-        begin: '\'(U|X|0|1|Z|W|L|H|-)\'',
-        contains: [hljs.BACKSLASH_ESCAPE]
-      },
-      {
-        className: 'attribute',
-        begin: '\'[A-Za-z](_?[A-Za-z0-9])*',
-        contains: [hljs.BACKSLASH_ESCAPE]
-      }
-    ]
-  }; // return
-};
-},{}],130:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    lexemes: /[!#@\w]+/,
-    keywords: {
-      keyword: //ex command
-        // express version except: ! & * < = > !! # @ @@
-        'N|0 P|0 X|0 a|0 ab abc abo al am an|0 ar arga argd arge argdo argg argl argu as au aug aun b|0 bN ba bad bd be bel bf bl bm bn bo bp br brea breaka breakd breakl bro bufdo buffers bun bw c|0 cN cNf ca cabc caddb cad caddf cal cat cb cc ccl cd ce cex cf cfir cgetb cgete cg changes chd che checkt cl cla clo cm cmapc cme cn cnew cnf cno cnorea cnoreme co col colo com comc comp con conf cope '+
-        'cp cpf cq cr cs cst cu cuna cunme cw d|0 delm deb debugg delc delf dif diffg diffo diffp diffpu diffs diffthis dig di dl dell dj dli do doautoa dp dr ds dsp e|0 ea ec echoe echoh echom echon el elsei em en endfo endf endt endw ene ex exe exi exu f|0 files filet fin fina fini fir fix fo foldc foldd folddoc foldo for fu g|0 go gr grepa gu gv ha h|0 helpf helpg helpt hi hid his i|0 ia iabc if ij il im imapc '+
-        'ime ino inorea inoreme int is isp iu iuna iunme j|0 ju k|0 keepa kee keepj lN lNf l|0 lad laddb laddf la lan lat lb lc lch lcl lcs le lefta let lex lf lfir lgetb lgete lg lgr lgrepa lh ll lla lli lmak lm lmapc lne lnew lnf ln loadk lo loc lockv lol lope lp lpf lr ls lt lu lua luad luaf lv lvimgrepa lw m|0 ma mak map mapc marks mat me menut mes mk mks mksp mkv mkvie mod mz mzf nbc nb nbs n|0 new nm nmapc nme nn nnoreme noa no noh norea noreme norm nu nun nunme ol o|0 om omapc ome on ono onoreme opt ou ounme ow p|0 '+
-        'profd prof pro promptr pc ped pe perld po popu pp pre prev ps pt ptN ptf ptj ptl ptn ptp ptr pts pu pw py3 python3 py3d py3f py pyd pyf q|0 quita qa r|0 rec red redi redr redraws reg res ret retu rew ri rightb rub rubyd rubyf rund ru rv s|0 sN san sa sal sav sb sbN sba sbf sbl sbm sbn sbp sbr scrip scripte scs se setf setg setl sf sfir sh sim sig sil sl sla sm smap smapc sme sn sni sno snor snoreme sor '+
-        'so spelld spe spelli spellr spellu spellw sp spr sre st sta startg startr star stopi stj sts sun sunm sunme sus sv sw sy synti sync t|0 tN tabN tabc tabdo tabe tabf tabfir tabl tabm tabnew '+
-        'tabn tabo tabp tabr tabs tab ta tags tc tcld tclf te tf th tj tl tm tn to tp tr try ts tu u|0 undoj undol una unh unl unlo unm unme uns up v|0 ve verb vert vim vimgrepa vi viu vie vm vmapc vme vne vn vnoreme vs vu vunme windo w|0 wN wa wh wi winc winp wn wp wq wqa ws wu wv x|0 xa xmapc xm xme xn xnoreme xu xunme y|0 z|0 ~ '+
-        // full version
-        'Next Print append abbreviate abclear aboveleft all amenu anoremenu args argadd argdelete argedit argglobal arglocal argument ascii autocmd augroup aunmenu buffer bNext ball badd bdelete behave belowright bfirst blast bmodified bnext botright bprevious brewind break breakadd breakdel breaklist browse bunload '+
-        'bwipeout change cNext cNfile cabbrev cabclear caddbuffer caddexpr caddfile call catch cbuffer cclose center cexpr cfile cfirst cgetbuffer cgetexpr cgetfile chdir checkpath checktime clist clast close cmap cmapclear cmenu cnext cnewer cnfile cnoremap cnoreabbrev cnoremenu copy colder colorscheme command comclear compiler continue confirm copen cprevious cpfile cquit crewind cscope cstag cunmap '+
-        'cunabbrev cunmenu cwindow delete delmarks debug debuggreedy delcommand delfunction diffupdate diffget diffoff diffpatch diffput diffsplit digraphs display deletel djump dlist doautocmd doautoall deletep drop dsearch dsplit edit earlier echo echoerr echohl echomsg else elseif emenu endif endfor '+
-        'endfunction endtry endwhile enew execute exit exusage file filetype find finally finish first fixdel fold foldclose folddoopen folddoclosed foldopen function global goto grep grepadd gui gvim hardcopy help helpfind helpgrep helptags highlight hide history insert iabbrev iabclear ijump ilist imap '+
-        'imapclear imenu inoremap inoreabbrev inoremenu intro isearch isplit iunmap iunabbrev iunmenu join jumps keepalt keepmarks keepjumps lNext lNfile list laddexpr laddbuffer laddfile last language later lbuffer lcd lchdir lclose lcscope left leftabove lexpr lfile lfirst lgetbuffer lgetexpr lgetfile lgrep lgrepadd lhelpgrep llast llist lmake lmap lmapclear lnext lnewer lnfile lnoremap loadkeymap loadview '+
-        'lockmarks lockvar lolder lopen lprevious lpfile lrewind ltag lunmap luado luafile lvimgrep lvimgrepadd lwindow move mark make mapclear match menu menutranslate messages mkexrc mksession mkspell mkvimrc mkview mode mzscheme mzfile nbclose nbkey nbsart next nmap nmapclear nmenu nnoremap '+
-        'nnoremenu noautocmd noremap nohlsearch noreabbrev noremenu normal number nunmap nunmenu oldfiles open omap omapclear omenu only onoremap onoremenu options ounmap ounmenu ownsyntax print profdel profile promptfind promptrepl pclose pedit perl perldo pop popup ppop preserve previous psearch ptag ptNext '+
-        'ptfirst ptjump ptlast ptnext ptprevious ptrewind ptselect put pwd py3do py3file python pydo pyfile quit quitall qall read recover redo redir redraw redrawstatus registers resize retab return rewind right rightbelow ruby rubydo rubyfile rundo runtime rviminfo substitute sNext sandbox sargument sall saveas sbuffer sbNext sball sbfirst sblast sbmodified sbnext sbprevious sbrewind scriptnames scriptencoding '+
-        'scscope set setfiletype setglobal setlocal sfind sfirst shell simalt sign silent sleep slast smagic smapclear smenu snext sniff snomagic snoremap snoremenu sort source spelldump spellgood spellinfo spellrepall spellundo spellwrong split sprevious srewind stop stag startgreplace startreplace '+
-        'startinsert stopinsert stjump stselect sunhide sunmap sunmenu suspend sview swapname syntax syntime syncbind tNext tabNext tabclose tabedit tabfind tabfirst tablast tabmove tabnext tabonly tabprevious tabrewind tag tcl tcldo tclfile tearoff tfirst throw tjump tlast tmenu tnext topleft tprevious '+'trewind tselect tunmenu undo undojoin undolist unabbreviate unhide unlet unlockvar unmap unmenu unsilent update vglobal version verbose vertical vimgrep vimgrepadd visual viusage view vmap vmapclear vmenu vnew '+
-        'vnoremap vnoremenu vsplit vunmap vunmenu write wNext wall while winsize wincmd winpos wnext wprevious wqall wsverb wundo wviminfo xit xall xmapclear xmap xmenu xnoremap xnoremenu xunmap xunmenu yank',
-      built_in: //built in func
-        'abs acos add and append argc argidx argv asin atan atan2 browse browsedir bufexists buflisted bufloaded bufname bufnr bufwinnr byte2line byteidx call ceil changenr char2nr cindent clearmatches col complete complete_add complete_check confirm copy cos cosh count cscope_connection cursor '+
-        'deepcopy delete did_filetype diff_filler diff_hlID empty escape eval eventhandler executable exists exp expand extend feedkeys filereadable filewritable filter finddir findfile float2nr floor fmod fnameescape fnamemodify foldclosed foldclosedend foldlevel foldtext foldtextresult foreground function '+
-        'garbagecollect get getbufline getbufvar getchar getcharmod getcmdline getcmdpos getcmdtype getcwd getfontname getfperm getfsize getftime getftype getline getloclist getmatches getpid getpos getqflist getreg getregtype gettabvar gettabwinvar getwinposx getwinposy getwinvar glob globpath has has_key '+
-        'haslocaldir hasmapto histadd histdel histget histnr hlexists hlID hostname iconv indent index input inputdialog inputlist inputrestore inputsave inputsecret insert invert isdirectory islocked items join keys len libcall libcallnr line line2byte lispindent localtime log log10 luaeval map maparg mapcheck '+
-        'match matchadd matcharg matchdelete matchend matchlist matchstr max min mkdir mode mzeval nextnonblank nr2char or pathshorten pow prevnonblank printf pumvisible py3eval pyeval range readfile reltime reltimestr remote_expr remote_foreground remote_peek remote_read remote_send remove rename repeat '+
-        'resolve reverse round screenattr screenchar screencol screenrow search searchdecl searchpair searchpairpos searchpos server2client serverlist setbufvar setcmdpos setline setloclist setmatches setpos setqflist setreg settabvar settabwinvar setwinvar sha256 shellescape shiftwidth simplify sin '+
-        'sinh sort soundfold spellbadword spellsuggest split sqrt str2float str2nr strchars strdisplaywidth strftime stridx string strlen strpart strridx strtrans strwidth submatch substitute synconcealed synID synIDattr '+
-        'synIDtrans synstack system tabpagebuflist tabpagenr tabpagewinnr tagfiles taglist tan tanh tempname tolower toupper tr trunc type undofile undotree values virtcol visualmode wildmenumode winbufnr wincol winheight winline winnr winrestcmd winrestview winsaveview winwidth writefile xor'
-    },
-    illegal: /[{:]/,
-    contains: [
-      hljs.NUMBER_MODE,
-      hljs.APOS_STRING_MODE,
-      {
-        className: 'string',
-        // quote with escape, comment as quote
-        begin: /"((\\")|[^"\n])*("|\n)/
-      },
-      {
-        className: 'variable',
-        begin: /[bwtglsav]:[\w\d_]*/
-      },
-      {
-        className: 'function',
-        beginKeywords: 'function function!', end: '$',
-        relevance: 0,
-        contains: [
-          hljs.TITLE_MODE,
-          {
-            className: 'params',
-            begin: '\\(', end: '\\)'
-          }
-        ]
-      }
-    ]
-  };
-};
-},{}],131:[function(require,module,exports){
-module.exports = function(hljs) {
-  return {
-    case_insensitive: true,
-    lexemes: '\\.?' + hljs.IDENT_RE,
-    keywords: {
-      keyword:
-        'lock rep repe repz repne repnz xaquire xrelease bnd nobnd ' +
-        'aaa aad aam aas adc add and arpl bb0_reset bb1_reset bound bsf bsr bswap bt btc btr bts call cbw cdq cdqe clc cld cli clts cmc cmp cmpsb cmpsd cmpsq cmpsw cmpxchg cmpxchg486 cmpxchg8b cmpxchg16b cpuid cpu_read cpu_write cqo cwd cwde daa das dec div dmint emms enter equ f2xm1 fabs fadd faddp fbld fbstp fchs fclex fcmovb fcmovbe fcmove fcmovnb fcmovnbe fcmovne fcmovnu fcmovu fcom fcomi fcomip fcomp fcompp fcos fdecstp fdisi fdiv fdivp fdivr fdivrp femms feni ffree ffreep fiadd ficom ficomp fidiv fidivr fild fimul fincstp finit fist fistp fisttp fisub fisubr fld fld1 fldcw fldenv fldl2e fldl2t fldlg2 fldln2 fldpi fldz fmul fmulp fnclex fndisi fneni fninit fnop fnsave fnstcw fnstenv fnstsw fpatan fprem fprem1 fptan frndint frstor fsave fscale fsetpm fsin fsincos fsqrt fst fstcw fstenv fstp fstsw fsub fsubp fsubr fsubrp ftst fucom fucomi fucomip fucomp fucompp fxam fxch fxtract fyl2x fyl2xp1 hlt ibts icebp idiv imul in inc incbin insb insd insw int int01 int1 int03 int3 into invd invpcid invlpg invlpga iret iretd iretq iretw jcxz jecxz jrcxz jmp jmpe lahf lar lds lea leave les lfence lfs lgdt lgs lidt lldt lmsw loadall loadall286 lodsb lodsd lodsq lodsw loop loope loopne loopnz loopz lsl lss ltr mfence monitor mov movd movq movsb movsd movsq movsw movsx movsxd movzx mul mwait neg nop not or out outsb outsd outsw packssdw packsswb packuswb paddb paddd paddsb paddsiw paddsw paddusb paddusw paddw pand pandn pause paveb pavgusb pcmpeqb pcmpeqd pcmpeqw pcmpgtb pcmpgtd pcmpgtw pdistib pf2id pfacc pfadd pfcmpeq pfcmpge pfcmpgt pfmax pfmin pfmul pfrcp pfrcpit1 pfrcpit2 pfrsqit1 pfrsqrt pfsub pfsubr pi2fd pmachriw pmaddwd pmagw pmulhriw pmulhrwa pmulhrwc pmulhw pmullw pmvgezb pmvlzb pmvnzb pmvzb pop popa popad popaw popf popfd popfq popfw por prefetch prefetchw pslld psllq psllw psrad psraw psrld psrlq psrlw psubb psubd psubsb psubsiw psubsw psubusb psubusw psubw punpckhbw punpckhdq punpckhwd punpcklbw punpckldq punpcklwd push pusha pushad pushaw pushf pushfd pushfq pushfw pxor rcl rcr rdshr rdmsr rdpmc rdtsc rdtscp ret retf retn rol ror rdm rsdc rsldt rsm rsts sahf sal salc sar sbb scasb scasd scasq scasw sfence sgdt shl shld shr shrd sidt sldt skinit smi smint smintold smsw stc std sti stosb stosd stosq stosw str sub svdc svldt svts swapgs syscall sysenter sysexit sysret test ud0 ud1 ud2b ud2 ud2a umov verr verw fwait wbinvd wrshr wrmsr xadd xbts xchg xlatb xlat xor cmove cmovz cmovne cmovnz cmova cmovnbe cmovae cmovnb cmovb cmovnae cmovbe cmovna cmovg cmovnle cmovge cmovnl cmovl cmovnge cmovle cmovng cmovc cmovnc cmovo cmovno cmovs cmovns cmovp cmovpe cmovnp cmovpo je jz jne jnz ja jnbe jae jnb jb jnae jbe jna jg jnle jge jnl jl jnge jle jng jc jnc jo jno js jns jpo jnp jpe jp sete setz setne setnz seta setnbe setae setnb setnc setb setnae setcset setbe setna setg setnle setge setnl setl setnge setle setng sets setns seto setno setpe setp setpo setnp addps addss andnps andps cmpeqps cmpeqss cmpleps cmpless cmpltps cmpltss cmpneqps cmpneqss cmpnleps cmpnless cmpnltps cmpnltss cmpordps cmpordss cmpunordps cmpunordss cmpps cmpss comiss cvtpi2ps cvtps2pi cvtsi2ss cvtss2si cvttps2pi cvttss2si divps divss ldmxcsr maxps maxss minps minss movaps movhps movlhps movlps movhlps movmskps movntps movss movups mulps mulss orps rcpps rcpss rsqrtps rsqrtss shufps sqrtps sqrtss stmxcsr subps subss ucomiss unpckhps unpcklps xorps fxrstor fxrstor64 fxsave fxsave64 xgetbv xsetbv xsave xsave64 xsaveopt xsaveopt64 xrstor xrstor64 prefetchnta prefetcht0 prefetcht1 prefetcht2 maskmovq movntq pavgb pavgw pextrw pinsrw pmaxsw pmaxub pminsw pminub pmovmskb pmulhuw psadbw pshufw pf2iw pfnacc pfpnacc pi2fw pswapd maskmovdqu clflush movntdq movnti movntpd movdqa movdqu movdq2q movq2dq paddq pmuludq pshufd pshufhw pshuflw pslldq psrldq psubq punpckhqdq punpcklqdq addpd addsd andnpd andpd cmpeqpd cmpeqsd cmplepd cmplesd cmpltpd cmpltsd cmpneqpd cmpneqsd cmpnlepd cmpnlesd cmpnltpd cmpnltsd cmpordpd cmpordsd cmpunordpd cmpunordsd cmppd comisd cvtdq2pd cvtdq2ps cvtpd2dq cvtpd2pi cvtpd2ps cvtpi2pd cvtps2dq cvtps2pd cvtsd2si cvtsd2ss cvtsi2sd cvtss2sd cvttpd2pi cvttpd2dq cvttps2dq cvttsd2si divpd divsd maxpd maxsd minpd minsd movapd movhpd movlpd movmskpd movupd mulpd mulsd orpd shufpd sqrtpd sqrtsd subpd subsd ucomisd unpckhpd unpcklpd xorpd addsubpd addsubps haddpd haddps hsubpd hsubps lddqu movddup movshdup movsldup clgi stgi vmcall vmclear vmfunc vmlaunch vmload vmmcall vmptrld vmptrst vmread vmresume vmrun vmsave vmwrite vmxoff vmxon invept invvpid pabsb pabsw pabsd palignr phaddw phaddd phaddsw phsubw phsubd phsubsw pmaddubsw pmulhrsw pshufb psignb psignw psignd extrq insertq movntsd movntss lzcnt blendpd blendps blendvpd blendvps dppd dpps extractps insertps movntdqa mpsadbw packusdw pblendvb pblendw pcmpeqq pextrb pextrd pextrq phminposuw pinsrb pinsrd pinsrq pmaxsb pmaxsd pmaxud pmaxuw pminsb pminsd pminud pminuw pmovsxbw pmovsxbd pmovsxbq pmovsxwd pmovsxwq pmovsxdq pmovzxbw pmovzxbd pmovzxbq pmovzxwd pmovzxwq pmovzxdq pmuldq pmulld ptest roundpd roundps roundsd roundss crc32 pcmpestri pcmpestrm pcmpistri pcmpistrm pcmpgtq popcnt getsec pfrcpv pfrsqrtv movbe aesenc aesenclast aesdec aesdeclast aesimc aeskeygenassist vaesenc vaesenclast vaesdec vaesdeclast vaesimc vaeskeygenassist vaddpd vaddps vaddsd vaddss vaddsubpd vaddsubps vandpd vandps vandnpd vandnps vblendpd vblendps vblendvpd vblendvps vbroadcastss vbroadcastsd vbroadcastf128 vcmpeq_ospd vcmpeqpd vcmplt_ospd vcmpltpd vcmple_ospd vcmplepd vcmpunord_qpd vcmpunordpd vcmpneq_uqpd vcmpneqpd vcmpnlt_uspd vcmpnltpd vcmpnle_uspd vcmpnlepd vcmpord_qpd vcmpordpd vcmpeq_uqpd vcmpnge_uspd vcmpngepd vcmpngt_uspd vcmpngtpd vcmpfalse_oqpd vcmpfalsepd vcmpneq_oqpd vcmpge_ospd vcmpgepd vcmpgt_ospd vcmpgtpd vcmptrue_uqpd vcmptruepd vcmplt_oqpd vcmple_oqpd vcmpunord_spd vcmpneq_uspd vcmpnlt_uqpd vcmpnle_uqpd vcmpord_spd vcmpeq_uspd vcmpnge_uqpd vcmpngt_uqpd vcmpfalse_ospd vcmpneq_ospd vcmpge_oqpd vcmpgt_oqpd vcmptrue_uspd vcmppd vcmpeq_osps vcmpeqps vcmplt_osps vcmpltps vcmple_osps vcmpleps vcmpunord_qps vcmpunordps vcmpneq_uqps vcmpneqps vcmpnlt_usps vcmpnltps vcmpnle_usps vcmpnleps vcmpord_qps vcmpordps vcmpeq_uqps vcmpnge_usps vcmpngeps vcmpngt_usps vcmpngtps vcmpfalse_oqps vcmpfalseps vcmpneq_oqps vcmpge_osps vcmpgeps vcmpgt_osps vcmpgtps vcmptrue_uqps vcmptrueps vcmplt_oqps vcmple_oqps vcmpunord_sps vcmpneq_usps vcmpnlt_uqps vcmpnle_uqps vcmpord_sps vcmpeq_usps vcmpnge_uqps vcmpngt_uqps vcmpfalse_osps vcmpneq_osps vcmpge_oqps vcmpgt_oqps vcmptrue_usps vcmpps vcmpeq_ossd vcmpeqsd vcmplt_ossd vcmpltsd vcmple_ossd vcmplesd vcmpunord_qsd vcmpunordsd vcmpneq_uqsd vcmpneqsd vcmpnlt_ussd vcmpnltsd vcmpnle_ussd vcmpnlesd vcmpord_qsd vcmpordsd vcmpeq_uqsd vcmpnge_ussd vcmpngesd vcmpngt_ussd vcmpngtsd vcmpfalse_oqsd vcmpfalsesd vcmpneq_oqsd vcmpge_ossd vcmpgesd vcmpgt_ossd vcmpgtsd vcmptrue_uqsd vcmptruesd vcmplt_oqsd vcmple_oqsd vcmpunord_ssd vcmpneq_ussd vcmpnlt_uqsd vcmpnle_uqsd vcmpord_ssd vcmpeq_ussd vcmpnge_uqsd vcmpngt_uqsd vcmpfalse_ossd vcmpneq_ossd vcmpge_oqsd vcmpgt_oqsd vcmptrue_ussd vcmpsd vcmpeq_osss vcmpeqss vcmplt_osss vcmpltss vcmple_osss vcmpless vcmpunord_qss vcmpunordss vcmpneq_uqss vcmpneqss vcmpnlt_usss vcmpnltss vcmpnle_usss vcmpnless vcmpord_qss vcmpordss vcmpeq_uqss vcmpnge_usss vcmpngess vcmpngt_usss vcmpngtss vcmpfalse_oqss vcmpfalsess vcmpneq_oqss vcmpge_osss vcmpgess vcmpgt_osss vcmpgtss vcmptrue_uqss vcmptruess vcmplt_oqss vcmple_oqss vcmpunord_sss vcmpneq_usss vcmpnlt_uqss vcmpnle_uqss vcmpord_sss vcmpeq_usss vcmpnge_uqss vcmpngt_uqss vcmpfalse_osss vcmpneq_osss vcmpge_oqss vcmpgt_oqss vcmptrue_usss vcmpss vcomisd vcomiss vcvtdq2pd vcvtdq2ps vcvtpd2dq vcvtpd2ps vcvtps2dq vcvtps2pd vcvtsd2si vcvtsd2ss vcvtsi2sd vcvtsi2ss vcvtss2sd vcvtss2si vcvttpd2dq vcvttps2dq vcvttsd2si vcvttss2si vdivpd vdivps vdivsd vdivss vdppd vdpps vextractf128 vextractps vhaddpd vhaddps vhsubpd vhsubps vinsertf128 vinsertps vlddqu vldqqu vldmxcsr vmaskmovdqu vmaskmovps vmaskmovpd vmaxpd vmaxps vmaxsd vmaxss vminpd vminps vminsd vminss vmovapd vmovaps vmovd vmovq vmovddup vmovdqa vmovqqa vmovdqu vmovqqu vmovhlps vmovhpd vmovhps vmovlhps vmovlpd vmovlps vmovmskpd vmovmskps vmovntdq vmovntqq vmovntdqa vmovntpd vmovntps vmovsd vmovshdup vmovsldup vmovss vmovupd vmovups vmpsadbw vmulpd vmulps vmulsd vmulss vorpd vorps vpabsb vpabsw vpabsd vpacksswb vpackssdw vpackuswb vpackusdw vpaddb vpaddw vpaddd vpaddq vpaddsb vpaddsw vpaddusb vpaddusw vpalignr vpand vpandn vpavgb vpavgw vpblendvb vpblendw vpcmpestri vpcmpestrm vpcmpistri vpcmpistrm vpcmpeqb vpcmpeqw vpcmpeqd vpcmpeqq vpcmpgtb vpcmpgtw vpcmpgtd vpcmpgtq vpermilpd vpermilps vperm2f128 vpextrb vpextrw vpextrd vpextrq vphaddw vphaddd vphaddsw vphminposuw vphsubw vphsubd vphsubsw vpinsrb vpinsrw vpinsrd vpinsrq vpmaddwd vpmaddubsw vpmaxsb vpmaxsw vpmaxsd vpmaxub vpmaxuw vpmaxud vpminsb vpminsw vpminsd vpminub vpminuw vpminud vpmovmskb vpmovsxbw vpmovsxbd vpmovsxbq vpmovsxwd vpmovsxwq vpmovsxdq vpmovzxbw vpmovzxbd vpmovzxbq vpmovzxwd vpmovzxwq vpmovzxdq vpmulhuw vpmulhrsw vpmulhw vpmullw vpmulld vpmuludq vpmuldq vpor vpsadbw vpshufb vpshufd vpshufhw vpshuflw vpsignb vpsignw vpsignd vpslldq vpsrldq vpsllw vpslld vpsllq vpsraw vpsrad vpsrlw vpsrld vpsrlq vptest vpsubb vpsubw vpsubd vpsubq vpsubsb vpsubsw vpsubusb vpsubusw vpunpckhbw vpunpckhwd vpunpckhdq vpunpckhqdq vpunpcklbw vpunpcklwd vpunpckldq vpunpcklqdq vpxor vrcpps vrcpss vrsqrtps vrsqrtss vroundpd vroundps vroundsd vroundss vshufpd vshufps vsqrtpd vsqrtps vsqrtsd vsqrtss vstmxcsr vsubpd vsubps vsubsd vsubss vtestps vtestpd vucomisd vucomiss vunpckhpd vunpckhps vunpcklpd vunpcklps vxorpd vxorps vzeroall vzeroupper pclmullqlqdq pclmulhqlqdq pclmullqhqdq pclmulhqhqdq pclmulqdq vpclmullqlqdq vpclmulhqlqdq vpclmullqhqdq vpclmulhqhqdq vpclmulqdq vfmadd132ps vfmadd132pd vfmadd312ps vfmadd312pd vfmadd213ps vfmadd213pd vfmadd123ps vfmadd123pd vfmadd231ps vfmadd231pd vfmadd321ps vfmadd321pd vfmaddsub132ps vfmaddsub132pd vfmaddsub312ps vfmaddsub312pd vfmaddsub213ps vfmaddsub213pd vfmaddsub123ps vfmaddsub123pd vfmaddsub231ps vfmaddsub231pd vfmaddsub321ps vfmaddsub321pd vfmsub132ps vfmsub132pd vfmsub312ps vfmsub312pd vfmsub213ps vfmsub213pd vfmsub123ps vfmsub123pd vfmsub231ps vfmsub231pd vfmsub321ps vfmsub321pd vfmsubadd132ps vfmsubadd132pd vfmsubadd312ps vfmsubadd312pd vfmsubadd213ps vfmsubadd213pd vfmsubadd123ps vfmsubadd123pd vfmsubadd231ps vfmsubadd231pd vfmsubadd321ps vfmsubadd321pd vfnmadd132ps vfnmadd132pd vfnmadd312ps vfnmadd312pd vfnmadd213ps vfnmadd213pd vfnmadd123ps vfnmadd123pd vfnmadd231ps vfnmadd231pd vfnmadd321ps vfnmadd321pd vfnmsub132ps vfnmsub132pd vfnmsub312ps vfnmsub312pd vfnmsub213ps vfnmsub213pd vfnmsub123ps vfnmsub123pd vfnmsub231ps vfnmsub231pd vfnmsub321ps vfnmsub321pd vfmadd132ss vfmadd132sd vfmadd312ss vfmadd312sd vfmadd213ss vfmadd213sd vfmadd123ss vfmadd123sd vfmadd231ss vfmadd231sd vfmadd321ss vfmadd321sd vfmsub132ss vfmsub132sd vfmsub312ss vfmsub312sd vfmsub213ss vfmsub213sd vfmsub123ss vfmsub123sd vfmsub231ss vfmsub231sd vfmsub321ss vfmsub321sd vfnmadd132ss vfnmadd132sd vfnmadd312ss vfnmadd312sd vfnmadd213ss vfnmadd213sd vfnmadd123ss vfnmadd123sd vfnmadd231ss vfnmadd231sd vfnmadd321ss vfnmadd321sd vfnmsub132ss vfnmsub132sd vfnmsub312ss vfnmsub312sd vfnmsub213ss vfnmsub213sd vfnmsub123ss vfnmsub123sd vfnmsub231ss vfnmsub231sd vfnmsub321ss vfnmsub321sd rdfsbase rdgsbase rdrand wrfsbase wrgsbase vcvtph2ps vcvtps2ph adcx adox rdseed clac stac xstore xcryptecb xcryptcbc xcryptctr xcryptcfb xcryptofb montmul xsha1 xsha256 llwpcb slwpcb lwpval lwpins vfmaddpd vfmaddps vfmaddsd vfmaddss vfmaddsubpd vfmaddsubps vfmsubaddpd vfmsubaddps vfmsubpd vfmsubps vfmsubsd vfmsubss vfnmaddpd vfnmaddps vfnmaddsd vfnmaddss vfnmsubpd vfnmsubps vfnmsubsd vfnmsubss vfrczpd vfrczps vfrczsd vfrczss vpcmov vpcomb vpcomd vpcomq vpcomub vpcomud vpcomuq vpcomuw vpcomw vphaddbd vphaddbq vphaddbw vphadddq vphaddubd vphaddubq vphaddubw vphaddudq vphadduwd vphadduwq vphaddwd vphaddwq vphsubbw vphsubdq vphsubwd vpmacsdd vpmacsdqh vpmacsdql vpmacssdd vpmacssdqh vpmacssdql vpmacsswd vpmacssww vpmacswd vpmacsww vpmadcsswd vpmadcswd vpperm vprotb vprotd vprotq vprotw vpshab vpshad vpshaq vpshaw vpshlb vpshld vpshlq vpshlw vbroadcasti128 vpblendd vpbroadcastb vpbroadcastw vpbroadcastd vpbroadcastq vpermd vpermpd vpermps vpermq vperm2i128 vextracti128 vinserti128 vpmaskmovd vpmaskmovq vpsllvd vpsllvq vpsravd vpsrlvd vpsrlvq vgatherdpd vgatherqpd vgatherdps vgatherqps vpgatherdd vpgatherqd vpgatherdq vpgatherqq xabort xbegin xend xtest andn bextr blci blcic blsi blsic blcfill blsfill blcmsk blsmsk blsr blcs bzhi mulx pdep pext rorx sarx shlx shrx tzcnt tzmsk t1mskc valignd valignq vblendmpd vblendmps vbroadcastf32x4 vbroadcastf64x4 vbroadcasti32x4 vbroadcasti64x4 vcompresspd vcompressps vcvtpd2udq vcvtps2udq vcvtsd2usi vcvtss2usi vcvttpd2udq vcvttps2udq vcvttsd2usi vcvttss2usi vcvtudq2pd vcvtudq2ps vcvtusi2sd vcvtusi2ss vexpandpd vexpandps vextractf32x4 vextractf64x4 vextracti32x4 vextracti64x4 vfixupimmpd vfixupimmps vfixupimmsd vfixupimmss vgetexppd vgetexpps vgetexpsd vgetexpss vgetmantpd vgetmantps vgetmantsd vgetmantss vinsertf32x4 vinsertf64x4 vinserti32x4 vinserti64x4 vmovdqa32 vmovdqa64 vmovdqu32 vmovdqu64 vpabsq vpandd vpandnd vpandnq vpandq vpblendmd vpblendmq vpcmpltd vpcmpled vpcmpneqd vpcmpnltd vpcmpnled vpcmpd vpcmpltq vpcmpleq vpcmpneqq vpcmpnltq vpcmpnleq vpcmpq vpcmpequd vpcmpltud vpcmpleud vpcmpnequd vpcmpnltud vpcmpnleud vpcmpud vpcmpequq vpcmpltuq vpcmpleuq vpcmpnequq vpcmpnltuq vpcmpnleuq vpcmpuq vpcompressd vpcompressq vpermi2d vpermi2pd vpermi2ps vpermi2q vpermt2d vpermt2pd vpermt2ps vpermt2q vpexpandd vpexpandq vpmaxsq vpmaxuq vpminsq vpminuq vpmovdb vpmovdw vpmovqb vpmovqd vpmovqw vpmovsdb vpmovsdw vpmovsqb vpmovsqd vpmovsqw vpmovusdb vpmovusdw vpmovusqb vpmovusqd vpmovusqw vpord vporq vprold vprolq vprolvd vprolvq vprord vprorq vprorvd vprorvq vpscatterdd vpscatterdq vpscatterqd vpscatterqq vpsraq vpsravq vpternlogd vpternlogq vptestmd vptestmq vptestnmd vptestnmq vpxord vpxorq vrcp14pd vrcp14ps vrcp14sd vrcp14ss vrndscalepd vrndscaleps vrndscalesd vrndscaless vrsqrt14pd vrsqrt14ps vrsqrt14sd vrsqrt14ss vscalefpd vscalefps vscalefsd vscalefss vscatterdpd vscatterdps vscatterqpd vscatterqps vshuff32x4 vshuff64x2 vshufi32x4 vshufi64x2 kandnw kandw kmovw knotw kortestw korw kshiftlw kshiftrw kunpckbw kxnorw kxorw vpbroadcastmb2q vpbroadcastmw2d vpconflictd vpconflictq vplzcntd vplzcntq vexp2pd vexp2ps vrcp28pd vrcp28ps vrcp28sd vrcp28ss vrsqrt28pd vrsqrt28ps vrsqrt28sd vrsqrt28ss vgatherpf0dpd vgatherpf0dps vgatherpf0qpd vgatherpf0qps vgatherpf1dpd vgatherpf1dps vgatherpf1qpd vgatherpf1qps vscatterpf0dpd vscatterpf0dps vscatterpf0qpd vscatterpf0qps vscatterpf1dpd vscatterpf1dps vscatterpf1qpd vscatterpf1qps prefetchwt1 bndmk bndcl bndcu bndcn bndmov bndldx bndstx sha1rnds4 sha1nexte sha1msg1 sha1msg2 sha256rnds2 sha256msg1 sha256msg2 hint_nop0 hint_nop1 hint_nop2 hint_nop3 hint_nop4 hint_nop5 hint_nop6 hint_nop7 hint_nop8 hint_nop9 hint_nop10 hint_nop11 hint_nop12 hint_nop13 hint_nop14 hint_nop15 hint_nop16 hint_nop17 hint_nop18 hint_nop19 hint_nop20 hint_nop21 hint_nop22 hint_nop23 hint_nop24 hint_nop25 hint_nop26 hint_nop27 hint_nop28 hint_nop29 hint_nop30 hint_nop31 hint_nop32 hint_nop33 hint_nop34 hint_nop35 hint_nop36 hint_nop37 hint_nop38 hint_nop39 hint_nop40 hint_nop41 hint_nop42 hint_nop43 hint_nop44 hint_nop45 hint_nop46 hint_nop47 hint_nop48 hint_nop49 hint_nop50 hint_nop51 hint_nop52 hint_nop53 hint_nop54 hint_nop55 hint_nop56 hint_nop57 hint_nop58 hint_nop59 hint_nop60 hint_nop61 hint_nop62 hint_nop63',
-      literal:
-        // Instruction pointer
-        'ip eip rip ' +
-        // 8-bit registers
-        'al ah bl bh cl ch dl dh sil dil bpl spl r8b r9b r10b r11b r12b r13b r14b r15b ' +
-        // 16-bit registers
-        'ax bx cx dx si di bp sp r8w r9w r10w r11w r12w r13w r14w r15w ' +
-        // 32-bit registers
-        'eax ebx ecx edx esi edi ebp esp eip r8d r9d r10d r11d r12d r13d r14d r15d ' +
-        // 64-bit registers
-        'rax rbx rcx rdx rsi rdi rbp rsp r8 r9 r10 r11 r12 r13 r14 r15 ' +
-        // Segment registers
-        'cs ds es fs gs ss ' +
-        // Floating point stack registers
-        'st st0 st1 st2 st3 st4 st5 st6 st7 ' +
-        // MMX Registers
-        'mm0 mm1 mm2 mm3 mm4 mm5 mm6 mm7 ' +
-        // SSE registers
-        'xmm0  xmm1  xmm2  xmm3  xmm4  xmm5  xmm6  xmm7  xmm8  xmm9 xmm10  xmm11 xmm12 xmm13 xmm14 xmm15 ' +
-        'xmm16 xmm17 xmm18 xmm19 xmm20 xmm21 xmm22 xmm23 xmm24 xmm25 xmm26 xmm27 xmm28 xmm29 xmm30 xmm31 ' +
-        // AVX registers
-        'ymm0  ymm1  ymm2  ymm3  ymm4  ymm5  ymm6  ymm7  ymm8  ymm9 ymm10  ymm11 ymm12 ymm13 ymm14 ymm15 ' +
-        'ymm16 ymm17 ymm18 ymm19 ymm20 ymm21 ymm22 ymm23 ymm24 ymm25 ymm26 ymm27 ymm28 ymm29 ymm30 ymm31 ' +
-        // AVX-512F registers
-        'zmm0  zmm1  zmm2  zmm3  zmm4  zmm5  zmm6  zmm7  zmm8  zmm9 zmm10  zmm11 zmm12 zmm13 zmm14 zmm15 ' +
-        'zmm16 zmm17 zmm18 zmm19 zmm20 zmm21 zmm22 zmm23 zmm24 zmm25 zmm26 zmm27 zmm28 zmm29 zmm30 zmm31 ' +
-        // AVX-512F mask registers
-        'k0 k1 k2 k3 k4 k5 k6 k7 ' +
-        // Bound (MPX) register
-        'bnd0 bnd1 bnd2 bnd3 ' +
-        // Special register
-        'cr0 cr1 cr2 cr3 cr4 cr8 dr0 dr1 dr2 dr3 dr8 tr3 tr4 tr5 tr6 tr7 ' +
-        // NASM altreg package
-        'r0 r1 r2 r3 r4 r5 r6 r7 r0b r1b r2b r3b r4b r5b r6b r7b ' +
-        'r0w r1w r2w r3w r4w r5w r6w r7w r0d r1d r2d r3d r4d r5d r6d r7d ' +
-        'r0h r1h r2h r3h ' +
-        'r0l r1l r2l r3l r4l r5l r6l r7l r8l r9l r10l r11l r12l r13l r14l r15l',
-
-      pseudo:
-        'db dw dd dq dt ddq do dy dz ' +
-        'resb resw resd resq rest resdq reso resy resz ' +
-        'incbin equ times',
-
-      preprocessor:
-        '%define %xdefine %+ %undef %defstr %deftok %assign %strcat %strlen %substr %rotate %elif %else %endif ' +
-        '%ifmacro %ifctx %ifidn %ifidni %ifid %ifnum %ifstr %iftoken %ifempty %ifenv %error %warning %fatal %rep ' +
-        '%endrep %include %push %pop %repl %pathsearch %depend %use %arg %stacksize %local %line %comment %endcomment ' +
-        '.nolist ' +
-        'byte word dword qword nosplit rel abs seg wrt strict near far a32 ptr ' +
-        '__FILE__ __LINE__ __SECT__  __BITS__ __OUTPUT_FORMAT__ __DATE__ __TIME__ __DATE_NUM__ __TIME_NUM__ ' +
-        '__UTC_DATE__ __UTC_TIME__ __UTC_DATE_NUM__ __UTC_TIME_NUM__  __PASS__ struc endstruc istruc at iend ' +
-        'align alignb sectalign daz nodaz up down zero default option assume public ',
-
-      built_in:
-        'bits use16 use32 use64 default section segment absolute extern global common cpu float ' +
-        '__utf16__ __utf16le__ __utf16be__ __utf32__ __utf32le__ __utf32be__ ' +
-        '__float8__ __float16__ __float32__ __float64__ __float80m__ __float80e__ __float128l__ __float128h__ ' +
-        '__Infinity__ __QNaN__ __SNaN__ Inf NaN QNaN SNaN float8 float16 float32 float64 float80m float80e ' +
-        'float128l float128h __FLOAT_DAZ__ __FLOAT_ROUND__ __FLOAT__'
-    },
-    contains: [
-      {
-        className: 'comment',
-        begin: ';',
-        end: '$',
-        relevance: 0
-      },
-      // Float number and x87 BCD
-      {
-        className: 'number',
-        begin: '\\b(?:([0-9][0-9_]*)?\\.[0-9_]*(?:[eE][+-]?[0-9_]+)?|(0[Xx])?[0-9][0-9_]*\\.?[0-9_]*(?:[pP](?:[+-]?[0-9_]+)?)?)\\b',
-        relevance: 0
-      },
-      // Hex number in $
-      {
-        className: 'number',
-        begin: '\\$[0-9][0-9A-Fa-f]*',
-        relevance: 0
-      },
-      // Number in H,X,D,T,Q,O,B,Y suffix
-      {
-        className: 'number',
-        begin: '\\b(?:[0-9A-Fa-f][0-9A-Fa-f_]*[HhXx]|[0-9][0-9_]*[DdTt]?|[0-7][0-7_]*[QqOo]|[0-1][0-1_]*[BbYy])\\b'
-      },
-      // Number in H,X,D,T,Q,O,B,Y prefix
-      {
-        className: 'number',
-        begin: '\\b(?:0[HhXx][0-9A-Fa-f_]+|0[DdTt][0-9_]+|0[QqOo][0-7_]+|0[BbYy][0-1_]+)\\b'
-      },
-      // Double quote string
-      hljs.QUOTE_STRING_MODE,
-      // Single-quoted string
-      {
-        className: 'string',
-        begin: '\'',
-        end: '[^\\\\]\'',
-        relevance: 0
-      },
-      // Backquoted string
-      {
-        className: 'string',
-        begin: '`',
-        end: '[^\\\\]`',
-        relevance: 0
-      },
-      // Section name
-      {
-        className: 'string',
-        begin: '\\.[A-Za-z0-9]+',
-        relevance: 0
-      },
-      // Global label and local label
-      {
-        className: 'label',
-        begin: '^\\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\\s+label)',
-        relevance: 0
-      },
-      // Macro-local label
-      {
-        className: 'label',
-        begin: '^\\s*%%[A-Za-z0-9_$#@~.?]*:',
-        relevance: 0
-      },
-      // Macro parameter
-      {
-        className: 'argument',
-        begin: '%[0-9]+',
-        relevance: 0
-      },
-      // Macro parameter
-      {
-        className: 'built_in',
-        begin: '%!\S+',
-        relevance: 0
-      }
-    ]
-  };
-};
-},{}],132:[function(require,module,exports){
-module.exports = function(hljs) {
-  var BUILTIN_MODULES = 'ObjectLoader Animate MovieCredits Slides Filters Shading Materials LensFlare Mapping VLCAudioVideo StereoDecoder PointCloud NetworkAccess RemoteControl RegExp ChromaKey Snowfall NodeJS Speech Charts';
-
-  var XL_KEYWORDS = {
-    keyword: 'if then else do while until for loop import with is as where when by data constant',
-    literal: 'true false nil',
-    type: 'integer real text name boolean symbol infix prefix postfix block tree',
-    built_in: 'in mod rem and or xor not abs sign floor ceil sqrt sin cos tan asin acos atan exp expm1 log log2 log10 log1p pi at',
-    module: BUILTIN_MODULES,
-    id: 'text_length text_range text_find text_replace contains page slide basic_slide title_slide title subtitle fade_in fade_out fade_at clear_color color line_color line_width texture_wrap texture_transform texture scale_?x scale_?y scale_?z? translate_?x translate_?y translate_?z? rotate_?x rotate_?y rotate_?z? rectangle circle ellipse sphere path line_to move_to quad_to curve_to theme background contents locally time mouse_?x mouse_?y mouse_buttons'
-  };
-
-  var XL_CONSTANT = {
-    className: 'constant',
-    begin: '[A-Z][A-Z_0-9]+',
-    relevance: 0
-  };
-  var XL_VARIABLE = {
-    className: 'variable',
-    begin: '([A-Z][a-z_0-9]+)+',
-    relevance: 0
-  };
-  var XL_ID = {
-    className: 'id',
-    begin: '[a-z][a-z_0-9]+',
-    relevance: 0
-  };
-
-  var DOUBLE_QUOTE_TEXT = {
-    className: 'string',
-    begin: '"', end: '"', illegal: '\\n'
-  };
-  var SINGLE_QUOTE_TEXT = {
-    className: 'string',
-    begin: '\'', end: '\'', illegal: '\\n'
-  };
-  var LONG_TEXT = {
-    className: 'string',
-    begin: '<<', end: '>>'
-  };
-  var BASED_NUMBER = {
-    className: 'number',
-    begin: '[0-9]+#[0-9A-Z_]+(\\.[0-9-A-Z_]+)?#?([Ee][+-]?[0-9]+)?',
-    relevance: 10
-  };
-  var IMPORT = {
-    className: 'import',
-    beginKeywords: 'import', end: '$',
-    keywords: {
-      keyword: 'import',
-      module: BUILTIN_MODULES
-    },
-    relevance: 0,
-    contains: [DOUBLE_QUOTE_TEXT]
-  };
-  var FUNCTION_DEFINITION = {
-    className: 'function',
-    begin: '[a-z].*->'
-  };
-  return {
-    aliases: ['tao'],
-    lexemes: /[a-zA-Z][a-zA-Z0-9_?]*/,
-    keywords: XL_KEYWORDS,
-    contains: [
-    hljs.C_LINE_COMMENT_MODE,
-    hljs.C_BLOCK_COMMENT_MODE,
-    DOUBLE_QUOTE_TEXT,
-    SINGLE_QUOTE_TEXT,
-    LONG_TEXT,
-    FUNCTION_DEFINITION,
-    IMPORT,
-    XL_CONSTANT,
-    XL_VARIABLE,
-    XL_ID,
-    BASED_NUMBER,
-    hljs.NUMBER_MODE
-    ]
-  };
-};
-},{}],133:[function(require,module,exports){
-module.exports = function(hljs) {
-  var XML_IDENT_RE = '[A-Za-z0-9\\._:-]+';
-  var PHP = {
-    begin: /<\?(php)?(?!\w)/, end: /\?>/,
-    subLanguage: 'php', subLanguageMode: 'continuous'
-  };
-  var TAG_INTERNALS = {
-    endsWithParent: true,
-    illegal: /</,
-    relevance: 0,
-    contains: [
-      PHP,
-      {
-        className: 'attribute',
-        begin: XML_IDENT_RE,
-        relevance: 0
-      },
-      {
-        begin: '=',
-        relevance: 0,
-        contains: [
-          {
-            className: 'value',
-            contains: [PHP],
-            variants: [
-              {begin: /"/, end: /"/},
-              {begin: /'/, end: /'/},
-              {begin: /[^\s\/>]+/}
-            ]
-          }
-        ]
-      }
-    ]
-  };
-  return {
-    aliases: ['html', 'xhtml', 'rss', 'atom', 'xsl', 'plist'],
-    case_insensitive: true,
-    contains: [
-      {
-        className: 'doctype',
-        begin: '<!DOCTYPE', end: '>',
-        relevance: 10,
-        contains: [{begin: '\\[', end: '\\]'}]
-      },
-      {
-        className: 'comment',
-        begin: '<!--', end: '-->',
-        relevance: 10
-      },
-      {
-        className: 'cdata',
-        begin: '<\\!\\[CDATA\\[', end: '\\]\\]>',
-        relevance: 10
-      },
-      {
-        className: 'tag',
-        /*
-        The lookahead pattern (?=...) ensures that 'begin' only matches
-        '<style' as a single word, followed by a whitespace or an
-        ending braket. The '$' is needed for the lexeme to be recognized
-        by hljs.subMode() that tests lexemes outside the stream.
-        */
-        begin: '<style(?=\\s|>|$)', end: '>',
-        keywords: {title: 'style'},
-        contains: [TAG_INTERNALS],
-        starts: {
-          end: '</style>', returnEnd: true,
-          subLanguage: 'css'
-        }
-      },
-      {
-        className: 'tag',
-        // See the comment in the <style tag about the lookahead pattern
-        begin: '<script(?=\\s|>|$)', end: '>',
-        keywords: {title: 'script'},
-        contains: [TAG_INTERNALS],
-        starts: {
-          end: '</script>', returnEnd: true,
-          subLanguage: 'javascript'
-        }
-      },
-      PHP,
-      {
-        className: 'pi',
-        begin: /<\?\w+/, end: /\?>/,
-        relevance: 10
-      },
-      {
-        className: 'tag',
-        begin: '</?', end: '/?>',
-        contains: [
-          {
-            className: 'title', begin: /[^ \/><\n\t]+/, relevance: 0
-          },
-          TAG_INTERNALS
-        ]
-      }
-    ]
-  };
-};
-},{}],134:[function(require,module,exports){
+},{"_process":9,"fs":1,"path":8}],19:[function(require,module,exports){
 function corslite(url, callback, cors) {
     var sent = false;
 
@@ -22666,7 +12807,7 @@ function corslite(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = corslite;
 
-},{}],135:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
@@ -31847,7 +21988,7 @@ L.Map.include({
 
 
 }(window, document));
-},{}],136:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
@@ -32400,7 +22541,7 @@ L.Map.include({
 
 }));
 
-},{}],137:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var html_sanitize = require('./sanitizer-bundle.js');
 
 module.exports = function(_) {
@@ -32420,7 +22561,7 @@ function cleanUrl(url) {
 
 function cleanId(id) { return id; }
 
-},{"./sanitizer-bundle.js":138}],138:[function(require,module,exports){
+},{"./sanitizer-bundle.js":23}],23:[function(require,module,exports){
 
 // Copyright (C) 2010 Google Inc.
 //
@@ -34868,7 +25009,7 @@ if (typeof module !== 'undefined') {
     module.exports = html_sanitize;
 }
 
-},{}],139:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports={
   "author": {
     "name": "Mapbox"
@@ -34970,7 +25111,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],140:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -34980,7 +25121,7 @@ module.exports = {
     REQUIRE_ACCESS_TOKEN: true
 };
 
-},{}],141:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -35097,7 +25238,7 @@ module.exports.featureLayer = function(_, options) {
     return new FeatureLayer(_, options);
 };
 
-},{"./marker":154,"./request":155,"./simplestyle":157,"./url":159,"./util":160,"sanitize-caja":137}],142:[function(require,module,exports){
+},{"./marker":39,"./request":40,"./simplestyle":42,"./url":44,"./util":45,"sanitize-caja":22}],27:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -35196,7 +25337,7 @@ module.exports = function(url, options) {
     return geocoder;
 };
 
-},{"./request":155,"./url":159,"./util":160}],143:[function(require,module,exports){
+},{"./request":40,"./url":44,"./util":45}],28:[function(require,module,exports){
 'use strict';
 
 var geocoder = require('./geocoder'),
@@ -35388,7 +25529,7 @@ module.exports.geocoderControl = function(_, options) {
     return new GeocoderControl(_, options);
 };
 
-},{"./geocoder":142,"./util":160}],144:[function(require,module,exports){
+},{"./geocoder":27,"./util":45}],29:[function(require,module,exports){
 'use strict';
 
 function utfDecode(c) {
@@ -35406,7 +25547,7 @@ module.exports = function(data) {
     };
 };
 
-},{}],145:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -35606,7 +25747,7 @@ module.exports.gridControl = function(_, options) {
     return new GridControl(_, options);
 };
 
-},{"./util":160,"mustache":136,"sanitize-caja":137}],146:[function(require,module,exports){
+},{"./util":45,"mustache":21,"sanitize-caja":22}],31:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -35831,11 +25972,11 @@ module.exports.gridLayer = function(_, options) {
     return new GridLayer(_, options);
 };
 
-},{"./grid":144,"./load_tilejson":151,"./request":155,"./util":160}],147:[function(require,module,exports){
+},{"./grid":29,"./load_tilejson":36,"./request":40,"./util":45}],32:[function(require,module,exports){
 require('./leaflet');
 require('./mapbox');
 
-},{"./leaflet":149,"./mapbox":153}],148:[function(require,module,exports){
+},{"./leaflet":34,"./mapbox":38}],33:[function(require,module,exports){
 'use strict';
 
 var InfoControl = L.Control.extend({
@@ -35951,10 +26092,10 @@ module.exports.infoControl = function(options) {
     return new InfoControl(options);
 };
 
-},{"sanitize-caja":137}],149:[function(require,module,exports){
+},{"sanitize-caja":22}],34:[function(require,module,exports){
 window.L = require('leaflet/dist/leaflet-src');
 
-},{"leaflet/dist/leaflet-src":135}],150:[function(require,module,exports){
+},{"leaflet/dist/leaflet-src":20}],35:[function(require,module,exports){
 'use strict';
 
 var LegendControl = L.Control.extend({
@@ -36023,7 +26164,7 @@ module.exports.legendControl = function(options) {
     return new LegendControl(options);
 };
 
-},{"sanitize-caja":137}],151:[function(require,module,exports){
+},{"sanitize-caja":22}],36:[function(require,module,exports){
 'use strict';
 
 var request = require('./request'),
@@ -36049,7 +26190,7 @@ module.exports = {
     }
 };
 
-},{"./request":155,"./url":159,"./util":160}],152:[function(require,module,exports){
+},{"./request":40,"./url":44,"./util":45}],37:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -36230,7 +26371,7 @@ module.exports.map = function(element, _, options) {
     return new LMap(element, _, options);
 };
 
-},{"./feature_layer":141,"./grid_control":145,"./grid_layer":146,"./info_control":148,"./legend_control":150,"./load_tilejson":151,"./share_control":156,"./tile_layer":158,"./util":160}],153:[function(require,module,exports){
+},{"./feature_layer":26,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./load_tilejson":36,"./share_control":41,"./tile_layer":43,"./util":45}],38:[function(require,module,exports){
 'use strict';
 
 var geocoderControl = require('./geocoder_control'),
@@ -36282,7 +26423,7 @@ window.L.Icon.Default.imagePath =
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
     require('../package.json').version + '/images';
 
-},{"../package.json":139,"./config":140,"./feature_layer":141,"./geocoder":142,"./geocoder_control":143,"./grid_control":145,"./grid_layer":146,"./info_control":148,"./legend_control":150,"./map":152,"./marker":154,"./share_control":156,"./simplestyle":157,"./tile_layer":158,"mustache":136,"sanitize-caja":137}],154:[function(require,module,exports){
+},{"../package.json":24,"./config":25,"./feature_layer":26,"./geocoder":27,"./geocoder_control":28,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./map":37,"./marker":39,"./share_control":41,"./simplestyle":42,"./tile_layer":43,"mustache":21,"sanitize-caja":22}],39:[function(require,module,exports){
 'use strict';
 
 var url = require('./url'),
@@ -36349,7 +26490,7 @@ module.exports = {
     createPopup: createPopup
 };
 
-},{"./url":159,"./util":160,"sanitize-caja":137}],155:[function(require,module,exports){
+},{"./url":44,"./util":45,"sanitize-caja":22}],40:[function(require,module,exports){
 'use strict';
 
 var corslite = require('corslite'),
@@ -36381,7 +26522,7 @@ module.exports = function(url, callback) {
     }
 };
 
-},{"./config":140,"./util":160,"corslite":134}],156:[function(require,module,exports){
+},{"./config":25,"./util":45,"corslite":19}],41:[function(require,module,exports){
 'use strict';
 
 var urlhelper = require('./url');
@@ -36484,7 +26625,7 @@ module.exports.shareControl = function(_, options) {
     return new ShareControl(_, options);
 };
 
-},{"./load_tilejson":151,"./url":159}],157:[function(require,module,exports){
+},{"./load_tilejson":36,"./url":44}],42:[function(require,module,exports){
 'use strict';
 
 // an implementation of the simplestyle spec for polygon and linestring features
@@ -36531,7 +26672,7 @@ module.exports = {
     defaults: defaults
 };
 
-},{}],158:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -36627,7 +26768,7 @@ module.exports.tileLayer = function(_, options) {
     return new TileLayer(_, options);
 };
 
-},{"./load_tilejson":151,"./util":160}],159:[function(require,module,exports){
+},{"./load_tilejson":36,"./util":45}],44:[function(require,module,exports){
 'use strict';
 
 var config = require('./config'),
@@ -36671,7 +26812,7 @@ module.exports.tileJSON = function(urlOrMapID, accessToken) {
     return url;
 };
 
-},{"../package.json":139,"./config":140}],160:[function(require,module,exports){
+},{"../package.json":24,"./config":25}],45:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -36718,7 +26859,7 @@ function contains(item, list) {
     return false;
 }
 
-},{}],161:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var esprima = require('esprima'),
   escodegen = require('escodegen'),
   traverse = require('traverse');
@@ -36745,8 +26886,7 @@ function instrument(str, tick, type) {
   var transformed = escodegen.generate(
     wrapInRun(
       transform(
-        parsed, type, tick, TODO), type, tick),
-        {format:{compact:true}});
+        parsed, type, tick, TODO), type, tick));
   return {
     source: transformed,
     TODO: TODO
@@ -36876,27 +27016,23 @@ function instrumentCall(comment, type, tick) {
     }
   };
 }
+function pairs(o) { return Object.keys(o).map(function(k) { return [k, o[k]]; }); }
+function values(o) { return pairs(o).map(function(k) { return k[1]; }); }
 
 function transform(code, type, tick, TODO) {
   function pp(l, k, v) { if (!l[k]) l[k] = []; l[k].push(v); }
-  function pairs(o) {
-    return Object.keys(o).map(function(k) { return [k, o[k]]; });
-  }
   // walks through the source tree, though we're only going to touch
   // things with 'body', which means function bodies and the main
   // source.
   traverse(code).forEach(function(node) {
-    var j, i, comment, id;
-    if (this.key !== 'body') return;
-    var coveredComments = {};
-    var nextValue = node;
-    var insertions = {};
-    for (i = 0; i < node.length; i++) {
+    var comment, id, coveredComments = {}, insertions = {};
+    function instrumentComments(node, i) {
+      var j;
       // a comment can be both leading & trailing, so we keep this
       // coveredComments object to avoid double-logging it.
-      if (node[i].leadingComments) {
-        for (j = 0; j < node[i].leadingComments.length; j++) {
-          comment = node[i].leadingComments[j];
+      if (node.leadingComments) {
+        for (j = 0; j < node.leadingComments.length; j++) {
+          comment = node.leadingComments[j];
           id = comment.range.join('-');
           if (!coveredComments[id] && isInstrumentComment(comment)) {
             pp(insertions, i, instrumentCall(comment, type, tick));
@@ -36905,9 +27041,9 @@ function transform(code, type, tick, TODO) {
           }
         }
       }
-      if (node[i].trailingComments) {
-        for (j = 0; j < node[i].trailingComments.length; j++) {
-          comment = node[i].trailingComments[j];
+      if (node.trailingComments) {
+        for (j = 0; j < node.trailingComments.length; j++) {
+          comment = node.trailingComments[j];
           id = comment.range.join('-');
           if (!coveredComments[id] && isInstrumentComment(comment)) {
             pp(insertions, i + 1, instrumentCall(comment, type, tick));
@@ -36917,17 +27053,35 @@ function transform(code, type, tick, TODO) {
         }
       }
     }
-    // inserting things in places is hard with arrays, since when you
-    // push something into i, it changes the positions of other stuff.
-    // we avoid this problem by
-    // 1: doing batch insertions with splice
-    // 2: iterating backwards
-    insertions = pairs(insertions);
-    insertions.sort(function(a, b) { return b[0] - a[0]; });
-    for (var k = 0; k < insertions.length; k++) {
-      nextValue.splice.apply(nextValue, [+insertions[k][0], 0].concat(insertions[k][1]));
+
+    if (this.key === 'body') {
+      var nextValue = traverse.clone(node);
+      for (var k = 0; k < node.length; k++) {
+        instrumentComments(node[k], k);
+      }
+      // inserting things in places is hard with arrays, since when you
+      // push something into i, it changes the positions of other stuff.
+      // we avoid this problem by
+      // 1: doing batch insertions with splice
+      // 2: iterating backwards
+      insertions = pairs(insertions);
+      insertions.sort(function(a, b) { return b[0] - a[0]; });
+      for (var m = 0; m < insertions.length; m++) {
+        nextValue.splice.apply(nextValue, [+insertions[m][0], 0].concat(insertions[m][1]));
+      }
+      this.update(nextValue);
+    } else if (node && node.type === 'Program' && node.body.length === 0) {
+      // a bare program consisting only of comments falls into this ditch:
+      // instead of having a body, it just has comments, so we need to
+      // look for them here.
+      instrumentComments(node, 0);
+      insertions = pairs(insertions);
+      insertions.sort(function(a, b) { return b[0] - a[0]; });
+      if (insertions.length) {
+        node.body = insertions.map(function(i) { return i[1][0]; });
+        this.update(node);
+      }
     }
-    this.update(nextValue);
   });
   return code;
 }
@@ -36976,11 +27130,10 @@ function wrapInRun(code, type, tick) {
 
 module.exports = instrument;
 
-},{"escodegen":162,"esprima":180,"traverse":181}],162:[function(require,module,exports){
+},{"escodegen":47,"esprima":64,"traverse":65}],47:[function(require,module,exports){
 (function (global){
 /*
   Copyright (C) 2012-2014 Yusuke Suzuki <utatane.tea@gmail.com>
-  Copyright (C) 2015 Ingvar Stepanyan <me@rreverser.com>
   Copyright (C) 2014 Ivan Nikulin <ifaaan@gmail.com>
   Copyright (C) 2012-2013 Michael Ficarra <escodegen.copyright@michael.ficarra.me>
   Copyright (C) 2012-2013 Mathias Bynens <mathias@qiwi.be>
@@ -37040,15 +27193,79 @@ module.exports = instrument;
         extra,
         parse,
         sourceMap,
-        sourceCode,
-        preserveBlankLines,
         FORMAT_MINIFY,
         FORMAT_DEFAULTS;
 
     estraverse = require('estraverse');
     esutils = require('esutils');
 
-    Syntax = estraverse.Syntax;
+    Syntax = {
+        AssignmentExpression: 'AssignmentExpression',
+        ArrayExpression: 'ArrayExpression',
+        ArrayPattern: 'ArrayPattern',
+        ArrowFunctionExpression: 'ArrowFunctionExpression',
+        BlockStatement: 'BlockStatement',
+        BinaryExpression: 'BinaryExpression',
+        BreakStatement: 'BreakStatement',
+        CallExpression: 'CallExpression',
+        CatchClause: 'CatchClause',
+        ClassBody: 'ClassBody',
+        ClassDeclaration: 'ClassDeclaration',
+        ClassExpression: 'ClassExpression',
+        ComprehensionBlock: 'ComprehensionBlock',
+        ComprehensionExpression: 'ComprehensionExpression',
+        ConditionalExpression: 'ConditionalExpression',
+        ContinueStatement: 'ContinueStatement',
+        DirectiveStatement: 'DirectiveStatement',
+        DoWhileStatement: 'DoWhileStatement',
+        DebuggerStatement: 'DebuggerStatement',
+        EmptyStatement: 'EmptyStatement',
+        ExportBatchSpecifier: 'ExportBatchSpecifier',
+        ExportDeclaration: 'ExportDeclaration',
+        ExportSpecifier: 'ExportSpecifier',
+        ExpressionStatement: 'ExpressionStatement',
+        ForStatement: 'ForStatement',
+        ForInStatement: 'ForInStatement',
+        ForOfStatement: 'ForOfStatement',
+        FunctionDeclaration: 'FunctionDeclaration',
+        FunctionExpression: 'FunctionExpression',
+        GeneratorExpression: 'GeneratorExpression',
+        Identifier: 'Identifier',
+        IfStatement: 'IfStatement',
+        ImportDeclaration: 'ImportDeclaration',
+        ImportDefaultSpecifier: 'ImportDefaultSpecifier',
+        ImportNamespaceSpecifier: 'ImportNamespaceSpecifier',
+        ImportSpecifier: 'ImportSpecifier',
+        Literal: 'Literal',
+        LabeledStatement: 'LabeledStatement',
+        LogicalExpression: 'LogicalExpression',
+        MemberExpression: 'MemberExpression',
+        MethodDefinition: 'MethodDefinition',
+        ModuleSpecifier: 'ModuleSpecifier',
+        NewExpression: 'NewExpression',
+        ObjectExpression: 'ObjectExpression',
+        ObjectPattern: 'ObjectPattern',
+        Program: 'Program',
+        Property: 'Property',
+        ReturnStatement: 'ReturnStatement',
+        SequenceExpression: 'SequenceExpression',
+        SpreadElement: 'SpreadElement',
+        SwitchStatement: 'SwitchStatement',
+        SwitchCase: 'SwitchCase',
+        TaggedTemplateExpression: 'TaggedTemplateExpression',
+        TemplateElement: 'TemplateElement',
+        TemplateLiteral: 'TemplateLiteral',
+        ThisExpression: 'ThisExpression',
+        ThrowStatement: 'ThrowStatement',
+        TryStatement: 'TryStatement',
+        UnaryExpression: 'UnaryExpression',
+        UpdateExpression: 'UpdateExpression',
+        VariableDeclaration: 'VariableDeclaration',
+        VariableDeclarator: 'VariableDeclarator',
+        WhileStatement: 'WhileStatement',
+        WithStatement: 'WithStatement',
+        YieldExpression: 'YieldExpression'
+    };
 
     // Generation is done by generateExpression.
     function isExpression(node) {
@@ -37063,7 +27280,6 @@ module.exports = instrument;
     Precedence = {
         Sequence: 0,
         Yield: 1,
-        Await: 1,
         Assignment: 1,
         Conditional: 2,
         ArrowFunction: 2,
@@ -37169,8 +27385,7 @@ module.exports = instrument;
                 compact: false,
                 parentheses: true,
                 semicolons: true,
-                safeConcatenation: false,
-                preserveBlankLines: false
+                safeConcatenation: false
             },
             moz: {
                 comprehensionExpressionStartsWithAssignment: false,
@@ -37181,8 +27396,7 @@ module.exports = instrument;
             sourceMapWithCode: false,
             directive: false,
             raw: true,
-            verbatim: null,
-            sourceCode: null
+            verbatim: null
         };
     }
 
@@ -37631,11 +27845,7 @@ module.exports = instrument;
                 return '//' + comment.value;
             } else {
                 // Always use LineTerminator
-                var result = '//' + comment.value;
-                if (!preserveBlankLines) {
-                    result += '\n';
-                }
-                return result;
+                return '//' + comment.value + '\n';
             }
         }
         if (extra.format.indent.adjustMultilineComment && /[\n\r]/.test(comment.value)) {
@@ -37645,130 +27855,61 @@ module.exports = instrument;
     }
 
     function addComments(stmt, result) {
-        var i, len, comment, save, tailingToStatement, specialBase, fragment,
-            extRange, range, prevRange, prefix, infix, suffix, count;
+        var i, len, comment, save, tailingToStatement, specialBase, fragment;
 
         if (stmt.leadingComments && stmt.leadingComments.length > 0) {
             save = result;
 
-            if (preserveBlankLines) {
-                comment = stmt.leadingComments[0];
-                result = [];
+            comment = stmt.leadingComments[0];
+            result = [];
+            if (safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) {
+                result.push('\n');
+            }
+            result.push(generateComment(comment));
+            if (!endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                result.push('\n');
+            }
 
-                extRange = comment.extendedRange;
-                range = comment.range;
-
-                prefix = sourceCode.substring(extRange[0], range[0]);
-                count = (prefix.match(/\n/g) || []).length;
-                if (count > 0) {
-                    result.push(stringRepeat('\n', count));
-                    result.push(addIndent(generateComment(comment)));
-                } else {
-                    result.push(prefix);
-                    result.push(generateComment(comment));
+            for (i = 1, len = stmt.leadingComments.length; i < len; ++i) {
+                comment = stmt.leadingComments[i];
+                fragment = [generateComment(comment)];
+                if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
+                    fragment.push('\n');
                 }
-
-                prevRange = range;
-
-                for (i = 1, len = stmt.leadingComments.length; i < len; i++) {
-                    comment = stmt.leadingComments[i];
-                    range = comment.range;
-
-                    infix = sourceCode.substring(prevRange[1], range[0]);
-                    count = (infix.match(/\n/g) || []).length;
-                    result.push(stringRepeat('\n', count));
-                    result.push(addIndent(generateComment(comment)));
-
-                    prevRange = range;
-                }
-
-                suffix = sourceCode.substring(range[1], extRange[1]);
-                count = (suffix.match(/\n/g) || []).length;
-                result.push(stringRepeat('\n', count));
-            } else {
-                comment = stmt.leadingComments[0];
-                result = [];
-                if (safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) {
-                    result.push('\n');
-                }
-                result.push(generateComment(comment));
-                if (!endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
-                    result.push('\n');
-                }
-
-                for (i = 1, len = stmt.leadingComments.length; i < len; ++i) {
-                    comment = stmt.leadingComments[i];
-                    fragment = [generateComment(comment)];
-                    if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                        fragment.push('\n');
-                    }
-                    result.push(addIndent(fragment));
-                }
+                result.push(addIndent(fragment));
             }
 
             result.push(addIndent(save));
         }
 
         if (stmt.trailingComments) {
-
-            if (preserveBlankLines) {
-                comment = stmt.trailingComments[0];
-                extRange = comment.extendedRange;
-                range = comment.range;
-
-                prefix = sourceCode.substring(extRange[0], range[0]);
-                count = (prefix.match(/\n/g) || []).length;
-
-                if (count > 0) {
-                    result.push(stringRepeat('\n', count));
-                    result.push(addIndent(generateComment(comment)));
-                } else {
-                    result.push(prefix);
-                    result.push(generateComment(comment));
-                }
-            } else {
-                tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
-                specialBase = stringRepeat(' ', calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
-                for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
-                    comment = stmt.trailingComments[i];
-                    if (tailingToStatement) {
-                        // We assume target like following script
-                        //
-                        // var t = 20;  /**
-                        //               * This is comment of t
-                        //               */
-                        if (i === 0) {
-                            // first case
-                            result = [result, indent];
-                        } else {
-                            result = [result, specialBase];
-                        }
-                        result.push(generateComment(comment, specialBase));
+            tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
+            specialBase = stringRepeat(' ', calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
+            for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
+                comment = stmt.trailingComments[i];
+                if (tailingToStatement) {
+                    // We assume target like following script
+                    //
+                    // var t = 20;  /**
+                    //               * This is comment of t
+                    //               */
+                    if (i === 0) {
+                        // first case
+                        result = [result, indent];
                     } else {
-                        result = [result, addIndent(generateComment(comment))];
+                        result = [result, specialBase];
                     }
-                    if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
-                        result = [result, '\n'];
-                    }
+                    result.push(generateComment(comment, specialBase));
+                } else {
+                    result = [result, addIndent(generateComment(comment))];
+                }
+                if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                    result = [result, '\n'];
                 }
             }
         }
 
         return result;
-    }
-
-    function generateBlankLines(start, end, result) {
-        var j, newlineCount = 0;
-
-        for (j = start; j < end; j++) {
-            if (sourceCode[j] === '\n') {
-                newlineCount++;
-            }
-        }
-
-        for (j = 1; j < newlineCount; j++) {
-            result.push(newline);
-        }
     }
 
     function parenthesize(text, current, should) {
@@ -37846,25 +27987,6 @@ module.exports = instrument;
         return toSourceNodeWhenNeeded(node.name, node);
     }
 
-    function generateAsyncPrefix(node, spaceRequired) {
-        return node.async ? 'async' + (spaceRequired ? noEmptySpace() : space) : '';
-    }
-
-    function generateStarSuffix(node) {
-        var isGenerator = node.generator && !extra.moz.starlessGenerator;
-        return isGenerator ? '*' + space : '';
-    }
-
-    function generateMethodPrefix(prop) {
-        var func = prop.value;
-        if (func.async) {
-            return generateAsyncPrefix(func, !prop.computed);
-        } else {
-            // avoid space before method name
-            return generateStarSuffix(func) ? '*' : '';
-        }
-    }
-
     CodeGenerator.prototype.generatePattern = function (node, precedence, flags) {
         if (node.type === Syntax.Identifier) {
             return generateIdentifier(node);
@@ -37881,10 +28003,9 @@ module.exports = instrument;
                 !node.rest && (!node.defaults || node.defaults.length === 0) &&
                 node.params.length === 1 && node.params[0].type === Syntax.Identifier) {
             // arg => { } case
-            result = [generateAsyncPrefix(node, true), generateIdentifier(node.params[0])];
+            result = [generateIdentifier(node.params[0])];
         } else {
-            result = node.type === Syntax.ArrowFunctionExpression ? [generateAsyncPrefix(node, false)] : [];
-            result.push('(');
+            result = ['('];
             if (node.defaults) {
                 hasDefault = true;
             }
@@ -38003,81 +28124,22 @@ module.exports = instrument;
     CodeGenerator.Statement = {
 
         BlockStatement: function (stmt, flags) {
-            var range, content, result = ['{', newline], that = this;
+            var result = ['{', newline], that = this;
 
             withIndent(function () {
-                // handle functions without any code
-                if (stmt.body.length === 0 && preserveBlankLines) {
-                    range = stmt.range;
-                    if (range[1] - range[0] > 2) {
-                        content = sourceCode.substring(range[0] + 1, range[1] - 1);
-                        if (content[0] === '\n') {
-                            result = ['{'];
-                        }
-                        result.push(content);
-                    }
-                }
-
                 var i, iz, fragment, bodyFlags;
                 bodyFlags = S_TFFF;
                 if (flags & F_FUNC_BODY) {
                     bodyFlags |= F_DIRECTIVE_CTX;
                 }
-
                 for (i = 0, iz = stmt.body.length; i < iz; ++i) {
-                    if (preserveBlankLines) {
-                        // handle spaces before the first line
-                        if (i === 0) {
-                            if (stmt.body[0].leadingComments) {
-                                range = stmt.body[0].leadingComments[0].extendedRange;
-                                content = sourceCode.substring(range[0], range[1]);
-                                if (content[0] === '\n') {
-                                    result = ['{'];
-                                }
-                            }
-                            if (!stmt.body[0].leadingComments) {
-                                generateBlankLines(stmt.range[0], stmt.body[0].range[0], result);
-                            }
-                        }
-
-                        // handle spaces between lines
-                        if (i > 0) {
-                            if (!stmt.body[i - 1].trailingComments  && !stmt.body[i].leadingComments) {
-                                generateBlankLines(stmt.body[i - 1].range[1], stmt.body[i].range[0], result);
-                            }
-                        }
-                    }
-
                     if (i === iz - 1) {
                         bodyFlags |= F_SEMICOLON_OPT;
                     }
-
-                    if (stmt.body[i].leadingComments && preserveBlankLines) {
-                        fragment = that.generateStatement(stmt.body[i], bodyFlags);
-                    } else {
-                        fragment = addIndent(that.generateStatement(stmt.body[i], bodyFlags));
-                    }
-
+                    fragment = addIndent(that.generateStatement(stmt.body[i], bodyFlags));
                     result.push(fragment);
                     if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                        if (preserveBlankLines && i < iz - 1) {
-                            // don't add a new line if there are leading coments
-                            // in the next statement
-                            if (!stmt.body[i + 1].leadingComments) {
-                                result.push(newline);
-                            }
-                        } else {
-                            result.push(newline);
-                        }
-                    }
-
-                    if (preserveBlankLines) {
-                        // handle spaces after the last line
-                        if (i === iz - 1) {
-                            if (!stmt.body[i].trailingComments) {
-                                generateBlankLines(stmt.body[i].range[1], stmt.range[1], result);
-                            }
-                        }
+                        result.push(newline);
                     }
                 }
             });
@@ -38612,52 +28674,20 @@ module.exports = instrument;
                 if (!safeConcatenation && i === iz - 1) {
                     bodyFlags |= F_SEMICOLON_OPT;
                 }
-
-                if (preserveBlankLines) {
-                    // handle spaces before the first line
-                    if (i === 0) {
-                        if (!stmt.body[0].leadingComments) {
-                            generateBlankLines(stmt.range[0], stmt.body[i].range[0], result);
-                        }
-                    }
-
-                    // handle spaces between lines
-                    if (i > 0) {
-                        if (!stmt.body[i - 1].trailingComments && !stmt.body[i].leadingComments) {
-                            generateBlankLines(stmt.body[i - 1].range[1], stmt.body[i].range[0], result);
-                        }
-                    }
-                }
-
                 fragment = addIndent(this.generateStatement(stmt.body[i], bodyFlags));
                 result.push(fragment);
                 if (i + 1 < iz && !endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                    if (preserveBlankLines) {
-                        if (!stmt.body[i + 1].leadingComments) {
-                            result.push(newline);
-                        }
-                    } else {
-                        result.push(newline);
-                    }
-                }
-
-                if (preserveBlankLines) {
-                    // handle spaces after the last line
-                    if (i === iz - 1) {
-                        if (!stmt.body[i].trailingComments) {
-                            generateBlankLines(stmt.body[i].range[1], stmt.range[1], result);
-                        }
-                    }
+                    result.push(newline);
                 }
             }
             return result;
         },
 
         FunctionDeclaration: function (stmt, flags) {
+            var isGenerator = stmt.generator && !extra.moz.starlessGenerator;
             return [
-                generateAsyncPrefix(stmt, true),
-                'function',
-                generateStarSuffix(stmt) || noEmptySpace(),
+                (isGenerator ? 'function*' : 'function'),
+                (isGenerator ? space : noEmptySpace()),
                 generateIdentifier(stmt.id),
                 this.generateFunctionBody(stmt)
             ];
@@ -38914,14 +28944,6 @@ module.exports = instrument;
             return parenthesize(result, Precedence.Yield, precedence);
         },
 
-        AwaitExpression: function (expr, precedence, flags) {
-            var result = join(
-                expr.delegate ? 'await*' : 'await',
-                this.generateExpression(expr.argument, Precedence.Await, E_TTT)
-            );
-            return parenthesize(result, Precedence.Await, precedence);
-        },
-
         UpdateExpression: function (expr, precedence, flags) {
             if (expr.prefix) {
                 return parenthesize(
@@ -38944,18 +28966,14 @@ module.exports = instrument;
         },
 
         FunctionExpression: function (expr, precedence, flags) {
-            var result = [
-                generateAsyncPrefix(expr, true),
-                'function'
-            ];
+            var result, isGenerator;
+            isGenerator = expr.generator && !extra.moz.starlessGenerator;
+            result = isGenerator ? 'function*' : 'function';
+
             if (expr.id) {
-                result.push(generateStarSuffix(expr) || noEmptySpace());
-                result.push(generateIdentifier(expr.id));
-            } else {
-                result.push(generateStarSuffix(expr) || space);
+                return [result, (isGenerator) ? space : noEmptySpace(), generateIdentifier(expr.id), this.generateFunctionBody(expr)];
             }
-            result.push(this.generateFunctionBody(expr));
-            return result;
+            return [result + space, this.generateFunctionBody(expr)];
         },
 
         ExportBatchSpecifier: function (expr, precedence, flags) {
@@ -39022,22 +29040,29 @@ module.exports = instrument;
             } else {
                 result = [];
             }
+
             if (expr.kind === 'get' || expr.kind === 'set') {
-                fragment = [
+                result = join(result, [
                     join(expr.kind, this.generatePropertyKey(expr.key, expr.computed)),
                     this.generateFunctionBody(expr.value)
-                ];
+                ]);
             } else {
                 fragment = [
-                    generateMethodPrefix(expr),
                     this.generatePropertyKey(expr.key, expr.computed),
                     this.generateFunctionBody(expr.value)
                 ];
+                if (expr.value.generator) {
+                    result.push('*');
+                    result.push(fragment);
+                } else {
+                    result = join(result, fragment);
+                }
             }
-            return join(result, fragment);
+            return result;
         },
 
         Property: function (expr, precedence, flags) {
+            var result;
             if (expr.kind === 'get' || expr.kind === 'set') {
                 return [
                     expr.kind, noEmptySpace(),
@@ -39051,11 +29076,13 @@ module.exports = instrument;
             }
 
             if (expr.method) {
-                return [
-                    generateMethodPrefix(expr),
-                    this.generatePropertyKey(expr.key, expr.computed),
-                    this.generateFunctionBody(expr.value)
-                ];
+                result = [];
+                if (expr.value.generator) {
+                    result.push('*');
+                }
+                result.push(this.generatePropertyKey(expr.key, expr.computed));
+                result.push(this.generateFunctionBody(expr.value));
+                return result;
             }
 
             return [
@@ -39430,8 +29457,6 @@ module.exports = instrument;
         directive = options.directive;
         parse = json ? null : options.parse;
         sourceMap = options.sourceMap;
-        sourceCode = options.sourceCode;
-        preserveBlankLines = options.format.preserveBlankLines && sourceCode !== null;
         extra = options;
 
         if (sourceMap) {
@@ -39496,7 +29521,7 @@ module.exports = instrument;
 /* vim: set sw=4 ts=4 et tw=80 : */
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./package.json":179,"estraverse":163,"esutils":167,"source-map":168}],163:[function(require,module,exports){
+},{"./package.json":63,"estraverse":48,"esutils":52,"source-map":53}],48:[function(require,module,exports){
 /*
   Copyright (C) 2012-2013 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
@@ -40341,7 +30366,7 @@ module.exports = instrument;
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],164:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -40487,7 +30512,7 @@ module.exports = instrument;
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],165:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*
   Copyright (C) 2013-2014 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2014 Ivan Nikulin <ifaaan@gmail.com>
@@ -40590,7 +30615,7 @@ module.exports = instrument;
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],166:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -40729,7 +30754,7 @@ module.exports = instrument;
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{"./code":165}],167:[function(require,module,exports){
+},{"./code":50}],52:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -40764,7 +30789,7 @@ module.exports = instrument;
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{"./ast":164,"./code":165,"./keyword":166}],168:[function(require,module,exports){
+},{"./ast":49,"./code":50,"./keyword":51}],53:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -40774,7 +30799,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":174,"./source-map/source-map-generator":175,"./source-map/source-node":176}],169:[function(require,module,exports){
+},{"./source-map/source-map-consumer":58,"./source-map/source-map-generator":59,"./source-map/source-node":60}],54:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -40873,7 +30898,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":177,"amdefine":178}],170:[function(require,module,exports){
+},{"./util":61,"amdefine":62}],55:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41017,7 +31042,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":171,"amdefine":178}],171:[function(require,module,exports){
+},{"./base64":56,"amdefine":62}],56:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41061,7 +31086,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":178}],172:[function(require,module,exports){
+},{"amdefine":62}],57:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41143,95 +31168,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":178}],173:[function(require,module,exports){
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2014 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-if (typeof define !== 'function') {
-    var define = require('amdefine')(module, require);
-}
-define(function (require, exports, module) {
-
-  var util = require('./util');
-
-  /**
-   * Determine whether mappingB is after mappingA with respect to generated
-   * position.
-   */
-  function generatedPositionAfter(mappingA, mappingB) {
-    // Optimized for most common case
-    var lineA = mappingA.generatedLine;
-    var lineB = mappingB.generatedLine;
-    var columnA = mappingA.generatedColumn;
-    var columnB = mappingB.generatedColumn;
-    return lineB > lineA || lineB == lineA && columnB >= columnA ||
-           util.compareByGeneratedPositions(mappingA, mappingB) <= 0;
-  }
-
-  /**
-   * A data structure to provide a sorted view of accumulated mappings in a
-   * performance conscious manner. It trades a neglibable overhead in general
-   * case for a large speedup in case of mappings being added in order.
-   */
-  function MappingList() {
-    this._array = [];
-    this._sorted = true;
-    // Serves as infimum
-    this._last = {generatedLine: -1, generatedColumn: 0};
-  }
-
-  /**
-   * Iterate through internal items. This method takes the same arguments that
-   * `Array.prototype.forEach` takes.
-   *
-   * NOTE: The order of the mappings is NOT guaranteed.
-   */
-  MappingList.prototype.unsortedForEach =
-    function MappingList_forEach(aCallback, aThisArg) {
-      this._array.forEach(aCallback, aThisArg);
-    };
-
-  /**
-   * Add the given source mapping.
-   *
-   * @param Object aMapping
-   */
-  MappingList.prototype.add = function MappingList_add(aMapping) {
-    var mapping;
-    if (generatedPositionAfter(this._last, aMapping)) {
-      this._last = aMapping;
-      this._array.push(aMapping);
-    } else {
-      this._sorted = false;
-      this._array.push(aMapping);
-    }
-  };
-
-  /**
-   * Returns the flat, sorted array of mappings. The mappings are sorted by
-   * generated position.
-   *
-   * WARNING: This method returns internal data without copying, for
-   * performance. The return value must NOT be mutated, and should be treated as
-   * an immutable borrow. If you want to take ownership, you must make your own
-   * copy.
-   */
-  MappingList.prototype.toArray = function MappingList_toArray() {
-    if (!this._sorted) {
-      this._array.sort(util.compareByGeneratedPositions);
-      this._sorted = true;
-    }
-    return this._array;
-  };
-
-  exports.MappingList = MappingList;
-
-});
-
-},{"./util":177,"amdefine":178}],174:[function(require,module,exports){
+},{"amdefine":62}],58:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41336,8 +31273,9 @@ define(function (require, exports, module) {
                                                               smc.sourceRoot);
       smc.file = aSourceMap._file;
 
-      smc.__generatedMappings = aSourceMap._mappings.toArray().slice();
-      smc.__originalMappings = aSourceMap._mappings.toArray().slice()
+      smc.__generatedMappings = aSourceMap._mappings.slice()
+        .sort(util.compareByGeneratedPositions);
+      smc.__originalMappings = aSourceMap._mappings.slice()
         .sort(util.compareByOriginalPositions);
 
       return smc;
@@ -41808,7 +31746,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":169,"./base64-vlq":170,"./binary-search":172,"./util":177,"amdefine":178}],175:[function(require,module,exports){
+},{"./array-set":54,"./base64-vlq":55,"./binary-search":57,"./util":61,"amdefine":62}],59:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41823,7 +31761,6 @@ define(function (require, exports, module) {
   var base64VLQ = require('./base64-vlq');
   var util = require('./util');
   var ArraySet = require('./array-set').ArraySet;
-  var MappingList = require('./mapping-list').MappingList;
 
   /**
    * An instance of the SourceMapGenerator represents a source map which is
@@ -41839,10 +31776,9 @@ define(function (require, exports, module) {
     }
     this._file = util.getArg(aArgs, 'file', null);
     this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
-    this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
     this._sources = new ArraySet();
     this._names = new ArraySet();
-    this._mappings = new MappingList();
+    this._mappings = [];
     this._sourcesContents = null;
   }
 
@@ -41912,9 +31848,7 @@ define(function (require, exports, module) {
       var source = util.getArg(aArgs, 'source', null);
       var name = util.getArg(aArgs, 'name', null);
 
-      if (!this._skipValidation) {
-        this._validateMapping(generated, original, source, name);
-      }
+      this._validateMapping(generated, original, source, name);
 
       if (source != null && !this._sources.has(source)) {
         this._sources.add(source);
@@ -41924,7 +31858,7 @@ define(function (require, exports, module) {
         this._names.add(name);
       }
 
-      this._mappings.add({
+      this._mappings.push({
         generatedLine: generated.line,
         generatedColumn: generated.column,
         originalLine: original != null && original.line,
@@ -42001,7 +31935,7 @@ define(function (require, exports, module) {
       var newNames = new ArraySet();
 
       // Find mappings for the "sourceFile"
-      this._mappings.unsortedForEach(function (mapping) {
+      this._mappings.forEach(function (mapping) {
         if (mapping.source === sourceFile && mapping.originalLine != null) {
           // Check if it can be mapped by the source map, then update the mapping.
           var original = aSourceMapConsumer.originalPositionFor({
@@ -42107,10 +32041,15 @@ define(function (require, exports, module) {
       var result = '';
       var mapping;
 
-      var mappings = this._mappings.toArray();
+      // The mappings must be guaranteed to be in sorted order before we start
+      // serializing them or else the generated line numbers (which are defined
+      // via the ';' separators) will be all messed up. Note: it might be more
+      // performant to maintain the sorting as we insert them, rather than as we
+      // serialize them, but the big O is the same either way.
+      this._mappings.sort(util.compareByGeneratedPositions);
 
-      for (var i = 0, len = mappings.length; i < len; i++) {
-        mapping = mappings[i];
+      for (var i = 0, len = this._mappings.length; i < len; i++) {
+        mapping = this._mappings[i];
 
         if (mapping.generatedLine !== previousGeneratedLine) {
           previousGeneratedColumn = 0;
@@ -42121,7 +32060,7 @@ define(function (require, exports, module) {
         }
         else {
           if (i > 0) {
-            if (!util.compareByGeneratedPositions(mapping, mappings[i - 1])) {
+            if (!util.compareByGeneratedPositions(mapping, this._mappings[i - 1])) {
               continue;
             }
             result += ',';
@@ -42210,7 +32149,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":169,"./base64-vlq":170,"./mapping-list":173,"./util":177,"amdefine":178}],176:[function(require,module,exports){
+},{"./array-set":54,"./base64-vlq":55,"./util":61,"amdefine":62}],60:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -42229,8 +32168,8 @@ define(function (require, exports, module) {
   // operating systems these days (capturing the result).
   var REGEX_NEWLINE = /(\r?\n)/;
 
-  // Newline character code for charCodeAt() comparisons
-  var NEWLINE_CODE = 10;
+  // Matches a Windows-style newline, or any character.
+  var REGEX_CHARACTER = /\r\n|[\s\S]/g;
 
   // Private symbol for identifying `SourceNode`s when multiple versions of
   // the source-map library are loaded. This MUST NOT CHANGE across
@@ -42588,12 +32527,12 @@ define(function (require, exports, module) {
         lastOriginalSource = null;
         sourceMappingActive = false;
       }
-      for (var idx = 0, length = chunk.length; idx < length; idx++) {
-        if (chunk.charCodeAt(idx) === NEWLINE_CODE) {
+      chunk.match(REGEX_CHARACTER).forEach(function (ch, idx, array) {
+        if (REGEX_NEWLINE.test(ch)) {
           generated.line++;
           generated.column = 0;
           // Mappings end at eol
-          if (idx + 1 === length) {
+          if (idx + 1 === array.length) {
             lastOriginalSource = null;
             sourceMappingActive = false;
           } else if (sourceMappingActive) {
@@ -42611,9 +32550,9 @@ define(function (require, exports, module) {
             });
           }
         } else {
-          generated.column++;
+          generated.column += ch.length;
         }
-      }
+      });
     });
     this.walkSourceContents(function (sourceFile, sourceContent) {
       map.setSourceContent(sourceFile, sourceContent);
@@ -42626,7 +32565,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":175,"./util":177,"amdefine":178}],177:[function(require,module,exports){
+},{"./source-map-generator":59,"./util":61,"amdefine":62}],61:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -42947,7 +32886,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":178}],178:[function(require,module,exports){
+},{"amdefine":62}],62:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 0.1.0 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
@@ -43250,7 +33189,7 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/rpl-www/node_modules/terrarium/node_modules/escodegen/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":9,"path":8}],179:[function(require,module,exports){
+},{"_process":9,"path":8}],63:[function(require,module,exports){
 module.exports={
   "name": "escodegen",
   "description": "ECMAScript code generator",
@@ -43266,9 +33205,10 @@ module.exports={
     "README.md",
     "bin",
     "escodegen.js",
+    "gulpfile.js",
     "package.json"
   ],
-  "version": "1.6.0",
+  "version": "1.4.3",
   "engines": {
     "node": ">=0.10.0"
   },
@@ -43283,10 +33223,10 @@ module.exports={
     "url": "http://github.com/estools/escodegen.git"
   },
   "dependencies": {
-    "estraverse": "^1.9.1",
+    "estraverse": "^1.9.0",
     "esutils": "^1.1.6",
     "esprima": "^1.2.2",
-    "optionator": "^0.5.0",
+    "optionator": "^0.4.0",
     "source-map": "~0.1.40"
   },
   "optionalDependencies": {
@@ -43317,28 +33257,28 @@ module.exports={
     "build-min": "cjsify -ma path: tools/entry-point.js > escodegen.browser.min.js",
     "build": "cjsify -a path: tools/entry-point.js > escodegen.browser.js"
   },
-  "gitHead": "ef3a75be69a7a92daa5650bf81fbd1e4203083d2",
+  "gitHead": "ee238d803cb10af46c7ce5a1aef9b57cf006c317",
   "bugs": {
     "url": "https://github.com/estools/escodegen/issues"
   },
-  "_id": "escodegen@1.6.0",
-  "_shasum": "b7dbcbd6586915d9da977f74ba2650d2e82bccfb",
-  "_from": "escodegen@>=1.4.3 <2.0.0",
+  "_id": "escodegen@1.4.3",
+  "_shasum": "2b2422bf18c95e2542effaabc0c998712d490291",
+  "_from": "escodegen@*",
   "_npmVersion": "2.0.0-alpha-5",
   "_npmUser": {
     "name": "constellation",
     "email": "utatane.tea@gmail.com"
   },
   "dist": {
-    "shasum": "b7dbcbd6586915d9da977f74ba2650d2e82bccfb",
-    "tarball": "http://registry.npmjs.org/escodegen/-/escodegen-1.6.0.tgz"
+    "shasum": "2b2422bf18c95e2542effaabc0c998712d490291",
+    "tarball": "http://registry.npmjs.org/escodegen/-/escodegen-1.4.3.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/escodegen/-/escodegen-1.6.0.tgz",
+  "_resolved": "https://registry.npmjs.org/escodegen/-/escodegen-1.4.3.tgz",
   "readme": "ERROR: No README data found!"
 }
 
-},{}],180:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
@@ -47096,7 +37036,7 @@ parseStatement: true, parseSourceElement: true */
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],181:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var traverse = module.exports = function (obj) {
     return new Traverse(obj);
 };
@@ -47412,11 +37352,11 @@ var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
     return key in obj;
 };
 
-},{}],182:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports.Browser = require('./terrarium_browser.js');
 module.exports.Node = require('./terrarium_node.js');
 
-},{"./terrarium_browser.js":183,"./terrarium_node.js":184}],183:[function(require,module,exports){
+},{"./terrarium_browser.js":67,"./terrarium_node.js":68}],67:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -47523,7 +37463,7 @@ Terrarium.prototype.setInstrument = function(thisTick, instrumented) {
 
 module.exports = Terrarium;
 
-},{"./instrument":161,"events":6,"util":11}],184:[function(require,module,exports){
+},{"./instrument":46,"events":6,"util":11}],68:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -47597,7 +37537,7 @@ Terrarium.prototype.destroy = function() {
 
 module.exports = Terrarium;
 
-},{"./instrument":161,"child_process":1,"events":6,"fs":1,"util":11}],185:[function(require,module,exports){
+},{"./instrument":46,"child_process":1,"events":6,"fs":1,"util":11}],69:[function(require,module,exports){
 /**
  * Turf is a modular GIS engine written in JavaScript. It performs geospatial
  * processing tasks with GeoJSON data and can be run on a server or in a browser.
@@ -47664,7 +37604,7 @@ module.exports = {
   area: require('turf-area')
 };
 
-},{"turf-aggregate":186,"turf-area":209,"turf-average":212,"turf-bbox-polygon":214,"turf-bearing":216,"turf-bezier":217,"turf-buffer":220,"turf-center":228,"turf-centroid":231,"turf-combine":237,"turf-concave":238,"turf-convex":251,"turf-count":252,"turf-destination":254,"turf-deviation":256,"turf-distance":259,"turf-envelope":260,"turf-erase":265,"turf-explode":270,"turf-extent":273,"turf-featurecollection":274,"turf-filter":275,"turf-flip":277,"turf-grid":278,"turf-hex":280,"turf-inside":282,"turf-intersect":283,"turf-isobands":290,"turf-isolines":312,"turf-jenks":331,"turf-kinks":333,"turf-linestring":337,"turf-max":338,"turf-median":341,"turf-merge":344,"turf-midpoint":351,"turf-min":353,"turf-nearest":356,"turf-planepoint":358,"turf-point":370,"turf-point-on-surface":359,"turf-polygon":371,"turf-quantile":372,"turf-random":374,"turf-reclass":376,"turf-remove":378,"turf-sample":380,"turf-simplify":382,"turf-size":384,"turf-square":385,"turf-sum":390,"turf-tag":393,"turf-tin":395,"turf-union":401,"turf-variance":406,"turf-within":409}],186:[function(require,module,exports){
+},{"turf-aggregate":70,"turf-area":93,"turf-average":96,"turf-bbox-polygon":98,"turf-bearing":100,"turf-bezier":101,"turf-buffer":104,"turf-center":112,"turf-centroid":115,"turf-combine":121,"turf-concave":122,"turf-convex":135,"turf-count":136,"turf-destination":138,"turf-deviation":140,"turf-distance":143,"turf-envelope":144,"turf-erase":149,"turf-explode":154,"turf-extent":157,"turf-featurecollection":158,"turf-filter":159,"turf-flip":161,"turf-grid":162,"turf-hex":164,"turf-inside":166,"turf-intersect":167,"turf-isobands":174,"turf-isolines":194,"turf-jenks":213,"turf-kinks":215,"turf-linestring":219,"turf-max":220,"turf-median":223,"turf-merge":226,"turf-midpoint":233,"turf-min":235,"turf-nearest":238,"turf-planepoint":240,"turf-point":252,"turf-point-on-surface":241,"turf-polygon":253,"turf-quantile":254,"turf-random":256,"turf-reclass":258,"turf-remove":260,"turf-sample":262,"turf-simplify":264,"turf-size":266,"turf-square":267,"turf-sum":272,"turf-tag":275,"turf-tin":277,"turf-union":280,"turf-variance":285,"turf-within":288}],70:[function(require,module,exports){
 var average = require('turf-average');
 var sum = require('turf-sum');
 var median = require('turf-median');
@@ -47782,7 +37722,7 @@ function isAggregationOperation(operation) {
     operation === 'count';
 }
 
-},{"turf-average":187,"turf-count":189,"turf-deviation":191,"turf-max":194,"turf-median":197,"turf-min":200,"turf-sum":203,"turf-variance":206}],187:[function(require,module,exports){
+},{"turf-average":71,"turf-count":73,"turf-deviation":75,"turf-max":78,"turf-median":81,"turf-min":84,"turf-sum":87,"turf-variance":90}],71:[function(require,module,exports){
 var inside = require('turf-inside')
 
 module.exports = function(polyFC, ptFC, inField, outField, done){
@@ -47810,7 +37750,7 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":188}],188:[function(require,module,exports){
+},{"turf-inside":72}],72:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -47833,7 +37773,7 @@ module.exports = function(point, polygon){
 }
 
 
-},{}],189:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 var inside = require('turf-inside')
 
 module.exports = function(polyFC, ptFC, outField, done){
@@ -47853,9 +37793,9 @@ module.exports = function(polyFC, ptFC, outField, done){
   return polyFC;
 }
 
-},{"turf-inside":190}],190:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],191:[function(require,module,exports){
+},{"turf-inside":74}],74:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],75:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -47876,7 +37816,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":192,"turf-inside":193}],192:[function(require,module,exports){
+},{"simple-statistics":76,"turf-inside":77}],76:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -49294,9 +39234,9 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],193:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],194:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],78:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -49317,11 +39257,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":195,"turf-inside":196}],195:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],196:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],197:[function(require,module,exports){
+},{"simple-statistics":79,"turf-inside":80}],79:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],80:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],81:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -49342,11 +39282,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":198,"turf-inside":199}],198:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],199:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],200:[function(require,module,exports){
+},{"simple-statistics":82,"turf-inside":83}],82:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],83:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],84:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -49367,11 +39307,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":201,"turf-inside":202}],201:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],202:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],203:[function(require,module,exports){
+},{"simple-statistics":85,"turf-inside":86}],85:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],86:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],87:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -49392,11 +39332,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":204,"turf-inside":205}],204:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],205:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],206:[function(require,module,exports){
+},{"simple-statistics":88,"turf-inside":89}],88:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],89:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],90:[function(require,module,exports){
 var ss = require('simple-statistics')
 var inside = require('turf-inside')
 
@@ -49416,11 +39356,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
   return polyFC;
 }
-},{"simple-statistics":207,"turf-inside":208}],207:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],208:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],209:[function(require,module,exports){
+},{"simple-statistics":91,"turf-inside":92}],91:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],92:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],93:[function(require,module,exports){
 var geometryArea = require('geojson-area').geometry;
 
 /**
@@ -49451,7 +39391,7 @@ module.exports = function(_) {
     }
 };
 
-},{"geojson-area":210}],210:[function(require,module,exports){
+},{"geojson-area":94}],94:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.geometry = geometry;
@@ -49527,12 +39467,12 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":211}],211:[function(require,module,exports){
+},{"wgs84":95}],95:[function(require,module,exports){
 module.exports.RADIUS = 6378137;
 module.exports.FLATTENING = 1/298.257223563;
 module.exports.POLAR_RADIUS = 6356752.3142;
 
-},{}],212:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -49583,7 +39523,7 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":213}],213:[function(require,module,exports){
+},{"turf-inside":97}],97:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -49630,7 +39570,7 @@ function inRing (pt, ring) {
 }
 
 
-},{}],214:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -49663,7 +39603,7 @@ module.exports = function(bbox){
   return poly;
 }
 
-},{"turf-polygon":215}],215:[function(require,module,exports){
+},{"turf-polygon":99}],99:[function(require,module,exports){
 module.exports = function(coordinates, properties){
   if(coordinates === null) return new Error('No coordinates passed')
   var polygon = { 
@@ -49681,7 +39621,7 @@ module.exports = function(coordinates, properties){
   
   return polygon
 }
-},{}],216:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -49725,7 +39665,7 @@ function toDeg(radian) {
     return radian * 180 / Math.PI;
 }
 
-},{}],217:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 var linestring = require('turf-linestring');
 var Spline = require('./spline.js');
 
@@ -49779,7 +39719,7 @@ module.exports = function(line, resolution, sharpness){
   return lineOut;
 };
 
-},{"./spline.js":219,"turf-linestring":218}],218:[function(require,module,exports){
+},{"./spline.js":103,"turf-linestring":102}],102:[function(require,module,exports){
 module.exports = function(coordinates, properties){
   if(!coordinates) return new Error('No coordinates passed')
   var linestring = { 
@@ -49793,7 +39733,7 @@ module.exports = function(coordinates, properties){
   return linestring
 }
 
-},{}],219:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
  /**
    * BezierSpline
    * http://leszekr.github.com/
@@ -49932,7 +39872,7 @@ var Spline = function(options){
 
   module.exports = Spline;
 
-},{}],220:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 // http://stackoverflow.com/questions/839899/how-do-i-calculate-a-point-on-a-circles-circumference
 // radians = degrees * (pi/180)
 // https://github.com/bjornharrtell/jsts/blob/master/examples/buffer.html
@@ -50017,12 +39957,12 @@ var bufferOp = function(feature, radius){
   return buffered;
 }
 
-},{"jsts":221,"turf-combine":225,"turf-featurecollection":226,"turf-polygon":227}],221:[function(require,module,exports){
+},{"jsts":105,"turf-combine":109,"turf-featurecollection":110,"turf-polygon":111}],105:[function(require,module,exports){
 require('javascript.util');
 var jsts = require('./lib/jsts');
 module.exports = jsts
 
-},{"./lib/jsts":222,"javascript.util":224}],222:[function(require,module,exports){
+},{"./lib/jsts":106,"javascript.util":108}],106:[function(require,module,exports){
 /* The JSTS Topology Suite is a collection of JavaScript classes that
 implement the fundamental operations required to validate a given
 geo-spatial data set to a known topological specification.
@@ -51732,7 +41672,7 @@ return true;if(this.isBoundaryPoint(li,bdyNodes[1]))
 return true;return false;}else{for(var i=bdyNodes.iterator();i.hasNext();){var node=i.next();var pt=node.getCoordinate();if(li.isIntersection(pt))
 return true;}
 return false;}};})();
-},{}],223:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (global){
 /*
   javascript.util is a port of selected parts of java.util to JavaScript which
@@ -51778,10 +41718,10 @@ L.prototype.iterator=L.prototype.f;function N(a){this.l=a}f("$jscomp.scope.Itera
 r,global.javascript.util.Set=x,global.javascript.util.SortedMap=A,global.javascript.util.SortedSet=B,global.javascript.util.Stack=C,global.javascript.util.TreeMap=H,global.javascript.util.TreeSet=L);}).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],224:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 require('./dist/javascript.util-node.min.js');
 
-},{"./dist/javascript.util-node.min.js":223}],225:[function(require,module,exports){
+},{"./dist/javascript.util-node.min.js":107}],109:[function(require,module,exports){
 module.exports = function(fc){
   var type = fc.features[0].geometry.type;
   var err;
@@ -51831,7 +41771,7 @@ function pluckCoods(multi){
     return geom.coordinates;
   });
 }
-},{}],226:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = function(features){
   var fc = {
     "type": "FeatureCollection",
@@ -51840,7 +41780,7 @@ module.exports = function(features){
 
   return fc;
 }
-},{}],227:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * Generates a new GeoJSON Polygon feature, given an array of coordinates
  * and list of properties.
@@ -51874,7 +41814,7 @@ module.exports = function(coordinates, properties){
   return polygon;
 }
 
-},{}],228:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 var extent = require('turf-extent'),
     point = require('turf-point');
 
@@ -51915,7 +41855,7 @@ module.exports = function(layer, done){
   return point([x, y]);
 };
 
-},{"turf-extent":229,"turf-point":370}],229:[function(require,module,exports){
+},{"turf-extent":113,"turf-point":252}],113:[function(require,module,exports){
 var flatten = require('flatten');
 
 /**
@@ -52007,7 +41947,7 @@ function extent3(coords, extent) {
   }
 }
 
-},{"flatten":230}],230:[function(require,module,exports){
+},{"flatten":114}],114:[function(require,module,exports){
 module.exports = function flatten(list, depth) {
   depth = (typeof depth == 'number') ? depth : Infinity;
 
@@ -52025,7 +41965,7 @@ module.exports = function flatten(list, depth) {
   }
 };
 
-},{}],231:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 var explode = require('turf-explode');
 var point = require('turf-point');
 
@@ -52067,7 +42007,7 @@ module.exports = function(features){
   return point(xSum / len, ySum / len);
 };
 
-},{"turf-explode":232,"turf-point":236}],232:[function(require,module,exports){
+},{"turf-explode":116,"turf-point":120}],116:[function(require,module,exports){
 var flatten = require('flatten');
 var featureCollection = require('turf-featurecollection');
 var point = require('turf-point');
@@ -52167,9 +42107,9 @@ function flatCoords(coords){
   })
   return newCoords;
 }
-},{"flatten":233,"turf-featurecollection":234,"turf-point":235}],233:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],234:[function(require,module,exports){
+},{"flatten":117,"turf-featurecollection":118,"turf-point":119}],117:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],118:[function(require,module,exports){
 module.exports = function(features){
   var fc = {
     "type": "FeatureCollection",
@@ -52178,7 +42118,7 @@ module.exports = function(features){
 
   return fc
 }
-},{}],235:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 module.exports = function(x, y, properties){
   if(isNaN(x) || isNaN(y)) throw new Error('Invalid coordinates')
   return {
@@ -52191,7 +42131,7 @@ module.exports = function(x, y, properties){
   }
 }
 
-},{}],236:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /**
  * Generates a new GeoJSON Point feature, given coordinates
  * and, optionally, properties.
@@ -52220,7 +42160,7 @@ module.exports = function(x, y, properties){
   };
 }
 
-},{}],237:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /**
 * Combines a FeatureCollection of point, linestring, or polygon Features into multipoint, multilinestring, or multipolygon Features.
 *
@@ -52287,7 +42227,7 @@ function pluckCoods(multi){
   });
 }
 
-},{}],238:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 // 1. run tin on points
 // 2. calculate lenth of all edges and area of all triangles
 // 3. remove triangles that fail the max length test
@@ -52350,7 +42290,7 @@ module.exports = function(points, maxEdge) {
   return t.merge(tinPolys);
 };
 
-},{"turf-distance":239,"turf-merge":240,"turf-point":247,"turf-tin":248}],239:[function(require,module,exports){
+},{"turf-distance":123,"turf-merge":124,"turf-point":131,"turf-tin":132}],123:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -52389,7 +42329,7 @@ function toRad(degree){
   return degree * Math.PI / 180;
 }
 
-},{}],240:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -52409,7 +42349,7 @@ module.exports = function(polygons, done){
   return merged;
 }
 
-},{"clone":241,"turf-union":242}],241:[function(require,module,exports){
+},{"clone":125,"turf-union":126}],125:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -52557,7 +42497,7 @@ clone.clonePrototype = function(parent) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":2}],242:[function(require,module,exports){
+},{"buffer":2}],126:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -52580,17 +42520,17 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":243}],243:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"./lib/jsts":244,"dup":221,"javascript.util":246}],244:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"dup":222}],245:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223}],246:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":245,"dup":224}],247:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],248:[function(require,module,exports){
+},{"jsts":127}],127:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"./lib/jsts":128,"dup":105,"javascript.util":130}],128:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],129:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],130:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":129,"dup":108}],131:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],132:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
@@ -52836,7 +42776,7 @@ function triangulate(vertices) {
     }
 }*/
 
-},{"turf-nearest":249,"turf-point":247,"turf-polygon":250}],249:[function(require,module,exports){
+},{"turf-nearest":133,"turf-point":131,"turf-polygon":134}],133:[function(require,module,exports){
 distance = require('turf-distance');
 
 module.exports = function(targetPoint, points){
@@ -52860,9 +42800,9 @@ module.exports = function(targetPoint, points){
   delete nearestPoint.properties.distance;
   return nearestPoint;
 }
-},{"turf-distance":239}],250:[function(require,module,exports){
-arguments[4][227][0].apply(exports,arguments)
-},{"dup":227}],251:[function(require,module,exports){
+},{"turf-distance":123}],134:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],135:[function(require,module,exports){
 // http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
 
 
@@ -52934,7 +42874,7 @@ function cross(o, a, b) {
    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
 }
 
-},{}],252:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -52991,9 +42931,9 @@ module.exports = function(polyFC, ptFC, outField, done){
   return polyFC;
 };
 
-},{"turf-inside":253}],253:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],254:[function(require,module,exports){
+},{"turf-inside":137}],137:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],138:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 var point = require('turf-point');
@@ -53059,9 +42999,9 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-},{"turf-point":255}],255:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],256:[function(require,module,exports){
+},{"turf-point":139}],139:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],140:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -53131,7 +43071,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":257,"turf-inside":258}],257:[function(require,module,exports){
+},{"simple-statistics":141,"turf-inside":142}],141:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -54653,9 +44593,9 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],258:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],259:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],143:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -54719,7 +44659,7 @@ function toRad(degree) {
   return degree * Math.PI / 180;
 }
 
-},{}],260:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 var extent = require('turf-extent');
 var bboxPolygon = require('turf-bbox-polygon');
 
@@ -54749,7 +44689,7 @@ module.exports = function(features, done){
   return poly;
 }
 
-},{"turf-bbox-polygon":261,"turf-extent":263}],261:[function(require,module,exports){
+},{"turf-bbox-polygon":145,"turf-extent":147}],145:[function(require,module,exports){
 var polygon = require('turf-polygon')
 
 module.exports = function(bbox){
@@ -54768,9 +44708,9 @@ module.exports = function(bbox){
   return poly
 }
 
-},{"turf-polygon":262}],262:[function(require,module,exports){
-arguments[4][215][0].apply(exports,arguments)
-},{"dup":215}],263:[function(require,module,exports){
+},{"turf-polygon":146}],146:[function(require,module,exports){
+arguments[4][99][0].apply(exports,arguments)
+},{"dup":99}],147:[function(require,module,exports){
 var flatten = require('flatten')
 
 module.exports = function(layer){
@@ -54890,9 +44830,9 @@ function flatCoords(coords){
   })
   return newCoords
 }
-},{"flatten":264}],264:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],265:[function(require,module,exports){
+},{"flatten":148}],148:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],149:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 
@@ -54970,15 +44910,15 @@ module.exports = function(p1, p2, done){
   }
 };
 
-},{"jsts":266}],266:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"./lib/jsts":267,"dup":221,"javascript.util":269}],267:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"dup":222}],268:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223}],269:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":268,"dup":224}],270:[function(require,module,exports){
+},{"jsts":150}],150:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"./lib/jsts":151,"dup":105,"javascript.util":153}],151:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],152:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],153:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":152,"dup":108}],154:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var point = require('turf-point');
 
@@ -55070,11 +45010,11 @@ function depth3(coords, features) {
   }
 }
 
-},{"turf-featurecollection":271,"turf-point":272}],271:[function(require,module,exports){
-arguments[4][234][0].apply(exports,arguments)
-},{"dup":234}],272:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],273:[function(require,module,exports){
+},{"turf-featurecollection":155,"turf-point":156}],155:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],156:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],157:[function(require,module,exports){
 /**
  * Calculates the extent of all input features and returns a bounding box.
  *
@@ -55176,7 +45116,7 @@ function extent3(coords, extent) {
   }
 }
 
-},{}],274:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 /**
  * Creates a {@link FeatureCollection}
  *
@@ -55198,7 +45138,7 @@ module.exports = function(features){
   };
 }
 
-},{}],275:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -55235,21 +45175,21 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":276}],276:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],277:[function(require,module,exports){
+},{"turf-featurecollection":160}],160:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],161:[function(require,module,exports){
 /**
- * Takes any GeoJSON object and
- * flips all of its coordinates from [x, y] to [y, x].
+ * Takes any GeoJSON object and flips all of its coordinates
+ * from `[x, y]` to `[y, x]`.
  *
  * @module turf/flip
  * @param {GeoJSON} input
- * @returns {FeatureCollection} output
+ * @returns {GeoJSON} output
  * @example
- * var poly = turf.polygon([[[1,0], [1,0], [1,2]], [[.2,.2], [.3,.3],[.1,.2]]]);
- * //=poly
- * var flipped = turf.flip(poly);
- * //=flipped
+ * var saudiArabia = turf.point([20.56640625, 43.42100882994726]);
+ * //=saudiArabia
+ * var serbia = turf.flip(saudiArabia);
+ * //=serbia
  */
 module.exports = flipAny;
 
@@ -55314,7 +45254,7 @@ function flip3(coords) {
       for(var k = 0; k < coords[i][j].length; k++) coords[i][j][k].reverse();
 }
 
-},{}],278:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 var point = require('turf-point');
 
 /**
@@ -55352,9 +45292,9 @@ module.exports = function(extents, depth) {
   return fc;
 }
 
-},{"turf-point":279}],279:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],280:[function(require,module,exports){
+},{"turf-point":163}],163:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],164:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -55465,9 +45405,9 @@ function hexgrid(bbox, radius) {
   return fc;
 }
 
-},{"turf-polygon":281}],281:[function(require,module,exports){
-arguments[4][215][0].apply(exports,arguments)
-},{"dup":215}],282:[function(require,module,exports){
+},{"turf-polygon":165}],165:[function(require,module,exports){
+arguments[4][99][0].apply(exports,arguments)
+},{"dup":99}],166:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -55545,7 +45485,7 @@ function inRing (pt, ring) {
 }
 
 
-},{}],283:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 var featurecollection = require('turf-featurecollection');
@@ -55604,17 +45544,17 @@ module.exports = function(poly1, poly2){
   }
 };
 
-},{"jsts":284,"turf-featurecollection":288}],284:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"./lib/jsts":285,"dup":221,"javascript.util":287}],285:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"dup":222}],286:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223}],287:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":286,"dup":224}],288:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],289:[function(require,module,exports){
+},{"jsts":168,"turf-featurecollection":172}],168:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"./lib/jsts":169,"dup":105,"javascript.util":171}],169:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],170:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],171:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":170,"dup":108}],172:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],173:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -56129,7 +46069,7 @@ Conrec.prototype.contour = function(d, ilb, iub, jlb, jub, x, y, nc, z) {
 }
 
 
-},{}],290:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -56158,13 +46098,17 @@ var Conrec = require('./conrec.js');
  * @param {Array<number>} breaks - where to draw contours
  * @returns {FeatureCollection} isolines
  * @example
- * var fs = require('fs')
- * var z = 'elevation'
- * var resolution = 15
- * var breaks = [.1, 22, 45, 55, 65, 85,  95, 105, 120, 180]
- * var points = JSON.parse(fs.readFileSync('/path/to/points.geojson'))
- * var isobanded = turf.isobands(points, z, resolution, breaks)
- * console.log(isobanded)
+ * // create random points with random
+ * // z-values in their properties
+ * var points = turf.random('point', 100, {
+ *   bbox: [0, 30, 20, 50]
+ * });
+ * for (var i = 0; i < points.features.length; i++) {
+ *   points.features[i].properties.z = Math.random() * 10;
+ * }
+ * var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+ * var isolined = turf.isobands(points, 'z', 15, breaks);
+ * //=isolined
  */
 module.exports = function(points, z, resolution, breaks){
   var addEdgesResult = addEdges(points, z, resolution);
@@ -56198,7 +46142,7 @@ module.exports = function(points, z, resolution, breaks){
       } else{
         xFlat.push(0);
       }
-    })
+    });
     data.push(xFlat);
   }
   var interval = (squareBBox[2] - squareBBox[0]) / depth;
@@ -56210,18 +46154,18 @@ module.exports = function(points, z, resolution, breaks){
   }
 
   //change zero breaks to .01 to deal with bug in conrec algorithm
-  breaks = breaks.map(function(num){
+  breaks = breaks.map(function(num) {
     if(num === 0){
-      return .01;
+      return 0.01;
     }
     else{
       return num;
     }
-  })
+  });
   //deduplicate breaks
   breaks = unique(breaks);
 
-  var c = new Conrec;
+  var c = new Conrec();
   c.contour(data, 0, resolution, 0, resolution, xCoordinates, yCoordinates, breaks.length, breaks);
   var contourList = c.contourList();
 
@@ -56232,83 +46176,71 @@ module.exports = function(points, z, resolution, breaks){
       c.forEach(function(coord){
         polyCoordinates.push([coord.x, coord.y]);
       });
+      polyCoordinates.push([c[0].x, c[0].y]);
       var poly = polygon([polyCoordinates]);
       poly.properties = {};
       poly.properties[z] = c.level;
-
       fc.features.push(poly);
     }
   });
 
   return fc;
-}
+};
 
 function addEdges(points, z, resolution){
   var extentBBox = extent(points),
-    squareBBox,
     sizeResult;
 
-  if (typeof extentBBox === 'Error') {
-    return extentBBox;
-  }
+  var squareBBox = square(extentBBox);
+  var sizeBBox = size(squareBBox, 0.35);
 
-  squareBBox = square(extentBBox);
+  var edgeDistance = sizeBBox[2] - sizeBBox[0];
+  var extendDistance = edgeDistance / resolution;
 
-  if (typeof squareBBox === 'Error') {
-    return squareBBox;
-  }
-
-  sizeBBox = size(squareBBox, 0.35)
-
-  if (typeof sizeBBox === 'Error') {
-    return sizeBBox;
-  }
-
-  var edgeDistance = sizeBBox[2] - sizeBBox[0]
-  var extendDistance = edgeDistance / resolution
-
-  var xmin = sizeBBox[0]
-  var ymin = sizeBBox[1]
-  var xmax = sizeBBox[2]
-  var ymax = sizeBBox[3]
+  var xmin = sizeBBox[0];
+  var ymin = sizeBBox[1];
+  var xmax = sizeBBox[2];
+  var ymax = sizeBBox[3];
 
   //left
-  var left = [[xmin, ymin],[xmin, ymax]]
+  var left = [[xmin, ymin],[xmin, ymax]];
   for(var i = 0; i<=resolution; i++){
-    var pt = point(xmin, ymin + (extendDistance * i))
-    pt.properties = {}
-    pt.properties[z] = -100
-    points.features.push(pt)
+    var pt = point(xmin, ymin + (extendDistance * i));
+    pt.properties = {};
+    pt.properties[z] = -100;
+    points.features.push(pt);
   }
 
+  var i, pt;
+
   //bottom
-  var bottom = [[xmin, ymin],[xmax, ymin]]
-  for(var i = 0; i<=resolution; i++){
-    var pt = point(xmin + (extendDistance * i), ymin)
-    pt.properties = {}
-    pt.properties[z] = -100
-    points.features.push(pt)
+  var bottom = [[xmin, ymin],[xmax, ymin]];
+  for(i = 0; i<=resolution; i++){
+    pt = point(xmin + (extendDistance * i), ymin);
+    pt.properties = {};
+    pt.properties[z] = -100;
+    points.features.push(pt);
   }
 
   //right
-  var right = [[xmax, ymin],[xmax, ymax]]
-  for(var i = 0; i<=resolution; i++){
-    var pt = point(xmax, ymin + (extendDistance * i))
-    pt.properties = {}
-    pt.properties[z] = -100
-    points.features.push(pt)
+  var right = [[xmax, ymin],[xmax, ymax]];
+  for(i = 0; i<=resolution; i++){
+    pt = point(xmax, ymin + (extendDistance * i));
+    pt.properties = {};
+    pt.properties[z] = -100;
+    points.features.push(pt);
   }
 
   //top
-  var top = [[xmin, ymax],[xmax, ymax]]
-  for(var i = 0; i<=resolution; i++){
-    var pt = point(xmin + (extendDistance * i), ymax)
-    pt.properties = {}
-    pt.properties[z] = -100
-    points.features.push(pt)
+  var top = [[xmin, ymax],[xmax, ymax]];
+  for(i = 0; i<=resolution; i++){
+    pt = point(xmin + (extendDistance * i), ymax);
+    pt.properties = {};
+    pt.properties[z] = -100;
+    points.features.push(pt);
   }
 
-  return points
+  return points;
 }
 
 function unique(a) {
@@ -56318,13 +46250,13 @@ function unique(a) {
   }, []);
 }
 
-},{"./conrec.js":289,"turf-extent":291,"turf-featurecollection":293,"turf-grid":294,"turf-inside":296,"turf-linestring":297,"turf-planepoint":298,"turf-point":299,"turf-polygon":300,"turf-size":301,"turf-square":302,"turf-tin":306}],291:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"dup":229,"flatten":292}],292:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],293:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],294:[function(require,module,exports){
+},{"./conrec.js":173,"turf-extent":175,"turf-featurecollection":177,"turf-grid":178,"turf-inside":180,"turf-linestring":181,"turf-planepoint":182,"turf-point":183,"turf-polygon":184,"turf-size":185,"turf-square":186,"turf-tin":190}],175:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113,"flatten":176}],176:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],177:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],178:[function(require,module,exports){
 var point = require('turf-point')
 
 module.exports = function(extents, depth, done){
@@ -56350,13 +46282,13 @@ module.exports = function(extents, depth, done){
   return fc;
 }
 
-},{"turf-point":295}],295:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],296:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],297:[function(require,module,exports){
-arguments[4][218][0].apply(exports,arguments)
-},{"dup":218}],298:[function(require,module,exports){
+},{"turf-point":179}],179:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],180:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],181:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],182:[function(require,module,exports){
 module.exports = function(point, triangle, done){
   var x = point.geometry.coordinates[0]
       y = point.geometry.coordinates[1]
@@ -56378,11 +46310,11 @@ module.exports = function(point, triangle, done){
   return z;
 }
 
-},{}],299:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],300:[function(require,module,exports){
-arguments[4][227][0].apply(exports,arguments)
-},{"dup":227}],301:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],184:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],185:[function(require,module,exports){
 module.exports = function(bbox, factor){
   var currentXDistance = (bbox[2] - bbox[0]);
   var currentYDistance = (bbox[3] - bbox[1]);
@@ -56399,7 +46331,7 @@ module.exports = function(bbox, factor){
   var sized = [lowX, lowY, highX, highY];
   return sized;
 }
-},{}],302:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 var midpoint = require('turf-midpoint');
 var point = require('turf-point');
 var distance = require('turf-distance');
@@ -56432,7 +46364,7 @@ module.exports = function(bbox){
 }
 
 
-},{"turf-distance":303,"turf-midpoint":304,"turf-point":299}],303:[function(require,module,exports){
+},{"turf-distance":187,"turf-midpoint":188,"turf-point":183}],187:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -56471,7 +46403,7 @@ function toRad(degree){
   return degree * Math.PI / 180
 }
 
-},{}],304:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
 var point = require('turf-point')
@@ -56495,140 +46427,130 @@ module.exports = function(point1, point2) {
 
   return midpoint
 }
-},{"turf-point":305}],305:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],306:[function(require,module,exports){
+},{"turf-point":189}],189:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],190:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
-var polygon = require('turf-polygon')
-var nearest = require('turf-nearest')
-var point = require('turf-point')
+var polygon = require('turf-polygon');
+var featurecollection = require('turf-featurecollection');
 
-module.exports = function(points, z, done){
+/**
+ * Takes a set of points and the name of a z-value property and
+ * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
+ * or a TIN for short, returned as a collection of Polygons. These are often used
+ * for developing elevation contour maps or stepped heat visualizations.
+ *
+ * This triangulates the points, as well as adds properties called `a`, `b`,
+ * and `c` representing the value of the given `propertyName` at each of
+ * the points that represent the corners of the triangle.
+ *
+ * @module turf/tin
+ * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
+ * Features with {@link Point} geometries
+ * @param {string=} propertyName - name of the property from which to pull z values.
+ * This is optional: if not given, then there will be no extra data added to the
+ * derived triangles.
+ * @return {FeatureCollection} TIN output
+ * @example
+ * // generate some random point data
+ * var points = turf.random('points', 30, {
+ *   bbox: [50, 30, 70, 50]
+ * });
+ * //=points
+ * // add a random property to each point between 0 and 9
+ * for (var i = 0; i < points.features.length; i++) {
+ *   points.features[i].properties.z = ~~(Math.random() * 9);
+ * }
+ * var tin = turf.tin(points, 'z')
+ * for (var i = 0; i < tin.features.length; i++) {
+ *   var properties  = tin.features[i].properties;
+ *   // roughly turn the properties of each
+ *   // triangle into a fill color
+ *   // so we can visualize the result
+ *   properties.fill = '#' + properties.a +
+ *     properties.b + properties.c;
+ * }
+ * //=tin
+ */
+module.exports = function(points, z) {
   //break down points
-  var vertices = []
-  points.features.forEach(function(p){
-    vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]})
-  })
-
-  var triangulated = triangulate(vertices)
-  var triangles = {
-    type: 'FeatureCollection',
-    features: []
-  }
-
-  done = done || function () {};
-
-  triangulated.forEach(function(triangle){
-    var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]]
-    var poly = polygon(coords, {a: null, b: null, c: null})
-
-    triangles.features.push(poly)
-  })
-  if(z){
-    // add values from vertices
-    triangles.features.forEach(function(tri){
-      var coordinateNumber = 1
-      tri.geometry.coordinates[0].forEach(function(c){
-        var closest = nearest(point(c[0], c[1]), points);
-
-        if(coordinateNumber === 1){
-          tri.properties.a = closest.properties[z]
-        }
-        else if(coordinateNumber === 2){
-          tri.properties.b = closest.properties[z]
-        }
-        else if(coordinateNumber === 3){
-          tri.properties.c = closest.properties[z]
-        }
-        coordinateNumber++
-      })
-    })
-  }
-
-  triangles.features.forEach(function(tri){
-    tri = correctRings(tri)
-  })
-  
-  done(null, triangles)
-  return triangles;
-}
-
-function correctRings(poly){
-  poly.geometry.coordinates.forEach(function(ring){
-    var isWrapped =  ring[0] === ring.slice(-1)[0]
-    if(!isWrapped){
-      ring.push(ring[0])
-    }
-  })
-  return poly
-}
+  return featurecollection(triangulate(points.features.map(function(p) {
+    var point = {
+      x: p.geometry.coordinates[0],
+      y: p.geometry.coordinates[1]
+    };
+    if (z) point.z = p.properties[z];
+    return point;
+  })).map(function(triangle) {
+    return polygon([[
+        [triangle.a.x, triangle.a.y],
+        [triangle.b.x, triangle.b.y],
+        [triangle.c.x, triangle.c.y],
+        [triangle.a.x, triangle.a.y]
+    ]], {
+        a: triangle.a.z,
+        b: triangle.b.z,
+        c: triangle.c.z
+      });
+  }));
+};
 
 function Triangle(a, b, c) {
-  this.a = a
-  this.b = b
-  this.c = c
+  this.a = a;
+  this.b = b;
+  this.c = c;
 
   var A = b.x - a.x,
-      B = b.y - a.y,
-      C = c.x - a.x,
-      D = c.y - a.y,
-      E = A * (a.x + b.x) + B * (a.y + b.y),
-      F = C * (a.x + c.x) + D * (a.y + c.y),
-      G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
-      minx, miny, dx, dy
+    B = b.y - a.y,
+    C = c.x - a.x,
+    D = c.y - a.y,
+    E = A * (a.x + b.x) + B * (a.y + b.y),
+    F = C * (a.x + c.x) + D * (a.y + c.y),
+    G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
+    minx, miny, dx, dy;
 
   /* If the points of the triangle are collinear, then just find the
    * extremes and use the midpoint as the center of the circumcircle. */
-  if(Math.abs(G) < 0.000001) {
-    minx = Math.min(a.x, b.x, c.x)
-    miny = Math.min(a.y, b.y, c.y)
-    dx   = (Math.max(a.x, b.x, c.x) - minx) * 0.5
-    dy   = (Math.max(a.y, b.y, c.y) - miny) * 0.5
+  if (Math.abs(G) < 0.000001) {
+    minx = Math.min(a.x, b.x, c.x);
+    miny = Math.min(a.y, b.y, c.y);
+    dx = (Math.max(a.x, b.x, c.x) - minx) * 0.5;
+    dy = (Math.max(a.y, b.y, c.y) - miny) * 0.5;
 
-    this.x = minx + dx
-    this.y = miny + dy
-    this.r = dx * dx + dy * dy
+    this.x = minx + dx;
+    this.y = miny + dy;
+    this.r = dx * dx + dy * dy;
+  } else {
+    this.x = (D * E - B * F) / G;
+    this.y = (A * F - C * E) / G;
+    dx = this.x - a.x;
+    dy = this.y - a.y;
+    this.r = dx * dx + dy * dy;
   }
-
-  else {
-    this.x = (D*E - B*F) / G
-    this.y = (A*F - C*E) / G
-    dx = this.x - a.x
-    dy = this.y - a.y
-    this.r = dx * dx + dy * dy
-  }
-}
-
-Triangle.prototype.draw = function(ctx) {
-  ctx.beginPath()
-  ctx.moveTo(this.a.x, this.a.y)
-  ctx.lineTo(this.b.x, this.b.y)
-  ctx.lineTo(this.c.x, this.c.y)
-  ctx.closePath()
-  ctx.stroke()
 }
 
 function byX(a, b) {
-  return b.x - a.x
+  return b.x - a.x;
 }
 
 function dedup(edges) {
   var j = edges.length,
-      a, b, i, m, n
+    a, b, i, m, n;
 
-  outer: while(j) {
-    b = edges[--j]
-    a = edges[--j]
-    i = j
-    while(i) {
-      n = edges[--i]
-      m = edges[--i]
-      if((a === m && b === n) || (a === n && b === m)) {
-        edges.splice(j, 2)
-        edges.splice(i, 2)
-        j -= 2
-        continue outer
+  outer:
+  while (j) {
+    b = edges[--j];
+    a = edges[--j];
+    i = j;
+    while (i) {
+      n = edges[--i];
+      m = edges[--i];
+      if ((a === m && b === n) || (a === n && b === m)) {
+        edges.splice(j, 2);
+        edges.splice(i, 2);
+        j -= 2;
+        continue outer;
       }
     }
   }
@@ -56636,23 +46558,25 @@ function dedup(edges) {
 
 function triangulate(vertices) {
   /* Bail if there aren't enough vertices to form any triangles. */
-  if(vertices.length < 3)
-    return []
+  if (vertices.length < 3)
+    return [];
 
-  /* Ensure the vertex array is in order of descending X coordinate
-   * (which is needed to ensure a subquadratic runtime), and then find
-   * the bounding box around the points. */
-  vertices.sort(byX)
+    /* Ensure the vertex array is in order of descending X coordinate
+     * (which is needed to ensure a subquadratic runtime), and then find
+     * the bounding box around the points. */
+  vertices.sort(byX);
 
-  var i    = vertices.length - 1,
-      xmin = vertices[i].x,
-      xmax = vertices[0].x,
-      ymin = vertices[i].y,
-      ymax = ymin
+  var i = vertices.length - 1,
+    xmin = vertices[i].x,
+    xmax = vertices[0].x,
+    ymin = vertices[i].y,
+    ymax = ymin;
 
-  while(i--) {
-    if(vertices[i].y < ymin) ymin = vertices[i].y
-    if(vertices[i].y > ymax) ymax = vertices[i].y
+  while (i--) {
+    if (vertices[i].y < ymin)
+      ymin = vertices[i].y;
+    if (vertices[i].y > ymax)
+      ymax = vertices[i].y;
   }
 
   /* Find a supertriangle, which is a triangle that surrounds all the
@@ -56663,120 +46587,97 @@ function triangulate(vertices) {
    * Once found, put it in the "open" list. (The "open" list is for
    * triangles who may still need to be considered; the "closed" list is
    * for triangles which do not.) */
-  var dx     = xmax - xmin,
-      dy     = ymax - ymin,
-      dmax   = (dx > dy) ? dx : dy,
-      xmid   = (xmax + xmin) * 0.5,
-      ymid   = (ymax + ymin) * 0.5,
-      open   = [
-        new Triangle(
-          {x: xmid - 20 * dmax, y: ymid -      dmax, __sentinel: true},
-          {x: xmid            , y: ymid + 20 * dmax, __sentinel: true},
-          {x: xmid + 20 * dmax, y: ymid -      dmax, __sentinel: true}
-        )
-      ],
-      closed = [],
-      edges = [],
-      j, a, b
+  var dx = xmax - xmin,
+    dy = ymax - ymin,
+    dmax = (dx > dy) ? dx : dy,
+    xmid = (xmax + xmin) * 0.5,
+    ymid = (ymax + ymin) * 0.5,
+    open = [
+      new Triangle({
+        x: xmid - 20 * dmax,
+        y: ymid - dmax,
+        __sentinel: true
+      },
+      {
+        x: xmid,
+        y: ymid + 20 * dmax,
+        __sentinel: true
+      },
+      {
+        x: xmid + 20 * dmax,
+        y: ymid - dmax,
+        __sentinel: true
+      }
+    )],
+    closed = [],
+    edges = [],
+    j, a, b;
 
-  /* Incrementally add each vertex to the mesh. */
-  i = vertices.length
-  while(i--) {
+    /* Incrementally add each vertex to the mesh. */
+  i = vertices.length;
+  while (i--) {
     /* For each open triangle, check to see if the current point is
      * inside it's circumcircle. If it is, remove the triangle and add
      * it's edges to an edge list. */
-    edges.length = 0
-    j = open.length
-    while(j--) {
+    edges.length = 0;
+    j = open.length;
+    while (j--) {
       /* If this point is to the right of this triangle's circumcircle,
        * then this triangle should never get checked again. Remove it
        * from the open list, add it to the closed list, and skip. */
-      dx = vertices[i].x - open[j].x
-      if(dx > 0 && dx * dx > open[j].r) {
-        closed.push(open[j])
-        open.splice(j, 1)
-        continue
+      dx = vertices[i].x - open[j].x;
+      if (dx > 0 && dx * dx > open[j].r) {
+        closed.push(open[j]);
+        open.splice(j, 1);
+        continue;
       }
 
       /* If not, skip this triangle. */
-      dy = vertices[i].y - open[j].y
-      if(dx * dx + dy * dy > open[j].r)
-        continue
+      dy = vertices[i].y - open[j].y;
+      if (dx * dx + dy * dy > open[j].r)
+        continue;
 
       /* Remove the triangle and add it's edges to the edge list. */
       edges.push(
         open[j].a, open[j].b,
         open[j].b, open[j].c,
         open[j].c, open[j].a
-      )
-      open.splice(j, 1)
+      );
+      open.splice(j, 1);
     }
 
     /* Remove any doubled edges. */
-    dedup(edges)
+    dedup(edges);
 
     /* Add a new triangle for each edge. */
-    j = edges.length
-    while(j) {
-      b = edges[--j]
-      a = edges[--j]
-      open.push(new Triangle(a, b, vertices[i]))
+    j = edges.length;
+    while (j) {
+      b = edges[--j];
+      a = edges[--j];
+      open.push(new Triangle(a, b, vertices[i]));
     }
   }
 
   /* Copy any remaining open triangles to the closed list, and then
    * remove any triangles that share a vertex with the supertriangle. */
-  Array.prototype.push.apply(closed, open)
+  Array.prototype.push.apply(closed, open);
 
-  i = closed.length
-  while(i--)
-    if(closed[i].a.__sentinel ||
-       closed[i].b.__sentinel ||
-       closed[i].c.__sentinel)
-      closed.splice(i, 1)
+  i = closed.length;
+  while (i--)
+  if (closed[i].a.__sentinel ||
+      closed[i].b.__sentinel ||
+      closed[i].c.__sentinel)
+      closed.splice(i, 1);
 
-  /* Yay, we're done! */
-  return closed
+      /* Yay, we're done! */
+  return closed;
 }
 
-/*if (typeof module !== 'undefined') {
-    module.exports = {
-        Triangle: Triangle,
-        triangulate: triangulate
-    }
-}*/
-
-},{"turf-nearest":307,"turf-point":309,"turf-polygon":310}],307:[function(require,module,exports){
-distance = require('turf-distance')
-
-module.exports = function(targetPoint, points){
-  var nearestPoint
-  var count = 0
-  var dist = Infinity
-  points.features.forEach(function(pt){
-    if(!nearestPoint){
-      nearestPoint = pt
-      var dist = distance(targetPoint, pt, 'miles')
-      nearestPoint.properties.distance = dist 
-    }
-    else{
-      var dist = distance(targetPoint, pt, 'miles')
-      if(dist < nearestPoint.properties.distance){
-        nearestPoint = pt
-        nearestPoint.properties.distance = dist
-      }
-    }
-  })
-  delete nearestPoint.properties.distance
-  return nearestPoint
-}
-},{"turf-distance":308}],308:[function(require,module,exports){
-arguments[4][303][0].apply(exports,arguments)
-},{"dup":303}],309:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],310:[function(require,module,exports){
-arguments[4][215][0].apply(exports,arguments)
-},{"dup":215}],311:[function(require,module,exports){
+},{"turf-featurecollection":191,"turf-polygon":192}],191:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],192:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],193:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -57292,7 +47193,7 @@ arguments[4][215][0].apply(exports,arguments)
     }
   }
 
-},{}],312:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -57319,13 +47220,17 @@ var Conrec = require('./conrec');
  * @param {number[]} breaks at which to draw contours
  * @returns {FeatureCollection} isolines
  * @example
- * var fs = require('fs')
- * var z = 'elevation'
- * var resolution = 15
- * var breaks = [.1, 22, 45, 55, 65, 85,  95, 105, 120, 180]
- * var points = JSON.parse(fs.readFileSync('/path/to/points.geojson'))
- * var isolined = turf.isolines(points, z, resolution, breaks)
- * console.log(isolined)
+ * // create random points with random
+ * // z-values in their properties
+ * var points = turf.random('point', 100, {
+ *   bbox: [0, 30, 20, 50]
+ * });
+ * for (var i = 0; i < points.features.length; i++) {
+ *   points.features[i].properties.z = Math.random() * 10;
+ * }
+ * var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+ * var isolined = turf.isolines(points, 'z', 15, breaks);
+ * //=isolined
  */
 module.exports = function(points, z, resolution, breaks, done){
   var tinResult = tin(points, z);
@@ -57361,12 +47266,12 @@ module.exports = function(points, z, resolution, breaks, done){
   var interval = (squareBBox[2] - squareBBox[0]) / depth;
   var xCoordinates = [];
   var yCoordinates = [];
-  for (var x=0; x<depth; x++){
+  for (var x = 0; x < depth; x++) {
     xCoordinates.push(x * interval + squareBBox[0]);
     yCoordinates.push(x * interval + squareBBox[1]);
   }
 
-  var c = new Conrec;
+  var c = new Conrec();
   c.contour(data, 0, resolution, 0, resolution, xCoordinates, yCoordinates, breaks.length, breaks);
   var contourList = c.contourList();
 
@@ -57391,43 +47296,65 @@ module.exports = function(points, z, resolution, breaks, done){
 
 
 
-},{"./conrec":311,"turf-extent":313,"turf-featurecollection":315,"turf-grid":316,"turf-inside":318,"turf-linestring":319,"turf-planepoint":320,"turf-square":321,"turf-tin":326}],313:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"dup":229,"flatten":314}],314:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],315:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],316:[function(require,module,exports){
-arguments[4][294][0].apply(exports,arguments)
-},{"dup":294,"turf-point":317}],317:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],318:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],319:[function(require,module,exports){
-arguments[4][218][0].apply(exports,arguments)
-},{"dup":218}],320:[function(require,module,exports){
-arguments[4][298][0].apply(exports,arguments)
-},{"dup":298}],321:[function(require,module,exports){
-arguments[4][302][0].apply(exports,arguments)
-},{"dup":302,"turf-distance":322,"turf-midpoint":323,"turf-point":325}],322:[function(require,module,exports){
-arguments[4][303][0].apply(exports,arguments)
-},{"dup":303}],323:[function(require,module,exports){
-arguments[4][304][0].apply(exports,arguments)
-},{"dup":304,"turf-point":324}],324:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],325:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],326:[function(require,module,exports){
-arguments[4][248][0].apply(exports,arguments)
-},{"dup":248,"turf-nearest":327,"turf-point":329,"turf-polygon":330}],327:[function(require,module,exports){
-arguments[4][307][0].apply(exports,arguments)
-},{"dup":307,"turf-distance":328}],328:[function(require,module,exports){
-arguments[4][303][0].apply(exports,arguments)
-},{"dup":303}],329:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],330:[function(require,module,exports){
-arguments[4][215][0].apply(exports,arguments)
-},{"dup":215}],331:[function(require,module,exports){
+},{"./conrec":193,"turf-extent":195,"turf-featurecollection":197,"turf-grid":198,"turf-inside":200,"turf-linestring":201,"turf-planepoint":202,"turf-square":203,"turf-tin":208}],195:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113,"flatten":196}],196:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],197:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],198:[function(require,module,exports){
+arguments[4][178][0].apply(exports,arguments)
+},{"dup":178,"turf-point":199}],199:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],200:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],201:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],202:[function(require,module,exports){
+arguments[4][182][0].apply(exports,arguments)
+},{"dup":182}],203:[function(require,module,exports){
+arguments[4][186][0].apply(exports,arguments)
+},{"dup":186,"turf-distance":204,"turf-midpoint":205,"turf-point":207}],204:[function(require,module,exports){
+arguments[4][187][0].apply(exports,arguments)
+},{"dup":187}],205:[function(require,module,exports){
+arguments[4][188][0].apply(exports,arguments)
+},{"dup":188,"turf-point":206}],206:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],207:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],208:[function(require,module,exports){
+arguments[4][132][0].apply(exports,arguments)
+},{"dup":132,"turf-nearest":209,"turf-point":211,"turf-polygon":212}],209:[function(require,module,exports){
+distance = require('turf-distance')
+
+module.exports = function(targetPoint, points){
+  var nearestPoint
+  var count = 0
+  var dist = Infinity
+  points.features.forEach(function(pt){
+    if(!nearestPoint){
+      nearestPoint = pt
+      var dist = distance(targetPoint, pt, 'miles')
+      nearestPoint.properties.distance = dist 
+    }
+    else{
+      var dist = distance(targetPoint, pt, 'miles')
+      if(dist < nearestPoint.properties.distance){
+        nearestPoint = pt
+        nearestPoint.properties.distance = dist
+      }
+    }
+  })
+  delete nearestPoint.properties.distance
+  return nearestPoint
+}
+},{"turf-distance":210}],210:[function(require,module,exports){
+arguments[4][187][0].apply(exports,arguments)
+},{"dup":187}],211:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],212:[function(require,module,exports){
+arguments[4][99][0].apply(exports,arguments)
+},{"dup":99}],213:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -57462,9 +47389,9 @@ module.exports = function(fc, field, num){
   return breaks;
 };
 
-},{"simple-statistics":332}],332:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],333:[function(require,module,exports){
+},{"simple-statistics":214}],214:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],215:[function(require,module,exports){
 /**
  * Takes a polygon and detects all self-intersections.
  *
@@ -57563,13 +47490,13 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
   }
 }
 
-},{"turf-featurecollection":334,"turf-point":335,"turf-polygon":336}],334:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],335:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],336:[function(require,module,exports){
-arguments[4][227][0].apply(exports,arguments)
-},{"dup":227}],337:[function(require,module,exports){
+},{"turf-featurecollection":216,"turf-point":217,"turf-polygon":218}],216:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],217:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],218:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],219:[function(require,module,exports){
 /**
  * Creates a {@link LineString} {@link Feature} based on a
  * coordinate array. Properties can be added optionally.
@@ -57611,7 +47538,7 @@ module.exports = function(coordinates, properties){
   };
 };
 
-},{}],338:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -57674,11 +47601,11 @@ module.exports = function(polyFC, ptFC, inField, outField){
   return polyFC;
 }
 
-},{"simple-statistics":339,"turf-inside":340}],339:[function(require,module,exports){
-arguments[4][257][0].apply(exports,arguments)
-},{"dup":257}],340:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],341:[function(require,module,exports){
+},{"simple-statistics":221,"turf-inside":222}],221:[function(require,module,exports){
+arguments[4][141][0].apply(exports,arguments)
+},{"dup":141}],222:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],223:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -57725,11 +47652,11 @@ module.exports = function(polyFC, ptFC, inField, outField){
   return polyFC;
 }
 
-},{"simple-statistics":342,"turf-inside":343}],342:[function(require,module,exports){
-arguments[4][257][0].apply(exports,arguments)
-},{"dup":257}],343:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],344:[function(require,module,exports){
+},{"simple-statistics":224,"turf-inside":225}],224:[function(require,module,exports){
+arguments[4][141][0].apply(exports,arguments)
+},{"dup":141}],225:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],226:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -57770,19 +47697,19 @@ module.exports = function(polygons, done){
   return merged;
 };
 
-},{"clone":345,"turf-union":346}],345:[function(require,module,exports){
-arguments[4][241][0].apply(exports,arguments)
-},{"buffer":2,"dup":241}],346:[function(require,module,exports){
-arguments[4][242][0].apply(exports,arguments)
-},{"dup":242,"jsts":347}],347:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"./lib/jsts":348,"dup":221,"javascript.util":350}],348:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"dup":222}],349:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223}],350:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":349,"dup":224}],351:[function(require,module,exports){
+},{"clone":227,"turf-union":228}],227:[function(require,module,exports){
+arguments[4][125][0].apply(exports,arguments)
+},{"buffer":2,"dup":125}],228:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"dup":126,"jsts":229}],229:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"./lib/jsts":230,"dup":105,"javascript.util":232}],230:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],231:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],232:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":231,"dup":108}],233:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
 var point = require('turf-point');
@@ -57822,9 +47749,9 @@ module.exports = function(point1, point2) {
   return midpoint;
 };
 
-},{"turf-point":352}],352:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],353:[function(require,module,exports){
+},{"turf-point":234}],234:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],235:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -57871,11 +47798,11 @@ module.exports = function(polyFC, ptFC, inField, outField){
   return polyFC;
 };
 
-},{"simple-statistics":354,"turf-inside":355}],354:[function(require,module,exports){
-arguments[4][257][0].apply(exports,arguments)
-},{"dup":257}],355:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],356:[function(require,module,exports){
+},{"simple-statistics":236,"turf-inside":237}],236:[function(require,module,exports){
+arguments[4][141][0].apply(exports,arguments)
+},{"dup":141}],237:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],238:[function(require,module,exports){
 var distance = require('turf-distance');
 
 /**
@@ -57909,9 +47836,9 @@ module.exports = function(targetPoint, points){
   return nearestPoint;
 }
 
-},{"turf-distance":357}],357:[function(require,module,exports){
-arguments[4][239][0].apply(exports,arguments)
-},{"dup":239}],358:[function(require,module,exports){
+},{"turf-distance":239}],239:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],240:[function(require,module,exports){
 /**
  * Takes a trianglular plane and calculates the z value
  * for a point on the plane.
@@ -57952,7 +47879,7 @@ module.exports = function(point, triangle, done){
   return z;
 };
 
-},{}],359:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var centroid = require('turf-center');
 var distance = require('turf-distance');
@@ -57963,9 +47890,23 @@ var explode = require('turf-explode');
  * Finds a {@link Point} guaranteed to be on the surface of
  * {@link GeoJSON} object.
  *
+ * * Given a {@link Polygon}, the point will be in the area of the polygon
+ * * Given a {@link LineString}, the point will be along the string
+ * * Given a {@link Point}, the point will the same as the input
+ *
  * @module turf/pointOnSurface
  * @param {GeoJSON} input any GeoJSON object
  * @returns {Feature} a point on the surface
+ * @example
+ * // create a random polygon
+ * var polygon = turf.random('polygon');
+ *
+ * // place a point on it
+ * var pointOnPolygon = turf.pointOnSurface(polygon);
+ *
+ * // show both of them
+ * var fc = turf.featurecollection([polygon, pointOnPolygon]);
+ * //=fc
  */
 module.exports = function(fc) {
   // normalize
@@ -58081,7 +48022,7 @@ function pointOnSegment (x, y, x1, y1, x2, y2) {
   }
 }
 
-},{"turf-center":360,"turf-distance":363,"turf-explode":364,"turf-featurecollection":368,"turf-inside":369}],360:[function(require,module,exports){
+},{"turf-center":242,"turf-distance":245,"turf-explode":246,"turf-featurecollection":250,"turf-inside":251}],242:[function(require,module,exports){
 var extent = require('turf-extent');
 
 module.exports = function(layer, done){
@@ -58097,25 +48038,25 @@ module.exports = function(layer, done){
   };
   return center;
 }
-},{"turf-extent":361}],361:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"dup":229,"flatten":362}],362:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],363:[function(require,module,exports){
-arguments[4][239][0].apply(exports,arguments)
-},{"dup":239}],364:[function(require,module,exports){
-arguments[4][232][0].apply(exports,arguments)
-},{"dup":232,"flatten":365,"turf-featurecollection":366,"turf-point":367}],365:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230}],366:[function(require,module,exports){
-arguments[4][234][0].apply(exports,arguments)
-},{"dup":234}],367:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],368:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],369:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],370:[function(require,module,exports){
+},{"turf-extent":243}],243:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113,"flatten":244}],244:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],245:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],246:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"flatten":247,"turf-featurecollection":248,"turf-point":249}],247:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],248:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],249:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],250:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],251:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],252:[function(require,module,exports){
 /**
  * Generates a new {@link Point} feature, given coordinates
  * and, optionally, properties.
@@ -58149,7 +48090,7 @@ module.exports = function(x, y, properties){
   };
 };
 
-},{}],371:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 /**
  * Generates a new GeoJSON Polygon feature, given an array of coordinates
  * and list of properties.
@@ -58200,7 +48141,7 @@ module.exports = function(coordinates, properties){
   return polygon;
 };
 
-},{}],372:[function(require,module,exports){
+},{}],254:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -58233,9 +48174,9 @@ module.exports = function(fc, field, percentiles){
   return quantiles;
 };
 
-},{"simple-statistics":373}],373:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],374:[function(require,module,exports){
+},{"simple-statistics":255}],255:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],256:[function(require,module,exports){
 var random = require('geojson-random');
 
 /**
@@ -58286,7 +48227,7 @@ module.exports = function(type, count, options) {
     }
 };
 
-},{"geojson-random":375}],375:[function(require,module,exports){
+},{"geojson-random":257}],257:[function(require,module,exports){
 module.exports = function() {
     throw new Error('call .point() or .polygon() instead');
 };
@@ -58394,7 +48335,7 @@ function collection(f) {
     };
 }
 
-},{}],376:[function(require,module,exports){
+},{}],258:[function(require,module,exports){
 var featurecollection = require('turf-featurecollection');
 var reclass = require('./index.js');
 
@@ -58425,9 +48366,9 @@ module.exports = function(fc, inField, outField, translations, done){
   return reclassed;
 };
 
-},{"./index.js":376,"turf-featurecollection":377}],377:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],378:[function(require,module,exports){
+},{"./index.js":258,"turf-featurecollection":259}],259:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],260:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -58461,9 +48402,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 }
 
-},{"turf-featurecollection":379}],379:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],380:[function(require,module,exports){
+},{"turf-featurecollection":261}],261:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],262:[function(require,module,exports){
 // http://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
 var featureCollection = require('turf-featurecollection');
 
@@ -58476,15 +48417,18 @@ var featureCollection = require('turf-featurecollection');
  * @param {number} n number of features to select
  * @return {FeatureCollection} output
  * @example
- * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
- * var num = 10
- * var sampled = turf.sample(pts, num)
- * console.log(sampled)
+ * // create a lot of points
+ * var points = turf.random('points', 1000);
+ * //=points
+ *
+ * // sample just a few of them
+ * var sample = turf.sample(points, 10);
+ * //=sample
  */
 module.exports = function(fc, num){
   var outFC = featureCollection(getRandomSubarray(fc.features, num));
   return outFC;
-}
+};
 
 function getRandomSubarray(arr, size) {
   var shuffled = arr.slice(0), i = arr.length, min = i - size, temp, index;
@@ -58497,9 +48441,9 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(min);
 }
 
-},{"turf-featurecollection":381}],381:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],382:[function(require,module,exports){
+},{"turf-featurecollection":263}],263:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],264:[function(require,module,exports){
 var simplify = require('simplify-js');
 
 /**
@@ -58558,7 +48502,7 @@ function simpleFeature (geom, properties) {
   };
 }
 
-},{"simplify-js":383}],383:[function(require,module,exports){
+},{"simplify-js":265}],265:[function(require,module,exports){
 /*
  (c) 2013, Vladimir Agafonkin
  Simplify.js, a high-performance JS polyline simplification library
@@ -58691,7 +48635,7 @@ else window.simplify = simplify;
 
 })();
 
-},{}],384:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 /**
  * Takes a bbox and returns a new bbox with a size expanded or contracted
  * by a factor of X.
@@ -58725,7 +48669,7 @@ module.exports = function(bbox, factor){
   return sized;
 }
 
-},{}],385:[function(require,module,exports){
+},{}],267:[function(require,module,exports){
 var midpoint = require('turf-midpoint');
 var point = require('turf-point');
 var distance = require('turf-distance');
@@ -58772,15 +48716,15 @@ module.exports = function(bbox){
 }
 
 
-},{"turf-distance":386,"turf-midpoint":387,"turf-point":389}],386:[function(require,module,exports){
-arguments[4][303][0].apply(exports,arguments)
-},{"dup":303}],387:[function(require,module,exports){
-arguments[4][304][0].apply(exports,arguments)
-},{"dup":304,"turf-point":388}],388:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],389:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],390:[function(require,module,exports){
+},{"turf-distance":268,"turf-midpoint":269,"turf-point":271}],268:[function(require,module,exports){
+arguments[4][187][0].apply(exports,arguments)
+},{"dup":187}],269:[function(require,module,exports){
+arguments[4][188][0].apply(exports,arguments)
+},{"dup":188,"turf-point":270}],270:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],271:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],272:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -58827,12 +48771,13 @@ module.exports = function(polyFC, ptFC, inField, outField){
   return polyFC;
 };
 
-},{"simple-statistics":391,"turf-inside":392}],391:[function(require,module,exports){
-arguments[4][192][0].apply(exports,arguments)
-},{"dup":192}],392:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],393:[function(require,module,exports){
+},{"simple-statistics":273,"turf-inside":274}],273:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"dup":76}],274:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72}],275:[function(require,module,exports){
 var inside = require('turf-inside');
+
 /**
  * Performs a spatial join on a set of points from a set of polygons.
  *
@@ -58845,284 +48790,56 @@ var inside = require('turf-inside');
  * @param {string} containingPolyId
  * @return {LineString} output
  * @example
- * var tag = require('turf-tag')
- * var fs = require('fs')
- * t.load('./testIn/tagPoints.geojson', function(err, points){
- *   t.load('./testIn/tagPolygons.geojson', function(err, polygons){
- * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
- * var polys = JSON.parse(fs.readFileSync('/path/to/polys.geojson'))
- * var tagged = tag(points, polygons, 'polyID', 'containingPolyID')
- * console.log(taggedPoints)
+ * var bbox = [0, 0, 50, 50];
+ * // create a triangular grid of polygons
+ * var triangleGrid = turf.tin(turf.grid(bbox, 10));
+ * triangleGrid.features.forEach(function(f) {
+ *   f.properties.fill = '#' +
+ *     (~~(Math.random() * 16)).toString(16) +
+ *     (~~(Math.random() * 16)).toString(16) +
+ *     (~~(Math.random() * 16)).toString(16);
+ *   f.properties.stroke = 0;
+ *   f.properties['fill-opacity'] = 1;
+ * });
+ * var randomPoints = turf.random('point', 30, {
+ *   bbox: bbox
+ * });
+ * var both = turf.featurecollection(
+ *   triangleGrid.features.concat(randomPoints.features));
+ * //=both
+ * var tagged = turf.tag(randomPoints, triangleGrid,
+ *                       'fill', 'marker-color');
+ * //=tagged
  */
 module.exports = function(points, polygons, field, outField){
-  points.features.forEach(function(pt){
-    if(!pt.properties){
+  // prevent mutations
+  points = JSON.parse(JSON.stringify(points));
+  polygons = JSON.parse(JSON.stringify(polygons));
+  points.features.forEach(function(pt) {
+    if (!pt.properties) {
       pt.properties = {};
     }
-    polygons.features.forEach(function(poly){
-      if(!pt.properties[outField]){
+    polygons.features.forEach(function(poly) {
+      if (pt.properties[outField] === undefined) {
         var isInside = inside(pt, poly);
-        if(isInside){
+        if (isInside) {
           pt.properties[outField] = poly.properties[field];
         }
-        else{
-          pt.properties[outField] = null;
-        }
       }
     });
-  })
+  });
   return points;
-}
-
-},{"turf-inside":394}],394:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],395:[function(require,module,exports){
-//http://en.wikipedia.org/wiki/Delaunay_triangulation
-//https://github.com/ironwallaby/delaunay
-var polygon = require('turf-polygon');
-var nearest = require('turf-nearest');
-var featurecollection = require('turf-featurecollection');
-var point = require('turf-point');
-
-/**
- * Takes a set of points and the name of a z-value property and
- * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
- * or a TIN for short. These are often used
- * for developing elevation contour maps or stepped heat visualizations.
- *
- * @module turf/tin
- * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
- * Features with {@link Point} geometries
- * @param {string} propertyName - name of the property from which to pull z values.
- * This is optional: if not given, then there will be no extra data added to the
- * derived triangles.
- * @return {FeatureCollection} TIN output
- * @example
- * var fs = require('fs')
- * var z = 'elevation'
- * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
- * var tinPolys = turf.tin(pts, z)
- * console.log(tinPolys)
- */
-module.exports = function(points, z){
-  //break down points
-  var triangles = featurecollection(triangulate(points.features.map(function(p){
-    return {
-        x: p.geometry.coordinates[0],
-        y: p.geometry.coordinates[1]
-    };
-  })).map(function(triangle){
-    return polygon([[[triangle.a.x, triangle.a.y],
-        [triangle.b.x, triangle.b.y],
-        [triangle.c.x, triangle.c.y]]], {a: null, b: null, c: null});
-  }));
-
-  if (z) {
-    // add values from vertices
-    triangles.features.forEach(function(tri){
-      tri.geometry.coordinates[0].forEach(function(c, i){
-        var closest = nearest(point(c[0], c[1]), points);
-        switch (i) {
-          case 0:
-            tri.properties.a = closest.properties[z];
-            break;
-          case 1:
-            tri.properties.b = closest.properties[z];
-            break;
-          case 2:
-            tri.properties.c = closest.properties[z];
-            break;
-        }
-      });
-    });
-  }
-  triangles.features.forEach(correctRings);
-  return triangles;
 };
 
-function correctRings(poly){
-  poly.geometry.coordinates.forEach(function(ring){
-    if (ring[0] !== ring.slice(-1)[0]) ring.push(ring[0]);
-  });
-}
-
-function Triangle(a, b, c) {
-  this.a = a;
-  this.b = b;
-  this.c = c;
-
-  var A = b.x - a.x,
-      B = b.y - a.y,
-      C = c.x - a.x,
-      D = c.y - a.y,
-      E = A * (a.x + b.x) + B * (a.y + b.y),
-      F = C * (a.x + c.x) + D * (a.y + c.y),
-      G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
-      minx, miny, dx, dy;
-
-  /* If the points of the triangle are collinear, then just find the
-   * extremes and use the midpoint as the center of the circumcircle. */
-  if(Math.abs(G) < 0.000001) {
-    minx = Math.min(a.x, b.x, c.x);
-    miny = Math.min(a.y, b.y, c.y);
-    dx   = (Math.max(a.x, b.x, c.x) - minx) * 0.5;
-    dy   = (Math.max(a.y, b.y, c.y) - miny) * 0.5;
-
-    this.x = minx + dx;
-    this.y = miny + dy;
-    this.r = dx * dx + dy * dy;
-  }
-
-  else {
-    this.x = (D*E - B*F) / G;
-    this.y = (A*F - C*E) / G;
-    dx = this.x - a.x;
-    dy = this.y - a.y;
-    this.r = dx * dx + dy * dy;
-  }
-}
-
-function byX(a, b) {
-  return b.x - a.x;
-}
-
-function dedup(edges) {
-  var j = edges.length,
-      a, b, i, m, n;
-
-  outer: while(j) {
-    b = edges[--j]
-    a = edges[--j]
-    i = j
-    while(i) {
-      n = edges[--i]
-      m = edges[--i]
-      if((a === m && b === n) || (a === n && b === m)) {
-        edges.splice(j, 2)
-        edges.splice(i, 2)
-        j -= 2
-        continue outer
-      }
-    }
-  }
-}
-
-function triangulate(vertices) {
-  /* Bail if there aren't enough vertices to form any triangles. */
-  if(vertices.length < 3)
-    return []
-
-  /* Ensure the vertex array is in order of descending X coordinate
-   * (which is needed to ensure a subquadratic runtime), and then find
-   * the bounding box around the points. */
-  vertices.sort(byX)
-
-  var i    = vertices.length - 1,
-      xmin = vertices[i].x,
-      xmax = vertices[0].x,
-      ymin = vertices[i].y,
-      ymax = ymin
-
-  while(i--) {
-    if(vertices[i].y < ymin) ymin = vertices[i].y
-    if(vertices[i].y > ymax) ymax = vertices[i].y
-  }
-
-  /* Find a supertriangle, which is a triangle that surrounds all the
-   * vertices. This is used like something of a sentinel value to remove
-   * cases in the main algorithm, and is removed before we return any
-   * results.
-   *
-   * Once found, put it in the "open" list. (The "open" list is for
-   * triangles who may still need to be considered; the "closed" list is
-   * for triangles which do not.) */
-  var dx     = xmax - xmin,
-      dy     = ymax - ymin,
-      dmax   = (dx > dy) ? dx : dy,
-      xmid   = (xmax + xmin) * 0.5,
-      ymid   = (ymax + ymin) * 0.5,
-      open   = [
-        new Triangle(
-          {x: xmid - 20 * dmax, y: ymid -      dmax, __sentinel: true},
-          {x: xmid            , y: ymid + 20 * dmax, __sentinel: true},
-          {x: xmid + 20 * dmax, y: ymid -      dmax, __sentinel: true}
-        )
-      ],
-      closed = [],
-      edges = [],
-      j, a, b
-
-  /* Incrementally add each vertex to the mesh. */
-  i = vertices.length
-  while(i--) {
-    /* For each open triangle, check to see if the current point is
-     * inside it's circumcircle. If it is, remove the triangle and add
-     * it's edges to an edge list. */
-    edges.length = 0
-    j = open.length
-    while(j--) {
-      /* If this point is to the right of this triangle's circumcircle,
-       * then this triangle should never get checked again. Remove it
-       * from the open list, add it to the closed list, and skip. */
-      dx = vertices[i].x - open[j].x
-      if(dx > 0 && dx * dx > open[j].r) {
-        closed.push(open[j])
-        open.splice(j, 1)
-        continue
-      }
-
-      /* If not, skip this triangle. */
-      dy = vertices[i].y - open[j].y
-      if(dx * dx + dy * dy > open[j].r)
-        continue
-
-      /* Remove the triangle and add it's edges to the edge list. */
-      edges.push(
-        open[j].a, open[j].b,
-        open[j].b, open[j].c,
-        open[j].c, open[j].a
-      )
-      open.splice(j, 1)
-    }
-
-    /* Remove any doubled edges. */
-    dedup(edges)
-
-    /* Add a new triangle for each edge. */
-    j = edges.length
-    while(j) {
-      b = edges[--j]
-      a = edges[--j]
-      open.push(new Triangle(a, b, vertices[i]))
-    }
-  }
-
-  /* Copy any remaining open triangles to the closed list, and then
-   * remove any triangles that share a vertex with the supertriangle. */
-  Array.prototype.push.apply(closed, open)
-
-  i = closed.length
-  while(i--)
-    if(closed[i].a.__sentinel ||
-       closed[i].b.__sentinel ||
-       closed[i].c.__sentinel)
-      closed.splice(i, 1)
-
-  /* Yay, we're done! */
-  return closed;
-}
-
-},{"turf-featurecollection":396,"turf-nearest":397,"turf-point":399,"turf-polygon":400}],396:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],397:[function(require,module,exports){
-arguments[4][249][0].apply(exports,arguments)
-},{"dup":249,"turf-distance":398}],398:[function(require,module,exports){
-arguments[4][239][0].apply(exports,arguments)
-},{"dup":239}],399:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"dup":236}],400:[function(require,module,exports){
-arguments[4][227][0].apply(exports,arguments)
-},{"dup":227}],401:[function(require,module,exports){
+},{"turf-inside":276}],276:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],277:[function(require,module,exports){
+arguments[4][190][0].apply(exports,arguments)
+},{"dup":190,"turf-featurecollection":278,"turf-polygon":279}],278:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],279:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],280:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -59163,15 +48880,15 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":402}],402:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"./lib/jsts":403,"dup":221,"javascript.util":405}],403:[function(require,module,exports){
-arguments[4][222][0].apply(exports,arguments)
-},{"dup":222}],404:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223}],405:[function(require,module,exports){
-arguments[4][224][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":404,"dup":224}],406:[function(require,module,exports){
+},{"jsts":281}],281:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"./lib/jsts":282,"dup":105,"javascript.util":284}],282:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],283:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],284:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":283,"dup":108}],285:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -59218,11 +48935,11 @@ module.exports = function (polyFC, ptFC, inField, outField) {
   return polyFC;
 };
 
-},{"simple-statistics":407,"turf-inside":408}],407:[function(require,module,exports){
-arguments[4][257][0].apply(exports,arguments)
-},{"dup":257}],408:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],409:[function(require,module,exports){
+},{"simple-statistics":286,"turf-inside":287}],286:[function(require,module,exports){
+arguments[4][141][0].apply(exports,arguments)
+},{"dup":141}],287:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],288:[function(require,module,exports){
 var inside = require('turf-inside');
 var featureCollection = require('turf-featurecollection');
 
@@ -59271,12 +48988,1935 @@ module.exports = function(ptFC, polyFC){
   return pointsWithin;
 };
 
-},{"turf-featurecollection":410,"turf-inside":411}],410:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],411:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],412:[function(require,module,exports){
+},{"turf-featurecollection":289,"turf-inside":290}],289:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],290:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],291:[function(require,module,exports){
+module.exports={
+    "functions": [
+        {
+            "name": "turf/aggregate",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of polygons, a set of points, and an array of aggregations, then performs them. Sum, average, count, min, max, and deviation are supported.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "aggregations",
+                    "type": "Array",
+                    "description": "<p>an array of aggregation objects</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[1.669921,48.632908],[1.669921,49.382372],[3.636474,49.382372],[3.636474,48.632908],[1.669921,48.632908]]]),\n  turf.polygon([[[2.230224,47.85003],[2.230224,48.611121],[4.361572,48.611121],[4.361572,47.85003],[2.230224,47.85003]]])]);\nvar points = turf.featurecollection([\n  turf.point(2.054443,49.138596, {population: 200}),\n  turf.point(3.065185,48.850258, {population: 600}),\n  turf.point(2.329101,48.79239, {population: 100}),\n  turf.point(2.614746,48.334343, {population: 200}),\n  turf.point(3.416748,48.056053, {population: 300})]);\nvar aggregations = [\n  {\n    aggregation: 'sum',\n    inField: 'population',\n    outField: 'pop_sum'\n  },\n  {\n    aggregation: 'average',\n    inField: 'population',\n    outField: 'pop_avg'\n  },\n  {\n    aggregation: 'median',\n    inField: 'population',\n    outField: 'pop_median'\n  },\n  {\n    aggregation: 'min',\n    inField: 'population',\n    outField: 'pop_min'\n  },\n  {\n    aggregation: 'max',\n    inField: 'population',\n    outField: 'pop_max'\n  },\n  {\n    aggregation: 'deviation',\n    inField: 'population',\n    outField: 'pop_deviation'\n  },\n  {\n    aggregation: 'variance',\n    inField: 'population',\n    outField: 'pop_variance'\n  },\n  {\n    aggregation: 'count',\n    inField: '',\n    outField: 'point_count'\n  }\n];\n\nvar aggregated = turf.aggregate(polygons, points, aggregations);\n\nvar result = turf.featurecollection(points.features.concat(aggregated.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features with properties listed as <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/area",
+            "access": "",
+            "virtual": false,
+            "description": "Given any kind of GeoJSON feature, return the area of that feature,\nin square meters.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "GeoJSON",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]),\n  turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])]);\nvar area = turf.area(polygons);\n//=area"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>area in square meters</p>"
+            }
+        },
+        {
+            "name": "turf/average",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the average value of a field for points\nwithin a set of polygons.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "string",
+                    "description": "<p>the field in the <code>points</code> features from which to pull values to average</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outputField",
+                    "type": "string",
+                    "description": "<p>the field in the <code>polygons</code> FeatureCollection to put results of the averages</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[[10.666351,59.890659],[10.666351,59.936784],[10.762481,59.936784],[10.762481,59.890659],[10.666351,59.890659]]]);\nvar poly2 = turf.polygon([[[10.764541,59.889281],[10.764541,59.937128],[10.866165,59.937128],[10.866165,59.889281],[10.764541,59.889281]]]);\nvar polygons = turf.featurecollection([poly1, poly2]);\nvar pt1 = turf.point(10.724029,59.926807, {population: 200});\nvar pt2 = turf.point(10.715789,59.904778, {population: 600});\nvar pt3 = turf.point(10.746002,59.908566, {population: 100});\nvar pt4 = turf.point(10.806427,59.908910, {population: 200});\nvar pt5 = turf.point(10.79544,59.931624, {population: 300});\nvar points = turf.featurecollection([pt1, pt2, pt3, pt4, pt5]);\n\nvar averaged = turf.average(polygons, points, 'population', 'pop_avg');\n\nvar result = turf.featurecollection(points.features.concat(averaged.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features with the value of <code>outField</code> set to the calculated average</p>"
+            }
+        },
+        {
+            "name": "turf/bbox-polygon",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bbox and returns the equivalent polygon feature.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array",
+                    "description": "<p>an Array of bounding box coordinates in the form: <code>[xLow, yLow, xHigh, yHigh]</code></p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n\n//=poly"
+            ],
+            "returns": {
+                "type": "Polygon",
+                "description": "<p>a Polygon of the bounding box</p>"
+            }
+        },
+        {
+            "name": "turf/bearing",
+            "access": "",
+            "virtual": false,
+            "description": "Finds the bearing between two  Point geometries.",
+            "parameters": [
+                {
+                    "name": "start",
+                    "type": "Point",
+                    "description": "<p>starting Point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "end",
+                    "type": "Point",
+                    "description": "<p>ending Point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point1 = turf.point(-75.343, 39.984);\nvar point2 = turf.point(-75.534, 39.123);\n\nvar bearing = turf.bearing(point1, point2);\n\n//=bearing"
+            ],
+            "returns": {
+                "type": "number",
+                "description": "<p>bearing in decimal degrees</p>"
+            }
+        },
+        {
+            "name": "turf/bezier",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString geometry returns outputs a curved version of the line\nby applying a Bezier spline\nalgorithm.\nThe bezier spline implementation is by Leszek Rybicki.",
+            "parameters": [
+                {
+                    "name": "line",
+                    "type": "LineString",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "resolution",
+                    "type": "number",
+                    "description": "<p>time in milliseconds between points</p>",
+                    "default": "10000",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "sharpness",
+                    "type": "number",
+                    "description": "<p>a measure of how curvy the path should be between splines</p>",
+                    "default": "0.85",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = turf.linestring([\n  [-76.09130859375, 18.427501971948608],\n  [-76.695556640625, 18.729501999072138],\n  [-76.552734375, 19.40443049681278],\n  [-74.619140625, 19.134789188332523],\n  [-73.65234375, 20.076570104545173],\n  [-73.157958984375, 20.210656234489853]], {\n     stroke: '#f00'\n  });\nvar curved = turf.bezier(line);\ncurved.properties = { stroke: '#0f0' };\nvar result = turf.featurecollection([line, curved]);\n//=result"
+            ],
+            "returns": {
+                "type": "LineString",
+                "description": "<p>curved line</p>"
+            }
+        },
+        {
+            "name": "turf/buffer",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates a buffer for a  Point, {@link LineString}, or {@link Polygon} {@link Feature}/{@link FeatureCollection} for a given radius. Units supported are miles, kilometers, and degrees.",
+            "parameters": [
+                {
+                    "name": "feature",
+                    "type": "FeatureCollection",
+                    "description": "<p>a Feature or FeatureCollection of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "distance",
+                    "type": "Number",
+                    "description": "<p>distance to draw the buffer</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "unit",
+                    "type": "String",
+                    "description": "<p>'miles' or 'kilometers'</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt = turf.point(-90.548630, 14.616599);\nvar unit = 'miles';\n\nvar buffered = turf.buffer(pt, 500, unit);\n\nvar result = turf.featurecollection(\n  buffered.features.concat(pt));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection containing {@link Polygon} features representing buffers</p>"
+            }
+        },
+        {
+            "name": "turf/center",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the absolute center point of all features.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection",
+                    "description": "<p>a GeoJSON Feature or FeatureCollection</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var features = [\n    turf.point(-97.522259, 35.469100),\n    turf.point(-97.502754, 35.463455),\n    turf.point(-97.508269, 35.463245),\n    turf.point(-97.516809, 35.465779),\n    turf.point(-97.515372, 35.467072),\n    turf.point(-97.509363, 35.463053),\n    turf.point(-97.511123, 35.466601),\n    turf.point(-97.518547, 35.469327),\n    turf.point(-97.519706, 35.469659),\n    turf.point(-97.517839, 35.466998),\n    turf.point(-97.508678, 35.464942),\n    turf.point(-97.514914, 35.463453)\n];\nvar fc = turf.featurecollection(features);\nvar centerPt = turf.center(fc);\n\nvar result = turf.featurecollection(fc.features.concat(centerPt.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a GeoJSON FeatureCollection of the\nabsolute center points of all input features</p>"
+            }
+        },
+        {
+            "name": "turf/centroid",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the centroid of a polygon Feature or\nFeatureCollection using the geometric mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating\nthe centroid of a set of polygons.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection",
+                    "description": "<p>a {@link Feature} or FeatureCollection of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = turf.polygon([[\n\t[105.818939,21.004714],\n\t[105.818939,21.061754],\n\t[105.890007,21.061754],\n\t[105.890007,21.004714],\n\t[105.818939,21.004714]\n]]);\n\nvar centroidPt = turf.centroid(poly);\n\nvar result = turf.featurecollection([poly, centroidPt]);\n\n//=result"
+            ],
+            "returns": {
+                "type": "Point",
+                "description": "<p>a Point showing the centroid of the input feature(s)</p>"
+            }
+        },
+        {
+            "name": "turf/combine",
+            "access": "",
+            "virtual": false,
+            "description": "Combines a FeatureCollection of point, linestring, or polygon Features into multipoint, multilinestring, or multipolygon Features.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection",
+                    "description": "<p>a {@link Feature} or {@link FeatureCollection} of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(19.026432, 47.49134);\nvar pt2 = turf.point(19.074497, 47.509548);\nvar fc = turf.featurecollection([pt1, pt2]);\n\nvar combined = turf.combine(fc);\n\n//=combined"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of corresponding type to input</p>"
+            }
+        },
+        {
+            "name": "turf/concave",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of points and\nreturns a concave hull\nInternally, this implements\na Monotone chain algorithm.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "maxEdge",
+                    "type": "number",
+                    "description": "<p>the size of an edge necessary for part of the\nhull to become concave (in miles)</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.featurecollection([\n turf.point(-63.601226, 44.642643),\n turf.point(-63.591442, 44.651436),\n turf.point(-63.580799, 44.648749),\n turf.point(-63.573589, 44.641788),\n turf.point(-63.587665, 44.64533),\n turf.point(-63.595218, 44.64765)]);\n\nvar hull = turf.concave(points, 1);\n\nvar result = turf.featurecollection(\n points.features.concat(hull));\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>a {@link Polygon} feature</p>"
+            }
+        },
+        {
+            "name": "turf/convex",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of points and\nreturns a convex hull polygon.\nInternally this implements\na Monotone chain algorithm.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a collection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.featurecollection([\n  turf.point(10.195312, 43.755225),\n  turf.point(10.404052, 43.8424511),\n  turf.point(10.579833, 43.659924),\n  turf.point(10.360107, 43.516688),\n  turf.point(10.14038, 43.588348),\n  turf.point(10.195312, 43.755225)]);\n\nvar result = turf.featurecollection(\n  points.features.concat([turf.convex(points)]));\n//=result"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>a {@link Polygon} feature</p>"
+            }
+        },
+        {
+            "name": "turf/count",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the number of points that fall within a set of polygons.",
+            "parameters": [
+                {
+                    "name": "polyFC",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "pointFC",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "countField",
+                    "type": "String",
+                    "description": "<p>a field to append to the attributes of the Polygon features representing Point counts</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[\n [-112.072391,46.586591],\n [-112.072391,46.61761],\n [-112.028102,46.61761],\n [-112.028102,46.586591],\n [-112.072391,46.586591]\n]]);\nvar poly2 = turf.polygon([[\n [-112.023983,46.570426],\n [-112.023983,46.615016],\n [-111.966133,46.615016],\n [-111.966133,46.570426],\n [-112.023983,46.570426]\n]]);\nvar polyFC = turf.featurecollection([poly1, poly2]);\nvar pt1 = turf.point(-112.0372, 46.608058, {population: 200});\nvar pt2 = turf.point(-112.045955, 46.596264,\n {population: 600});\nvar ptFC = turf.featurecollection([pt1, pt2]);\n\nvar counted = turf.count(polyFC, ptFC, 'pt_count');\n\nvar result = turf.featurecollection(\n  ptFC.features.concat(counted.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of Polygon features with <code>countField</code> appended</p>"
+            }
+        },
+        {
+            "name": "turf/destination",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the destination point given a  Point feature; distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the Haversine formula to account for global curvature.",
+            "parameters": [
+                {
+                    "name": "start",
+                    "type": "Point",
+                    "description": "<p>a Point feature at the starting point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "distance",
+                    "type": "Number",
+                    "description": "<p>distance from the starting point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "bearing",
+                    "type": "Number",
+                    "description": "<p>ranging from -180 to 180</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>miles, kilometers, degrees, or radians</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point1 = turf.point(-75.343, 39.984);\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point1, distance, bearing, units);\npoint1.properties['marker-color'] = '#f00';\ndestination.properties['marker-color'] = '#0f0';\n\nvar result = turf.featurecollection([point1, destination]);\n\n//=result"
+            ],
+            "returns": {
+                "type": "Point",
+                "description": "<p>a {@link Point} feature at the destination</p>"
+            }
+        },
+        {
+            "name": "turf/deviation",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the standard deviation value of a field for points within a set of polygons.",
+            "parameters": [
+                {
+                    "name": "polyFC",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "pointFC",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in <code>pointFC</code> from which to aggregate</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field to append to polyFC representing deviation</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[\n  [-97.807159, 30.270335],\n  [-97.807159, 30.369913],\n  [-97.612838, 30.369913],\n  [-97.612838, 30.270335],\n  [-97.807159, 30.270335]\n]]);\nvar poly2 = turf.polygon([[\n  [-97.825698, 30.175405],\n  [-97.825698, 30.264404],\n  [-97.630691, 30.264404],\n  [-97.630691, 30.175405],\n  [-97.825698, 30.175405]\n]]);\nvar polyFC = turf.featurecollection([poly1, poly2]);\nvar pt1 = turf.point(-97.709655, 30.311245,\n  {population: 500});\nvar pt2 = turf.point(-97.766647, 30.345028,\n  {population: 400});\nvar pt3 = turf.point(-97.765274, 30.294646,\n  {population: 600});\nvar pt4 = turf.point(-97.753601, 30.216355,\n  {population: 500});\nvar pt5 = turf.point(-97.667083, 30.208047,\n  {population: 200});\nvar ptFC = turf.featurecollection([pt1, pt2, pt3, pt4, pt5]);\n\nvar inField = 'population';\nvar outField = 'pop_deviation';\n\nvar deviated = turf.deviation(\n  polyFC, ptFC, inField, outField);\n\nvar result = turf.featurecollection(\n  ptFC.features.concat(deviated.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of Polygon features with appended field representing deviation</p>"
+            }
+        },
+        {
+            "name": "turf/distance",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the distance between two  Point features in degrees,\nradians, miles, or kilometers. This uses the\nHaversine formula\nto account for global curvature.",
+            "parameters": [
+                {
+                    "name": "from",
+                    "type": "Point",
+                    "description": "<p>origin point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "to",
+                    "type": "Point",
+                    "description": "<p>destination point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>can be degrees, radians, miles, or kilometers</p>",
+                    "default": "kilometers",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point1 = turf.point(-75.343, 39.984);\nvar point2 = turf.point(-75.534, 39.123);\nvar units = 'miles';\nvar distance = turf.distance(point1, point2, units);\n\n//=distance"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>distance between the two points</p>"
+            }
+        },
+        {
+            "name": "turf/envelope",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Feature or {@link FeatureCollection} and returns a rectangular {@link Polygon} feature that encompasses all vertices.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(-75.343, 39.984, {name: 'Location A'});\nvar pt2 = turf.point(-75.833, 39.284, {name: 'Location B'});\nvar pt3 = turf.point(-75.534, 39.123, {name: 'Location C'});\nvar fc = turf.featurecollection([pt1, pt2, pt3]);\n\nvar enveloped = turf.envelope(fc);\n\nvar result = turf.featurecollection(\n\tfc.features.concat(enveloped));\n\n//=result"
+            ],
+            "returns": {
+                "type": "Polygon",
+                "description": "<p>a rectangular Polygon feature that encompasses all vertices</p>"
+            }
+        },
+        {
+            "name": "turf/erase",
+            "access": "",
+            "virtual": false,
+            "description": "Finds the difference between two polygons by clipping the second\npolygon from the first.",
+            "parameters": [
+                {
+                    "name": "poly1",
+                    "type": "Polygon",
+                    "description": "<p>input Polygon feaure</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "poly2",
+                    "type": "Polygon",
+                    "description": "<p>Polygon feature to erase from <code>poly1</code></p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[\n [-46.738586, -23.596711],\n [-46.738586, -23.458207],\n [-46.560058, -23.458207],\n [-46.560058, -23.596711],\n [-46.738586, -23.596711]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-46.650009, -23.631314],\n [-46.650009, -23.5237],\n [-46.509246, -23.5237],\n [-46.509246, -23.631314],\n [-46.650009, -23.631314]\n]]);\npoly2.properties.fill = '#00f';\n\nvar erased = turf.erase(poly1, poly2);\nerased.properties.fill = '#f00';\n\nvar polygons = turf.featurecollection([poly1, poly2]);\n\n//=polygons\n\n//=erased"
+            ],
+            "returns": {
+                "type": "Polygon",
+                "description": "<p>a Polygon feature showing the area of <code>poly1</code> excluding the area of <code>poly2</code></p>"
+            }
+        },
+        {
+            "name": "turf/explode",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Feature or {@link FeatureCollection} and return all positions as\na collection of {@link Point|Points}.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "GeoJSON",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = turf.polygon([[\n [177.396755, -17.795112],\n [177.422161, -17.783506],\n [177.439155, -17.799851],\n [177.426624, -17.826164],\n [177.404651, -17.836459],\n [177.385425, -17.812926],\n [177.381134, -17.797563],\n [177.396755, -17.795112]\n]]);\n\nvar points = turf.explode(poly);\n\n//=poly\n\n//=points"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of Point features representing the exploded input features</p>"
+            }
+        },
+        {
+            "name": "turf/extent",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the extent of all input features and returns a bounding box.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "GeoJSON-Object",
+                    "description": "<p>any valid GeoJSON Object</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(114.175329, 22.2524);\nvar pt2 = turf.point(114.170007, 22.267969);\nvar pt3 = turf.point(114.200649, 22.274641);\nvar pt4 = turf.point(114.186744, 22.265745);\nvar fc = turf.featurecollection(\n [pt1, pt2, pt3, pt4]);\n\nvar bbox = turf.extent(fc);\nconsole.log(bbox); //\n\nvar bboxPolygon = turf.bboxPolygon(bbox);\nbboxPolygon.properties.fill = '#00f';\n\nvar result = turf.featurecollection(\n fc.features.concat(bboxPolygon));\n\n//=result"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the bounding box of the GeoJSON given\nas an array in WSEN order (west, south, east, north)</p>"
+            }
+        },
+        {
+            "name": "turf/featurecollection",
+            "access": "",
+            "virtual": false,
+            "description": "Creates a  FeatureCollection",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "Feature",
+                    "description": "<p>input Features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(-75.343, 39.984, {name: 'Location A'});\nvar pt2 = turf.point(-75.833, 39.284, {name: 'Location B'});\nvar pt3 = turf.point(-75.534, 39.123, {name: 'Location C'});\nvar fc = turf.featurecollection([pt1, pt2, pt3]);\n\n//=fc"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of input features</p>"
+            }
+        },
+        {
+            "name": "turf/filter",
+            "access": "",
+            "virtual": false,
+            "description": "Filters a  FeatureCollection by a  property key-value combination",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "<p>input FeatureCollection</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "key",
+                    "type": "String",
+                    "description": "<p>the property on which to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "String",
+                    "description": "<p>the value of that property on which to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var trees = turf.featurecollection([\n turf.point(-72.581777, 44.260875, {species: 'oak'}),\n turf.point(-72.570018, 44.260691, {species: 'birch'}),\n turf.point(-72.576284, 44.257925, {species: 'oak'}),\n turf.point(-72.56916, 44.254605, {species: 'redwood'}),\n turf.point(-72.581691, 44.24858, {species: 'maple'}),\n turf.point(-72.583837, 44.255773, {species: 'oak'})\n]);\n\nvar filtered = turf.filter(trees, 'species', 'oak');\n\n//=trees\n\n//=filtered"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a filtered collection with only features that match input <code>key</code> and <code>value</code></p>"
+            }
+        },
+        {
+            "name": "turf/flip",
+            "access": "",
+            "virtual": false,
+            "description": "Takes any GeoJSON object and flips all of its coordinates\nfrom [x, y] to [y, x].",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "GeoJSON",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var saudiArabia = turf.point([20.56640625, 43.42100882994726]);\n//=saudiArabia\nvar serbia = turf.flip(saudiArabia);\n//=serbia"
+            ],
+            "returns": {
+                "type": "GeoJSON",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and outputs points in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [xmin, ymin, xmax, ymax] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "depth",
+                    "type": "Number",
+                    "description": "<p>how many cells to output</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar depth = 10;\n\nvar grid = turf.grid(extent, depth);\n\n//=grid"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>grid as FeatureCollection with {@link Point} features</p>"
+            }
+        },
+        {
+            "name": "turf/hex",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell size in degrees and creates a  FeatureCollection of flat-topped\nhexagons aligned in an &quot;odd-q&quot; vertical grid as\ndescribed in Hexagonal Grids",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>bounding box in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "size",
+                    "type": "Number",
+                    "description": "<p>size of cells in degrees</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [7.2669410, 43.695307, 7.2862529, 43.706476];\nvar size = 0.001;\nvar hexgrid = turf.hex(bbox, size);\n\n//=hexgrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of hexagonal Polygon features in a grid</p>"
+            }
+        },
+        {
+            "name": "turf/inside",
+            "access": "",
+            "virtual": false,
+            "description": "Checks to see if a  Point is inside of a {@link Polygon}. The Polygon can\nbe convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}\nand accounts for holes.",
+            "parameters": [
+                {
+                    "name": "point",
+                    "type": "Point",
+                    "description": "<p>a Point feature</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygon",
+                    "type": "Polygon",
+                    "description": "<p>a Polygon feature</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(-111.467285, 40.75766);\npt1.properties['marker-color'] = \"#f00\";\nvar pt2 = turf.point(-111.873779, 40.647303);\npt2.properties['marker-color'] = \"#0f0\";\nvar poly = turf.polygon([[\n [-112.074279, 40.52215],\n [-112.074279, 40.853293],\n [-111.610107, 40.853293],\n [-111.610107, 40.52215],\n [-112.074279, 40.52215]\n]]);\nvar features = turf.featurecollection([pt1, pt2, poly]);\n\n//=features\n\nvar isInside1 = turf.inside(pt1, poly);\n//=isInside1\n\nvar isInside2 = turf.inside(pt2, poly);\n//=isInside2"
+            ],
+            "returns": {
+                "type": "boolean",
+                "description": "<p>whether the Point is inside the Polygon</p>"
+            }
+        },
+        {
+            "name": "turf/intersect",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two  Polygon features and finds their intersection.",
+            "parameters": [
+                {
+                    "name": "poly1",
+                    "type": "Polygon",
+                    "description": "<p>the first Polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "poly2",
+                    "type": "Polygon",
+                    "description": "<p>the second Polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[\n [-122.801742, 45.48565],\n [-122.801742, 45.60491],\n [-122.584762, 45.60491],\n [-122.584762, 45.48565],\n [-122.801742, 45.48565]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-122.520217, 45.535693],\n [-122.64038, 45.553967],\n [-122.720031, 45.526554],\n [-122.669906, 45.507309],\n [-122.723464, 45.446643],\n [-122.532577, 45.408574],\n [-122.487258, 45.477466],\n [-122.520217, 45.535693]\n]]);\npoly2.properties.fill = '#00f';\nvar polygons = turf.featurecollection([poly1, poly2]);\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//=polygons\n\n//=intersection"
+            ],
+            "returns": {
+                "type": "Polygon",
+                "description": "<p>a Polygon feature representing the area where <code>poly1</code> and <code>poly2</code> overlap</p>"
+            }
+        },
+        {
+            "name": "turf/isobands",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection of points with z values and an array of\nvalue breaks and generates filled contour isobands. These are commonly\nused to create elevation maps, but can be used for general data\ninterpolation as well.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "z",
+                    "type": "string",
+                    "description": "<p>a property name from which z values will be pulled</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "resolution",
+                    "type": "number",
+                    "description": "<p>resolution of the underlying grid</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "breaks",
+                    "type": "Array.<number>",
+                    "description": "<p>where to draw contours</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create random points with random\n// z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nvar isolined = turf.isobands(points, 'z', 15, breaks);\n//=isolined"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>isolines</p>"
+            }
+        },
+        {
+            "name": "turf/isolines",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection of points with z values and an array of\nvalue breaks and generates isolines.\nThese are commonly used to create elevation maps, but can be used\nfor general data interpolation as well.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a collection containing only Features with\n{@link Point} geometries</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "z",
+                    "type": "string",
+                    "description": "<p>field in properties to contour</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "resolution",
+                    "type": "number",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "breaks",
+                    "type": "Array.<number>",
+                    "description": "<p>at which to draw contours</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create random points with random\n// z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nvar isolined = turf.isolines(points, 'z', 15, breaks);\n//=isolined"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>isolines</p>"
+            }
+        },
+        {
+            "name": "turf/jenks",
+            "access": "",
+            "virtual": false,
+            "description": "Given a FeatureCollection, return the Jenks Natural breaks\nof a given property",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "string",
+                    "description": "<p>the property in <code>input</code> on which to calculate Jenks natural breaks</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "numberOfBreaks",
+                    "type": "number",
+                    "description": "<p>number of classes in which to group the data</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.featurecollection([\n  turf.point(49.859733, 40.400424, {population: 200}),\n  turf.point(49.83879, 40.401209, {population: 600}),\n  turf.point(49.817848, 40.376889, {population: 100}),\n  turf.point(49.840507, 40.386043, {population: 200}),\n  turf.point(49.854583, 40.37532, {population: 300})]);\nvar breaks = turf.jenks(points, 'population', 3);\n//=breaks"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the break number for each class plus the minimum and maximum values</p>"
+            }
+        },
+        {
+            "name": "turf/kinks",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a polygon and detects all self-intersections.",
+            "parameters": [
+                {
+                    "name": "polygon",
+                    "type": "Polygon",
+                    "description": "<p>a Polygon feature</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = turf.polygon([[\n [-12.034835, 8.901183],\n [-12.060413, 8.899826],\n [-12.03638, 8.873199],\n [-12.059383, 8.871418],\n [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n\nvar result = turf.featurecollection(\n kinks.intersections.features.concat(poly));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of Point features representing self-intersections</p>"
+            }
+        },
+        {
+            "name": "turf/linestring",
+            "access": "",
+            "virtual": false,
+            "description": "Creates a  LineString {@link Feature} based on a\ncoordinate array. Properties can be added optionally.",
+            "parameters": [
+                {
+                    "name": "coordinates",
+                    "type": "Array.<Array.<number>>",
+                    "description": "<p>an array of Positions</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>an Object consisting of key-value pairs to add as properties</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var linestring1 = turf.linestring([\n\t[-21.964416, 64.148203],\n\t[-21.956176, 64.141316],\n\t[-21.93901, 64.135924],\n\t[-21.927337, 64.136673]\n]);\nvar linestring2 = turf.linestring([\n\t[-21.929054, 64.127985],\n\t[-21.912918, 64.134726],\n\t[-21.916007, 64.141016],\n\t[-21.930084, 64.14446]\n], {name: 'line 1', distance: 145});\n\n//=linestring1\n\n//=linestring2"
+            ],
+            "returns": {
+                "type": "LineString",
+                "description": "<p>a LineString feature</p>"
+            }
+        },
+        {
+            "name": "turf/max",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the maximum value of a field for points within a set of polygons.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [101.551437, 3.150114],\n    [101.551437, 3.250208],\n    [101.742324, 3.250208],\n    [101.742324, 3.150114],\n    [101.551437, 3.150114]\n  ]]),\n  turf.polygon([[\n    [101.659927, 3.011612],\n    [101.659927, 3.143944],\n    [101.913986, 3.143944],\n    [101.913986, 3.011612],\n    [101.659927, 3.011612]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point(101.56105, 3.213874, {population: 200}),\n  turf.point(101.709365, 3.211817, {population: 600}),\n  turf.point(101.645507, 3.169311, {population: 100}),\n  turf.point(101.708679, 3.071266, {population: 200}),\n  turf.point(101.826782, 3.081551, {population: 300})]);\n\nvar aggregated = turf.max(\n  polygons, points, 'population', 'max');\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features\nwith properties listed as <code>outField</code> values</p>"
+            }
+        },
+        {
+            "name": "turf/median",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of polygons, a set of points, and tag polygons with the sum\nof point property values contained within.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]),\n  turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])]);\nvar points = turf.featurecollection([\n  turf.point(5,5, {population: 200}),\n  turf.point(1,3, {population: 600}),\n  turf.point(14,2, {population: 100}),\n  turf.point(13,1, {population: 200}),\n  turf.point(19,7, {population: 300})]);\nvar aggregated = turf.median(polygons, points, 'population', 'median');\n//=polygons\n//=points\n//=aggregated"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features\nwith properties listed as <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/merge",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a feature collection of polygons and outputs a single merged\npolygon feature.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var a = turf.polygon([[[10,0],[20,10],[20,0],[10,0]]]);\na.properties.fill = '#0f0';\nvar b = turf.polygon([[[10+5,0+5],[20+5,10+5],[20+5,0+5],[10+5,0+5]]]);\nb.properties.fill = '#00f';\nvar erased = turf.erase(JSON.parse(JSON.stringify(a)), b);\nvar a = turf.polygon([[[10,0],[20,10],[20,0],[10,0]]]);\na.properties.fill = '#0f0';\nvar b = turf.polygon([[[10+5,0+5],[20+5,10+5],[20+5,0+5],[10+5,0+5]]]);\nb.properties.fill = '#00f';\nvar merged = turf.merge(turf.featurecollection([a, b]));\n//=a\n//=b\n//=merged"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": ""
+            }
+        },
+        {
+            "name": "turf/midpoint",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two point features and returns a point between the two.",
+            "parameters": [
+                {
+                    "name": "a",
+                    "type": "Point",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "b",
+                    "type": "Point",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(0,0)\nvar pt2 = turf.point(10, 0)\nvar midpointed = turf.midpoint(pt1, pt2)\nvar features = turf.featurecollection([\n pt1, pt2, midpointed]);\n//=features"
+            ],
+            "returns": {
+                "type": "Point",
+                "description": "<p>a point between the two</p>"
+            }
+        },
+        {
+            "name": "turf/min",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of polygons, a set of points, and tag polygons with the sum\nof point property values contained within.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]),\n  turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])]);\nvar points = turf.featurecollection([\n  turf.point(5,5, {population: 200}),\n  turf.point(1,3, {population: 600}),\n  turf.point(14,2, {population: 100}),\n  turf.point(13,1, {population: 200}),\n  turf.point(19,7, {population: 300})]);\nvar aggregated = turf.min(polygons, points, 'population', 'min');\n//=polygons\n//=points\n//=aggregated"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features\nwith properties listed as <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/nearest",
+            "access": "",
+            "virtual": false,
+            "description": "Returns the  Point feature closest to the input.",
+            "parameters": [
+                {
+                    "name": "point",
+                    "type": "Point",
+                    "description": "<p>the reference point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "against",
+                    "type": "FeatureCollection",
+                    "description": "<p>a collection of {@link Feature|features}\nwith {@link Point} geometries</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>the closest point feature to point</p>"
+            }
+        },
+        {
+            "name": "turf/planepoint",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a trianglular plane and calculates the z value\nfor a point on the plane.",
+            "parameters": [
+                {
+                    "name": "interpolatedPoint",
+                    "type": "Point",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "triangle",
+                    "type": "Array.<Array.<number>>",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point = turf.point(-75.3221, 39.529);\n// triangle is a polygon with \"a\", \"b\",\n// and \"c\" values representing\n// the values of the coordinates in order.\nvar triangle = turf.polygon(\n  [[[-75.1221,39.57],[-75.58,39.18],[-75.97,39.86]]],\n  {\"a\": 11, \"b\": 122, \"c\": 44});\nvar zValue = turf.planepoint(point, triangle);\n//=zValue"
+            ],
+            "returns": {
+                "type": "number",
+                "description": "<p>the value at that point</p>"
+            }
+        },
+        {
+            "name": "turf/pointOnSurface",
+            "access": "",
+            "virtual": false,
+            "description": "Finds a  Point guaranteed to be on the surface of\n{@link GeoJSON} object.\n\nGiven a {@link Polygon}, the point will be in the area of the polygon\nGiven a {@link LineString}, the point will be along the string\nGiven a {@link Point}, the point will the same as the input\n",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "GeoJSON",
+                    "description": "<p>any GeoJSON object</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create a random polygon\nvar polygon = turf.random('polygon');\n\n// place a point on it\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\n// show both of them\nvar fc = turf.featurecollection([polygon, pointOnPolygon]);\n//=fc"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>a point on the surface</p>"
+            }
+        },
+        {
+            "name": "turf/point",
+            "access": "",
+            "virtual": false,
+            "description": "Generates a new  Point feature, given coordinates\nand, optionally, properties.",
+            "parameters": [
+                {
+                    "name": "longitude",
+                    "type": "number",
+                    "description": "<p>position west to east in decimal degrees</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "latitude",
+                    "type": "number",
+                    "description": "<p>position south to north in decimal degrees</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>an optional object that is used as the Feature's\nproperties</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point(-75.343, 39.984);\n//=pt1"
+            ],
+            "returns": {
+                "type": "Point",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/polygon",
+            "access": "",
+            "virtual": false,
+            "description": "Generates a new GeoJSON Polygon feature, given an array of coordinates\nand list of properties.",
+            "parameters": [
+                {
+                    "name": "rings",
+                    "type": "Array.<Array.<number>>",
+                    "description": "<p>an array of LinearRings</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>an optional properties object</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]])\nvar poly2 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]],\n  {name: 'line 1', distance: 145})\nconsole.log(poly1)\nconsole.log(poly2)"
+            ],
+            "returns": {
+                "type": "GeoJSONPolygon",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/quantile",
+            "access": "",
+            "virtual": false,
+            "description": "Given a FeatureCollection, return the quantiles of a given property",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "string",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "numberOfBreaks",
+                    "type": "number",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.featurecollection([\n  turf.point(5,5, {population: 200}),\n  turf.point(1,3, {population: 600}),\n  turf.point(14,2, {population: 100}),\n  turf.point(13,1, {population: 200}),\n  turf.point(19,7, {population: 300})]);\nvar breaks = turf.quantile(points, 'population', 2);\n//=breaks"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the number of breaks</p>"
+            }
+        },
+        {
+            "name": "turf/random",
+            "access": "",
+            "virtual": false,
+            "description": "Generates random GeoJSON data, including Points and Polygons, for testing\nand experimentation.",
+            "parameters": [
+                {
+                    "name": "type",
+                    "type": "String",
+                    "description": "<p>type of features desired. Valid values\nare 'points' or 'polygons'</p>",
+                    "default": "'point'",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "count",
+                    "type": "Number",
+                    "description": "<p>how many geometries should be generated.</p>",
+                    "default": "1",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "options",
+                    "type": "Object",
+                    "description": "<p>relevant to the feature desired. Can include:</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "options.bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>a bounding box inside of which geometries\nare placed. In the case of points, they are guaranteed to be within this bounds,\nwhile polygons have their centroid within it.</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "options.num_vertices",
+                    "type": "Number",
+                    "description": "<p>the number of vertices added\nto polygon features.</p>",
+                    "default": "10",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "options.max_radial_length",
+                    "type": "Number",
+                    "description": "<p>the total number of decimal\ndegrees longitude or latitude that a polygon can extent outwards to\nfrom its center.</p>",
+                    "default": "10",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.random('points', 100, {\n  bbox: [-70, 40, -60, 60]\n});\n//=points\nvar polygons = turf.random('polygons', 4, {\n  bbox: [-70, 40, -60, 60]\n});\n//=polygons"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>generated random features</p>"
+            }
+        },
+        {
+            "name": "turf/reclass",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a featurecollection, a in field, an out field, and\nan array of translations and outputs an identical feature collection with\nthe out field property populated.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>field to map</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>an array of translations</p>"
+            }
+        },
+        {
+            "name": "turf/remove",
+            "access": "",
+            "virtual": false,
+            "description": "Filter a FeatureCollection by a desired property key-value combination.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "key",
+                    "type": "string",
+                    "description": "<p>the key in a feature's properties property</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "<p>the desired value of that property</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var trees = turf.featurecollection([\n turf.point(1,2, {species: 'oak'}),\n turf.point(2,1, {species: 'birch'}),\n turf.point(3,1, {species: 'oak'}),\n turf.point(2,2, {species: 'redwood'}),\n turf.point(2,3, {species: 'maple'}),\n turf.point(4,2, {species: 'oak'})\n]);\n//=trees\nvar filtered = turf.remove(trees, 'species', 'oak');\n//=filtered"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a filtered collection with only features that don't match.</p>"
+            }
+        },
+        {
+            "name": "turf/sample",
+            "access": "",
+            "virtual": false,
+            "description": "Selects a given number of  Feature|features from a {@link FeatureCollection}\nat random.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "n",
+                    "type": "number",
+                    "description": "<p>number of features to select</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create a lot of points\nvar points = turf.random('points', 1000);\n//=points\n\n// sample just a few of them\nvar sample = turf.sample(points, 10);\n//=sample"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/simplify",
+            "access": "",
+            "virtual": false,
+            "description": "Simplifies a  Feature containing a {@link LineString} or\n{@link Polygon} geometry. Internally uses simplify-js\nto perform simplification.",
+            "parameters": [
+                {
+                    "name": "feature",
+                    "type": "Feature",
+                    "description": "<p>a feature to be simplified</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "tolerance",
+                    "type": "number",
+                    "description": "<p>simplification tolerance</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "highQuality",
+                    "type": "boolean",
+                    "description": "<p>whether or not to spend more time to create\na higher-quality simplification with a different algorithm</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var quantization = 50;\nvar minimumArea = 0;\nvar simplified = turf.simplify(polys, quantization, minimumArea);"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/size",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bbox and returns a new bbox with a size expanded or contracted\nby a factor of X.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "factor",
+                    "type": "number",
+                    "description": "<p>the ratio of the new bbox to the old one</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 10, 10]\nvar resized = turf.size(bbox, 2);\nvar features = turf.featurecollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(resized)]);\n//=features"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>a resized bbox</p>"
+            }
+        },
+        {
+            "name": "turf/square",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the minimum square bounding box for another bounding box.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0,0,5,10];\nvar squared = turf.square(bbox)\nvar features = turf.featurecollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(squared)]);\n//=features"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>A square surrounding that bounding box</p>"
+            }
+        },
+        {
+            "name": "turf/sum",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of polygons, a set of points, and tag polygons with the sum\nof point property values contained within.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]),\n  turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])]);\nvar points = turf.featurecollection([\n  turf.point(5,5, {population: 200}),\n  turf.point(1,3, {population: 600}),\n  turf.point(14,2, {population: 100}),\n  turf.point(13,1, {population: 200}),\n  turf.point(19,7, {population: 300})]);\nvar aggregated = turf.sum(polygons, points, 'population', 'sum');\n//=polygons\n//=points\n//=aggregated"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features\nwith properties listed as <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/tag",
+            "access": "",
+            "virtual": false,
+            "description": "Performs a spatial join on a set of points from a set of polygons.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a collection of Features with {@link Point}\ngeometries</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>collection of Features with {@link Polygon}\ngeometries</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polyId",
+                    "type": "string",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "containingPolyId",
+                    "type": "string",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 50, 50];\n// create a triangular grid of polygons\nvar triangleGrid = turf.tin(turf.grid(bbox, 10));\ntriangleGrid.features.forEach(function(f) {\n  f.properties.fill = '#' +\n    (~~(Math.random() * 16)).toString(16) +\n    (~~(Math.random() * 16)).toString(16) +\n    (~~(Math.random() * 16)).toString(16);\n  f.properties.stroke = 0;\n  f.properties['fill-opacity'] = 1;\n});\nvar randomPoints = turf.random('point', 30, {\n  bbox: bbox\n});\nvar both = turf.featurecollection(\n  triangleGrid.features.concat(randomPoints.features));\n//=both\nvar tagged = turf.tag(randomPoints, triangleGrid,\n                      'fill', 'marker-color');\n//=tagged"
+            ],
+            "returns": {
+                "type": "LineString",
+                "description": "<p>output</p>"
+            }
+        },
+        {
+            "name": "turf/tin",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of points and the name of a z-value property and\ncreates a Triangulated Irregular Network,\nor a TIN for short, returned as a collection of Polygons. These are often used\nfor developing elevation contour maps or stepped heat visualizations.\nThis triangulates the points, as well as adds properties called a, b,\nand c representing the value of the given propertyName at each of\nthe points that represent the corners of the triangle.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a GeoJSON FeatureCollection containing\nFeatures with {@link Point} geometries</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "propertyName",
+                    "type": "string",
+                    "description": "<p>name of the property from which to pull z values.\nThis is optional: if not given, then there will be no extra data added to the\nderived triangles.</p>",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// generate some random point data\nvar points = turf.random('points', 30, {\n  bbox: [50, 30, 70, 50]\n});\n//=points\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z')\nfor (var i = 0; i < tin.features.length; i++) {\n  var properties  = tin.features[i].properties;\n  // roughly turn the properties of each\n  // triangle into a fill color\n  // so we can visualize the result\n  properties.fill = '#' + properties.a +\n    properties.b + properties.c;\n}\n//=tin"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>TIN output</p>"
+            }
+        },
+        {
+            "name": "turf/union",
+            "access": "",
+            "virtual": false,
+            "description": "Combines two polygons into one",
+            "parameters": [
+                {
+                    "name": "a",
+                    "type": "Polygon",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "b",
+                    "type": "Polygon",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var a = turf.polygon([[[10,0],[20,10],[20,0],[10,0]]]);\na.properties.fill = '#0f0';\nvar b = turf.polygon([[[10+5,0+5],[20+5,10+5],\n  [20+5,0+5],[10+5,0+5]]]);\nb.properties.fill = '#00f';\nvar union = turf.union(a, b);\n//=a\n//=b\n//=union"
+            ],
+            "returns": {
+                "type": "Polygon",
+                "description": "<p>combined polygon</p>"
+            }
+        },
+        {
+            "name": "turf/variance",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of polygons, a set of points, and tag polygons with the variance\nof point property values contained within.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "<p>a FeatureCollection of {@link Point} features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "string",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "string",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = turf.featurecollection([\n  turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]),\n  turf.polygon([[[10,0],[20,10],[20,20], [20,0]]])]);\nvar points = turf.featurecollection([\n  turf.point(5,5, {population: 200}),\n  turf.point(1,3, {population: 600}),\n  turf.point(14,2, {population: 100}),\n  turf.point(13,1, {population: 200}),\n  turf.point(19,7, {population: 300})]);\nvar aggregated = turf.variance(polygons, points, 'population', 'variance');\n//=polygons\n//=points\n//=aggregated"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of {@link Polygon} features\nwith properties listed as <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/within",
+            "access": "",
+            "virtual": false,
+            "description": "Returns a FeatureCollection of points representing all points that fall\nwithin a collection of polygons.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection",
+                    "description": "",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var searchWithin = turf.featurecollection([\n  turf.polygon([\n    [[-46.653,-23.543],\n     [-46.634,-23.5346],\n     [-46.613,-23.543],\n     [-46.614,-23.559],\n     [-46.631,-23.567],\n     [-46.653,-23.560],\n     [-46.653,-23.543]]\n  ])\n]);\nvar points = turf.featurecollection([\n  turf.point([-46.6318, -23.5523]),\n  turf.point([-46.6246, -23.5325]),\n  turf.point([-46.6062, -23.5513]),\n  turf.point([-46.663, -23.554]),\n  turf.point([-46.643, -23.557])]);\nvar ptsWithin = turf.within(points, searchWithin);\n//=points\n//=searchWithin\n//=ptsWithin"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>A collection of all points that land\nwithin at least one polygon.</p>"
+            }
+        }
+    ]
+}
+
+},{}],292:[function(require,module,exports){
 var turf = require('turf'),
+    docs = require('./docs.json'),
     Rpl = require('rpl-www');
 
 var runnable = document.getElementsByClassName('rpl-run');
@@ -59285,8 +50925,13 @@ for (var i = 0; i < runnable.length; i++) {
     new Rpl(runnable[i], {
         sandbox: {
             turf: turf
-        }
+        },
+        tips: docs.functions.map(fToTip)
     });
 }
 
-},{"rpl-www":13,"turf":185}]},{},[412]);
+function fToTip(f) {
+    return [f.name.replace('/', '.'), f.description];
+}
+
+},{"./docs.json":291,"rpl-www":12,"turf":69}]},{},[292]);

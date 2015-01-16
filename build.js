@@ -19,14 +19,29 @@ var buildDocJS = throttle(function() {
 
 var buildDocs = throttle(function() {
     console.time('doc rebuild');
-    exec('jsdoc ' +
+    var cmd = 'jsdoc ' +
     '-t ./turf-jsdoc/ ./typedefs/geojson.js ' +
     'node_modules/turf/node_modules/turf-*/index.js -c ' +
-    'jsdoc.conf.json -d static/docs/', function(err) {
+    'jsdoc.conf.json -d static/docs/';
+    console.log('running', cmd);
+    exec(cmd, function(err) {
         console.timeEnd('doc rebuild');
         if (err) console.error(err);
         else console.log('docs built');
         buildSite();
+    });
+}, 1000);
+
+var buildDocsJSON = throttle(function(cb) {
+    var cmd = 'jsdoc ' +
+    '-t ./turf-jsdoc-json/ ./typedefs/geojson.js ' +
+    'node_modules/turf/node_modules/turf-*/index.js -c ' +
+    'jsdoc.conf.json -d console > turf-jsdoc/static/scripts/docs.json';
+    console.log('building JSON', cmd);
+    exec(cmd, function(err) {
+        if (err) console.error(err);
+        else console.log('docs built');
+        if (cb) return cb();
     });
 }, 1000);
 
@@ -60,9 +75,11 @@ var buildSite = throttle(function() {
     });
 }, 1000);
 
-buildDocJS();
-buildDocs();
-buildSite();
+buildDocsJSON(function() {
+    buildDocJS();
+    buildDocs();
+    buildSite();
+});
 
 if (!prod) {
     chokidar.watch('./turf-jsdoc/static/scripts/index.js').on('change', throttle(buildDocJS, 100));
