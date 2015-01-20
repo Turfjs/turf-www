@@ -11,7 +11,8 @@ console.log(prod ? 'Building for PRODUCTION' : 'Building for DEVELOPMENT');
 var buildDocJS = throttle(function() {
     console.time('bundle js');
     exec('./node_modules/.bin/browserify ./turf-jsdoc/static/scripts/index.js > ' +
-        './turf-jsdoc/static/scripts/run.js', function() {
+        './turf-jsdoc/static/scripts/run.js', function(err, stdout, stderr) {
+            if (stderr) console.error(stderr);
             buildDocs();
             console.timeEnd('bundle js');
         });
@@ -19,12 +20,13 @@ var buildDocJS = throttle(function() {
 
 var buildDocs = throttle(function() {
     console.time('doc rebuild');
-    var cmd = 'jsdoc ' +
+    var cmd = './node_modules/.bin/jsdoc ' +
     '-t ./turf-jsdoc/ ./typedefs/geojson.js ' +
     'node_modules/turf/node_modules/turf-*/index.js -c ' +
     'jsdoc.conf.json -d static/docs/';
     console.log('running', cmd);
-    exec(cmd, function(err) {
+    exec(cmd, function(err, stdout, stderr) {
+        if (stderr) console.error(stderr);
         console.timeEnd('doc rebuild');
         if (err) console.error(err);
         else console.log('docs built');
@@ -33,12 +35,13 @@ var buildDocs = throttle(function() {
 }, 1000);
 
 var buildDocsJSON = throttle(function(cb) {
-    var cmd = 'jsdoc ' +
+    var cmd = './node_modules/.bin/jsdoc ' +
     '-t ./turf-jsdoc-json/ ./typedefs/geojson.js ' +
     'node_modules/turf/node_modules/turf-*/index.js -c ' +
     'jsdoc.conf.json -d console > turf-jsdoc/static/scripts/docs.json';
     console.log('building JSON', cmd);
-    exec(cmd, function(err) {
+    exec(cmd, function(err, stdout, stderr) {
+        if (stderr) console.error(stderr);
         if (err) console.error(err);
         else console.log('docs built');
         if (cb) return cb();
