@@ -41,19 +41,19 @@ This checks out all of the turf modules as git repos in the `turf-modules` direc
   	* Use active voice ('generates' instead of 'generate')
   	* Mention what the module takes as input and what it creates as output
   	* Whenever possible, use typedef tags as defined in `geojson.js`
-	* Module:
-		* `@module turf/[module name]`
-	* Parameters:
-		* `@param {[type]} [parameter name] - [parameter description]`
-		* Each parameter gets its own line
-		* For arrays, be specific about type and nesting
-			* e.g. `number[][]` is a nested array of arrays with number values
-	* Return:
-		* `@return {[type]} [return value description]`
-	* Example:
-		* `@example` and then the example on subsequent lines
-		* Examples use hosted version of the latest deploy of turf.js; no `require` necessary
-		* Examples use [rpl-www](http://github.com/tmcw/rpl-www) to allow editability and display output. To output a valueuse `//=output`. If the output is mappable, it will appear on a map; if not, it will appear as text.
+  * Module:
+	* `@module turf/[module name]`
+  * Parameters:
+	* `@param {[type]} [parameter name] - [parameter description]`
+	* Each parameter gets its own line
+	* For arrays, be specific about type and nesting
+		* e.g. `number[][]` is a nested array of arrays with number values
+  * Return:
+	* `@return {[type]} [return value description]`
+* Example:
+  * `@example` and then the example on subsequent lines
+  * Examples use hosted version of the latest deploy of turf.js; no `require` necessary
+  * Examples use [rpl-www](http://github.com/tmcw/rpl-www) to allow editability and display output. To output a valueuse `//=output`. If the output is mappable, it will appear on a map; if not, it will appear as text.
 
 Example of documentation:
 
