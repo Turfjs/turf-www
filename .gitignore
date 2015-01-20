@@ -6,3 +6,4 @@ node_modules
 # ignore jekyll build artifacts
 _site
 docs
+_docs
