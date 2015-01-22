@@ -113,3 +113,12 @@ npm install
 npm run build-production
 ./deploy.sh
 ```
+
+## Individual Modules README Files
+
+The README for each module is generated from its JSDoc comments and `package.json`
+metadata by dox & doxme. There's a package.json script, so simply run
+
+    npm run doc
+
+To autogenerate or regenerate README.md
