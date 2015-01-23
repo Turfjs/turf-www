@@ -20,25 +20,23 @@
 <section>
 
 <?js if (!doc.longname || doc.kind !== 'module') { ?>
-    <div class='pad2'>
-            <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
-                <span class="ancestors"><?js= doc.ancestors.join('') ?></span>
-            <?js } ?>
-            <?js= doc.name ?>
-            <?js if (doc.variation) { ?>
-                <sup class="variation"><?js= doc.variation ?></sup>
-            <?js } ?></h2>
-            <?js if (doc.classdesc) { ?>
-                <div class="class-description"><?js= doc.classdesc ?></div>
-            <?js } ?>
-    </div>
-        <?js } else if (doc.kind === 'module' && doc.modules) { ?>
-            <?js doc.modules.forEach(function(module) { ?>
-                <?js if (module.classdesc) { ?>
-                    <div class="class-description"><?js= module.classdesc ?></div>
-                <?js } ?>
-            <?js }) ?>
-    <?js } ?>
+  <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
+      <span class="ancestors"><?js= doc.ancestors.join('') ?></span>
+  <?js } ?>
+  <?js= doc.name ?>
+  <?js if (doc.variation) { ?>
+      <sup class="variation"><?js= doc.variation ?></sup>
+  <?js } ?></h2>
+  <?js if (doc.classdesc) { ?>
+      <div class="class-description"><?js= doc.classdesc ?></div>
+  <?js } ?>
+  <?js } else if (doc.kind === 'module' && doc.modules) { ?>
+      <?js doc.modules.forEach(function(module) { ?>
+          <?js if (module.classdesc) { ?>
+              <div class="class-description"><?js= module.classdesc ?></div>
+          <?js } ?>
+      <?js }) ?>
+<?js } ?>
 
 <div>
     <div class=''>
@@ -150,8 +148,6 @@
             var typedefs = self.find({kind: 'typedef', memberof: isGlobalPage ? {isUndefined: true} : doc.longname});
             if (typedefs && typedefs.length && typedefs.forEach) {
         ?>
-            <h3 class="subsection-title">Type Definitions</h3>
-
             <?js typedefs.forEach(function(e) {
                     if (e.signature) {
                 ?>
