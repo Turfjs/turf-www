@@ -9,6 +9,7 @@ for (var i = 0; i < runnable.length; i++) {
         sandbox: {
             turf: turf
         },
+        mapid: 'tmcw.l12c66f2',
         tips: docs.functions.map(fToTip)
     });
 }
