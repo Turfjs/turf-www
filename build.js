@@ -23,7 +23,7 @@ var buildDocs = throttle(function() {
     var cmd = './node_modules/.bin/jsdoc ' +
     '-t ./turf-jsdoc/ ./typedefs/geojson.js ' +
     'node_modules/turf/node_modules/turf-*/index.js -c ' +
-    'jsdoc.conf.json -d static/docs/';
+    'jsdoc.conf.json -R jsdoc-readme.md -d static/docs/';
     console.log('running', cmd);
     exec(cmd, function(err, stdout, stderr) {
         if (stderr) console.error(stderr);
