@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node build.js",
-    "build": "node build.js",
-    "build-production": "node build.js production"
+    "build": "node build.js production"
   },
   "repository": {
     "type": "git",

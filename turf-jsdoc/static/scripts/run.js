@@ -2802,7 +2802,7 @@ require("mapbox.js");
 
 var debounce = require("debounce"),
     CodeMirror = require("codemirror"),
-    Terrarium = require("terrarium").Browser,
+    Terrarium = require("terrarium"),
     geojsonhint = require("geojsonhint").hint;
 
 var pairs = function (o) {
@@ -2839,14 +2839,17 @@ var Rpl = function Rpl(element, options) {
   this.onchange();
 };
 
+Rpl.prototype["export"] = function (type) {
+  return Terrarium.instrument(this.editor.getValue(), 0, type).source;
+};
+
 Rpl.prototype.onchange = function () {
-  console.log("here");
   clearTimeout(this.delayedClear);
   this.joinWidgets({});
   if (this.terrarium) {
     this.terrarium.destroy();
   }
-  this.terrarium = new Terrarium(this.options);
+  this.terrarium = new Terrarium.Browser(this.options);
   this.terrarium.on("data", this.ondata.bind(this)).on("err", this.onerr.bind(this)).run(this.editor.getValue());
   this.addMarks();
 };
@@ -2961,2257 +2964,7 @@ Rpl.prototype.fillWidget = function (container, value) {
 
 module.exports = Rpl;
 
-},{"codemirror":26,"codemirror/mode/javascript/javascript":27,"debounce":28,"geojsonhint":30,"mapbox.js":45,"terrarium":83}],13:[function(require,module,exports){
-var leveljs = require('level-js')
-var MemDOWN = require('memdown')
-var hasIDB = !!(window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB)
-
-function Cache(opts) {
-  var self = this
-  opts = opts || {}
-  opts.name = opts.name || 'browser-module-cache'
-  this.ready = false
-  if (hasIDB && !(opts.inMemory)) this.db = leveljs(opts.name)
-  else this.db = new MemDOWN(opts.name)
-  this.db.open(function(err, db) {
-    if (err) return console.error(err)
-    self.ready = true
-  })
-}
-module.exports = function(opts) {
-  return new Cache(opts)
-}
-
-Cache.prototype.put = function(packages, cb) {
-  var self = this
-  var ops = []
-  Object.keys(packages).forEach(function(module) {
-    ops.push({
-      type: 'put',
-      key: module + ':bundle',
-      value: packages[module]['bundle'],
-    })
-    ops.push({
-      type: 'put',
-      key: module + ':package',
-      value: JSON.stringify(packages[module]['package']),
-    })
-  })
-  self.db.batch(ops, cb)
-}
-
-Cache.prototype.get = function(module, cb) {
-  var self = this
-  if (typeof module === 'function') {
-    cb = module
-    module = false
-  }
-  var res = Object.create(null)
-  if (module !== false) {
-    self.db.get(module + ':bundle', function(err, bundle) {
-      if (err) return cb(err)
-      self.db.get(module + ':package', function(err, pkg) {
-        if (err) return cb(err)
-        res['bundle'] = String.fromCharCode.apply(null, new Uint16Array(bundle))
-        res['package'] = JSON.parse(String.fromCharCode.apply(null, new Uint16Array(pkg)))
-        cb(null, res)
-      })
-    })
-  } else {
-    this._all(function(err, all) {
-      if (err) return cb(err)
-      Object.keys(all).forEach(function(key) {
-        var val = all[key]
-        key = key.split(':')
-        if (!res[key[0]]) res[key[0]] = Object.create(null)
-        if (key[1] === 'package') val = JSON.parse(val)
-        res[key[0]][key[1]] = val
-      })
-      cb(null, res)
-    })
-  }
-}
-
-Cache.prototype.clear = function(cb) {
-  var self = this
-  this._all(function(err, all) {
-    if (err) return cb(err)
-    var ops = Object.keys(all).map(function(key) {
-      return {type: 'del', key: key}
-    })
-    self.db.batch(ops, cb || function() {})
-  })
-}
-
-Cache.prototype._all = function(cb) {
-  var self = this
-  var res = Object.create(null)
-  function onItem(err, key, val) {
-    if (key == null) {
-      cb(null, res)
-      return
-    }
-    if (Array.isArray(key)) key = key.join(':')
-    res[key] = val
-  }
-  // hack to make level.js and memdown work the same
-  // TODO: fix upstream
-  if (hasIDB) {
-    this.db.iterator().next(onItem)
-  } else {
-    this.db._keys.forEach(function(key) {
-      onItem(null, key, self.db._store['$' + key])
-    })
-    onItem(null, null)
-  }
-}
-
-},{"level-js":14,"memdown":21}],14:[function(require,module,exports){
-module.exports = Level
-
-var IDB = require('idb-wrapper')
-var AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
-var util = require('util')
-var Iterator = require('./iterator')
-var isBuffer = require('isbuffer')
-
-function Level(location) {
-  if (!(this instanceof Level)) return new Level(location)
-  if (!location) throw new Error("constructor requires at least a location argument")
-  
-  this.location = location
-}
-
-util.inherits(Level, AbstractLevelDOWN)
-
-Level.prototype._open = function(options, callback) {
-  var self = this
-  
-  this.idb = new IDB({
-    storeName: this.location,
-    autoIncrement: false,
-    keyPath: null,
-    onStoreReady: function () {
-      callback && callback(null, self.idb)
-    }, 
-    onError: function(err) {
-      callback && callback(err)
-    }
-  })
-}
-
-Level.prototype._get = function (key, options, callback) {
-  this.idb.get(key, function (value) {
-    if (value === undefined) {
-      // 'NotFound' error, consistent with LevelDOWN API
-      return callback(new Error('NotFound'))
-    }
-    if (options.asBuffer !== false && !isBuffer(value))
-      value = StringToArrayBuffer(String(value))
-    return callback(null, value, key)
-  }, callback)
-}
-
-Level.prototype._del = function(id, options, callback) {
-  this.idb.remove(id, callback, callback)
-}
-
-Level.prototype._put = function (key, value, options, callback) {
-  this.idb.put(key, value, function() { callback() }, callback)
-}
-
-Level.prototype.iterator = function (options) {
-  if (typeof options !== 'object') options = {}
-  return new Iterator(this.idb, options)
-}
-
-Level.prototype._batch = function (array, options, callback) {
-  var op
-    , i
-
-  for (i=0; i < array.length; i++) {
-    op = array[i]
-
-    if (op.type === 'del') {
-      op.type = 'remove'
-    }
-  }
-
-  return this.idb.batch(array, function(){ callback() }, callback)
-}
-
-Level.prototype._close = function (callback) {
-  this.idb.db.close()
-  callback()
-}
-
-Level.prototype._approximateSize = function() {
-  throw new Error('Not implemented')
-}
-
-Level.prototype._isBuffer = isBuffer
-
-var checkKeyValue = Level.prototype._checkKeyValue = function (obj, type) {
-  if (obj === null || obj === undefined)
-    return new Error(type + ' cannot be `null` or `undefined`')
-  if (obj === null || obj === undefined)
-    return new Error(type + ' cannot be `null` or `undefined`')
-  if (isBuffer(obj) && obj.byteLength === 0)
-    return new Error(type + ' cannot be an empty ArrayBuffer')
-  if (String(obj) === '')
-    return new Error(type + ' cannot be an empty String')
-  if (obj.length === 0)
-    return new Error(type + ' cannot be an empty Array')
-}
-
-function ArrayBufferToString(buf) {
-  return String.fromCharCode.apply(null, new Uint16Array(buf))
-}
-
-function StringToArrayBuffer(str) {
-  var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
-  var bufView = new Uint16Array(buf)
-  for (var i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i)
-  }
-  return buf
-}
-
-},{"./iterator":15,"abstract-leveldown":18,"idb-wrapper":19,"isbuffer":20,"util":11}],15:[function(require,module,exports){
-var util = require('util')
-var AbstractIterator  = require('abstract-leveldown').AbstractIterator
-module.exports = Iterator
-
-function Iterator (db, options) {
-  if (!options) options = {}
-  this.options = options
-  AbstractIterator.call(this, db)
-  this._order = !!options.reverse ? 'DESC': 'ASC'
-  this._start = options.start
-  this._limit = options.limit
-  if (this._limit) this._count = 0
-  this._end   = options.end
-  this._done = false
-}
-
-util.inherits(Iterator, AbstractIterator)
-
-Iterator.prototype.createIterator = function() {
-  var lower, upper
-  var onlyStart = typeof this._start !== 'undefined' && typeof this._end === 'undefined'
-  var onlyEnd = typeof this._start === 'undefined' && typeof this._end !== 'undefined'
-  var startAndEnd = typeof this._start !== 'undefined' && typeof this._end !== 'undefined'
-  if (onlyStart) {
-    var index = this._start
-    if (this._order === 'ASC') {
-      lower = index
-    } else {
-      upper = index
-    }
-  } else if (onlyEnd) {
-    var index = this._end
-    if (this._order === 'DESC') {
-      lower = index
-    } else {
-      upper = index
-    }
-  } else if (startAndEnd) {
-    lower = this._start
-    upper = this._end
-    if (this._start > this._end) {
-      lower = this._end
-      upper = this._start
-    }
-  }
-  if (lower || upper) {
-    this._keyRange = this.options.keyRange || this.db.makeKeyRange({
-      lower: lower,
-      upper: upper
-      // TODO expose excludeUpper/excludeLower
-    })
-  }
-  this.iterator = this.db.iterate(this.onItem.bind(this), {
-    keyRange: this._keyRange,
-    autoContinue: false,
-    order: this._order,
-    onError: function(err) { console.log('horrible error', err) },
-  })
-}
-
-// TODO the limit implementation here just ignores all reads after limit has been reached
-// it should cancel the iterator instead but I don't know how
-Iterator.prototype.onItem = function (value, cursor, cursorTransaction) {
-  if (!cursor && this.callback) {
-    this.callback()
-    this.callback = false
-    return
-  }
-  if (this._limit && this._limit > 0) {
-    if (this._limit > this._count) this.callback(false, cursor.key, cursor.value)
-  } else {
-    this.callback(false, cursor.key, cursor.value)
-  }
-  if (this._limit) this._count++
-  if (cursor) cursor.continue()
-}
-
-Iterator.prototype._next = function (callback) {
-  if (!callback) return new Error('next() requires a callback argument')
-  if (!this._started) {
-    this.createIterator()
-    this._started = true
-  }
-  this.callback = callback
-}
-},{"abstract-leveldown":18,"util":11}],16:[function(require,module,exports){
-(function (process){
-/* Copyright (c) 2013 Rod Vagg, MIT License */
-
-function AbstractChainedBatch (db) {
-  this._db         = db
-  this._operations = []
-  this._written    = false
-}
-
-AbstractChainedBatch.prototype._checkWritten = function () {
-  if (this._written)
-    throw new Error('write() already called on this batch')
-}
-
-AbstractChainedBatch.prototype.put = function (key, value) {
-  this._checkWritten()
-
-  var err = this._db._checkKeyValue(key, 'key', this._db._isBuffer)
-  if (err) throw err
-  err = this._db._checkKeyValue(value, 'value', this._db._isBuffer)
-  if (err) throw err
-
-  if (!this._db._isBuffer(key)) key = String(key)
-  if (!this._db._isBuffer(value)) value = String(value)
-
-  this._operations.push({ type: 'put', key: key, value: value })
-
-  return this
-}
-
-AbstractChainedBatch.prototype.del = function (key) {
-  this._checkWritten()
-
-  var err = this._db._checkKeyValue(key, 'key', this._db._isBuffer)
-  if (err) throw err
-
-  if (!this._db._isBuffer(key)) key = String(key)
-
-  this._operations.push({ type: 'del', key: key })
-
-  return this
-}
-
-AbstractChainedBatch.prototype.clear = function () {
-  this._checkWritten()
-
-  this._operations = []
-  return this
-}
-
-AbstractChainedBatch.prototype.write = function (options, callback) {
-  this._checkWritten()
-
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('write() requires a callback argument')
-  if (typeof options != 'object')
-    options = {}
-
-  this._written = true
-
-  if (typeof this._db._batch == 'function')
-    return this._db._batch(this._operations, options, callback)
-
-  process.nextTick(callback)
-}
-
-module.exports = AbstractChainedBatch
-}).call(this,require('_process'))
-},{"_process":9}],17:[function(require,module,exports){
-(function (process){
-/* Copyright (c) 2013 Rod Vagg, MIT License */
-
-function AbstractIterator (db) {
-  this.db = db
-  this._ended = false
-  this._nexting = false
-}
-
-AbstractIterator.prototype.next = function (callback) {
-  var self = this
-
-  if (typeof callback != 'function')
-    throw new Error('next() requires a callback argument')
-
-  if (self._ended)
-    return callback(new Error('cannot call next() after end()'))
-  if (self._nexting)
-    return callback(new Error('cannot call next() before previous next() has completed'))
-
-  self._nexting = true
-  if (typeof self._next == 'function') {
-    return self._next(function () {
-      self._nexting = false
-      callback.apply(null, arguments)
-    })
-  }
-
-  process.nextTick(function () {
-    self._nexting = false
-    callback()
-  })
-}
-
-AbstractIterator.prototype.end = function (callback) {
-  if (typeof callback != 'function')
-    throw new Error('end() requires a callback argument')
-
-  if (this._ended)
-    return callback(new Error('end() already called on iterator'))
-
-  this._ended = true
-
-  if (typeof this._end == 'function')
-    return this._end(callback)
-
-  process.nextTick(callback)
-}
-
-module.exports = AbstractIterator
-
-}).call(this,require('_process'))
-},{"_process":9}],18:[function(require,module,exports){
-(function (process,Buffer){
-/* Copyright (c) 2013 Rod Vagg, MIT License */
-
-var AbstractIterator     = require('./abstract-iterator')
-  , AbstractChainedBatch = require('./abstract-chained-batch')
-
-function AbstractLevelDOWN (location) {
-  if (!arguments.length || location === undefined)
-    throw new Error('constructor requires at least a location argument')
-
-  if (typeof location != 'string')
-    throw new Error('constructor requires a location string argument')
-
-  this.location = location
-}
-
-AbstractLevelDOWN.prototype.open = function (options, callback) {
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('open() requires a callback argument')
-  if (typeof options != 'object')
-    options = {}
-
-  if (typeof this._open == 'function')
-    return this._open(options, callback)
-
-  process.nextTick(callback)
-}
-
-AbstractLevelDOWN.prototype.close = function (callback) {
-  if (typeof callback != 'function')
-    throw new Error('close() requires a callback argument')
-
-  if (typeof this._close == 'function')
-    return this._close(callback)
-
-  process.nextTick(callback)
-}
-
-AbstractLevelDOWN.prototype.get = function (key, options, callback) {
-  var self = this
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('get() requires a callback argument')
-  var err = self._checkKeyValue(key, 'key', self._isBuffer)
-  if (err) return callback(err)
-  if (!self._isBuffer(key)) key = String(key)
-  if (typeof options != 'object')
-    options = {}
-
-  if (typeof self._get == 'function')
-    return self._get(key, options, callback)
-
-  process.nextTick(function () { callback(new Error('NotFound')) })
-}
-
-AbstractLevelDOWN.prototype.put = function (key, value, options, callback) {
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('put() requires a callback argument')
-  var err = this._checkKeyValue(key, 'key', this._isBuffer)
-  if (err) return callback(err)
-  err = this._checkKeyValue(value, 'value', this._isBuffer)
-  if (err) return callback(err)
-  if (!this._isBuffer(key)) key = String(key)
-  // coerce value to string in node, dont touch it in browser
-  // (indexeddb can store any JS type)
-  if (!this._isBuffer(value) && !process.browser) value = String(value)
-  if (typeof options != 'object')
-    options = {}
-  if (typeof this._put == 'function')
-    return this._put(key, value, options, callback)
-
-  process.nextTick(callback)
-}
-
-AbstractLevelDOWN.prototype.del = function (key, options, callback) {
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('del() requires a callback argument')
-  var err = this._checkKeyValue(key, 'key', this._isBuffer)
-  if (err) return callback(err)
-  if (!this._isBuffer(key)) key = String(key)
-  if (typeof options != 'object')
-    options = {}
-
-
-  if (typeof this._del == 'function')
-    return this._del(key, options, callback)
-
-  process.nextTick(callback)
-}
-
-AbstractLevelDOWN.prototype.batch = function (array, options, callback) {
-  if (!arguments.length)
-    return this._chainedBatch()
-
-  if (typeof options == 'function')
-    callback = options
-  if (typeof callback != 'function')
-    throw new Error('batch(array) requires a callback argument')
-  if (!Array.isArray(array))
-    return callback(new Error('batch(array) requires an array argument'))
-  if (typeof options != 'object')
-    options = {}
-
-  var i = 0
-    , l = array.length
-    , e
-    , err
-
-  for (; i < l; i++) {
-    e = array[i]
-    if (typeof e != 'object') continue;
-
-    err = this._checkKeyValue(e.type, 'type', this._isBuffer)
-    if (err) return callback(err)
-
-    err = this._checkKeyValue(e.key, 'key', this._isBuffer)
-    if (err) return callback(err)
-
-    if (e.type == 'put') {
-      err = this._checkKeyValue(e.value, 'value', this._isBuffer)
-      if (err) return callback(err)
-    }
-  }
-
-  if (typeof this._batch == 'function')
-    return this._batch(array, options, callback)
-
-  process.nextTick(callback)
-}
-
-AbstractLevelDOWN.prototype.approximateSize = function (start, end, callback) {
-  if (start == null || end == null || typeof start == 'function' || typeof end == 'function')
-    throw new Error('approximateSize() requires valid `start`, `end` and `callback` arguments')
-  if (typeof callback != 'function')
-    throw new Error('approximateSize() requires a callback argument')
-
-  if (!this._isBuffer(start)) start = String(start)
-  if (!this._isBuffer(end)) end = String(end)
-  if (typeof this._approximateSize == 'function')
-    return this._approximateSize(start, end, callback)
-
-  process.nextTick(function () { callback(null, 0) })
-}
-
-AbstractLevelDOWN.prototype.iterator = function (options) {
-  if (typeof options != 'object')
-    options = {}
-
-  if (typeof this._iterator == 'function')
-    return this._iterator(options)
-
-  return new AbstractIterator(this)
-}
-
-AbstractLevelDOWN.prototype._chainedBatch = function () {
-  return new AbstractChainedBatch(this)
-}
-
-AbstractLevelDOWN.prototype._isBuffer = function (obj) {
-  return Buffer.isBuffer(obj)
-}
-
-AbstractLevelDOWN.prototype._checkKeyValue = function (obj, type) {
-  if (obj === null || obj === undefined)
-    return new Error(type + ' cannot be `null` or `undefined`')
-  if (obj === null || obj === undefined)
-    return new Error(type + ' cannot be `null` or `undefined`')
-  if (this._isBuffer(obj)) {
-    if (obj.length === 0)
-      return new Error(type + ' cannot be an empty Buffer')
-  } else if (String(obj) === '')
-    return new Error(type + ' cannot be an empty String')
-}
-
-module.exports.AbstractLevelDOWN = AbstractLevelDOWN
-module.exports.AbstractIterator  = AbstractIterator
-
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"./abstract-chained-batch":16,"./abstract-iterator":17,"_process":9,"buffer":2}],19:[function(require,module,exports){
-/*jshint expr:true */
-/*global window:false, console:false, define:false, module:false */
-
-/**
- * @license IDBWrapper - A cross-browser wrapper for IndexedDB
- * Copyright (c) 2011 - 2013 Jens Arps
- * http://jensarps.de/
- *
- * Licensed under the MIT (X11) license
- */
-
-(function (name, definition, global) {
-  if (typeof define === 'function') {
-    define(definition);
-  } else if (typeof module !== 'undefined' && module.exports) {
-    module.exports = definition();
-  } else {
-    global[name] = definition();
-  }
-})('IDBStore', function () {
-
-  "use strict";
-
-  var defaults = {
-    storeName: 'Store',
-    storePrefix: 'IDBWrapper-',
-    dbVersion: 1,
-    keyPath: 'id',
-    autoIncrement: true,
-    onStoreReady: function () {
-    },
-    onError: function(error){
-      throw error;
-    },
-    indexes: []
-  };
-
-  /**
-   *
-   * The IDBStore constructor
-   *
-   * @constructor
-   * @name IDBStore
-   * @version 1.1.0
-   *
-   * @param {Object} [kwArgs] An options object used to configure the store and
-   *  set callbacks
-   * @param {String} [kwArgs.storeName='Store'] The name of the store
-   * @param {String} [kwArgs.storePrefix='IDBWrapper-'] A prefix that is
-   *  internally used to construct the name of the database, which will be
-   *  kwArgs.storePrefix + kwArgs.storeName
-   * @param {Number} [kwArgs.dbVersion=1] The version of the store
-   * @param {String} [kwArgs.keyPath='id'] The key path to use. If you want to
-   *  setup IDBWrapper to work with out-of-line keys, you need to set this to
-   *  `null`
-   * @param {Boolean} [kwArgs.autoIncrement=true] If set to true, IDBStore will
-   *  automatically make sure a unique keyPath value is present on each object
-   *  that is stored.
-   * @param {Function} [kwArgs.onStoreReady] A callback to be called when the
-   *  store is ready to be used.
-   * @param {Function} [kwArgs.onError=throw] A callback to be called when an
-   *  error occurred during instantiation of the store.
-   * @param {Array} [kwArgs.indexes=[]] An array of indexData objects
-   *  defining the indexes to use with the store. For every index to be used
-   *  one indexData object needs to be passed in the array.
-   *  An indexData object is defined as follows:
-   * @param {Object} [kwArgs.indexes.indexData] An object defining the index to
-   *  use
-   * @param {String} kwArgs.indexes.indexData.name The name of the index
-   * @param {String} [kwArgs.indexes.indexData.keyPath] The key path of the index
-   * @param {Boolean} [kwArgs.indexes.indexData.unique] Whether the index is unique
-   * @param {Boolean} [kwArgs.indexes.indexData.multiEntry] Whether the index is multi entry
-   * @param {Function} [onStoreReady] A callback to be called when the store
-   * is ready to be used.
-   * @example
-      // create a store for customers with an additional index over the
-      // `lastname` property.
-      var myCustomerStore = new IDBStore({
-        dbVersion: 1,
-        storeName: 'customer-index',
-        keyPath: 'customerid',
-        autoIncrement: true,
-        onStoreReady: populateTable,
-        indexes: [
-          { name: 'lastname', keyPath: 'lastname', unique: false, multiEntry: false }
-        ]
-      });
-   * @example
-      // create a generic store
-      var myCustomerStore = new IDBStore({
-        storeName: 'my-data-store',
-        onStoreReady: function(){
-          // start working with the store.
-        }
-      });
-   */
-  var IDBStore = function (kwArgs, onStoreReady) {
-
-    for(var key in defaults){
-      this[key] = typeof kwArgs[key] != 'undefined' ? kwArgs[key] : defaults[key];
-    }
-
-    this.dbName = this.storePrefix + this.storeName;
-    this.dbVersion = parseInt(this.dbVersion, 10);
-
-    onStoreReady && (this.onStoreReady = onStoreReady);
-
-    this.idb = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
-    this.keyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.mozIDBKeyRange;
-
-    this.consts = {
-      'READ_ONLY':         'readonly',
-      'READ_WRITE':        'readwrite',
-      'VERSION_CHANGE':    'versionchange',
-      'NEXT':              'next',
-      'NEXT_NO_DUPLICATE': 'nextunique',
-      'PREV':              'prev',
-      'PREV_NO_DUPLICATE': 'prevunique'
-    };
-
-    this.openDB();
-  };
-
-  IDBStore.prototype = /** @lends IDBStore */ {
-
-    /**
-     * The version of IDBStore
-     *
-     * @type String
-     */
-    version: '1.2.0',
-
-    /**
-     * A reference to the IndexedDB object
-     *
-     * @type Object
-     */
-    db: null,
-
-    /**
-     * The full name of the IndexedDB used by IDBStore, composed of
-     * this.storePrefix + this.storeName
-     *
-     * @type String
-     */
-    dbName: null,
-
-    /**
-     * The version of the IndexedDB used by IDBStore
-     *
-     * @type Number
-     */
-    dbVersion: null,
-
-    /**
-     * A reference to the objectStore used by IDBStore
-     *
-     * @type Object
-     */
-    store: null,
-
-    /**
-     * The store name
-     *
-     * @type String
-     */
-    storeName: null,
-
-    /**
-     * The key path
-     *
-     * @type String
-     */
-    keyPath: null,
-
-    /**
-     * Whether IDBStore uses autoIncrement
-     *
-     * @type Boolean
-     */
-    autoIncrement: null,
-
-    /**
-     * The indexes used by IDBStore
-     *
-     * @type Array
-     */
-    indexes: null,
-
-    /**
-     * A hashmap of features of the used IDB implementation
-     *
-     * @type Object
-     * @proprty {Boolean} autoIncrement If the implementation supports
-     *  native auto increment
-     */
-    features: null,
-
-    /**
-     * The callback to be called when the store is ready to be used
-     *
-     * @type Function
-     */
-    onStoreReady: null,
-
-    /**
-     * The callback to be called if an error occurred during instantiation
-     * of the store
-     *
-     * @type Function
-     */
-    onError: null,
-
-    /**
-     * The internal insertID counter
-     *
-     * @type Number
-     * @private
-     */
-    _insertIdCount: 0,
-
-    /**
-     * Opens an IndexedDB; called by the constructor.
-     *
-     * Will check if versions match and compare provided index configuration
-     * with existing ones, and update indexes if necessary.
-     *
-     * Will call this.onStoreReady() if everything went well and the store
-     * is ready to use, and this.onError() is something went wrong.
-     *
-     * @private
-     *
-     */
-    openDB: function () {
-
-      var features = this.features = {};
-      features.hasAutoIncrement = !window.mozIndexedDB;
-
-      var openRequest = this.idb.open(this.dbName, this.dbVersion);
-      var preventSuccessCallback = false;
-
-      openRequest.onerror = function (error) {
-
-        var gotVersionErr = false;
-        if ('error' in error.target) {
-          gotVersionErr = error.target.error.name == "VersionError";
-        } else if ('errorCode' in error.target) {
-          gotVersionErr = error.target.errorCode == 12;
-        }
-
-        if (gotVersionErr) {
-          this.onError(new Error('The version number provided is lower than the existing one.'));
-        } else {
-          this.onError(error);
-        }
-      }.bind(this);
-
-      openRequest.onsuccess = function (event) {
-
-        if (preventSuccessCallback) {
-          return;
-        }
-
-        if(this.db){
-          this.onStoreReady();
-          return;
-        }
-
-        this.db = event.target.result;
-
-        if(typeof this.db.version == 'string'){
-          this.onError(new Error('The IndexedDB implementation in this browser is outdated. Please upgrade your browser.'));
-          return;
-        }
-
-        if(!this.db.objectStoreNames.contains(this.storeName)){
-          // We should never ever get here.
-          // Lets notify the user anyway.
-          this.onError(new Error('Something is wrong with the IndexedDB implementation in this browser. Please upgrade your browser.'));
-          return;
-        }
-
-        var emptyTransaction = this.db.transaction([this.storeName], this.consts.READ_ONLY);
-        this.store = emptyTransaction.objectStore(this.storeName);
-
-        // check indexes
-        this.indexes.forEach(function(indexData){
-          var indexName = indexData.name;
-
-          if(!indexName){
-            preventSuccessCallback = true;
-            this.onError(new Error('Cannot create index: No index name given.'));
-            return;
-          }
-
-          this.normalizeIndexData(indexData);
-
-          if(this.hasIndex(indexName)){
-            // check if it complies
-            var actualIndex = this.store.index(indexName);
-            var complies = this.indexComplies(actualIndex, indexData);
-            if(!complies){
-              preventSuccessCallback = true;
-              this.onError(new Error('Cannot modify index "' + indexName + '" for current version. Please bump version number to ' + ( this.dbVersion + 1 ) + '.'));
-            }
-          } else {
-            preventSuccessCallback = true;
-            this.onError(new Error('Cannot create new index "' + indexName + '" for current version. Please bump version number to ' + ( this.dbVersion + 1 ) + '.'));
-          }
-
-        }, this);
-
-        preventSuccessCallback || this.onStoreReady();
-      }.bind(this);
-
-      openRequest.onupgradeneeded = function(/* IDBVersionChangeEvent */ event){
-
-        this.db = event.target.result;
-
-        if(this.db.objectStoreNames.contains(this.storeName)){
-          this.store = event.target.transaction.objectStore(this.storeName);
-        } else {
-          this.store = this.db.createObjectStore(this.storeName, { keyPath: this.keyPath, autoIncrement: this.autoIncrement});
-        }
-
-        this.indexes.forEach(function(indexData){
-          var indexName = indexData.name;
-
-          if(!indexName){
-            preventSuccessCallback = true;
-            this.onError(new Error('Cannot create index: No index name given.'));
-          }
-
-          this.normalizeIndexData(indexData);
-
-          if(this.hasIndex(indexName)){
-            // check if it complies
-            var actualIndex = this.store.index(indexName);
-            var complies = this.indexComplies(actualIndex, indexData);
-            if(!complies){
-              // index differs, need to delete and re-create
-              this.store.deleteIndex(indexName);
-              this.store.createIndex(indexName, indexData.keyPath, { unique: indexData.unique, multiEntry: indexData.multiEntry });
-            }
-          } else {
-            this.store.createIndex(indexName, indexData.keyPath, { unique: indexData.unique, multiEntry: indexData.multiEntry });
-          }
-
-        }, this);
-
-      }.bind(this);
-    },
-
-    /**
-     * Deletes the database used for this store if the IDB implementations
-     * provides that functionality.
-     */
-    deleteDatabase: function () {
-      if (this.idb.deleteDatabase) {
-        this.idb.deleteDatabase(this.dbName);
-      }
-    },
-
-    /*********************
-     * data manipulation *
-     *********************/
-
-    /**
-     * Puts an object into the store. If an entry with the given id exists,
-     * it will be overwritten. This method has a different signature for inline
-     * keys and out-of-line keys; please see the examples below.
-     *
-     * @param {*} [key] The key to store. This is only needed if IDBWrapper
-     *  is set to use out-of-line keys. For inline keys - the default scenario -
-     *  this can be omitted.
-     * @param {Object} value The data object to store.
-     * @param {Function} [onSuccess] A callback that is called if insertion
-     *  was successful.
-     * @param {Function} [onError] A callback that is called if insertion
-     *  failed.
-     * @example
-        // Storing an object, using inline keys (the default scenario):
-        var myCustomer = {
-          customerid: 2346223,
-          lastname: 'Doe',
-          firstname: 'John'
-        };
-        myCustomerStore.put(myCustomer, mySuccessHandler, myErrorHandler);
-        // Note that passing success- and error-handlers is optional.
-     * @example
-        // Storing an object, using out-of-line keys:
-       var myCustomer = {
-         lastname: 'Doe',
-         firstname: 'John'
-       };
-       myCustomerStore.put(2346223, myCustomer, mySuccessHandler, myErrorHandler);
-      // Note that passing success- and error-handlers is optional.
-     */
-    put: function (key, value, onSuccess, onError) {
-      if (this.keyPath !== null) {
-        onError = onSuccess;
-        onSuccess = value;
-        value = key;
-      }
-      onError || (onError = function (error) {
-        console.error('Could not write data.', error);
-      });
-      onSuccess || (onSuccess = noop);
-
-      var hasSuccess = false,
-          result = null,
-          putRequest;
-
-      var putTransaction = this.db.transaction([this.storeName], this.consts.READ_WRITE);
-      putTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      putTransaction.onabort = onError;
-      putTransaction.onerror = onError;
-
-      if (this.keyPath !== null) { // in-line keys
-        this._addIdPropertyIfNeeded(value);
-        putRequest = putTransaction.objectStore(this.storeName).put(value);
-      } else { // out-of-line keys
-        putRequest = putTransaction.objectStore(this.storeName).put(value, key);
-      }
-      putRequest.onsuccess = function (event) {
-        hasSuccess = true;
-        result = event.target.result;
-      };
-      putRequest.onerror = onError;
-    },
-
-    /**
-     * Retrieves an object from the store. If no entry exists with the given id,
-     * the success handler will be called with null as first and only argument.
-     *
-     * @param {*} key The id of the object to fetch.
-     * @param {Function} [onSuccess] A callback that is called if fetching
-     *  was successful. Will receive the object as only argument.
-     * @param {Function} [onError] A callback that will be called if an error
-     *  occurred during the operation.
-     */
-    get: function (key, onSuccess, onError) {
-      onError || (onError = function (error) {
-        console.error('Could not read data.', error);
-      });
-      onSuccess || (onSuccess = noop);
-
-      var hasSuccess = false,
-          result = null;
-      
-      var getTransaction = this.db.transaction([this.storeName], this.consts.READ_ONLY);
-      getTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      getTransaction.onabort = onError;
-      getTransaction.onerror = onError;
-      var getRequest = getTransaction.objectStore(this.storeName).get(key);
-      getRequest.onsuccess = function (event) {
-        hasSuccess = true;
-        result = event.target.result;
-      };
-      getRequest.onerror = onError;
-    },
-
-    /**
-     * Removes an object from the store.
-     *
-     * @param {*} key The id of the object to remove.
-     * @param {Function} [onSuccess] A callback that is called if the removal
-     *  was successful.
-     * @param {Function} [onError] A callback that will be called if an error
-     *  occurred during the operation.
-     */
-    remove: function (key, onSuccess, onError) {
-      onError || (onError = function (error) {
-        console.error('Could not remove data.', error);
-      });
-      onSuccess || (onSuccess = noop);
-
-      var hasSuccess = false,
-          result = null;
-
-      var removeTransaction = this.db.transaction([this.storeName], this.consts.READ_WRITE);
-      removeTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      removeTransaction.onabort = onError;
-      removeTransaction.onerror = onError;
-
-      var deleteRequest = removeTransaction.objectStore(this.storeName)['delete'](key);
-      deleteRequest.onsuccess = function (event) {
-        hasSuccess = true;
-        result = event.target.result;
-      };
-      deleteRequest.onerror = onError;
-    },
-
-    /**
-     * Runs a batch of put and/or remove operations on the store.
-     *
-     * @param {Array} dataArray An array of objects containing the operation to run
-     *  and the data object (for put operations).
-     * @param {Function} [onSuccess] A callback that is called if all operations
-     *  were successful.
-     * @param {Function} [onError] A callback that is called if an error
-     *  occurred during one of the operations.
-     */
-    batch: function (dataArray, onSuccess, onError) {
-      onError || (onError = function (error) {
-        console.error('Could not apply batch.', error);
-      });
-      onSuccess || (onSuccess = noop);
-
-      if(Object.prototype.toString.call(dataArray) != '[object Array]'){
-        onError(new Error('dataArray argument must be of type Array.'));
-      }
-      var batchTransaction = this.db.transaction([this.storeName] , this.consts.READ_WRITE);
-      batchTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(hasSuccess);
-      };
-      batchTransaction.onabort = onError;
-      batchTransaction.onerror = onError;
-      
-      var count = dataArray.length;
-      var called = false;
-      var hasSuccess = false;
-
-      var onItemSuccess = function () {
-        count--;
-        if (count === 0 && !called) {
-          called = true;
-          hasSuccess = true;
-        }
-      };
-
-      dataArray.forEach(function (operation) {
-        var type = operation.type;
-        var key = operation.key;
-        var value = operation.value;
-
-        var onItemError = function (err) {
-          batchTransaction.abort();
-          if (!called) {
-            called = true;
-            onError(err, type, key);
-          }
-        };
-
-        if (type == "remove") {
-          var deleteRequest = batchTransaction.objectStore(this.storeName)['delete'](key);
-          deleteRequest.onsuccess = onItemSuccess;
-          deleteRequest.onerror = onItemError;
-        } else if (type == "put") {
-          var putRequest;
-          if (this.keyPath !== null) { // in-line keys
-            this._addIdPropertyIfNeeded(value);
-            putRequest = batchTransaction.objectStore(this.storeName).put(value);
-          } else { // out-of-line keys
-            putRequest = batchTransaction.objectStore(this.storeName).put(value, key);
-          }
-          putRequest.onsuccess = onItemSuccess;
-          putRequest.onerror = onItemError;
-        }
-      }, this);
-    },
-
-    /**
-     * Fetches all entries in the store.
-     *
-     * @param {Function} [onSuccess] A callback that is called if the operation
-     *  was successful. Will receive an array of objects.
-     * @param {Function} [onError] A callback that will be called if an error
-     *  occurred during the operation.
-     */
-    getAll: function (onSuccess, onError) {
-      onError || (onError = function (error) {
-        console.error('Could not read data.', error);
-      });
-      onSuccess || (onSuccess = noop);
-      var getAllTransaction = this.db.transaction([this.storeName], this.consts.READ_ONLY);
-      var store = getAllTransaction.objectStore(this.storeName);
-      if (store.getAll) {
-        this._getAllNative(getAllTransaction, store, onSuccess, onError);
-      } else {
-        this._getAllCursor(getAllTransaction, store, onSuccess, onError);
-      }
-    },
-
-    /**
-     * Implements getAll for IDB implementations that have a non-standard
-     * getAll() method.
-     *
-     * @param {Object} getAllTransaction An open READ transaction.
-     * @param {Object} store A reference to the store.
-     * @param {Function} onSuccess A callback that will be called if the
-     *  operation was successful.
-     * @param {Function} onError A callback that will be called if an
-     *  error occurred during the operation.
-     * @private
-     */
-    _getAllNative: function (getAllTransaction, store, onSuccess, onError) {
-      var hasSuccess = false,
-          result = null;
-
-      getAllTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      getAllTransaction.onabort = onError;
-      getAllTransaction.onerror = onError;
-
-      var getAllRequest = store.getAll();
-      getAllRequest.onsuccess = function (event) {
-        hasSuccess = true;
-        result = event.target.result;
-      };
-      getAllRequest.onerror = onError;
-    },
-
-    /**
-     * Implements getAll for IDB implementations that do not have a getAll()
-     * method.
-     *
-     * @param {Object} getAllTransaction An open READ transaction.
-     * @param {Object} store A reference to the store.
-     * @param {Function} onSuccess A callback that will be called if the
-     *  operation was successful.
-     * @param {Function} onError A callback that will be called if an
-     *  error occurred during the operation.
-     * @private
-     */
-    _getAllCursor: function (getAllTransaction, store, onSuccess, onError) {
-      var all = [],
-          hasSuccess = false,
-          result = null;
-
-      getAllTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      getAllTransaction.onabort = onError;
-      getAllTransaction.onerror = onError;
-
-      var cursorRequest = store.openCursor();
-      cursorRequest.onsuccess = function (event) {
-        var cursor = event.target.result;
-        if (cursor) {
-          all.push(cursor.value);
-          cursor['continue']();
-        }
-        else {
-          hasSuccess = true;
-          result = all;
-        }
-      };
-      cursorRequest.onError = onError;
-    },
-
-    /**
-     * Clears the store, i.e. deletes all entries in the store.
-     *
-     * @param {Function} [onSuccess] A callback that will be called if the
-     *  operation was successful.
-     * @param {Function} [onError] A callback that will be called if an
-     *  error occurred during the operation.
-     */
-    clear: function (onSuccess, onError) {
-      onError || (onError = function (error) {
-        console.error('Could not clear store.', error);
-      });
-      onSuccess || (onSuccess = noop);
-
-      var hasSuccess = false,
-          result = null;
-
-      var clearTransaction = this.db.transaction([this.storeName], this.consts.READ_WRITE);
-      clearTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      clearTransaction.onabort = onError;
-      clearTransaction.onerror = onError;
-
-      var clearRequest = clearTransaction.objectStore(this.storeName).clear();
-      clearRequest.onsuccess = function (event) {
-        hasSuccess = true;
-        result = event.target.result;
-      };
-      clearRequest.onerror = onError;
-    },
-
-    /**
-     * Checks if an id property needs to present on a object and adds one if
-     * necessary.
-     *
-     * @param {Object} dataObj The data object that is about to be stored
-     * @private
-     */
-    _addIdPropertyIfNeeded: function (dataObj) {
-      if (!this.features.hasAutoIncrement && typeof dataObj[this.keyPath] == 'undefined') {
-        dataObj[this.keyPath] = this._insertIdCount++ + Date.now();
-      }
-    },
-
-    /************
-     * indexing *
-     ************/
-
-    /**
-     * Returns a DOMStringList of index names of the store.
-     *
-     * @return {DOMStringList} The list of index names
-     */
-    getIndexList: function () {
-      return this.store.indexNames;
-    },
-
-    /**
-     * Checks if an index with the given name exists in the store.
-     *
-     * @param {String} indexName The name of the index to look for
-     * @return {Boolean} Whether the store contains an index with the given name
-     */
-    hasIndex: function (indexName) {
-      return this.store.indexNames.contains(indexName);
-    },
-
-    /**
-     * Normalizes an object containing index data and assures that all
-     * properties are set.
-     *
-     * @param {Object} indexData The index data object to normalize
-     * @param {String} indexData.name The name of the index
-     * @param {String} [indexData.keyPath] The key path of the index
-     * @param {Boolean} [indexData.unique] Whether the index is unique
-     * @param {Boolean} [indexData.multiEntry] Whether the index is multi entry
-     */
-    normalizeIndexData: function (indexData) {
-      indexData.keyPath = indexData.keyPath || indexData.name;
-      indexData.unique = !!indexData.unique;
-      indexData.multiEntry = !!indexData.multiEntry;
-    },
-
-    /**
-     * Checks if an actual index complies with an expected index.
-     *
-     * @param {Object} actual The actual index found in the store
-     * @param {Object} expected An Object describing an expected index
-     * @return {Boolean} Whether both index definitions are identical
-     */
-    indexComplies: function (actual, expected) {
-      var complies = ['keyPath', 'unique', 'multiEntry'].every(function (key) {
-        // IE10 returns undefined for no multiEntry
-        if (key == 'multiEntry' && actual[key] === undefined && expected[key] === false) {
-          return true;
-        }
-        return expected[key] == actual[key];
-      });
-      return complies;
-    },
-
-    /**********
-     * cursor *
-     **********/
-
-    /**
-     * Iterates over the store using the given options and calling onItem
-     * for each entry matching the options.
-     *
-     * @param {Function} onItem A callback to be called for each match
-     * @param {Object} [options] An object defining specific options
-     * @param {Object} [options.index=null] An IDBIndex to operate on
-     * @param {String} [options.order=ASC] The order in which to provide the
-     *  results, can be 'DESC' or 'ASC'
-     * @param {Boolean} [options.autoContinue=true] Whether to automatically
-     *  iterate the cursor to the next result
-     * @param {Boolean} [options.filterDuplicates=false] Whether to exclude
-     *  duplicate matches
-     * @param {Object} [options.keyRange=null] An IDBKeyRange to use
-     * @param {Boolean} [options.writeAccess=false] Whether grant write access
-     *  to the store in the onItem callback
-     * @param {Function} [options.onEnd=null] A callback to be called after
-     *  iteration has ended
-     * @param {Function} [options.onError=console.error] A callback to be called
-     *  if an error occurred during the operation.
-     */
-    iterate: function (onItem, options) {
-      options = mixin({
-        index: null,
-        order: 'ASC',
-        autoContinue: true,
-        filterDuplicates: false,
-        keyRange: null,
-        writeAccess: false,
-        onEnd: null,
-        onError: function (error) {
-          console.error('Could not open cursor.', error);
-        }
-      }, options || {});
-
-      var directionType = options.order.toLowerCase() == 'desc' ? 'PREV' : 'NEXT';
-      if (options.filterDuplicates) {
-        directionType += '_NO_DUPLICATE';
-      }
-
-      var hasSuccess = false;
-      var cursorTransaction = this.db.transaction([this.storeName], this.consts[options.writeAccess ? 'READ_WRITE' : 'READ_ONLY']);
-      var cursorTarget = cursorTransaction.objectStore(this.storeName);
-      if (options.index) {
-        cursorTarget = cursorTarget.index(options.index);
-      }
-
-      cursorTransaction.oncomplete = function () {
-        if (!hasSuccess) {
-          options.onError(null);
-          return;
-        }
-        if (options.onEnd) {
-          options.onEnd();
-        } else {
-          onItem(null);
-        }
-      };
-      cursorTransaction.onabort = options.onError;
-      cursorTransaction.onerror = options.onError;
-
-      var cursorRequest = cursorTarget.openCursor(options.keyRange, this.consts[directionType]);
-      cursorRequest.onerror = options.onError;
-      cursorRequest.onsuccess = function (event) {
-        var cursor = event.target.result;
-        if (cursor) {
-          onItem(cursor.value, cursor, cursorTransaction);
-          if (options.autoContinue) {
-            cursor['continue']();
-          }
-        } else {
-          hasSuccess = true;
-        }
-      };
-    },
-
-    /**
-     * Runs a query against the store and passes an array containing matched
-     * objects to the success handler.
-     *
-     * @param {Function} onSuccess A callback to be called when the operation
-     *  was successful.
-     * @param {Object} [options] An object defining specific query options
-     * @param {Object} [options.index=null] An IDBIndex to operate on
-     * @param {String} [options.order=ASC] The order in which to provide the
-     *  results, can be 'DESC' or 'ASC'
-     * @param {Boolean} [options.filterDuplicates=false] Whether to exclude
-     *  duplicate matches
-     * @param {Object} [options.keyRange=null] An IDBKeyRange to use
-     * @param {Function} [options.onError=console.error] A callback to be called if an error
-     *  occurred during the operation.
-     */
-    query: function (onSuccess, options) {
-      var result = [];
-      options = options || {};
-      options.onEnd = function () {
-        onSuccess(result);
-      };
-      this.iterate(function (item) {
-        result.push(item);
-      }, options);
-    },
-
-    /**
-     *
-     * Runs a query against the store, but only returns the number of matches
-     * instead of the matches itself.
-     *
-     * @param {Function} onSuccess A callback to be called if the opration
-     *  was successful.
-     * @param {Object} [options] An object defining specific options
-     * @param {Object} [options.index=null] An IDBIndex to operate on
-     * @param {Object} [options.keyRange=null] An IDBKeyRange to use
-     * @param {Function} [options.onError=console.error] A callback to be called if an error
-     *  occurred during the operation.
-     */
-    count: function (onSuccess, options) {
-
-      options = mixin({
-        index: null,
-        keyRange: null
-      }, options || {});
-
-      var onError = options.onError || function (error) {
-        console.error('Could not open cursor.', error);
-      };
-
-      var hasSuccess = false,
-          result = null;
-
-      var cursorTransaction = this.db.transaction([this.storeName], this.consts.READ_ONLY);
-      cursorTransaction.oncomplete = function () {
-        var callback = hasSuccess ? onSuccess : onError;
-        callback(result);
-      };
-      cursorTransaction.onabort = onError;
-      cursorTransaction.onerror = onError;
-
-      var cursorTarget = cursorTransaction.objectStore(this.storeName);
-      if (options.index) {
-        cursorTarget = cursorTarget.index(options.index);
-      }
-      var countRequest = cursorTarget.count(options.keyRange);
-      countRequest.onsuccess = function (evt) {
-        hasSuccess = true;
-        result = evt.target.result;
-      };
-      countRequest.onError = onError;
-    },
-
-    /**************/
-    /* key ranges */
-    /**************/
-
-    /**
-     * Creates a key range using specified options. This key range can be
-     * handed over to the count() and iterate() methods.
-     *
-     * Note: You must provide at least one or both of "lower" or "upper" value.
-     *
-     * @param {Object} options The options for the key range to create
-     * @param {*} [options.lower] The lower bound
-     * @param {Boolean} [options.excludeLower] Whether to exclude the lower
-     *  bound passed in options.lower from the key range
-     * @param {*} [options.upper] The upper bound
-     * @param {Boolean} [options.excludeUpper] Whether to exclude the upper
-     *  bound passed in options.upper from the key range
-     * @return {Object} The IDBKeyRange representing the specified options
-     */
-    makeKeyRange: function(options){
-      /*jshint onecase:true */
-      var keyRange,
-          hasLower = typeof options.lower != 'undefined',
-          hasUpper = typeof options.upper != 'undefined';
-
-      switch(true){
-        case hasLower && hasUpper:
-          keyRange = this.keyRange.bound(options.lower, options.upper, options.excludeLower, options.excludeUpper);
-          break;
-        case hasLower:
-          keyRange = this.keyRange.lowerBound(options.lower, options.excludeLower);
-          break;
-        case hasUpper:
-          keyRange = this.keyRange.upperBound(options.upper, options.excludeUpper);
-          break;
-        default:
-          throw new Error('Cannot create KeyRange. Provide one or both of "lower" or "upper" value.');
-      }
-
-      return keyRange;
-
-    }
-
-  };
-
-  /** helpers **/
-
-  var noop = function () {
-  };
-  var empty = {};
-  var mixin = function (target, source) {
-    var name, s;
-    for (name in source) {
-      s = source[name];
-      if (s !== empty[name] && s !== target[name]) {
-        target[name] = s;
-      }
-    }
-    return target;
-  };
-
-  IDBStore.version = IDBStore.prototype.version;
-
-  return IDBStore;
-
-}, this);
-
-},{}],20:[function(require,module,exports){
-var Buffer = require('buffer').Buffer;
-
-module.exports = isBuffer;
-
-function isBuffer (o) {
-  return Buffer.isBuffer(o)
-    || /\[object (.+Array|Array.+)\]/.test(Object.prototype.toString.call(o));
-}
-
-},{"buffer":2}],21:[function(require,module,exports){
-(function (process,global,Buffer){
-var util              = require('util')
-  , AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
-  , AbstractIterator  = require('abstract-leveldown').AbstractIterator
-  , noop              = function () {}
-  , setImmediate      = global.setImmediate || process.nextTick
-
-function MemIterator (db, options) {
-  AbstractIterator.call(this, db)
-  this._reverse = !!options.reverse
-  this._limit   = options.limit
-  this._count   = 0
-  this._end     = options.end
-  this._start   = options.start
-
-  if (this._start && Buffer.isBuffer(this._start) && this._start.length === 0)
-    this._start = null
-  if (this._end && Buffer.isBuffer(this._end) && this._end.length === 0)
-    this._end = null
-
-  if (this._start) {
-    for (var i = 0; i < this.db._keys.length; i++) {
-      if (this.db._keys[i] >= options.start) {
-        this._pos = this._reverse && this.db._keys[i] != options.start ? i - 1 : i
-        break
-      }
-    }
-    if (this._pos == null && !this._reverse) this._pos = -1
-  }
-
-  if (!options.start || !this._pos)
-    this._pos = this._reverse ? this.db._keys.length - 1 : 0
-}
-
-util.inherits(MemIterator, AbstractIterator)
-
-MemIterator.prototype._next = function (callback) {
-  var self = this
-  if (self._pos >= self.db._keys.length || self._pos < 0)
-    return setImmediate(callback)
-  var key   = self.db._keys[self._pos]
-    , value
-
-  if (!!self._end && (self._reverse ? key < self._end : key > self._end))
-    return setImmediate(callback)
-
-
-  if (!!self._limit && self._limit > 0 && self._count++ >= self._limit)
-    return setImmediate(callback)
-
-  value = self.db._store['$' + key]
-  self._pos += self._reverse ? -1 : 1
-
-  setImmediate(function () { callback(null, key, value) })
-}
-
-function MemDOWN (location) {
-  AbstractLevelDOWN.call(this, location)
-  this._store = {}
-  this._keys  = []
-}
-
-util.inherits(MemDOWN, AbstractLevelDOWN)
-
-MemDOWN.prototype._open = function (options, callback) {
-  var self = this
-  setImmediate(function () { callback(null, self) })
-}
-
-MemDOWN.prototype._put = function (key, value, options, callback) {
-  if (this._keys.indexOf(key) == -1) {
-    this._keys.push(key)
-    this._keys.sort()
-  }
-  key = '$' + key // safety, to avoid key='__proto__'-type skullduggery 
-  this._store[key] = value
-  setImmediate(callback)
-}
-
-MemDOWN.prototype._get = function (key, options, callback) {
-  var value = this._store['$' + key]
-  if (value === undefined) {
-    // 'NotFound' error, consistent with LevelDOWN API
-    return setImmediate(function () { callback(new Error('NotFound')) })
-  }
-  if (options.asBuffer !== false && !Buffer.isBuffer(value))
-    value = new Buffer(String(value))
-  setImmediate(function () {
-    callback(null, value)
-  })
-}
-
-MemDOWN.prototype._del = function (key, options, callback) {
-  for (var i = 0; i < this._keys.length; i++) {
-    if (this._keys[i] == key) {
-      this._keys.splice(i, 1)
-      break;
-    }
-  }
-  delete this._store['$' + key]
-  setImmediate(callback)
-}
-
-MemDOWN.prototype._batch = function (array, options, callback) {
-  var err
-    , i = 0
-    , key
-    , value
-
-  if (Array.isArray(array)) {
-    for (; i < array.length; i++) {
-      if (array[i]) {
-        key = Buffer.isBuffer(array[i].key) ? array[i].key : String(array[i].key)
-        err = this._checkKeyValue(key, 'key')
-        if (err) return setImmediate(function () { callback(err) })
-        if (array[i].type === 'del') {
-          this._del(array[i].key, options, noop)
-        } else if (array[i].type === 'put') {
-          value = Buffer.isBuffer(array[i].value) ? array[i].value : String(array[i].value)
-          err = this._checkKeyValue(value, 'value')
-          if (err) return setImmediate(function () { callback(err) })
-          this._put(key, value, options, noop)
-        }
-      }
-    }
-  }
-  setImmediate(callback)
-}
-
-MemDOWN.prototype._iterator = function (options) {
-  return new MemIterator(this, options)
-}
-
-module.exports = MemDOWN
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":9,"abstract-leveldown":24,"buffer":2,"util":11}],22:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"_process":9,"dup":16}],23:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"_process":9,"dup":17}],24:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"./abstract-chained-batch":22,"./abstract-iterator":23,"_process":9,"buffer":2,"dup":18}],25:[function(require,module,exports){
-// Browser Request
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// UMD HEADER START 
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], factory);
-    } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-        module.exports = factory();
-    } else {
-        // Browser globals (root is window)
-        root.returnExports = factory();
-  }
-}(this, function () {
-// UMD HEADER END
-
-var XHR = XMLHttpRequest
-if (!XHR) throw new Error('missing XMLHttpRequest')
-request.log = {
-  'trace': noop, 'debug': noop, 'info': noop, 'warn': noop, 'error': noop
-}
-
-var DEFAULT_TIMEOUT = 3 * 60 * 1000 // 3 minutes
-
-//
-// request
-//
-
-function request(options, callback) {
-  // The entry-point to the API: prep the options object and pass the real work to run_xhr.
-  if(typeof callback !== 'function')
-    throw new Error('Bad callback given: ' + callback)
-
-  if(!options)
-    throw new Error('No options given')
-
-  var options_onResponse = options.onResponse; // Save this for later.
-
-  if(typeof options === 'string')
-    options = {'uri':options};
-  else
-    options = JSON.parse(JSON.stringify(options)); // Use a duplicate for mutating.
-
-  options.onResponse = options_onResponse // And put it back.
-
-  if (options.verbose) request.log = getLogger();
-
-  if(options.url) {
-    options.uri = options.url;
-    delete options.url;
-  }
-
-  if(!options.uri && options.uri !== "")
-    throw new Error("options.uri is a required argument");
-
-  if(typeof options.uri != "string")
-    throw new Error("options.uri must be a string");
-
-  var unsupported_options = ['proxy', '_redirectsFollowed', 'maxRedirects', 'followRedirect']
-  for (var i = 0; i < unsupported_options.length; i++)
-    if(options[ unsupported_options[i] ])
-      throw new Error("options." + unsupported_options[i] + " is not supported")
-
-  options.callback = callback
-  options.method = options.method || 'GET';
-  options.headers = options.headers || {};
-  options.body    = options.body || null
-  options.timeout = options.timeout || request.DEFAULT_TIMEOUT
-
-  if(options.headers.host)
-    throw new Error("Options.headers.host is not supported");
-
-  if(options.json) {
-    options.headers.accept = options.headers.accept || 'application/json'
-    if(options.method !== 'GET')
-      options.headers['content-type'] = 'application/json'
-
-    if(typeof options.json !== 'boolean')
-      options.body = JSON.stringify(options.json)
-    else if(typeof options.body !== 'string')
-      options.body = JSON.stringify(options.body)
-  }
-  
-  //BEGIN QS Hack
-  var serialize = function(obj) {
-    var str = [];
-    for(var p in obj)
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-      }
-    return str.join("&");
-  }
-  
-  if(options.qs){
-    var qs = (typeof options.qs == 'string')? options.qs : serialize(options.qs);
-    if(options.uri.indexOf('?') !== -1){ //no get params
-        options.uri = options.uri+'&'+qs;
-    }else{ //existing get params
-        options.uri = options.uri+'?'+qs;
-    }
-  }
-  //END QS Hack
-  
-  //BEGIN FORM Hack
-  var multipart = function(obj) {
-    //todo: support file type (useful?)
-    var result = {};
-    result.boundry = '-------------------------------'+Math.floor(Math.random()*1000000000);
-    var lines = [];
-    for(var p in obj){
-        if (obj.hasOwnProperty(p)) {
-            lines.push(
-                '--'+result.boundry+"\n"+
-                'Content-Disposition: form-data; name="'+p+'"'+"\n"+
-                "\n"+
-                obj[p]+"\n"
-            );
-        }
-    }
-    lines.push( '--'+result.boundry+'--' );
-    result.body = lines.join('');
-    result.length = result.body.length;
-    result.type = 'multipart/form-data; boundary='+result.boundry;
-    return result;
-  }
-  
-  if(options.form){
-    if(typeof options.form == 'string') throw('form name unsupported');
-    if(options.method === 'POST'){
-        var encoding = (options.encoding || 'application/x-www-form-urlencoded').toLowerCase();
-        options.headers['content-type'] = encoding;
-        switch(encoding){
-            case 'application/x-www-form-urlencoded':
-                options.body = serialize(options.form).replace(/%20/g, "+");
-                break;
-            case 'multipart/form-data':
-                var multi = multipart(options.form);
-                //options.headers['content-length'] = multi.length;
-                options.body = multi.body;
-                options.headers['content-type'] = multi.type;
-                break;
-            default : throw new Error('unsupported encoding:'+encoding);
-        }
-    }
-  }
-  //END FORM Hack
-
-  // If onResponse is boolean true, call back immediately when the response is known,
-  // not when the full request is complete.
-  options.onResponse = options.onResponse || noop
-  if(options.onResponse === true) {
-    options.onResponse = callback
-    options.callback = noop
-  }
-
-  // XXX Browsers do not like this.
-  //if(options.body)
-  //  options.headers['content-length'] = options.body.length;
-
-  // HTTP basic authentication
-  if(!options.headers.authorization && options.auth)
-    options.headers.authorization = 'Basic ' + b64_enc(options.auth.username + ':' + options.auth.password);
-
-  return run_xhr(options)
-}
-
-var req_seq = 0
-function run_xhr(options) {
-  var xhr = new XHR
-    , timed_out = false
-    , is_cors = is_crossDomain(options.uri)
-    , supports_cors = ('withCredentials' in xhr)
-
-  req_seq += 1
-  xhr.seq_id = req_seq
-  xhr.id = req_seq + ': ' + options.method + ' ' + options.uri
-  xhr._id = xhr.id // I know I will type "_id" from habit all the time.
-
-  if(is_cors && !supports_cors) {
-    var cors_err = new Error('Browser does not support cross-origin request: ' + options.uri)
-    cors_err.cors = 'unsupported'
-    return options.callback(cors_err, xhr)
-  }
-
-  xhr.timeoutTimer = setTimeout(too_late, options.timeout)
-  function too_late() {
-    timed_out = true
-    var er = new Error('ETIMEDOUT')
-    er.code = 'ETIMEDOUT'
-    er.duration = options.timeout
-
-    request.log.error('Timeout', { 'id':xhr._id, 'milliseconds':options.timeout })
-    return options.callback(er, xhr)
-  }
-
-  // Some states can be skipped over, so remember what is still incomplete.
-  var did = {'response':false, 'loading':false, 'end':false}
-
-  xhr.onreadystatechange = on_state_change
-  xhr.open(options.method, options.uri, true) // asynchronous
-  if(is_cors)
-    xhr.withCredentials = !! options.withCredentials
-  xhr.send(options.body)
-  return xhr
-
-  function on_state_change(event) {
-    if(timed_out)
-      return request.log.debug('Ignoring timed out state change', {'state':xhr.readyState, 'id':xhr.id})
-
-    request.log.debug('State change', {'state':xhr.readyState, 'id':xhr.id, 'timed_out':timed_out})
-
-    if(xhr.readyState === XHR.OPENED) {
-      request.log.debug('Request started', {'id':xhr.id})
-      for (var key in options.headers)
-        xhr.setRequestHeader(key, options.headers[key])
-    }
-
-    else if(xhr.readyState === XHR.HEADERS_RECEIVED)
-      on_response()
-
-    else if(xhr.readyState === XHR.LOADING) {
-      on_response()
-      on_loading()
-    }
-
-    else if(xhr.readyState === XHR.DONE) {
-      on_response()
-      on_loading()
-      on_end()
-    }
-  }
-
-  function on_response() {
-    if(did.response)
-      return
-
-    did.response = true
-    request.log.debug('Got response', {'id':xhr.id, 'status':xhr.status})
-    clearTimeout(xhr.timeoutTimer)
-    xhr.statusCode = xhr.status // Node request compatibility
-
-    // Detect failed CORS requests.
-    if(is_cors && xhr.statusCode == 0) {
-      var cors_err = new Error('CORS request rejected: ' + options.uri)
-      cors_err.cors = 'rejected'
-
-      // Do not process this request further.
-      did.loading = true
-      did.end = true
-
-      return options.callback(cors_err, xhr)
-    }
-
-    options.onResponse(null, xhr)
-  }
-
-  function on_loading() {
-    if(did.loading)
-      return
-
-    did.loading = true
-    request.log.debug('Response body loading', {'id':xhr.id})
-    // TODO: Maybe simulate "data" events by watching xhr.responseText
-  }
-
-  function on_end() {
-    if(did.end)
-      return
-
-    did.end = true
-    request.log.debug('Request done', {'id':xhr.id})
-
-    xhr.body = xhr.responseText
-    if(options.json) {
-      try        { xhr.body = JSON.parse(xhr.responseText) }
-      catch (er) { return options.callback(er, xhr)        }
-    }
-
-    options.callback(null, xhr, xhr.body)
-  }
-
-} // request
-
-request.withCredentials = false;
-request.DEFAULT_TIMEOUT = DEFAULT_TIMEOUT;
-
-//
-// defaults
-//
-
-request.defaults = function(options, requester) {
-  var def = function (method) {
-    var d = function (params, callback) {
-      if(typeof params === 'string')
-        params = {'uri': params};
-      else {
-        params = JSON.parse(JSON.stringify(params));
-      }
-      for (var i in options) {
-        if (params[i] === undefined) params[i] = options[i]
-      }
-      return method(params, callback)
-    }
-    return d
-  }
-  var de = def(request)
-  de.get = def(request.get)
-  de.post = def(request.post)
-  de.put = def(request.put)
-  de.head = def(request.head)
-  return de
-}
-
-//
-// HTTP method shortcuts
-//
-
-var shortcuts = [ 'get', 'put', 'post', 'head' ];
-shortcuts.forEach(function(shortcut) {
-  var method = shortcut.toUpperCase();
-  var func   = shortcut.toLowerCase();
-
-  request[func] = function(opts) {
-    if(typeof opts === 'string')
-      opts = {'method':method, 'uri':opts};
-    else {
-      opts = JSON.parse(JSON.stringify(opts));
-      opts.method = method;
-    }
-
-    var args = [opts].concat(Array.prototype.slice.apply(arguments, [1]));
-    return request.apply(this, args);
-  }
-})
-
-//
-// CouchDB shortcut
-//
-
-request.couch = function(options, callback) {
-  if(typeof options === 'string')
-    options = {'uri':options}
-
-  // Just use the request API to do JSON.
-  options.json = true
-  if(options.body)
-    options.json = options.body
-  delete options.body
-
-  callback = callback || noop
-
-  var xhr = request(options, couch_handler)
-  return xhr
-
-  function couch_handler(er, resp, body) {
-    if(er)
-      return callback(er, resp, body)
-
-    if((resp.statusCode < 200 || resp.statusCode > 299) && body.error) {
-      // The body is a Couch JSON object indicating the error.
-      er = new Error('CouchDB error: ' + (body.error.reason || body.error.error))
-      for (var key in body)
-        er[key] = body[key]
-      return callback(er, resp, body);
-    }
-
-    return callback(er, resp, body);
-  }
-}
-
-//
-// Utility
-//
-
-function noop() {}
-
-function getLogger() {
-  var logger = {}
-    , levels = ['trace', 'debug', 'info', 'warn', 'error']
-    , level, i
-
-  for(i = 0; i < levels.length; i++) {
-    level = levels[i]
-
-    logger[level] = noop
-    if(typeof console !== 'undefined' && console && console[level])
-      logger[level] = formatted(console, level)
-  }
-
-  return logger
-}
-
-function formatted(obj, method) {
-  return formatted_logger
-
-  function formatted_logger(str, context) {
-    if(typeof context === 'object')
-      str += ' ' + JSON.stringify(context)
-
-    return obj[method].call(obj, str)
-  }
-}
-
-// Return whether a URL is a cross-domain request.
-function is_crossDomain(url) {
-  var rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/
-
-  // jQuery #8138, IE may throw an exception when accessing
-  // a field from window.location if document.domain has been set
-  var ajaxLocation
-  try { ajaxLocation = location.href }
-  catch (e) {
-    // Use the href attribute of an A element since IE will modify it given document.location
-    ajaxLocation = document.createElement( "a" );
-    ajaxLocation.href = "";
-    ajaxLocation = ajaxLocation.href;
-  }
-
-  var ajaxLocParts = rurl.exec(ajaxLocation.toLowerCase()) || []
-    , parts = rurl.exec(url.toLowerCase() )
-
-  var result = !!(
-    parts &&
-    (  parts[1] != ajaxLocParts[1]
-    || parts[2] != ajaxLocParts[2]
-    || (parts[3] || (parts[1] === "http:" ? 80 : 443)) != (ajaxLocParts[3] || (ajaxLocParts[1] === "http:" ? 80 : 443))
-    )
-  )
-
-  //console.debug('is_crossDomain('+url+') -> ' + result)
-  return result
-}
-
-// MIT License from http://phpjs.org/functions/base64_encode:358
-function b64_enc (data) {
-    // Encodes string using MIME base64 algorithm
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0, ac = 0, enc="", tmp_arr = [];
-
-    if (!data) {
-        return data;
-    }
-
-    // assume utf8 data
-    // data = this.utf8_encode(data+'');
-
-    do { // pack three octets into four hexets
-        o1 = data.charCodeAt(i++);
-        o2 = data.charCodeAt(i++);
-        o3 = data.charCodeAt(i++);
-
-        bits = o1<<16 | o2<<8 | o3;
-
-        h1 = bits>>18 & 0x3f;
-        h2 = bits>>12 & 0x3f;
-        h3 = bits>>6 & 0x3f;
-        h4 = bits & 0x3f;
-
-        // use hexets to index into b64, and append result to encoded string
-        tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
-    } while (i < data.length);
-
-    enc = tmp_arr.join('');
-
-    switch (data.length % 3) {
-        case 1:
-            enc = enc.slice(0, -2) + '==';
-        break;
-        case 2:
-            enc = enc.slice(0, -1) + '=';
-        break;
-    }
-
-    return enc;
-}
-    return request;
-//UMD FOOTER START
-}));
-//UMD FOOTER END
-
-},{}],26:[function(require,module,exports){
+},{"codemirror":13,"codemirror/mode/javascript/javascript":14,"debounce":15,"geojsonhint":17,"mapbox.js":32,"terrarium":67}],13:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -13242,7 +10995,7 @@ function b64_enc (data) {
   return CodeMirror;
 });
 
-},{}],27:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -13930,7 +11683,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 });
 
-},{"../../lib/codemirror":26}],28:[function(require,module,exports){
+},{"../../lib/codemirror":13}],15:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -13985,14 +11738,14 @@ module.exports = function debounce(func, wait, immediate){
   };
 };
 
-},{"date-now":29}],29:[function(require,module,exports){
+},{"date-now":16}],16:[function(require,module,exports){
 module.exports = Date.now || now
 
 function now() {
     return new Date().getTime()
 }
 
-},{}],30:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var jsonlint = require('jsonlint-lines');
 
 function hint(str) {
@@ -14311,7 +12064,7 @@ function hint(str) {
 
 module.exports.hint = hint;
 
-},{"jsonlint-lines":31}],31:[function(require,module,exports){
+},{"jsonlint-lines":18}],18:[function(require,module,exports){
 (function (process){
 /* parser generated by jison 0.4.6 */
 /*
@@ -14968,7 +12721,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 }
 }).call(this,require('_process'))
-},{"_process":9,"fs":1,"path":8}],32:[function(require,module,exports){
+},{"_process":9,"fs":1,"path":8}],19:[function(require,module,exports){
 function corslite(url, callback, cors) {
     var sent = false;
 
@@ -15063,7 +12816,7 @@ function corslite(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = corslite;
 
-},{}],33:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
@@ -24244,7 +21997,7 @@ L.Map.include({
 
 
 }(window, document));
-},{}],34:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
@@ -24797,7 +22550,7 @@ L.Map.include({
 
 }));
 
-},{}],35:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var html_sanitize = require('./sanitizer-bundle.js');
 
 module.exports = function(_) {
@@ -24817,7 +22570,7 @@ function cleanUrl(url) {
 
 function cleanId(id) { return id; }
 
-},{"./sanitizer-bundle.js":36}],36:[function(require,module,exports){
+},{"./sanitizer-bundle.js":23}],23:[function(require,module,exports){
 
 // Copyright (C) 2010 Google Inc.
 //
@@ -27265,7 +25018,7 @@ if (typeof module !== 'undefined') {
     module.exports = html_sanitize;
 }
 
-},{}],37:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports={
   "author": {
     "name": "Mapbox"
@@ -27367,7 +25120,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],38:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27377,7 +25130,7 @@ module.exports = {
     REQUIRE_ACCESS_TOKEN: true
 };
 
-},{}],39:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -27494,7 +25247,7 @@ module.exports.featureLayer = function(_, options) {
     return new FeatureLayer(_, options);
 };
 
-},{"./marker":52,"./request":53,"./simplestyle":55,"./url":57,"./util":58,"sanitize-caja":35}],40:[function(require,module,exports){
+},{"./marker":39,"./request":40,"./simplestyle":42,"./url":44,"./util":45,"sanitize-caja":22}],27:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -27593,7 +25346,7 @@ module.exports = function(url, options) {
     return geocoder;
 };
 
-},{"./request":53,"./url":57,"./util":58}],41:[function(require,module,exports){
+},{"./request":40,"./url":44,"./util":45}],28:[function(require,module,exports){
 'use strict';
 
 var geocoder = require('./geocoder'),
@@ -27785,7 +25538,7 @@ module.exports.geocoderControl = function(_, options) {
     return new GeocoderControl(_, options);
 };
 
-},{"./geocoder":40,"./util":58}],42:[function(require,module,exports){
+},{"./geocoder":27,"./util":45}],29:[function(require,module,exports){
 'use strict';
 
 function utfDecode(c) {
@@ -27803,7 +25556,7 @@ module.exports = function(data) {
     };
 };
 
-},{}],43:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -28003,7 +25756,7 @@ module.exports.gridControl = function(_, options) {
     return new GridControl(_, options);
 };
 
-},{"./util":58,"mustache":34,"sanitize-caja":35}],44:[function(require,module,exports){
+},{"./util":45,"mustache":21,"sanitize-caja":22}],31:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -28228,11 +25981,11 @@ module.exports.gridLayer = function(_, options) {
     return new GridLayer(_, options);
 };
 
-},{"./grid":42,"./load_tilejson":49,"./request":53,"./util":58}],45:[function(require,module,exports){
+},{"./grid":29,"./load_tilejson":36,"./request":40,"./util":45}],32:[function(require,module,exports){
 require('./leaflet');
 require('./mapbox');
 
-},{"./leaflet":47,"./mapbox":51}],46:[function(require,module,exports){
+},{"./leaflet":34,"./mapbox":38}],33:[function(require,module,exports){
 'use strict';
 
 var InfoControl = L.Control.extend({
@@ -28348,10 +26101,10 @@ module.exports.infoControl = function(options) {
     return new InfoControl(options);
 };
 
-},{"sanitize-caja":35}],47:[function(require,module,exports){
+},{"sanitize-caja":22}],34:[function(require,module,exports){
 window.L = require('leaflet/dist/leaflet-src');
 
-},{"leaflet/dist/leaflet-src":33}],48:[function(require,module,exports){
+},{"leaflet/dist/leaflet-src":20}],35:[function(require,module,exports){
 'use strict';
 
 var LegendControl = L.Control.extend({
@@ -28420,7 +26173,7 @@ module.exports.legendControl = function(options) {
     return new LegendControl(options);
 };
 
-},{"sanitize-caja":35}],49:[function(require,module,exports){
+},{"sanitize-caja":22}],36:[function(require,module,exports){
 'use strict';
 
 var request = require('./request'),
@@ -28446,7 +26199,7 @@ module.exports = {
     }
 };
 
-},{"./request":53,"./url":57,"./util":58}],50:[function(require,module,exports){
+},{"./request":40,"./url":44,"./util":45}],37:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -28627,7 +26380,7 @@ module.exports.map = function(element, _, options) {
     return new LMap(element, _, options);
 };
 
-},{"./feature_layer":39,"./grid_control":43,"./grid_layer":44,"./info_control":46,"./legend_control":48,"./load_tilejson":49,"./share_control":54,"./tile_layer":56,"./util":58}],51:[function(require,module,exports){
+},{"./feature_layer":26,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./load_tilejson":36,"./share_control":41,"./tile_layer":43,"./util":45}],38:[function(require,module,exports){
 'use strict';
 
 var geocoderControl = require('./geocoder_control'),
@@ -28679,7 +26432,7 @@ window.L.Icon.Default.imagePath =
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
     require('../package.json').version + '/images';
 
-},{"../package.json":37,"./config":38,"./feature_layer":39,"./geocoder":40,"./geocoder_control":41,"./grid_control":43,"./grid_layer":44,"./info_control":46,"./legend_control":48,"./map":50,"./marker":52,"./share_control":54,"./simplestyle":55,"./tile_layer":56,"mustache":34,"sanitize-caja":35}],52:[function(require,module,exports){
+},{"../package.json":24,"./config":25,"./feature_layer":26,"./geocoder":27,"./geocoder_control":28,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./map":37,"./marker":39,"./share_control":41,"./simplestyle":42,"./tile_layer":43,"mustache":21,"sanitize-caja":22}],39:[function(require,module,exports){
 'use strict';
 
 var url = require('./url'),
@@ -28746,7 +26499,7 @@ module.exports = {
     createPopup: createPopup
 };
 
-},{"./url":57,"./util":58,"sanitize-caja":35}],53:[function(require,module,exports){
+},{"./url":44,"./util":45,"sanitize-caja":22}],40:[function(require,module,exports){
 'use strict';
 
 var corslite = require('corslite'),
@@ -28778,7 +26531,7 @@ module.exports = function(url, callback) {
     }
 };
 
-},{"./config":38,"./util":58,"corslite":32}],54:[function(require,module,exports){
+},{"./config":25,"./util":45,"corslite":19}],41:[function(require,module,exports){
 'use strict';
 
 var urlhelper = require('./url');
@@ -28881,7 +26634,7 @@ module.exports.shareControl = function(_, options) {
     return new ShareControl(_, options);
 };
 
-},{"./load_tilejson":49,"./url":57}],55:[function(require,module,exports){
+},{"./load_tilejson":36,"./url":44}],42:[function(require,module,exports){
 'use strict';
 
 // an implementation of the simplestyle spec for polygon and linestring features
@@ -28928,7 +26681,7 @@ module.exports = {
     defaults: defaults
 };
 
-},{}],56:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -29024,7 +26777,7 @@ module.exports.tileLayer = function(_, options) {
     return new TileLayer(_, options);
 };
 
-},{"./load_tilejson":49,"./util":58}],57:[function(require,module,exports){
+},{"./load_tilejson":36,"./util":45}],44:[function(require,module,exports){
 'use strict';
 
 var config = require('./config'),
@@ -29068,7 +26821,7 @@ module.exports.tileJSON = function(urlOrMapID, accessToken) {
     return url;
 };
 
-},{"../package.json":37,"./config":38}],58:[function(require,module,exports){
+},{"../package.json":24,"./config":25}],45:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -29115,88 +26868,388 @@ function contains(item, list) {
     return false;
 }
 
-},{}],59:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
+module.exports = display;
+
+var MAPID = 'tmcw.l12c66f2';
+
 /**
- * This code is cribbed from browser-module-sandbox. All shouts to maxogden
+ * A fancy formatting function that creates maps for browser-exported
+ * turf instead of console.logging.
  */
-var request = require('browser-request');
-var detective = require('detective');
-var createCache = require('browser-module-cache');
+function display() {
+  return {
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "_display"
+            },
+            "params": [
+                {
+                    "type": "Identifier",
+                    "name": "value"
+                }
+            ],
+            "defaults": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "IfStatement",
+                        "test": {
+                            "type": "LogicalExpression",
+                            "operator": "||",
+                            "left": {
+                                "type": "LogicalExpression",
+                                "operator": "||",
+                                "left": {
+                                    "type": "BinaryExpression",
+                                    "operator": "!==",
+                                    "left": {
+                                        "type": "UnaryExpression",
+                                        "operator": "typeof",
+                                        "argument": {
+                                            "type": "Identifier",
+                                            "name": "value"
+                                        },
+                                        "prefix": true
+                                    },
+                                    "right": {
+                                        "type": "Literal",
+                                        "value": "object",
+                                        "raw": "'object'"
+                                    }
+                                },
+                                "right": {
+                                    "type": "UnaryExpression",
+                                    "operator": "!",
+                                    "argument": {
+                                        "type": "MemberExpression",
+                                        "computed": false,
+                                        "object": {
+                                            "type": "Identifier",
+                                            "name": "value"
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "type"
+                                        }
+                                    },
+                                    "prefix": true
+                                }
+                            },
+                            "right": {
+                                "type": "BinaryExpression",
+                                "operator": "===",
+                                "left": {
+                                    "type": "UnaryExpression",
+                                    "operator": "typeof",
+                                    "argument": {
+                                        "type": "Identifier",
+                                        "name": "L"
+                                    },
+                                    "prefix": true
+                                },
+                                "right": {
+                                    "type": "Literal",
+                                    "value": "undefined",
+                                    "raw": "'undefined'"
+                                }
+                            }
+                        },
+                        "consequent": {
+                            "type": "BlockStatement",
+                            "body": [
+                                {
+                                    "type": "ReturnStatement",
+                                    "argument": {
+                                        "type": "CallExpression",
+                                        "callee": {
+                                            "type": "MemberExpression",
+                                            "computed": false,
+                                            "object": {
+                                                "type": "Identifier",
+                                                "name": "console"
+                                            },
+                                            "property": {
+                                                "type": "Identifier",
+                                                "name": "log"
+                                            }
+                                        },
+                                        "arguments": [
+                                            {
+                                                "type": "Identifier",
+                                                "name": "value"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "alternate": null
+                    },
+                    {
+                        "type": "VariableDeclaration",
+                        "declarations": [
+                            {
+                                "type": "VariableDeclarator",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "container"
+                                },
+                                "init": {
+                                    "type": "CallExpression",
+                                    "callee": {
+                                        "type": "MemberExpression",
+                                        "computed": false,
+                                        "object": {
+                                            "type": "MemberExpression",
+                                            "computed": false,
+                                            "object": {
+                                                "type": "Identifier",
+                                                "name": "document"
+                                            },
+                                            "property": {
+                                                "type": "Identifier",
+                                                "name": "body"
+                                            }
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "appendChild"
+                                        }
+                                    },
+                                    "arguments": [
+                                        {
+                                            "type": "CallExpression",
+                                            "callee": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "Identifier",
+                                                    "name": "document"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "createElement"
+                                                }
+                                            },
+                                            "arguments": [
+                                                {
+                                                    "type": "Literal",
+                                                    "value": "div",
+                                                    "raw": "'div'"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "kind": "var"
+                    },
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "AssignmentExpression",
+                            "operator": "=",
+                            "left": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "Identifier",
+                                    "name": "container"
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "className"
+                                }
+                            },
+                            "right": {
+                                "type": "Literal",
+                                "value": "map",
+                                "raw": "'map'"
+                            }
+                        }
+                    },
+                    {
+                        "type": "VariableDeclaration",
+                        "declarations": [
+                            {
+                                "type": "VariableDeclarator",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "map"
+                                },
+                                "init": {
+                                    "type": "CallExpression",
+                                    "callee": {
+                                        "type": "MemberExpression",
+                                        "computed": false,
+                                        "object": {
+                                            "type": "MemberExpression",
+                                            "computed": false,
+                                            "object": {
+                                                "type": "Identifier",
+                                                "name": "L"
+                                            },
+                                            "property": {
+                                                "type": "Identifier",
+                                                "name": "mapbox"
+                                            }
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "map"
+                                        }
+                                    },
+                                    "arguments": [
+                                        {
+                                            "type": "Identifier",
+                                            "name": "container"
+                                        },
+                                        {
+                                            "type": "Literal",
+                                            "value": "tmcw.l12c66f2",
+                                            "raw": "'tmcw.l12c66f2'"
+                                        },
+                                        {
+                                            "type": "ObjectExpression",
+                                            "properties": [
+                                                {
+                                                    "type": "Property",
+                                                    "key": {
+                                                        "type": "Identifier",
+                                                        "name": "maxZoom"
+                                                    },
+                                                    "value": {
+                                                        "type": "Literal",
+                                                        "value": 15,
+                                                        "raw": "15"
+                                                    },
+                                                    "kind": "init",
+                                                    "method": false,
+                                                    "shorthand": false
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "kind": "var"
+                    },
+                    {
+                        "type": "VariableDeclaration",
+                        "declarations": [
+                            {
+                                "type": "VariableDeclarator",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "features"
+                                },
+                                "init": {
+                                    "type": "CallExpression",
+                                    "callee": {
+                                        "type": "MemberExpression",
+                                        "computed": false,
+                                        "object": {
+                                            "type": "CallExpression",
+                                            "callee": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "MemberExpression",
+                                                    "computed": false,
+                                                    "object": {
+                                                        "type": "Identifier",
+                                                        "name": "L"
+                                                    },
+                                                    "property": {
+                                                        "type": "Identifier",
+                                                        "name": "mapbox"
+                                                    }
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "featureLayer"
+                                                }
+                                            },
+                                            "arguments": [
+                                                {
+                                                    "type": "Identifier",
+                                                    "name": "value"
+                                                }
+                                            ]
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "addTo"
+                                        }
+                                    },
+                                    "arguments": [
+                                        {
+                                            "type": "Identifier",
+                                            "name": "map"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "kind": "var"
+                    },
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "Identifier",
+                                    "name": "map"
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "fitBounds"
+                                }
+                            },
+                            "arguments": [
+                                {
+                                    "type": "CallExpression",
+                                    "callee": {
+                                        "type": "MemberExpression",
+                                        "computed": false,
+                                        "object": {
+                                            "type": "Identifier",
+                                            "name": "features"
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "getBounds"
+                                        }
+                                    },
+                                    "arguments": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "rest": null,
+            "generator": false,
+            "expression": false
+        }
+    ]
+}  }
 
-var cache = createCache();
-var cdn = 'https://wzrd.in';
-
-module.exports = function(entry, callback) {
-  var preferredVersions = {};
-  var self = this;
-
-  var modules = detective(entry);
-
-  var allBundles = '';
-  var packages = [];
-
-  // cache.get(function(err, cached) {
-    var cached = {};
-    // if (err) {
-    //   return err;
-    // }
-
-    var download = [];
-    modules.forEach(function(module) {
-      if (cached[module]) {
-        allBundles += cached[module]['bundle'];
-        packages.push(cached[module]['package']);
-      } else {
-        download.push(module);
-      }
-    });
-
-    // if (download.length === 0) {
-    //   return makeIframe(allBundles);
-    // }
-
-    var body = {
-      "options": {
-        "debug": true
-      },
-      "dependencies": {}
-    };
-
-    download.map(function(module) {
-      var version = preferredVersions[module] || 'latest';
-      body.dependencies[module] = version;
-    });
-
-    request({
-      method: "POST",
-      body: JSON.stringify(body),
-      url: cdn + '/multi'},
-      downloadedModules);
-  // });
-
-  function downloadedModules(err, resp, body) {
-    if (err) {
-      return err;
-    } else if (resp.statusCode == 500) {
-      return body;
-    }
-
-    var json = JSON.parse(body);
-
-    Object.keys(json).map(function(module) {
-      allBundles += json[module]['bundle'];
-      packages.push(json[module]['package']);
-    });
-
-    // cache.put(json, function() {
-      callback(null, allBundles);
-    // });
-  }
-};
-
-},{"browser-module-cache":13,"browser-request":25,"detective":61}],60:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var esprima = require('esprima'),
   escodegen = require('escodegen'),
+  display = require('./display.js'),
   traverse = require('traverse');
 
 /**
@@ -29212,7 +27265,10 @@ var esprima = require('esprima'),
 function instrument(str, tick, type) {
   var TODO = [], parsed;
   try {
-    parsed = esprima.parse(str, {attachComment:true,loc:true});
+    parsed = esprima.parse(str, {
+      attachComment: true,
+      loc: true
+    });
   } catch(e) {
     // make esprima's errors zero-based
     e.lineNumber--;
@@ -29321,6 +27377,10 @@ function isInstrumentComment(comment) {
   return comment.value.indexOf('=') === 0;
 }
 
+/**
+ * Given a comment node in an AST, return an instrumentation function
+ * that emits its changes to the page.
+ */
 function instrumentCall(comment, type, tick) {
   var value = comment.value.replace(/^=/, '');
   var parsedComment = esprima.parse('a(' + value + ')').body[0].expression.arguments;
@@ -29331,26 +27391,67 @@ function instrumentCall(comment, type, tick) {
       "value": r ? v : { type: "Literal", value: v }
     };
   }
-  return {
-    "type": "ExpressionStatement",
-    "expression": {
-      "type": "CallExpression",
-      "callee": {
-        "type": "Identifier",
-        "name": type === 'node' ? 'process.send' : "window.top.INSTRUMENT"
-      },
-      "arguments": [{
-        "type": "ObjectExpression",
-        "properties": [
-          prop('type', 'instrument'),
-          prop('lineNumber', comment.loc.start.line),
-          prop('name', value),
-          prop('value', parsedComment[0], true)
-        ]
-      }]
-    }
-  };
+
+  // live-code instrumentation
+  if (type === 'browser' || type === 'node') {
+    return {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "Identifier",
+          "name": type === 'node' ? 'process.send' : "window.top.INSTRUMENT"
+        },
+        "arguments": [{
+          "type": "ObjectExpression",
+          "properties": [
+            prop('type', 'instrument'),
+            prop('lineNumber', comment.loc.start.line),
+            prop('name', value),
+            prop('value', parsedComment[0], true)
+          ]
+        }]
+      }
+    };
+  } else if (type === 'node-export') {
+    return {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "Identifier",
+          "name": 'console.log'
+        },
+        "arguments": [parsedComment[0]]
+      }
+    };
+  } else if (type === 'browser-export') {
+    return {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "Identifier",
+          "name": 'console.log'
+        },
+        "arguments": [parsedComment[0]]
+      }
+    };
+  } else if (type === 'browser-export-fancy') {
+    return {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "Identifier",
+          "name": '_display'
+        },
+        "arguments": [parsedComment[0]]
+      }
+    };
+  }
 }
+
 function pairs(o) { return Object.keys(o).map(function(k) { return [k, o[k]]; }); }
 function values(o) { return pairs(o).map(function(k) { return k[1]; }); }
 
@@ -29428,2728 +27529,57 @@ function transform(code, type, tick, TODO) {
  * @return {Object} AST
  */
 function wrapInRun(code, type, tick) {
-  return type === 'node' ? code : {
-    "type": "Program",
-    "body": [setErrorHandler(), {
-      "type": "ExpressionStatement",
-      "expression": {
-        "type": "AssignmentExpression",
-        "operator": "=",
-        "left": {
-          "type": "MemberExpression",
-          "computed": false,
-          "object": {
-            "type": "Identifier",
-            "name": "window"
+  if (type === 'node') {
+    return code;
+  } else if (type === 'node-export') {
+    return code;
+  } else if (type === 'browser-export') {
+    return code;
+  } else if (type === 'browser-export-fancy') {
+    return {
+      "type": "Program",
+      "body": [display(), code]
+    };
+  } else if (type === 'browser') {
+    return {
+      "type": "Program",
+      "body": [setErrorHandler(), {
+        "type": "ExpressionStatement",
+        "expression": {
+          "type": "AssignmentExpression",
+          "operator": "=",
+          "left": {
+            "type": "MemberExpression",
+            "computed": false,
+            "object": {
+              "type": "Identifier",
+              "name": "window"
+            },
+            "property": {
+              "type": "Identifier",
+              "name": "run"
+            }
           },
-          "property": {
-            "type": "Identifier",
-            "name": "run"
+          "right": {
+            "type": "FunctionExpression",
+            "params": [],
+            "defaults": [],
+            "body": {
+              "type": "BlockStatement",
+              "body": code.body
+            },
+            "generator": false,
+            "expression": false
           }
-        },
-        "right": {
-          "type": "FunctionExpression",
-          "params": [],
-          "defaults": [],
-          "body": {
-            "type": "BlockStatement",
-            "body": code.body
-          },
-          "generator": false,
-          "expression": false
         }
-      }
-    }]
-  };
+      }]
+    };
+  }
 }
 
 module.exports = instrument;
 
-},{"escodegen":64,"esprima":81,"traverse":82}],61:[function(require,module,exports){
-var aparse = require('acorn').parse;
-var defined = require('defined');
-
-function parse (src, opts) {
-    if (!opts) opts = {};
-    return aparse(src, {
-        ecmaVersion: defined(opts.ecmaVersion, 6),
-        ranges: defined(opts.ranges, opts.range),
-        locations: defined(opts.locations, opts.loc),
-        allowReturnOutsideFunction: defined(
-            opts.allowReturnOutsideFunction, true
-        ),
-        strictSemicolons: defined(opts.strictSemicolons, false),
-        allowTrailingCommas: defined(opts.allowTrailingCommas, true),
-        forbidReserved: defined(opts.forbidReserved, false)
-    });
-}
-var escodegen = require('escodegen');
-
-var traverse = function (node, cb) {
-    if (Array.isArray(node)) {
-        node.forEach(function (x) {
-            if(x != null) {
-                x.parent = node;
-                traverse(x, cb);
-            }
-        });
-    }
-    else if (node && typeof node === 'object') {
-        cb(node);
-
-        Object.keys(node).forEach(function (key) {
-            if (key === 'parent' || !node[key]) return;
-            node[key].parent = node;
-            traverse(node[key], cb);
-        });
-    }
-};
-
-var walk = function (src, opts, cb) {
-    var ast = parse(src, opts);
-    traverse(ast, cb);
-};
-
-var exports = module.exports = function (src, opts) {
-    return exports.find(src, opts).strings;
-};
-
-exports.find = function (src, opts) {
-    if (!opts) opts = {};
-    opts.parse = opts.parse || {};
-    opts.parse.tolerant = true;
-    
-    var word = opts.word === undefined ? 'require' : opts.word;
-    if (typeof src !== 'string') src = String(src);
-    src = src.replace(/^#![^\n]*\n/, '');
-    
-    var isRequire = opts.isRequire || function (node) {
-        var c = node.callee;
-        return c
-            && node.type === 'CallExpression'
-            && c.type === 'Identifier'
-            && c.name === word
-        ;
-    }
-    
-    var modules = { strings : [], expressions : [] };
-    if (opts.nodes) modules.nodes = [];
-    
-    if (src.indexOf(word) == -1) return modules;
-    
-    walk(src, opts.parse, function (node) {
-        if (!isRequire(node)) return;
-        if (node.arguments.length) {
-            if (node.arguments[0].type === 'Literal') {
-                modules.strings.push(node.arguments[0].value);
-            }
-            else {
-                modules.expressions.push(escodegen.generate(node.arguments[0]));
-            }
-        }
-        if (opts.nodes) modules.nodes.push(node);
-    });
-    
-    return modules;
-};
-
-},{"acorn":62,"defined":63,"escodegen":64}],62:[function(require,module,exports){
-// Acorn is a tiny, fast JavaScript parser written in JavaScript.
-//
-// Acorn was written by Marijn Haverbeke and various contributors and
-// released under an MIT license. The Unicode regexps (for identifiers
-// and whitespace) were taken from [Esprima](http://esprima.org) by
-// Ariya Hidayat.
-//
-// Git repositories for Acorn are available at
-//
-//     http://marijnhaverbeke.nl/git/acorn
-//     https://github.com/marijnh/acorn.git
-//
-// Please use the [github bug tracker][ghbt] to report issues.
-//
-// [ghbt]: https://github.com/marijnh/acorn/issues
-//
-// This file defines the main parser interface. The library also comes
-// with a [error-tolerant parser][dammit] and an
-// [abstract syntax tree walker][walk], defined in other files.
-//
-// [dammit]: acorn_loose.js
-// [walk]: util/walk.js
-
-(function(root, mod) {
-  if (typeof exports == "object" && typeof module == "object") return mod(exports); // CommonJS
-  if (typeof define == "function" && define.amd) return define(["exports"], mod); // AMD
-  mod(root.acorn || (root.acorn = {})); // Plain browser env
-})(this, function(exports) {
-  "use strict";
-
-  exports.version = "0.9.0";
-
-  // The main exported interface (under `self.acorn` when in the
-  // browser) is a `parse` function that takes a code string and
-  // returns an abstract syntax tree as specified by [Mozilla parser
-  // API][api], with the caveat that inline XML is not recognized.
-  //
-  // [api]: https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API
-
-  var options, input, inputLen, sourceFile;
-
-  exports.parse = function(inpt, opts) {
-    input = String(inpt); inputLen = input.length;
-    setOptions(opts);
-    initTokenState();
-    initParserState();
-    return parseTopLevel(options.program);
-  };
-
-  // A second optional argument can be given to further configure
-  // the parser process. These options are recognized:
-
-  var defaultOptions = exports.defaultOptions = {
-    // `ecmaVersion` indicates the ECMAScript version to parse. Must
-    // be either 3, or 5, or 6. This influences support for strict
-    // mode, the set of reserved words, support for getters and
-    // setters and other features.
-    ecmaVersion: 5,
-    // Turn on `strictSemicolons` to prevent the parser from doing
-    // automatic semicolon insertion.
-    strictSemicolons: false,
-    // When `allowTrailingCommas` is false, the parser will not allow
-    // trailing commas in array and object literals.
-    allowTrailingCommas: true,
-    // By default, reserved words are not enforced. Enable
-    // `forbidReserved` to enforce them. When this option has the
-    // value "everywhere", reserved words and keywords can also not be
-    // used as property names.
-    forbidReserved: false,
-    // When enabled, a return at the top level is not considered an
-    // error.
-    allowReturnOutsideFunction: false,
-    // When `locations` is on, `loc` properties holding objects with
-    // `start` and `end` properties in `{line, column}` form (with
-    // line being 1-based and column 0-based) will be attached to the
-    // nodes.
-    locations: false,
-    // A function can be passed as `onToken` option, which will
-    // cause Acorn to call that function with object in the same
-    // format as tokenize() returns. Note that you are not
-    // allowed to call the parser from the callback—that will
-    // corrupt its internal state.
-    onToken: null,
-    // A function can be passed as `onComment` option, which will
-    // cause Acorn to call that function with `(block, text, start,
-    // end)` parameters whenever a comment is skipped. `block` is a
-    // boolean indicating whether this is a block (`/* */`) comment,
-    // `text` is the content of the comment, and `start` and `end` are
-    // character offsets that denote the start and end of the comment.
-    // When the `locations` option is on, two more parameters are
-    // passed, the full `{line, column}` locations of the start and
-    // end of the comments. Note that you are not allowed to call the
-    // parser from the callback—that will corrupt its internal state.
-    onComment: null,
-    // Nodes have their start and end characters offsets recorded in
-    // `start` and `end` properties (directly on the node, rather than
-    // the `loc` object, which holds line/column data. To also add a
-    // [semi-standardized][range] `range` property holding a `[start,
-    // end]` array with the same numbers, set the `ranges` option to
-    // `true`.
-    //
-    // [range]: https://bugzilla.mozilla.org/show_bug.cgi?id=745678
-    ranges: false,
-    // It is possible to parse multiple files into a single AST by
-    // passing the tree produced by parsing the first file as
-    // `program` option in subsequent parses. This will add the
-    // toplevel forms of the parsed file to the `Program` (top) node
-    // of an existing parse tree.
-    program: null,
-    // When `locations` is on, you can pass this to record the source
-    // file in every node's `loc` object.
-    sourceFile: null,
-    // This value, if given, is stored in every node, whether
-    // `locations` is on or off.
-    directSourceFile: null
-  };
-
-  // This function tries to parse a single expression at a given
-  // offset in a string. Useful for parsing mixed-language formats
-  // that embed JavaScript expressions.
-
-  exports.parseExpressionAt = function(inpt, pos, opts) {
-    input = String(inpt); inputLen = input.length;
-    setOptions(opts);
-    initTokenState(pos);
-    initParserState();
-    return parseExpression();
-  };
-
-  var isArray = function (obj) {
-    return Object.prototype.toString.call(obj) === "[object Array]";
-  };
-
-  function setOptions(opts) {
-    options = opts || {};
-    for (var opt in defaultOptions) if (!has(options, opt))
-      options[opt] = defaultOptions[opt];
-    sourceFile = options.sourceFile || null;
-    if (isArray(options.onToken)) {
-      var tokens = options.onToken;
-      options.onToken = function (token) {
-        tokens.push(token);
-      };
-    }
-    if (isArray(options.onComment)) {
-      var comments = options.onComment;
-      options.onComment = function (block, text, start, end, startLoc, endLoc) {
-        var comment = {
-          type: block ? 'Block' : 'Line',
-          value: text,
-          start: start,
-          end: end
-        };
-        if (options.locations) {
-          comment.loc = new SourceLocation();
-          comment.loc.start = startLoc;
-          comment.loc.end = endLoc;
-        }
-        if (options.ranges)
-          comment.range = [start, end];
-        comments.push(comment);
-      };
-    }
-    isKeyword = options.ecmaVersion >= 6 ? isEcma6Keyword : isEcma5AndLessKeyword;
-  }
-
-  // The `getLineInfo` function is mostly useful when the
-  // `locations` option is off (for performance reasons) and you
-  // want to find the line/column position for a given character
-  // offset. `input` should be the code string that the offset refers
-  // into.
-
-  var getLineInfo = exports.getLineInfo = function(input, offset) {
-    for (var line = 1, cur = 0;;) {
-      lineBreak.lastIndex = cur;
-      var match = lineBreak.exec(input);
-      if (match && match.index < offset) {
-        ++line;
-        cur = match.index + match[0].length;
-      } else break;
-    }
-    return {line: line, column: offset - cur};
-  };
-
-  function Token() {
-    this.type = tokType;
-    this.value = tokVal;
-    this.start = tokStart;
-    this.end = tokEnd;
-    if (options.locations) {
-      this.loc = new SourceLocation();
-      this.loc.end = tokEndLoc;
-      // TODO: remove in next major release
-      this.startLoc = tokStartLoc;
-      this.endLoc = tokEndLoc;
-    }
-    if (options.ranges)
-      this.range = [tokStart, tokEnd];
-  }
-
-  exports.Token = Token;
-
-  // Acorn is organized as a tokenizer and a recursive-descent parser.
-  // The `tokenize` export provides an interface to the tokenizer.
-  // Because the tokenizer is optimized for being efficiently used by
-  // the Acorn parser itself, this interface is somewhat crude and not
-  // very modular. Performing another parse or call to `tokenize` will
-  // reset the internal state, and invalidate existing tokenizers.
-
-  exports.tokenize = function(inpt, opts) {
-    input = String(inpt); inputLen = input.length;
-    setOptions(opts);
-    initTokenState();
-
-    function getToken(forceRegexp) {
-      lastEnd = tokEnd;
-      readToken(forceRegexp);
-      return new Token();
-    }
-    getToken.jumpTo = function(pos, reAllowed) {
-      tokPos = pos;
-      if (options.locations) {
-        tokCurLine = 1;
-        tokLineStart = lineBreak.lastIndex = 0;
-        var match;
-        while ((match = lineBreak.exec(input)) && match.index < pos) {
-          ++tokCurLine;
-          tokLineStart = match.index + match[0].length;
-        }
-      }
-      tokRegexpAllowed = reAllowed;
-      skipSpace();
-    };
-    return getToken;
-  };
-
-  // State is kept in (closure-)global variables. We already saw the
-  // `options`, `input`, and `inputLen` variables above.
-
-  // The current position of the tokenizer in the input.
-
-  var tokPos;
-
-  // The start and end offsets of the current token.
-
-  var tokStart, tokEnd;
-
-  // When `options.locations` is true, these hold objects
-  // containing the tokens start and end line/column pairs.
-
-  var tokStartLoc, tokEndLoc;
-
-  // The type and value of the current token. Token types are objects,
-  // named by variables against which they can be compared, and
-  // holding properties that describe them (indicating, for example,
-  // the precedence of an infix operator, and the original name of a
-  // keyword token). The kind of value that's held in `tokVal` depends
-  // on the type of the token. For literals, it is the literal value,
-  // for operators, the operator name, and so on.
-
-  var tokType, tokVal;
-
-  // Internal state for the tokenizer. To distinguish between division
-  // operators and regular expressions, it remembers whether the last
-  // token was one that is allowed to be followed by an expression.
-  // (If it is, a slash is probably a regexp, if it isn't it's a
-  // division operator. See the `parseStatement` function for a
-  // caveat.)
-
-  var tokRegexpAllowed;
-
-  // When `options.locations` is true, these are used to keep
-  // track of the current line, and know when a new line has been
-  // entered.
-
-  var tokCurLine, tokLineStart;
-
-  // These store the position of the previous token, which is useful
-  // when finishing a node and assigning its `end` position.
-
-  var lastStart, lastEnd, lastEndLoc;
-
-  // This is the parser's state. `inFunction` is used to reject
-  // `return` statements outside of functions, `inGenerator` to
-  // reject `yield`s outside of generators, `labels` to verify
-  // that `break` and `continue` have somewhere to jump to, and
-  // `strict` indicates whether strict mode is on.
-
-  var inFunction, inGenerator, labels, strict;
-
-  // This counter is used for checking that arrow expressions did
-  // not contain nested parentheses in argument list.
-
-  var metParenL;
-
-  // This is used by parser for detecting if it's inside ES6
-  // Template String. If it is, it should treat '$' as prefix before
-  // '{expression}' and everything else as string literals.
-
-  var inTemplate;
-
-  function initParserState() {
-    lastStart = lastEnd = tokPos;
-    if (options.locations) lastEndLoc = new Position;
-    inFunction = inGenerator = strict = false;
-    labels = [];
-    readToken();
-  }
-
-  // This function is used to raise exceptions on parse errors. It
-  // takes an offset integer (into the current `input`) to indicate
-  // the location of the error, attaches the position to the end
-  // of the error message, and then raises a `SyntaxError` with that
-  // message.
-
-  function raise(pos, message) {
-    var loc = getLineInfo(input, pos);
-    message += " (" + loc.line + ":" + loc.column + ")";
-    var err = new SyntaxError(message);
-    err.pos = pos; err.loc = loc; err.raisedAt = tokPos;
-    throw err;
-  }
-
-  // Reused empty array added for node fields that are always empty.
-
-  var empty = [];
-
-  // ## Token types
-
-  // The assignment of fine-grained, information-carrying type objects
-  // allows the tokenizer to store the information it has about a
-  // token in a way that is very cheap for the parser to look up.
-
-  // All token type variables start with an underscore, to make them
-  // easy to recognize.
-
-  // These are the general types. The `type` property is only used to
-  // make them recognizeable when debugging.
-
-  var _num = {type: "num"}, _regexp = {type: "regexp"}, _string = {type: "string"};
-  var _name = {type: "name"}, _eof = {type: "eof"};
-
-  // Keyword tokens. The `keyword` property (also used in keyword-like
-  // operators) indicates that the token originated from an
-  // identifier-like word, which is used when parsing property names.
-  //
-  // The `beforeExpr` property is used to disambiguate between regular
-  // expressions and divisions. It is set on all token types that can
-  // be followed by an expression (thus, a slash after them would be a
-  // regular expression).
-  //
-  // `isLoop` marks a keyword as starting a loop, which is important
-  // to know when parsing a label, in order to allow or disallow
-  // continue jumps to that label.
-
-  var _break = {keyword: "break"}, _case = {keyword: "case", beforeExpr: true}, _catch = {keyword: "catch"};
-  var _continue = {keyword: "continue"}, _debugger = {keyword: "debugger"}, _default = {keyword: "default"};
-  var _do = {keyword: "do", isLoop: true}, _else = {keyword: "else", beforeExpr: true};
-  var _finally = {keyword: "finally"}, _for = {keyword: "for", isLoop: true}, _function = {keyword: "function"};
-  var _if = {keyword: "if"}, _return = {keyword: "return", beforeExpr: true}, _switch = {keyword: "switch"};
-  var _throw = {keyword: "throw", beforeExpr: true}, _try = {keyword: "try"}, _var = {keyword: "var"};
-  var _let = {keyword: "let"}, _const = {keyword: "const"};
-  var _while = {keyword: "while", isLoop: true}, _with = {keyword: "with"}, _new = {keyword: "new", beforeExpr: true};
-  var _this = {keyword: "this"};
-  var _class = {keyword: "class"}, _extends = {keyword: "extends", beforeExpr: true};
-  var _export = {keyword: "export"}, _import = {keyword: "import"};
-  var _yield = {keyword: "yield", beforeExpr: true};
-
-  // The keywords that denote values.
-
-  var _null = {keyword: "null", atomValue: null}, _true = {keyword: "true", atomValue: true};
-  var _false = {keyword: "false", atomValue: false};
-
-  // Some keywords are treated as regular operators. `in` sometimes
-  // (when parsing `for`) needs to be tested against specifically, so
-  // we assign a variable name to it for quick comparing.
-
-  var _in = {keyword: "in", binop: 7, beforeExpr: true};
-
-  // Map keyword names to token types.
-
-  var keywordTypes = {"break": _break, "case": _case, "catch": _catch,
-                      "continue": _continue, "debugger": _debugger, "default": _default,
-                      "do": _do, "else": _else, "finally": _finally, "for": _for,
-                      "function": _function, "if": _if, "return": _return, "switch": _switch,
-                      "throw": _throw, "try": _try, "var": _var, "let": _let, "const": _const,
-                      "while": _while, "with": _with,
-                      "null": _null, "true": _true, "false": _false, "new": _new, "in": _in,
-                      "instanceof": {keyword: "instanceof", binop: 7, beforeExpr: true}, "this": _this,
-                      "typeof": {keyword: "typeof", prefix: true, beforeExpr: true},
-                      "void": {keyword: "void", prefix: true, beforeExpr: true},
-                      "delete": {keyword: "delete", prefix: true, beforeExpr: true},
-                      "class": _class, "extends": _extends,
-                      "export": _export, "import": _import, "yield": _yield};
-
-  // Punctuation token types. Again, the `type` property is purely for debugging.
-
-  var _bracketL = {type: "[", beforeExpr: true}, _bracketR = {type: "]"}, _braceL = {type: "{", beforeExpr: true};
-  var _braceR = {type: "}"}, _parenL = {type: "(", beforeExpr: true}, _parenR = {type: ")"};
-  var _comma = {type: ",", beforeExpr: true}, _semi = {type: ";", beforeExpr: true};
-  var _colon = {type: ":", beforeExpr: true}, _dot = {type: "."}, _ellipsis = {type: "..."}, _question = {type: "?", beforeExpr: true};
-  var _arrow = {type: "=>", beforeExpr: true}, _bquote = {type: "`"}, _dollarBraceL = {type: "${", beforeExpr: true};
-
-  // Operators. These carry several kinds of properties to help the
-  // parser use them properly (the presence of these properties is
-  // what categorizes them as operators).
-  //
-  // `binop`, when present, specifies that this operator is a binary
-  // operator, and will refer to its precedence.
-  //
-  // `prefix` and `postfix` mark the operator as a prefix or postfix
-  // unary operator. `isUpdate` specifies that the node produced by
-  // the operator should be of type UpdateExpression rather than
-  // simply UnaryExpression (`++` and `--`).
-  //
-  // `isAssign` marks all of `=`, `+=`, `-=` etcetera, which act as
-  // binary operators with a very low precedence, that should result
-  // in AssignmentExpression nodes.
-
-  var _slash = {binop: 10, beforeExpr: true}, _eq = {isAssign: true, beforeExpr: true};
-  var _assign = {isAssign: true, beforeExpr: true};
-  var _incDec = {postfix: true, prefix: true, isUpdate: true}, _prefix = {prefix: true, beforeExpr: true};
-  var _logicalOR = {binop: 1, beforeExpr: true};
-  var _logicalAND = {binop: 2, beforeExpr: true};
-  var _bitwiseOR = {binop: 3, beforeExpr: true};
-  var _bitwiseXOR = {binop: 4, beforeExpr: true};
-  var _bitwiseAND = {binop: 5, beforeExpr: true};
-  var _equality = {binop: 6, beforeExpr: true};
-  var _relational = {binop: 7, beforeExpr: true};
-  var _bitShift = {binop: 8, beforeExpr: true};
-  var _plusMin = {binop: 9, prefix: true, beforeExpr: true};
-  var _modulo = {binop: 10, beforeExpr: true};
-
-  // '*' may be multiply or have special meaning in ES6
-  var _star = {binop: 10, beforeExpr: true};
-
-  // Provide access to the token types for external users of the
-  // tokenizer.
-
-  exports.tokTypes = {bracketL: _bracketL, bracketR: _bracketR, braceL: _braceL, braceR: _braceR,
-                      parenL: _parenL, parenR: _parenR, comma: _comma, semi: _semi, colon: _colon,
-                      dot: _dot, ellipsis: _ellipsis, question: _question, slash: _slash, eq: _eq,
-                      name: _name, eof: _eof, num: _num, regexp: _regexp, string: _string,
-                      arrow: _arrow, bquote: _bquote, dollarBraceL: _dollarBraceL};
-  for (var kw in keywordTypes) exports.tokTypes["_" + kw] = keywordTypes[kw];
-
-  // This is a trick taken from Esprima. It turns out that, on
-  // non-Chrome browsers, to check whether a string is in a set, a
-  // predicate containing a big ugly `switch` statement is faster than
-  // a regular expression, and on Chrome the two are about on par.
-  // This function uses `eval` (non-lexical) to produce such a
-  // predicate from a space-separated string of words.
-  //
-  // It starts by sorting the words by length.
-
-  function makePredicate(words) {
-    words = words.split(" ");
-    var f = "", cats = [];
-    out: for (var i = 0; i < words.length; ++i) {
-      for (var j = 0; j < cats.length; ++j)
-        if (cats[j][0].length == words[i].length) {
-          cats[j].push(words[i]);
-          continue out;
-        }
-      cats.push([words[i]]);
-    }
-    function compareTo(arr) {
-      if (arr.length == 1) return f += "return str === " + JSON.stringify(arr[0]) + ";";
-      f += "switch(str){";
-      for (var i = 0; i < arr.length; ++i) f += "case " + JSON.stringify(arr[i]) + ":";
-      f += "return true}return false;";
-    }
-
-    // When there are more than three length categories, an outer
-    // switch first dispatches on the lengths, to save on comparisons.
-
-    if (cats.length > 3) {
-      cats.sort(function(a, b) {return b.length - a.length;});
-      f += "switch(str.length){";
-      for (var i = 0; i < cats.length; ++i) {
-        var cat = cats[i];
-        f += "case " + cat[0].length + ":";
-        compareTo(cat);
-      }
-      f += "}";
-
-    // Otherwise, simply generate a flat `switch` statement.
-
-    } else {
-      compareTo(words);
-    }
-    return new Function("str", f);
-  }
-
-  // The ECMAScript 3 reserved word list.
-
-  var isReservedWord3 = makePredicate("abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected public short static super synchronized throws transient volatile");
-
-  // ECMAScript 5 reserved words.
-
-  var isReservedWord5 = makePredicate("class enum extends super const export import");
-
-  // The additional reserved words in strict mode.
-
-  var isStrictReservedWord = makePredicate("implements interface let package private protected public static yield");
-
-  // The forbidden variable names in strict mode.
-
-  var isStrictBadIdWord = makePredicate("eval arguments");
-
-  // And the keywords.
-
-  var ecma5AndLessKeywords = "break case catch continue debugger default do else finally for function if return switch throw try var while with null true false instanceof typeof void delete new in this";
-
-  var isEcma5AndLessKeyword = makePredicate(ecma5AndLessKeywords);
-
-  var isEcma6Keyword = makePredicate(ecma5AndLessKeywords + " let const class extends export import yield");
-
-  var isKeyword = isEcma5AndLessKeyword;
-
-  // ## Character categories
-
-  // Big ugly regular expressions that match characters in the
-  // whitespace, identifier, and identifier-start categories. These
-  // are only applied when a character is found to actually have a
-  // code point above 128.
-  // Generated by `tools/generate-identifier-regex.js`.
-
-  var nonASCIIwhitespace = /[\u1680\u180e\u2000-\u200a\u202f\u205f\u3000\ufeff]/;
-  var nonASCIIidentifierStartChars = "\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B2\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA7AD\uA7B0\uA7B1\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB5F\uAB64\uAB65\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC";
-  var nonASCIIidentifierChars = "\u0300-\u036F\u0483-\u0487\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u0610-\u061A\u064B-\u0669\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u06F0-\u06F9\u0711\u0730-\u074A\u07A6-\u07B0\u07C0-\u07C9\u07EB-\u07F3\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u08E4-\u0903\u093A-\u093C\u093E-\u094F\u0951-\u0957\u0962\u0963\u0966-\u096F\u0981-\u0983\u09BC\u09BE-\u09C4\u09C7\u09C8\u09CB-\u09CD\u09D7\u09E2\u09E3\u09E6-\u09EF\u0A01-\u0A03\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A66-\u0A71\u0A75\u0A81-\u0A83\u0ABC\u0ABE-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AE2\u0AE3\u0AE6-\u0AEF\u0B01-\u0B03\u0B3C\u0B3E-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B62\u0B63\u0B66-\u0B6F\u0B82\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0BE6-\u0BEF\u0C00-\u0C03\u0C3E-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C62\u0C63\u0C66-\u0C6F\u0C81-\u0C83\u0CBC\u0CBE-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CE2\u0CE3\u0CE6-\u0CEF\u0D01-\u0D03\u0D3E-\u0D44\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D62\u0D63\u0D66-\u0D6F\u0D82\u0D83\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DE6-\u0DEF\u0DF2\u0DF3\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0E50-\u0E59\u0EB1\u0EB4-\u0EB9\u0EBB\u0EBC\u0EC8-\u0ECD\u0ED0-\u0ED9\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E\u0F3F\u0F71-\u0F84\u0F86\u0F87\u0F8D-\u0F97\u0F99-\u0FBC\u0FC6\u102B-\u103E\u1040-\u1049\u1056-\u1059\u105E-\u1060\u1062-\u1064\u1067-\u106D\u1071-\u1074\u1082-\u108D\u108F-\u109D\u135D-\u135F\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17B4-\u17D3\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u18A9\u1920-\u192B\u1930-\u193B\u1946-\u194F\u19B0-\u19C0\u19C8\u19C9\u19D0-\u19D9\u1A17-\u1A1B\u1A55-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AB0-\u1ABD\u1B00-\u1B04\u1B34-\u1B44\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1B82\u1BA1-\u1BAD\u1BB0-\u1BB9\u1BE6-\u1BF3\u1C24-\u1C37\u1C40-\u1C49\u1C50-\u1C59\u1CD0-\u1CD2\u1CD4-\u1CE8\u1CED\u1CF2-\u1CF4\u1CF8\u1CF9\u1DC0-\u1DF5\u1DFC-\u1DFF\u200C\u200D\u203F\u2040\u2054\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2CEF-\u2CF1\u2D7F\u2DE0-\u2DFF\u302A-\u302F\u3099\u309A\uA620-\uA629\uA66F\uA674-\uA67D\uA69F\uA6F0\uA6F1\uA802\uA806\uA80B\uA823-\uA827\uA880\uA881\uA8B4-\uA8C4\uA8D0-\uA8D9\uA8E0-\uA8F1\uA900-\uA909\uA926-\uA92D\uA947-\uA953\uA980-\uA983\uA9B3-\uA9C0\uA9D0-\uA9D9\uA9E5\uA9F0-\uA9F9\uAA29-\uAA36\uAA43\uAA4C\uAA4D\uAA50-\uAA59\uAA7B-\uAA7D\uAAB0\uAAB2-\uAAB4\uAAB7\uAAB8\uAABE\uAABF\uAAC1\uAAEB-\uAAEF\uAAF5\uAAF6\uABE3-\uABEA\uABEC\uABED\uABF0-\uABF9\uFB1E\uFE00-\uFE0F\uFE20-\uFE2D\uFE33\uFE34\uFE4D-\uFE4F\uFF10-\uFF19\uFF3F";
-  var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
-  var nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
-
-  // Whether a single character denotes a newline.
-
-  var newline = /[\n\r\u2028\u2029]/;
-
-  // Matches a whole line break (where CRLF is considered a single
-  // line break). Used to count lines.
-
-  var lineBreak = /\r\n|[\n\r\u2028\u2029]/g;
-
-  // Test whether a given character code starts an identifier.
-
-  var isIdentifierStart = exports.isIdentifierStart = function(code) {
-    if (code < 65) return code === 36;
-    if (code < 91) return true;
-    if (code < 97) return code === 95;
-    if (code < 123)return true;
-    return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code));
-  };
-
-  // Test whether a given character is part of an identifier.
-
-  var isIdentifierChar = exports.isIdentifierChar = function(code) {
-    if (code < 48) return code === 36;
-    if (code < 58) return true;
-    if (code < 65) return false;
-    if (code < 91) return true;
-    if (code < 97) return code === 95;
-    if (code < 123)return true;
-    return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
-  };
-
-  // ## Tokenizer
-
-  // These are used when `options.locations` is on, for the
-  // `tokStartLoc` and `tokEndLoc` properties.
-
-  function Position() {
-    this.line = tokCurLine;
-    this.column = tokPos - tokLineStart;
-  }
-
-  // Reset the token state. Used at the start of a parse.
-
-  function initTokenState(pos) {
-    if (pos) {
-      tokPos = pos;
-      tokLineStart = Math.max(0, input.lastIndexOf("\n", pos));
-      tokCurLine = input.slice(0, tokLineStart).split(newline).length;
-    } else {
-      tokCurLine = 1;
-      tokPos = tokLineStart = 0;
-    }
-    tokRegexpAllowed = true;
-    metParenL = 0;
-    inTemplate = false;
-    skipSpace();
-  }
-
-  // Called at the end of every token. Sets `tokEnd`, `tokVal`, and
-  // `tokRegexpAllowed`, and skips the space after the token, so that
-  // the next one's `tokStart` will point at the right position.
-
-  function finishToken(type, val, shouldSkipSpace) {
-    tokEnd = tokPos;
-    if (options.locations) tokEndLoc = new Position;
-    tokType = type;
-    if (shouldSkipSpace !== false) skipSpace();
-    tokVal = val;
-    tokRegexpAllowed = type.beforeExpr;
-    if (options.onToken) {
-      options.onToken(new Token());
-    }
-  }
-
-  function skipBlockComment() {
-    var startLoc = options.onComment && options.locations && new Position;
-    var start = tokPos, end = input.indexOf("*/", tokPos += 2);
-    if (end === -1) raise(tokPos - 2, "Unterminated comment");
-    tokPos = end + 2;
-    if (options.locations) {
-      lineBreak.lastIndex = start;
-      var match;
-      while ((match = lineBreak.exec(input)) && match.index < tokPos) {
-        ++tokCurLine;
-        tokLineStart = match.index + match[0].length;
-      }
-    }
-    if (options.onComment)
-      options.onComment(true, input.slice(start + 2, end), start, tokPos,
-                        startLoc, options.locations && new Position);
-  }
-
-  function skipLineComment(startSkip) {
-    var start = tokPos;
-    var startLoc = options.onComment && options.locations && new Position;
-    var ch = input.charCodeAt(tokPos+=startSkip);
-    while (tokPos < inputLen && ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8233) {
-      ++tokPos;
-      ch = input.charCodeAt(tokPos);
-    }
-    if (options.onComment)
-      options.onComment(false, input.slice(start + startSkip, tokPos), start, tokPos,
-                        startLoc, options.locations && new Position);
-  }
-
-  // Called at the start of the parse and after every token. Skips
-  // whitespace and comments, and.
-
-  function skipSpace() {
-    while (tokPos < inputLen) {
-      var ch = input.charCodeAt(tokPos);
-      if (ch === 32) { // ' '
-        ++tokPos;
-      } else if (ch === 13) {
-        ++tokPos;
-        var next = input.charCodeAt(tokPos);
-        if (next === 10) {
-          ++tokPos;
-        }
-        if (options.locations) {
-          ++tokCurLine;
-          tokLineStart = tokPos;
-        }
-      } else if (ch === 10 || ch === 8232 || ch === 8233) {
-        ++tokPos;
-        if (options.locations) {
-          ++tokCurLine;
-          tokLineStart = tokPos;
-        }
-      } else if (ch > 8 && ch < 14) {
-        ++tokPos;
-      } else if (ch === 47) { // '/'
-        var next = input.charCodeAt(tokPos + 1);
-        if (next === 42) { // '*'
-          skipBlockComment();
-        } else if (next === 47) { // '/'
-          skipLineComment(2);
-        } else break;
-      } else if (ch === 160) { // '\xa0'
-        ++tokPos;
-      } else if (ch >= 5760 && nonASCIIwhitespace.test(String.fromCharCode(ch))) {
-        ++tokPos;
-      } else {
-        break;
-      }
-    }
-  }
-
-  // ### Token reading
-
-  // This is the function that is called to fetch the next token. It
-  // is somewhat obscure, because it works in character codes rather
-  // than characters, and because operator parsing has been inlined
-  // into it.
-  //
-  // All in the name of speed.
-  //
-  // The `forceRegexp` parameter is used in the one case where the
-  // `tokRegexpAllowed` trick does not work. See `parseStatement`.
-
-  function readToken_dot() {
-    var next = input.charCodeAt(tokPos + 1);
-    if (next >= 48 && next <= 57) return readNumber(true);
-    var next2 = input.charCodeAt(tokPos + 2);
-    if (options.ecmaVersion >= 6 && next === 46 && next2 === 46) { // 46 = dot '.'
-      tokPos += 3;
-      return finishToken(_ellipsis);
-    } else {
-      ++tokPos;
-      return finishToken(_dot);
-    }
-  }
-
-  function readToken_slash() { // '/'
-    var next = input.charCodeAt(tokPos + 1);
-    if (tokRegexpAllowed) {++tokPos; return readRegexp();}
-    if (next === 61) return finishOp(_assign, 2);
-    return finishOp(_slash, 1);
-  }
-
-  function readToken_mult_modulo(code) { // '%*'
-    var next = input.charCodeAt(tokPos + 1);
-    if (next === 61) return finishOp(_assign, 2);
-    return finishOp(code === 42 ? _star : _modulo, 1);
-  }
-
-  function readToken_pipe_amp(code) { // '|&'
-    var next = input.charCodeAt(tokPos + 1);
-    if (next === code) return finishOp(code === 124 ? _logicalOR : _logicalAND, 2);
-    if (next === 61) return finishOp(_assign, 2);
-    return finishOp(code === 124 ? _bitwiseOR : _bitwiseAND, 1);
-  }
-
-  function readToken_caret() { // '^'
-    var next = input.charCodeAt(tokPos + 1);
-    if (next === 61) return finishOp(_assign, 2);
-    return finishOp(_bitwiseXOR, 1);
-  }
-
-  function readToken_plus_min(code) { // '+-'
-    var next = input.charCodeAt(tokPos + 1);
-    if (next === code) {
-      if (next == 45 && input.charCodeAt(tokPos + 2) == 62 &&
-          newline.test(input.slice(lastEnd, tokPos))) {
-        // A `-->` line comment
-        skipLineComment(3);
-        skipSpace();
-        return readToken();
-      }
-      return finishOp(_incDec, 2);
-    }
-    if (next === 61) return finishOp(_assign, 2);
-    return finishOp(_plusMin, 1);
-  }
-
-  function readToken_lt_gt(code) { // '<>'
-    var next = input.charCodeAt(tokPos + 1);
-    var size = 1;
-    if (next === code) {
-      size = code === 62 && input.charCodeAt(tokPos + 2) === 62 ? 3 : 2;
-      if (input.charCodeAt(tokPos + size) === 61) return finishOp(_assign, size + 1);
-      return finishOp(_bitShift, size);
-    }
-    if (next == 33 && code == 60 && input.charCodeAt(tokPos + 2) == 45 &&
-        input.charCodeAt(tokPos + 3) == 45) {
-      // `<!--`, an XML-style comment that should be interpreted as a line comment
-      skipLineComment(4);
-      skipSpace();
-      return readToken();
-    }
-    if (next === 61)
-      size = input.charCodeAt(tokPos + 2) === 61 ? 3 : 2;
-    return finishOp(_relational, size);
-  }
-
-  function readToken_eq_excl(code) { // '=!', '=>'
-    var next = input.charCodeAt(tokPos + 1);
-    if (next === 61) return finishOp(_equality, input.charCodeAt(tokPos + 2) === 61 ? 3 : 2);
-    if (code === 61 && next === 62 && options.ecmaVersion >= 6) { // '=>'
-      tokPos += 2;
-      return finishToken(_arrow);
-    }
-    return finishOp(code === 61 ? _eq : _prefix, 1);
-  }
-
-  // Get token inside ES6 template (special rules work there).
-
-  function getTemplateToken(code) {
-    // '`' and '${' have special meanings, but they should follow
-    // string (can be empty)
-    if (tokType === _string) {
-      if (code === 96) { // '`'
-        ++tokPos;
-        return finishToken(_bquote);
-      } else
-      if (code === 36 && input.charCodeAt(tokPos + 1) === 123) { // '${'
-        tokPos += 2;
-        return finishToken(_dollarBraceL);
-      }
-    }
-
-    if (code === 125) { // '}'
-      ++tokPos;
-      return finishToken(_braceR, undefined, false);
-    }
-
-    // anything else is considered string literal
-    return readTmplString();
-  }
-
-  function getTokenFromCode(code) {
-    switch (code) {
-    // The interpretation of a dot depends on whether it is followed
-    // by a digit or another two dots.
-    case 46: // '.'
-      return readToken_dot();
-
-    // Punctuation tokens.
-    case 40: ++tokPos; return finishToken(_parenL);
-    case 41: ++tokPos; return finishToken(_parenR);
-    case 59: ++tokPos; return finishToken(_semi);
-    case 44: ++tokPos; return finishToken(_comma);
-    case 91: ++tokPos; return finishToken(_bracketL);
-    case 93: ++tokPos; return finishToken(_bracketR);
-    case 123: ++tokPos; return finishToken(_braceL);
-    case 125: ++tokPos; return finishToken(_braceR);
-    case 58: ++tokPos; return finishToken(_colon);
-    case 63: ++tokPos; return finishToken(_question);
-
-    case 96: // '`'
-      if (options.ecmaVersion >= 6) {
-        ++tokPos;
-        return finishToken(_bquote, undefined, false);
-      }
-
-    case 48: // '0'
-      var next = input.charCodeAt(tokPos + 1);
-      if (next === 120 || next === 88) return readRadixNumber(16); // '0x', '0X' - hex number
-      if (options.ecmaVersion >= 6) {
-        if (next === 111 || next === 79) return readRadixNumber(8); // '0o', '0O' - octal number
-        if (next === 98 || next === 66) return readRadixNumber(2); // '0b', '0B' - binary number
-      }
-    // Anything else beginning with a digit is an integer, octal
-    // number, or float.
-    case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57: // 1-9
-      return readNumber(false);
-
-    // Quotes produce strings.
-    case 34: case 39: // '"', "'"
-      return readString(code);
-
-    // Operators are parsed inline in tiny state machines. '=' (61) is
-    // often referred to. `finishOp` simply skips the amount of
-    // characters it is given as second argument, and returns a token
-    // of the type given by its first argument.
-
-    case 47: // '/'
-      return readToken_slash();
-
-    case 37: case 42: // '%*'
-      return readToken_mult_modulo(code);
-
-    case 124: case 38: // '|&'
-      return readToken_pipe_amp(code);
-
-    case 94: // '^'
-      return readToken_caret();
-
-    case 43: case 45: // '+-'
-      return readToken_plus_min(code);
-
-    case 60: case 62: // '<>'
-      return readToken_lt_gt(code);
-
-    case 61: case 33: // '=!'
-      return readToken_eq_excl(code);
-
-    case 126: // '~'
-      return finishOp(_prefix, 1);
-    }
-
-    return false;
-  }
-
-  function readToken(forceRegexp) {
-    if (!forceRegexp) tokStart = tokPos;
-    else tokPos = tokStart + 1;
-    if (options.locations) tokStartLoc = new Position;
-    if (forceRegexp) return readRegexp();
-    if (tokPos >= inputLen) return finishToken(_eof);
-
-    var code = input.charCodeAt(tokPos);
-
-    if (inTemplate) return getTemplateToken(code);
-
-    // Identifier or keyword. '\uXXXX' sequences are allowed in
-    // identifiers, so '\' also dispatches to that.
-    if (isIdentifierStart(code) || code === 92 /* '\' */) return readWord();
-
-    var tok = getTokenFromCode(code);
-
-    if (tok === false) {
-      // If we are here, we either found a non-ASCII identifier
-      // character, or something that's entirely disallowed.
-      var ch = String.fromCharCode(code);
-      if (ch === "\\" || nonASCIIidentifierStart.test(ch)) return readWord();
-      raise(tokPos, "Unexpected character '" + ch + "'");
-    }
-    return tok;
-  }
-
-  function finishOp(type, size) {
-    var str = input.slice(tokPos, tokPos + size);
-    tokPos += size;
-    finishToken(type, str);
-  }
-
-  // Parse a regular expression. Some context-awareness is necessary,
-  // since a '/' inside a '[]' set does not end the expression.
-
-  function readRegexp() {
-    var content = "", escaped, inClass, start = tokPos;
-    for (;;) {
-      if (tokPos >= inputLen) raise(start, "Unterminated regular expression");
-      var ch = input.charAt(tokPos);
-      if (newline.test(ch)) raise(start, "Unterminated regular expression");
-      if (!escaped) {
-        if (ch === "[") inClass = true;
-        else if (ch === "]" && inClass) inClass = false;
-        else if (ch === "/" && !inClass) break;
-        escaped = ch === "\\";
-      } else escaped = false;
-      ++tokPos;
-    }
-    var content = input.slice(start, tokPos);
-    ++tokPos;
-    // Need to use `readWord1` because '\uXXXX' sequences are allowed
-    // here (don't ask).
-    var mods = readWord1();
-    if (mods && !/^[gmsiy]*$/.test(mods)) raise(start, "Invalid regular expression flag");
-    try {
-      var value = new RegExp(content, mods);
-    } catch (e) {
-      if (e instanceof SyntaxError) raise(start, "Error parsing regular expression: " + e.message);
-      raise(e);
-    }
-    return finishToken(_regexp, value);
-  }
-
-  // Read an integer in the given radix. Return null if zero digits
-  // were read, the integer value otherwise. When `len` is given, this
-  // will return `null` unless the integer has exactly `len` digits.
-
-  function readInt(radix, len) {
-    var start = tokPos, total = 0;
-    for (var i = 0, e = len == null ? Infinity : len; i < e; ++i) {
-      var code = input.charCodeAt(tokPos), val;
-      if (code >= 97) val = code - 97 + 10; // a
-      else if (code >= 65) val = code - 65 + 10; // A
-      else if (code >= 48 && code <= 57) val = code - 48; // 0-9
-      else val = Infinity;
-      if (val >= radix) break;
-      ++tokPos;
-      total = total * radix + val;
-    }
-    if (tokPos === start || len != null && tokPos - start !== len) return null;
-
-    return total;
-  }
-
-  function readRadixNumber(radix) {
-    tokPos += 2; // 0x
-    var val = readInt(radix);
-    if (val == null) raise(tokStart + 2, "Expected number in radix " + radix);
-    if (isIdentifierStart(input.charCodeAt(tokPos))) raise(tokPos, "Identifier directly after number");
-    return finishToken(_num, val);
-  }
-
-  // Read an integer, octal integer, or floating-point number.
-
-  function readNumber(startsWithDot) {
-    var start = tokPos, isFloat = false, octal = input.charCodeAt(tokPos) === 48;
-    if (!startsWithDot && readInt(10) === null) raise(start, "Invalid number");
-    if (input.charCodeAt(tokPos) === 46) {
-      ++tokPos;
-      readInt(10);
-      isFloat = true;
-    }
-    var next = input.charCodeAt(tokPos);
-    if (next === 69 || next === 101) { // 'eE'
-      next = input.charCodeAt(++tokPos);
-      if (next === 43 || next === 45) ++tokPos; // '+-'
-      if (readInt(10) === null) raise(start, "Invalid number");
-      isFloat = true;
-    }
-    if (isIdentifierStart(input.charCodeAt(tokPos))) raise(tokPos, "Identifier directly after number");
-
-    var str = input.slice(start, tokPos), val;
-    if (isFloat) val = parseFloat(str);
-    else if (!octal || str.length === 1) val = parseInt(str, 10);
-    else if (/[89]/.test(str) || strict) raise(start, "Invalid number");
-    else val = parseInt(str, 8);
-    return finishToken(_num, val);
-  }
-
-  // Read a string value, interpreting backslash-escapes.
-
-  function readCodePoint() {
-    var ch = input.charCodeAt(tokPos), code;
-
-    if (ch === 123) {
-      if (options.ecmaVersion < 6) unexpected();
-      ++tokPos;
-      code = readHexChar(input.indexOf('}', tokPos) - tokPos);
-      ++tokPos;
-      if (code > 0x10FFFF) unexpected();
-    } else {
-      code = readHexChar(4);
-    }
-
-    // UTF-16 Encoding
-    if (code <= 0xFFFF) {
-      return String.fromCharCode(code);
-    }
-    var cu1 = ((code - 0x10000) >> 10) + 0xD800;
-    var cu2 = ((code - 0x10000) & 1023) + 0xDC00;
-    return String.fromCharCode(cu1, cu2);
-  }
-
-  function readString(quote) {
-    ++tokPos;
-    var out = "";
-    for (;;) {
-      if (tokPos >= inputLen) raise(tokStart, "Unterminated string constant");
-      var ch = input.charCodeAt(tokPos);
-      if (ch === quote) {
-        ++tokPos;
-        return finishToken(_string, out);
-      }
-      if (ch === 92) { // '\'
-        out += readEscapedChar();
-      } else {
-        ++tokPos;
-        if (newline.test(String.fromCharCode(ch))) {
-          raise(tokStart, "Unterminated string constant");
-        }
-        out += String.fromCharCode(ch); // '\'
-      }
-    }
-  }
-
-  function readTmplString() {
-    var out = "";
-    for (;;) {
-      if (tokPos >= inputLen) raise(tokStart, "Unterminated string constant");
-      var ch = input.charCodeAt(tokPos);
-      if (ch === 96 || ch === 36 && input.charCodeAt(tokPos + 1) === 123) // '`', '${'
-        return finishToken(_string, out);
-      if (ch === 92) { // '\'
-        out += readEscapedChar();
-      } else {
-        ++tokPos;
-        if (newline.test(String.fromCharCode(ch))) {
-          if (ch === 13 && input.charCodeAt(tokPos) === 10) {
-            ++tokPos;
-            ch = 10;
-          }
-          if (options.locations) {
-            ++tokCurLine;
-            tokLineStart = tokPos;
-          }
-        }
-        out += String.fromCharCode(ch); // '\'
-      }
-    }
-  }
-
-  // Used to read escaped characters
-
-  function readEscapedChar() {
-    var ch = input.charCodeAt(++tokPos);
-    var octal = /^[0-7]+/.exec(input.slice(tokPos, tokPos + 3));
-    if (octal) octal = octal[0];
-    while (octal && parseInt(octal, 8) > 255) octal = octal.slice(0, -1);
-    if (octal === "0") octal = null;
-    ++tokPos;
-    if (octal) {
-      if (strict) raise(tokPos - 2, "Octal literal in strict mode");
-      tokPos += octal.length - 1;
-      return String.fromCharCode(parseInt(octal, 8));
-    } else {
-      switch (ch) {
-        case 110: return "\n"; // 'n' -> '\n'
-        case 114: return "\r"; // 'r' -> '\r'
-        case 120: return String.fromCharCode(readHexChar(2)); // 'x'
-        case 117: return readCodePoint(); // 'u'
-        case 85: return String.fromCharCode(readHexChar(8)); // 'U'
-        case 116: return "\t"; // 't' -> '\t'
-        case 98: return "\b"; // 'b' -> '\b'
-        case 118: return "\u000b"; // 'v' -> '\u000b'
-        case 102: return "\f"; // 'f' -> '\f'
-        case 48: return "\0"; // 0 -> '\0'
-        case 13: if (input.charCodeAt(tokPos) === 10) ++tokPos; // '\r\n'
-        case 10: // ' \n'
-          if (options.locations) { tokLineStart = tokPos; ++tokCurLine; }
-          return "";
-        default: return String.fromCharCode(ch);
-      }
-    }
-  }
-
-  // Used to read character escape sequences ('\x', '\u', '\U').
-
-  function readHexChar(len) {
-    var n = readInt(16, len);
-    if (n === null) raise(tokStart, "Bad character escape sequence");
-    return n;
-  }
-
-  // Used to signal to callers of `readWord1` whether the word
-  // contained any escape sequences. This is needed because words with
-  // escape sequences must not be interpreted as keywords.
-
-  var containsEsc;
-
-  // Read an identifier, and return it as a string. Sets `containsEsc`
-  // to whether the word contained a '\u' escape.
-  //
-  // Only builds up the word character-by-character when it actually
-  // containeds an escape, as a micro-optimization.
-
-  function readWord1() {
-    containsEsc = false;
-    var word, first = true, start = tokPos;
-    for (;;) {
-      var ch = input.charCodeAt(tokPos);
-      if (isIdentifierChar(ch)) {
-        if (containsEsc) word += input.charAt(tokPos);
-        ++tokPos;
-      } else if (ch === 92) { // "\"
-        if (!containsEsc) word = input.slice(start, tokPos);
-        containsEsc = true;
-        if (input.charCodeAt(++tokPos) != 117) // "u"
-          raise(tokPos, "Expecting Unicode escape sequence \\uXXXX");
-        ++tokPos;
-        var esc = readHexChar(4);
-        var escStr = String.fromCharCode(esc);
-        if (!escStr) raise(tokPos - 1, "Invalid Unicode escape");
-        if (!(first ? isIdentifierStart(esc) : isIdentifierChar(esc)))
-          raise(tokPos - 4, "Invalid Unicode escape");
-        word += escStr;
-      } else {
-        break;
-      }
-      first = false;
-    }
-    return containsEsc ? word : input.slice(start, tokPos);
-  }
-
-  // Read an identifier or keyword token. Will check for reserved
-  // words when necessary.
-
-  function readWord() {
-    var word = readWord1();
-    var type = _name;
-    if (!containsEsc && isKeyword(word))
-      type = keywordTypes[word];
-    return finishToken(type, word);
-  }
-
-  // ## Parser
-
-  // A recursive descent parser operates by defining functions for all
-  // syntactic elements, and recursively calling those, each function
-  // advancing the input stream and returning an AST node. Precedence
-  // of constructs (for example, the fact that `!x[1]` means `!(x[1])`
-  // instead of `(!x)[1]` is handled by the fact that the parser
-  // function that parses unary prefix operators is called first, and
-  // in turn calls the function that parses `[]` subscripts — that
-  // way, it'll receive the node for `x[1]` already parsed, and wraps
-  // *that* in the unary operator node.
-  //
-  // Acorn uses an [operator precedence parser][opp] to handle binary
-  // operator precedence, because it is much more compact than using
-  // the technique outlined above, which uses different, nesting
-  // functions to specify precedence, for all of the ten binary
-  // precedence levels that JavaScript defines.
-  //
-  // [opp]: http://en.wikipedia.org/wiki/Operator-precedence_parser
-
-  // ### Parser utilities
-
-  // Continue to the next token.
-
-  function next() {
-    lastStart = tokStart;
-    lastEnd = tokEnd;
-    lastEndLoc = tokEndLoc;
-    readToken();
-  }
-
-  // Enter strict mode. Re-reads the next token to please pedantic
-  // tests ("use strict"; 010; -- should fail).
-
-  function setStrict(strct) {
-    strict = strct;
-    tokPos = tokStart;
-    if (options.locations) {
-      while (tokPos < tokLineStart) {
-        tokLineStart = input.lastIndexOf("\n", tokLineStart - 2) + 1;
-        --tokCurLine;
-      }
-    }
-    skipSpace();
-    readToken();
-  }
-
-  // Start an AST node, attaching a start offset.
-
-  function Node() {
-    this.type = null;
-    this.start = tokStart;
-    this.end = null;
-  }
-
-  exports.Node = Node;
-
-  function SourceLocation() {
-    this.start = tokStartLoc;
-    this.end = null;
-    if (sourceFile !== null) this.source = sourceFile;
-  }
-
-  function startNode() {
-    var node = new Node();
-    if (options.locations)
-      node.loc = new SourceLocation();
-    if (options.directSourceFile)
-      node.sourceFile = options.directSourceFile;
-    if (options.ranges)
-      node.range = [tokStart, 0];
-    return node;
-  }
-
-  // Start a node whose start offset information should be based on
-  // the start of another node. For example, a binary operator node is
-  // only started after its left-hand side has already been parsed.
-
-  function startNodeFrom(other) {
-    var node = new Node();
-    node.start = other.start;
-    if (options.locations) {
-      node.loc = new SourceLocation();
-      node.loc.start = other.loc.start;
-    }
-    if (options.ranges)
-      node.range = [other.range[0], 0];
-
-    return node;
-  }
-
-  // Finish an AST node, adding `type` and `end` properties.
-
-  function finishNode(node, type) {
-    node.type = type;
-    node.end = lastEnd;
-    if (options.locations)
-      node.loc.end = lastEndLoc;
-    if (options.ranges)
-      node.range[1] = lastEnd;
-    return node;
-  }
-
-  // Test whether a statement node is the string literal `"use strict"`.
-
-  function isUseStrict(stmt) {
-    return options.ecmaVersion >= 5 && stmt.type === "ExpressionStatement" &&
-      stmt.expression.type === "Literal" && stmt.expression.value === "use strict";
-  }
-
-  // Predicate that tests whether the next token is of the given
-  // type, and if yes, consumes it as a side effect.
-
-  function eat(type) {
-    if (tokType === type) {
-      next();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // Test whether a semicolon can be inserted at the current position.
-
-  function canInsertSemicolon() {
-    return !options.strictSemicolons &&
-      (tokType === _eof || tokType === _braceR || newline.test(input.slice(lastEnd, tokStart)));
-  }
-
-  // Consume a semicolon, or, failing that, see if we are allowed to
-  // pretend that there is a semicolon at this position.
-
-  function semicolon() {
-    if (!eat(_semi) && !canInsertSemicolon()) unexpected();
-  }
-
-  // Expect a token of a given type. If found, consume it, otherwise,
-  // raise an unexpected token error.
-
-  function expect(type) {
-    eat(type) || unexpected();
-  }
-
-  // Raise an unexpected token error.
-
-  function unexpected(pos) {
-    raise(pos != null ? pos : tokStart, "Unexpected token");
-  }
-
-  // Checks if hash object has a property.
-
-  function has(obj, propName) {
-    return Object.prototype.hasOwnProperty.call(obj, propName);
-  }
-  // Convert existing expression atom to assignable pattern
-  // if possible.
-
-  function toAssignable(node, allowSpread, checkType) {
-    if (options.ecmaVersion >= 6 && node) {
-      switch (node.type) {
-        case "Identifier":
-        case "MemberExpression":
-          break;
-
-        case "ObjectExpression":
-          node.type = "ObjectPattern";
-          for (var i = 0; i < node.properties.length; i++) {
-            var prop = node.properties[i];
-            if (prop.kind !== "init") unexpected(prop.key.start);
-            toAssignable(prop.value, false, checkType);
-          }
-          break;
-
-        case "ArrayExpression":
-          node.type = "ArrayPattern";
-          for (var i = 0, lastI = node.elements.length - 1; i <= lastI; i++) {
-            toAssignable(node.elements[i], i === lastI, checkType);
-          }
-          break;
-
-        case "SpreadElement":
-          if (allowSpread) {
-            toAssignable(node.argument, false, checkType);
-            checkSpreadAssign(node.argument);
-          } else {
-            unexpected(node.start);
-          }
-          break;
-
-        default:
-          if (checkType) unexpected(node.start);
-      }
-    }
-    return node;
-  }
-
-  // Checks if node can be assignable spread argument.
-
-  function checkSpreadAssign(node) {
-    if (node.type !== "Identifier" && node.type !== "ArrayPattern")
-      unexpected(node.start);
-  }
-
-  // Verify that argument names are not repeated, and it does not
-  // try to bind the words `eval` or `arguments`.
-
-  function checkFunctionParam(param, nameHash) {
-    switch (param.type) {
-      case "Identifier":
-        if (isStrictReservedWord(param.name) || isStrictBadIdWord(param.name))
-          raise(param.start, "Defining '" + param.name + "' in strict mode");
-        if (has(nameHash, param.name))
-          raise(param.start, "Argument name clash in strict mode");
-        nameHash[param.name] = true;
-        break;
-
-      case "ObjectPattern":
-        for (var i = 0; i < param.properties.length; i++)
-          checkFunctionParam(param.properties[i].value, nameHash);
-        break;
-
-      case "ArrayPattern":
-        for (var i = 0; i < param.elements.length; i++)
-          checkFunctionParam(param.elements[i], nameHash);
-        break;
-    }
-  }
-
-  // Check if property name clashes with already added.
-  // Object/class getters and setters are not allowed to clash —
-  // either with each other or with an init property — and in
-  // strict mode, init properties are also not allowed to be repeated.
-
-  function checkPropClash(prop, propHash) {
-    if (prop.computed) return;
-    var key = prop.key, name;
-    switch (key.type) {
-      case "Identifier": name = key.name; break;
-      case "Literal": name = String(key.value); break;
-      default: return;
-    }
-    var kind = prop.kind || "init", other;
-    if (has(propHash, name)) {
-      other = propHash[name];
-      var isGetSet = kind !== "init";
-      if ((strict || isGetSet) && other[kind] || !(isGetSet ^ other.init))
-        raise(key.start, "Redefinition of property");
-    } else {
-      other = propHash[name] = {
-        init: false,
-        get: false,
-        set: false
-      };
-    }
-    other[kind] = true;
-  }
-
-  // Verify that a node is an lval — something that can be assigned
-  // to.
-
-  function checkLVal(expr, isBinding) {
-    switch (expr.type) {
-      case "Identifier":
-        if (strict && (isStrictBadIdWord(expr.name) || isStrictReservedWord(expr.name)))
-          raise(expr.start, isBinding
-            ? "Binding " + expr.name + " in strict mode"
-            : "Assigning to " + expr.name + " in strict mode"
-          );
-        break;
-
-      case "MemberExpression":
-        if (!isBinding) break;
-
-      case "ObjectPattern":
-        for (var i = 0; i < expr.properties.length; i++)
-          checkLVal(expr.properties[i].value, isBinding);
-        break;
-
-      case "ArrayPattern":
-        for (var i = 0; i < expr.elements.length; i++) {
-          var elem = expr.elements[i];
-          if (elem) checkLVal(elem, isBinding);
-        }
-        break;
-
-      case "SpreadElement":
-        break;
-
-      default:
-        raise(expr.start, "Assigning to rvalue");
-    }
-  }
-
-  // ### Statement parsing
-
-  // Parse a program. Initializes the parser, reads any number of
-  // statements, and wraps them in a Program node.  Optionally takes a
-  // `program` argument.  If present, the statements will be appended
-  // to its body instead of creating a new node.
-
-  function parseTopLevel(program) {
-    var node = program || startNode(), first = true;
-    if (!program) node.body = [];
-    while (tokType !== _eof) {
-      var stmt = parseStatement();
-      node.body.push(stmt);
-      if (first && isUseStrict(stmt)) setStrict(true);
-      first = false;
-    }
-    return finishNode(node, "Program");
-  }
-
-  var loopLabel = {kind: "loop"}, switchLabel = {kind: "switch"};
-
-  // Parse a single statement.
-  //
-  // If expecting a statement and finding a slash operator, parse a
-  // regular expression literal. This is to handle cases like
-  // `if (foo) /blah/.exec(foo);`, where looking at the previous token
-  // does not help.
-
-  function parseStatement() {
-    if (tokType === _slash || tokType === _assign && tokVal == "/=")
-      readToken(true);
-
-    var starttype = tokType, node = startNode();
-
-    // Most types of statements are recognized by the keyword they
-    // start with. Many are trivial to parse, some require a bit of
-    // complexity.
-
-    switch (starttype) {
-    case _break: case _continue: return parseBreakContinueStatement(node, starttype.keyword);
-    case _debugger: return parseDebuggerStatement(node);
-    case _do: return parseDoStatement(node);
-    case _for: return parseForStatement(node);
-    case _function: return parseFunctionStatement(node);
-    case _class: return parseClass(node, true);
-    case _if: return parseIfStatement(node);
-    case _return: return parseReturnStatement(node);
-    case _switch: return parseSwitchStatement(node);
-    case _throw: return parseThrowStatement(node);
-    case _try: return parseTryStatement(node);
-    case _var: case _let: case _const: return parseVarStatement(node, starttype.keyword);
-    case _while: return parseWhileStatement(node);
-    case _with: return parseWithStatement(node);
-    case _braceL: return parseBlock(); // no point creating a function for this
-    case _semi: return parseEmptyStatement(node);
-    case _export: return parseExport(node);
-    case _import: return parseImport(node);
-
-      // If the statement does not start with a statement keyword or a
-      // brace, it's an ExpressionStatement or LabeledStatement. We
-      // simply start parsing an expression, and afterwards, if the
-      // next token is a colon and the expression was a simple
-      // Identifier node, we switch to interpreting it as a label.
-    default:
-      var maybeName = tokVal, expr = parseExpression();
-      if (starttype === _name && expr.type === "Identifier" && eat(_colon))
-        return parseLabeledStatement(node, maybeName, expr);
-      else return parseExpressionStatement(node, expr);
-    }
-  }
-
-  function parseBreakContinueStatement(node, keyword) {
-    var isBreak = keyword == "break";
-    next();
-    if (eat(_semi) || canInsertSemicolon()) node.label = null;
-    else if (tokType !== _name) unexpected();
-    else {
-      node.label = parseIdent();
-      semicolon();
-    }
-
-    // Verify that there is an actual destination to break or
-    // continue to.
-    for (var i = 0; i < labels.length; ++i) {
-      var lab = labels[i];
-      if (node.label == null || lab.name === node.label.name) {
-        if (lab.kind != null && (isBreak || lab.kind === "loop")) break;
-        if (node.label && isBreak) break;
-      }
-    }
-    if (i === labels.length) raise(node.start, "Unsyntactic " + keyword);
-    return finishNode(node, isBreak ? "BreakStatement" : "ContinueStatement");
-  }
-
-  function parseDebuggerStatement(node) {
-    next();
-    semicolon();
-    return finishNode(node, "DebuggerStatement");
-  }
-
-  function parseDoStatement(node) {
-    next();
-    labels.push(loopLabel);
-    node.body = parseStatement();
-    labels.pop();
-    expect(_while);
-    node.test = parseParenExpression();
-    semicolon();
-    return finishNode(node, "DoWhileStatement");
-  }
-
-  // Disambiguating between a `for` and a `for`/`in` or `for`/`of`
-  // loop is non-trivial. Basically, we have to parse the init `var`
-  // statement or expression, disallowing the `in` operator (see
-  // the second parameter to `parseExpression`), and then check
-  // whether the next token is `in` or `of`. When there is no init
-  // part (semicolon immediately after the opening parenthesis), it
-  // is a regular `for` loop.
-
-  function parseForStatement(node) {
-    next();
-    labels.push(loopLabel);
-    expect(_parenL);
-    if (tokType === _semi) return parseFor(node, null);
-    if (tokType === _var || tokType === _let) {
-      var init = startNode(), varKind = tokType.keyword, isLet = tokType === _let;
-      next();
-      parseVar(init, true, varKind);
-      finishNode(init, "VariableDeclaration");
-      if ((tokType === _in || (options.ecmaVersion >= 6 && tokType === _name && tokVal === "of")) && init.declarations.length === 1 &&
-          !(isLet && init.declarations[0].init))
-        return parseForIn(node, init);
-      return parseFor(node, init);
-    }
-    var init = parseExpression(false, true);
-    if (tokType === _in || (options.ecmaVersion >= 6 && tokType === _name && tokVal === "of")) {
-      checkLVal(init);
-      return parseForIn(node, init);
-    }
-    return parseFor(node, init);
-  }
-
-  function parseFunctionStatement(node) {
-    next();
-    return parseFunction(node, true);
-  }
-
-  function parseIfStatement(node) {
-    next();
-    node.test = parseParenExpression();
-    node.consequent = parseStatement();
-    node.alternate = eat(_else) ? parseStatement() : null;
-    return finishNode(node, "IfStatement");
-  }
-
-  function parseReturnStatement(node) {
-    if (!inFunction && !options.allowReturnOutsideFunction)
-      raise(tokStart, "'return' outside of function");
-    next();
-
-    // In `return` (and `break`/`continue`), the keywords with
-    // optional arguments, we eagerly look for a semicolon or the
-    // possibility to insert one.
-
-    if (eat(_semi) || canInsertSemicolon()) node.argument = null;
-    else { node.argument = parseExpression(); semicolon(); }
-    return finishNode(node, "ReturnStatement");
-  }
-
-  function parseSwitchStatement(node) {
-    next();
-    node.discriminant = parseParenExpression();
-    node.cases = [];
-    expect(_braceL);
-    labels.push(switchLabel);
-
-    // Statements under must be grouped (by label) in SwitchCase
-    // nodes. `cur` is used to keep the node that we are currently
-    // adding statements to.
-
-    for (var cur, sawDefault; tokType != _braceR;) {
-      if (tokType === _case || tokType === _default) {
-        var isCase = tokType === _case;
-        if (cur) finishNode(cur, "SwitchCase");
-        node.cases.push(cur = startNode());
-        cur.consequent = [];
-        next();
-        if (isCase) cur.test = parseExpression();
-        else {
-          if (sawDefault) raise(lastStart, "Multiple default clauses"); sawDefault = true;
-          cur.test = null;
-        }
-        expect(_colon);
-      } else {
-        if (!cur) unexpected();
-        cur.consequent.push(parseStatement());
-      }
-    }
-    if (cur) finishNode(cur, "SwitchCase");
-    next(); // Closing brace
-    labels.pop();
-    return finishNode(node, "SwitchStatement");
-  }
-
-  function parseThrowStatement(node) {
-    next();
-    if (newline.test(input.slice(lastEnd, tokStart)))
-      raise(lastEnd, "Illegal newline after throw");
-    node.argument = parseExpression();
-    semicolon();
-    return finishNode(node, "ThrowStatement");
-  }
-
-  function parseTryStatement(node) {
-    next();
-    node.block = parseBlock();
-    node.handler = null;
-    if (tokType === _catch) {
-      var clause = startNode();
-      next();
-      expect(_parenL);
-      clause.param = parseIdent();
-      if (strict && isStrictBadIdWord(clause.param.name))
-        raise(clause.param.start, "Binding " + clause.param.name + " in strict mode");
-      expect(_parenR);
-      clause.guard = null;
-      clause.body = parseBlock();
-      node.handler = finishNode(clause, "CatchClause");
-    }
-    node.guardedHandlers = empty;
-    node.finalizer = eat(_finally) ? parseBlock() : null;
-    if (!node.handler && !node.finalizer)
-      raise(node.start, "Missing catch or finally clause");
-    return finishNode(node, "TryStatement");
-  }
-
-  function parseVarStatement(node, kind) {
-    next();
-    parseVar(node, false, kind);
-    semicolon();
-    return finishNode(node, "VariableDeclaration");
-  }
-
-  function parseWhileStatement(node) {
-    next();
-    node.test = parseParenExpression();
-    labels.push(loopLabel);
-    node.body = parseStatement();
-    labels.pop();
-    return finishNode(node, "WhileStatement");
-  }
-
-  function parseWithStatement(node) {
-    if (strict) raise(tokStart, "'with' in strict mode");
-    next();
-    node.object = parseParenExpression();
-    node.body = parseStatement();
-    return finishNode(node, "WithStatement");
-  }
-
-  function parseEmptyStatement(node) {
-    next();
-    return finishNode(node, "EmptyStatement");
-  }
-
-  function parseLabeledStatement(node, maybeName, expr) {
-    for (var i = 0; i < labels.length; ++i)
-      if (labels[i].name === maybeName) raise(expr.start, "Label '" + maybeName + "' is already declared");
-    var kind = tokType.isLoop ? "loop" : tokType === _switch ? "switch" : null;
-    labels.push({name: maybeName, kind: kind});
-    node.body = parseStatement();
-    labels.pop();
-    node.label = expr;
-    return finishNode(node, "LabeledStatement");
-  }
-
-  function parseExpressionStatement(node, expr) {
-    node.expression = expr;
-    semicolon();
-    return finishNode(node, "ExpressionStatement");
-  }
-
-  // Used for constructs like `switch` and `if` that insist on
-  // parentheses around their expression.
-
-  function parseParenExpression() {
-    expect(_parenL);
-    var val = parseExpression();
-    expect(_parenR);
-    return val;
-  }
-
-  // Parse a semicolon-enclosed block of statements, handling `"use
-  // strict"` declarations when `allowStrict` is true (used for
-  // function bodies).
-
-  function parseBlock(allowStrict) {
-    var node = startNode(), first = true, oldStrict;
-    node.body = [];
-    expect(_braceL);
-    while (!eat(_braceR)) {
-      var stmt = parseStatement();
-      node.body.push(stmt);
-      if (first && allowStrict && isUseStrict(stmt)) {
-        oldStrict = strict;
-        setStrict(strict = true);
-      }
-      first = false;
-    }
-    if (oldStrict === false) setStrict(false);
-    return finishNode(node, "BlockStatement");
-  }
-
-  // Parse a regular `for` loop. The disambiguation code in
-  // `parseStatement` will already have parsed the init statement or
-  // expression.
-
-  function parseFor(node, init) {
-    node.init = init;
-    expect(_semi);
-    node.test = tokType === _semi ? null : parseExpression();
-    expect(_semi);
-    node.update = tokType === _parenR ? null : parseExpression();
-    expect(_parenR);
-    node.body = parseStatement();
-    labels.pop();
-    return finishNode(node, "ForStatement");
-  }
-
-  // Parse a `for`/`in` and `for`/`of` loop, which are almost
-  // same from parser's perspective.
-
-  function parseForIn(node, init) {
-    var type = tokType === _in ? "ForInStatement" : "ForOfStatement";
-    next();
-    node.left = init;
-    node.right = parseExpression();
-    expect(_parenR);
-    node.body = parseStatement();
-    labels.pop();
-    return finishNode(node, type);
-  }
-
-  // Parse a list of variable declarations.
-
-  function parseVar(node, noIn, kind) {
-    node.declarations = [];
-    node.kind = kind;
-    for (;;) {
-      var decl = startNode();
-      decl.id = options.ecmaVersion >= 6 ? toAssignable(parseExprAtom()) : parseIdent();
-      checkLVal(decl.id, true);
-      decl.init = eat(_eq) ? parseExpression(true, noIn) : (kind === _const.keyword ? unexpected() : null);
-      node.declarations.push(finishNode(decl, "VariableDeclarator"));
-      if (!eat(_comma)) break;
-    }
-    return node;
-  }
-
-  // ### Expression parsing
-
-  // These nest, from the most general expression type at the top to
-  // 'atomic', nondivisible expression types at the bottom. Most of
-  // the functions will simply let the function(s) below them parse,
-  // and, *if* the syntactic construct they handle is present, wrap
-  // the AST node that the inner parser gave them in another node.
-
-  // Parse a full expression. The arguments are used to forbid comma
-  // sequences (in argument lists, array literals, or object literals)
-  // or the `in` operator (in for loops initalization expressions).
-
-  function parseExpression(noComma, noIn) {
-    var expr = parseMaybeAssign(noIn);
-    if (!noComma && tokType === _comma) {
-      var node = startNodeFrom(expr);
-      node.expressions = [expr];
-      while (eat(_comma)) node.expressions.push(parseMaybeAssign(noIn));
-      return finishNode(node, "SequenceExpression");
-    }
-    return expr;
-  }
-
-  // Parse an assignment expression. This includes applications of
-  // operators like `+=`.
-
-  function parseMaybeAssign(noIn) {
-    var left = parseMaybeConditional(noIn);
-    if (tokType.isAssign) {
-      var node = startNodeFrom(left);
-      node.operator = tokVal;
-      node.left = tokType === _eq ? toAssignable(left) : left;
-      checkLVal(left);
-      next();
-      node.right = parseMaybeAssign(noIn);
-      return finishNode(node, "AssignmentExpression");
-    }
-    return left;
-  }
-
-  // Parse a ternary conditional (`?:`) operator.
-
-  function parseMaybeConditional(noIn) {
-    var expr = parseExprOps(noIn);
-    if (eat(_question)) {
-      var node = startNodeFrom(expr);
-      node.test = expr;
-      node.consequent = parseExpression(true);
-      expect(_colon);
-      node.alternate = parseExpression(true, noIn);
-      return finishNode(node, "ConditionalExpression");
-    }
-    return expr;
-  }
-
-  // Start the precedence parser.
-
-  function parseExprOps(noIn) {
-    return parseExprOp(parseMaybeUnary(), -1, noIn);
-  }
-
-  // Parse binary operators with the operator precedence parsing
-  // algorithm. `left` is the left-hand side of the operator.
-  // `minPrec` provides context that allows the function to stop and
-  // defer further parser to one of its callers when it encounters an
-  // operator that has a lower precedence than the set it is parsing.
-
-  function parseExprOp(left, minPrec, noIn) {
-    var prec = tokType.binop;
-    if (prec != null && (!noIn || tokType !== _in)) {
-      if (prec > minPrec) {
-        var node = startNodeFrom(left);
-        node.left = left;
-        node.operator = tokVal;
-        var op = tokType;
-        next();
-        node.right = parseExprOp(parseMaybeUnary(), prec, noIn);
-        var exprNode = finishNode(node, (op === _logicalOR || op === _logicalAND) ? "LogicalExpression" : "BinaryExpression");
-        return parseExprOp(exprNode, minPrec, noIn);
-      }
-    }
-    return left;
-  }
-
-  // Parse unary operators, both prefix and postfix.
-
-  function parseMaybeUnary() {
-    if (tokType.prefix) {
-      var node = startNode(), update = tokType.isUpdate;
-      node.operator = tokVal;
-      node.prefix = true;
-      tokRegexpAllowed = true;
-      next();
-      node.argument = parseMaybeUnary();
-      if (update) checkLVal(node.argument);
-      else if (strict && node.operator === "delete" &&
-               node.argument.type === "Identifier")
-        raise(node.start, "Deleting local variable in strict mode");
-      return finishNode(node, update ? "UpdateExpression" : "UnaryExpression");
-    }
-    var expr = parseExprSubscripts();
-    while (tokType.postfix && !canInsertSemicolon()) {
-      var node = startNodeFrom(expr);
-      node.operator = tokVal;
-      node.prefix = false;
-      node.argument = expr;
-      checkLVal(expr);
-      next();
-      expr = finishNode(node, "UpdateExpression");
-    }
-    return expr;
-  }
-
-  // Parse call, dot, and `[]`-subscript expressions.
-
-  function parseExprSubscripts() {
-    return parseSubscripts(parseExprAtom());
-  }
-
-  function parseSubscripts(base, noCalls) {
-    if (eat(_dot)) {
-      var node = startNodeFrom(base);
-      node.object = base;
-      node.property = parseIdent(true);
-      node.computed = false;
-      return parseSubscripts(finishNode(node, "MemberExpression"), noCalls);
-    } else if (eat(_bracketL)) {
-      var node = startNodeFrom(base);
-      node.object = base;
-      node.property = parseExpression();
-      node.computed = true;
-      expect(_bracketR);
-      return parseSubscripts(finishNode(node, "MemberExpression"), noCalls);
-    } else if (!noCalls && eat(_parenL)) {
-      var node = startNodeFrom(base);
-      node.callee = base;
-      node.arguments = parseExprList(_parenR, false);
-      return parseSubscripts(finishNode(node, "CallExpression"), noCalls);
-    } else if (tokType === _bquote) {
-      var node = startNodeFrom(base);
-      node.tag = base;
-      node.quasi = parseTemplate();
-      return parseSubscripts(finishNode(node, "TaggedTemplateExpression"), noCalls);
-    } return base;
-  }
-
-  // Parse an atomic expression — either a single token that is an
-  // expression, an expression started by a keyword like `function` or
-  // `new`, or an expression wrapped in punctuation like `()`, `[]`,
-  // or `{}`.
-
-  function parseExprAtom() {
-    switch (tokType) {
-    case _this:
-      var node = startNode();
-      next();
-      return finishNode(node, "ThisExpression");
-
-    case _yield:
-      if (inGenerator) return parseYield();
-
-    case _name:
-      var id = parseIdent(tokType !== _name);
-      if (eat(_arrow)) {
-        return parseArrowExpression(startNodeFrom(id), [id]);
-      }
-      return id;
-
-    case _num: case _string: case _regexp:
-      var node = startNode();
-      node.value = tokVal;
-      node.raw = input.slice(tokStart, tokEnd);
-      next();
-      return finishNode(node, "Literal");
-
-    case _null: case _true: case _false:
-      var node = startNode();
-      node.value = tokType.atomValue;
-      node.raw = tokType.keyword;
-      next();
-      return finishNode(node, "Literal");
-
-    case _parenL:
-      var tokStartLoc1 = tokStartLoc, tokStart1 = tokStart, val, exprList;
-      next();
-      // check whether this is generator comprehension or regular expression
-      if (options.ecmaVersion >= 6 && tokType === _for) {
-        val = parseComprehension(startNode(), true);
-      } else {
-        var oldParenL = ++metParenL;
-        if (tokType !== _parenR) {
-          val = parseExpression();
-          exprList = val.type === "SequenceExpression" ? val.expressions : [val];
-        } else {
-          exprList = [];
-        }
-        expect(_parenR);
-        // if '=>' follows '(...)', convert contents to arguments
-        if (metParenL === oldParenL && eat(_arrow)) {
-          val = parseArrowExpression(startNode(), exprList);
-        } else {
-          // forbid '()' before everything but '=>'
-          if (!val) unexpected(lastStart);
-          // forbid '...' in sequence expressions
-          if (options.ecmaVersion >= 6) {
-            for (var i = 0; i < exprList.length; i++) {
-              if (exprList[i].type === "SpreadElement") unexpected();
-            }
-          }
-        }
-      }
-      val.start = tokStart1;
-      val.end = lastEnd;
-      if (options.locations) {
-        val.loc.start = tokStartLoc1;
-        val.loc.end = lastEndLoc;
-      }
-      if (options.ranges) {
-        val.range = [tokStart1, lastEnd];
-      }
-      return val;
-
-    case _bracketL:
-      var node = startNode();
-      next();
-      // check whether this is array comprehension or regular array
-      if (options.ecmaVersion >= 6 && tokType === _for) {
-        return parseComprehension(node, false);
-      }
-      node.elements = parseExprList(_bracketR, true, true);
-      return finishNode(node, "ArrayExpression");
-
-    case _braceL:
-      return parseObj();
-
-    case _function:
-      var node = startNode();
-      next();
-      return parseFunction(node, false);
-
-    case _class:
-      return parseClass(startNode(), false);
-
-    case _new:
-      return parseNew();
-
-    case _ellipsis:
-      return parseSpread();
-
-    case _bquote:
-      return parseTemplate();
-
-    default:
-      unexpected();
-    }
-  }
-
-  // New's precedence is slightly tricky. It must allow its argument
-  // to be a `[]` or dot subscript expression, but not a call — at
-  // least, not without wrapping it in parentheses. Thus, it uses the
-
-  function parseNew() {
-    var node = startNode();
-    next();
-    node.callee = parseSubscripts(parseExprAtom(), true);
-    if (eat(_parenL)) node.arguments = parseExprList(_parenR, false);
-    else node.arguments = empty;
-    return finishNode(node, "NewExpression");
-  }
-
-  // Parse spread element '...expr'
-
-  function parseSpread() {
-    var node = startNode();
-    next();
-    node.argument = parseExpression(true);
-    return finishNode(node, "SpreadElement");
-  }
-
-  // Parse template expression.
-
-  function parseTemplate() {
-    var node = startNode();
-    node.expressions = [];
-    node.quasis = [];
-    inTemplate = true;
-    next();
-    for (;;) {
-      var elem = startNode();
-      elem.value = {cooked: tokVal, raw: input.slice(tokStart, tokEnd)};
-      elem.tail = false;
-      next();
-      node.quasis.push(finishNode(elem, "TemplateElement"));
-      if (tokType === _bquote) { // '`', end of template
-        elem.tail = true;
-        break;
-      }
-      inTemplate = false;
-      expect(_dollarBraceL);
-      node.expressions.push(parseExpression());
-      inTemplate = true;
-      // hack to include previously skipped space
-      tokPos = tokEnd;
-      expect(_braceR);
-    }
-    inTemplate = false;
-    next();
-    return finishNode(node, "TemplateLiteral");
-  }
-
-  // Parse an object literal.
-
-  function parseObj() {
-    var node = startNode(), first = true, propHash = {};
-    node.properties = [];
-    next();
-    while (!eat(_braceR)) {
-      if (!first) {
-        expect(_comma);
-        if (options.allowTrailingCommas && eat(_braceR)) break;
-      } else first = false;
-
-      var prop = startNode(), isGenerator;
-      if (options.ecmaVersion >= 6) {
-        prop.method = false;
-        prop.shorthand = false;
-        isGenerator = eat(_star);
-      }
-      parsePropertyName(prop);
-      if (eat(_colon)) {
-        prop.value = parseExpression(true);
-        prop.kind = "init";
-      } else if (options.ecmaVersion >= 6 && tokType === _parenL) {
-        prop.kind = "init";
-        prop.method = true;
-        prop.value = parseMethod(isGenerator);
-      } else if (options.ecmaVersion >= 5 && !prop.computed && prop.key.type === "Identifier" &&
-                 (prop.key.name === "get" || prop.key.name === "set")) {
-        if (isGenerator) unexpected();
-        prop.kind = prop.key.name;
-        parsePropertyName(prop);
-        prop.value = parseMethod(false);
-      } else if (options.ecmaVersion >= 6 && !prop.computed && prop.key.type === "Identifier") {
-        prop.kind = "init";
-        prop.value = prop.key;
-        prop.shorthand = true;
-      } else unexpected();
-
-      checkPropClash(prop, propHash);
-      node.properties.push(finishNode(prop, "Property"));
-    }
-    return finishNode(node, "ObjectExpression");
-  }
-
-  function parsePropertyName(prop) {
-    if (options.ecmaVersion >= 6) {
-      if (eat(_bracketL)) {
-        prop.computed = true;
-        prop.key = parseExpression();
-        expect(_bracketR);
-        return;
-      } else {
-        prop.computed = false;
-      }
-    }
-    prop.key = (tokType === _num || tokType === _string) ? parseExprAtom() : parseIdent(true);
-  }
-
-  // Initialize empty function node.
-
-  function initFunction(node) {
-    node.id = null;
-    node.params = [];
-    if (options.ecmaVersion >= 6) {
-      node.defaults = [];
-      node.rest = null;
-      node.generator = false;
-    }
-  }
-
-  // Parse a function declaration or literal (depending on the
-  // `isStatement` parameter).
-
-  function parseFunction(node, isStatement, allowExpressionBody) {
-    initFunction(node);
-    if (options.ecmaVersion >= 6) {
-      node.generator = eat(_star);
-    }
-    if (isStatement || tokType === _name) {
-      node.id = parseIdent();
-    }
-    parseFunctionParams(node);
-    parseFunctionBody(node, allowExpressionBody);
-    return finishNode(node, isStatement ? "FunctionDeclaration" : "FunctionExpression");
-  }
-
-  // Parse object or class method.
-
-  function parseMethod(isGenerator) {
-    var node = startNode();
-    initFunction(node);
-    parseFunctionParams(node);
-    var allowExpressionBody;
-    if (options.ecmaVersion >= 6) {
-      node.generator = isGenerator;
-      allowExpressionBody = true;
-    } else {
-      allowExpressionBody = false;
-    }
-    parseFunctionBody(node, allowExpressionBody);
-    return finishNode(node, "FunctionExpression");
-  }
-
-  // Parse arrow function expression with given parameters.
-
-  function parseArrowExpression(node, params) {
-    initFunction(node);
-
-    var defaults = node.defaults, hasDefaults = false;
-
-    for (var i = 0, lastI = params.length - 1; i <= lastI; i++) {
-      var param = params[i];
-
-      if (param.type === "AssignmentExpression" && param.operator === "=") {
-        hasDefaults = true;
-        params[i] = param.left;
-        defaults.push(param.right);
-      } else {
-        toAssignable(param, i === lastI, true);
-        defaults.push(null);
-        if (param.type === "SpreadElement") {
-          params.length--;
-          node.rest = param.argument;
-          break;
-        }
-      }
-    }
-
-    node.params = params;
-    if (!hasDefaults) node.defaults = [];
-
-    parseFunctionBody(node, true);
-    return finishNode(node, "ArrowFunctionExpression");
-  }
-
-  // Parse function parameters.
-
-  function parseFunctionParams(node) {
-    var defaults = [], hasDefaults = false;
-
-    expect(_parenL);
-    for (;;) {
-      if (eat(_parenR)) {
-        break;
-      } else if (options.ecmaVersion >= 6 && eat(_ellipsis)) {
-        node.rest = toAssignable(parseExprAtom(), false, true);
-        checkSpreadAssign(node.rest);
-        expect(_parenR);
-        defaults.push(null);
-        break;
-      } else {
-        node.params.push(options.ecmaVersion >= 6 ? toAssignable(parseExprAtom(), false, true) : parseIdent());
-        if (options.ecmaVersion >= 6) {
-          if (eat(_eq)) {
-            hasDefaults = true;
-            defaults.push(parseExpression(true));
-          } else {
-            defaults.push(null);
-          }
-        }
-        if (!eat(_comma)) {
-          expect(_parenR);
-          break;
-        }
-      }
-    }
-
-    if (hasDefaults) node.defaults = defaults;
-  }
-
-  // Parse function body and check parameters.
-
-  function parseFunctionBody(node, allowExpression) {
-    var isExpression = allowExpression && tokType !== _braceL;
-
-    if (isExpression) {
-      node.body = parseExpression(true);
-      node.expression = true;
-    } else {
-      // Start a new scope with regard to labels and the `inFunction`
-      // flag (restore them to their old value afterwards).
-      var oldInFunc = inFunction, oldInGen = inGenerator, oldLabels = labels;
-      inFunction = true; inGenerator = node.generator; labels = [];
-      node.body = parseBlock(true);
-      node.expression = false;
-      inFunction = oldInFunc; inGenerator = oldInGen; labels = oldLabels;
-    }
-
-    // If this is a strict mode function, verify that argument names
-    // are not repeated, and it does not try to bind the words `eval`
-    // or `arguments`.
-    if (strict || !isExpression && node.body.body.length && isUseStrict(node.body.body[0])) {
-      var nameHash = {};
-      if (node.id)
-        checkFunctionParam(node.id, {});
-      for (var i = 0; i < node.params.length; i++)
-        checkFunctionParam(node.params[i], nameHash);
-      if (node.rest)
-        checkFunctionParam(node.rest, nameHash);
-    }
-  }
-
-  // Parse a class declaration or literal (depending on the
-  // `isStatement` parameter).
-
-  function parseClass(node, isStatement) {
-    next();
-    node.id = tokType === _name ? parseIdent() : isStatement ? unexpected() : null;
-    node.superClass = eat(_extends) ? parseExpression() : null;
-    var classBody = startNode(), methodHash = {}, staticMethodHash = {};
-    classBody.body = [];
-    expect(_braceL);
-    while (!eat(_braceR)) {
-      var method = startNode();
-      if (tokType === _name && tokVal === "static") {
-        next();
-        method['static'] = true;
-      } else {
-        method['static'] = false;
-      }
-      var isGenerator = eat(_star);
-      parsePropertyName(method);
-      if (tokType === _name && !method.computed && method.key.type === "Identifier" &&
-          (method.key.name === "get" || method.key.name === "set")) {
-        if (isGenerator) unexpected();
-        method.kind = method.key.name;
-        parsePropertyName(method);
-      } else {
-        method.kind = "";
-      }
-      method.value = parseMethod(isGenerator);
-      checkPropClash(method, method['static'] ? staticMethodHash : methodHash);
-      classBody.body.push(finishNode(method, "MethodDefinition"));
-      eat(_semi);
-    }
-    node.body = finishNode(classBody, "ClassBody");
-    return finishNode(node, isStatement ? "ClassDeclaration" : "ClassExpression");
-  }
-
-  // Parses a comma-separated list of expressions, and returns them as
-  // an array. `close` is the token type that ends the list, and
-  // `allowEmpty` can be turned on to allow subsequent commas with
-  // nothing in between them to be parsed as `null` (which is needed
-  // for array literals).
-
-  function parseExprList(close, allowTrailingComma, allowEmpty) {
-    var elts = [], first = true;
-    while (!eat(close)) {
-      if (!first) {
-        expect(_comma);
-        if (allowTrailingComma && options.allowTrailingCommas && eat(close)) break;
-      } else first = false;
-
-      if (allowEmpty && tokType === _comma) elts.push(null);
-      else elts.push(parseExpression(true));
-    }
-    return elts;
-  }
-
-  // Parse the next token as an identifier. If `liberal` is true (used
-  // when parsing properties), it will also convert keywords into
-  // identifiers.
-
-  function parseIdent(liberal) {
-    var node = startNode();
-    if (liberal && options.forbidReserved == "everywhere") liberal = false;
-    if (tokType === _name) {
-      if (!liberal &&
-          (options.forbidReserved &&
-           (options.ecmaVersion === 3 ? isReservedWord3 : isReservedWord5)(tokVal) ||
-           strict && isStrictReservedWord(tokVal)) &&
-          input.slice(tokStart, tokEnd).indexOf("\\") == -1)
-        raise(tokStart, "The keyword '" + tokVal + "' is reserved");
-      node.name = tokVal;
-    } else if (liberal && tokType.keyword) {
-      node.name = tokType.keyword;
-    } else {
-      unexpected();
-    }
-    tokRegexpAllowed = false;
-    next();
-    return finishNode(node, "Identifier");
-  }
-
-  // Parses module export declaration.
-
-  function parseExport(node) {
-    next();
-    // export var|const|let|function|class ...;
-    if (tokType === _var || tokType === _const || tokType === _let || tokType === _function || tokType === _class) {
-      node.declaration = parseStatement();
-      node['default'] = false;
-      node.specifiers = null;
-      node.source = null;
-    } else
-    // export default ...;
-    if (eat(_default)) {
-      node.declaration = parseExpression(true);
-      node['default'] = true;
-      node.specifiers = null;
-      node.source = null;
-      semicolon();
-    } else {
-      // export * from '...'
-      // export { x, y as z } [from '...']
-      var isBatch = tokType === _star;
-      node.declaration = null;
-      node['default'] = false;
-      node.specifiers = parseExportSpecifiers();
-      if (tokType === _name && tokVal === "from") {
-        next();
-        node.source = tokType === _string ? parseExprAtom() : unexpected();
-      } else {
-        if (isBatch) unexpected();
-        node.source = null;
-      }
-    }
-    return finishNode(node, "ExportDeclaration");
-  }
-
-  // Parses a comma-separated list of module exports.
-
-  function parseExportSpecifiers() {
-    var nodes = [], first = true;
-    if (tokType === _star) {
-      // export * from '...'
-      var node = startNode();
-      next();
-      nodes.push(finishNode(node, "ExportBatchSpecifier"));
-    } else {
-      // export { x, y as z } [from '...']
-      expect(_braceL);
-      while (!eat(_braceR)) {
-        if (!first) {
-          expect(_comma);
-          if (options.allowTrailingCommas && eat(_braceR)) break;
-        } else first = false;
-
-        var node = startNode();
-        node.id = parseIdent();
-        if (tokType === _name && tokVal === "as") {
-          next();
-          node.name = parseIdent(true);
-        } else {
-          node.name = null;
-        }
-        nodes.push(finishNode(node, "ExportSpecifier"));
-      }
-    }
-    return nodes;
-  }
-
-  // Parses import declaration.
-
-  function parseImport(node) {
-    next();
-    // import '...';
-    if (tokType === _string) {
-      node.specifiers = [];
-      node.source = parseExprAtom();
-      node.kind = "";
-    } else {
-      node.specifiers = parseImportSpecifiers();
-      if (tokType !== _name || tokVal !== "from") unexpected();
-      next();
-      node.source = tokType === _string ? parseExprAtom() : unexpected();
-      // only for backward compatibility with Esprima's AST
-      // (it doesn't support mixed default + named yet)
-      node.kind = node.specifiers[0]['default'] ? "default" : "named";
-    }
-    return finishNode(node, "ImportDeclaration");
-  }
-
-  // Parses a comma-separated list of module imports.
-
-  function parseImportSpecifiers() {
-    var nodes = [], first = true;
-    if (tokType === _star) {
-      var node = startNode();
-      next();
-      if (tokType !== _name || tokVal !== "as") unexpected();
-      next();
-      node.name = parseIdent();
-      checkLVal(node.name, true);
-      nodes.push(finishNode(node, "ImportBatchSpecifier"));
-      return nodes;
-    }
-    if (tokType === _name) {
-      // import defaultObj, { x, y as z } from '...'
-      var node = startNode();
-      node.id = parseIdent();
-      checkLVal(node.id, true);
-      node.name = null;
-      node['default'] = true;
-      nodes.push(finishNode(node, "ImportSpecifier"));
-      if (!eat(_comma)) return nodes;
-    }
-    expect(_braceL);
-    while (!eat(_braceR)) {
-      if (!first) {
-        expect(_comma);
-        if (options.allowTrailingCommas && eat(_braceR)) break;
-      } else first = false;
-
-      var node = startNode();
-      node.id = parseIdent(true);
-      if (tokType === _name && tokVal === "as") {
-        next();
-        node.name = parseIdent();
-      } else {
-        node.name = null;
-      }
-      checkLVal(node.name || node.id, true);
-      node['default'] = false;
-      nodes.push(finishNode(node, "ImportSpecifier"));
-    }
-    return nodes;
-  }
-
-  // Parses yield expression inside generator.
-
-  function parseYield() {
-    var node = startNode();
-    next();
-    if (eat(_semi) || canInsertSemicolon()) {
-      node.delegate = false;
-      node.argument = null;
-    } else {
-      node.delegate = eat(_star);
-      node.argument = parseExpression(true);
-    }
-    return finishNode(node, "YieldExpression");
-  }
-
-  // Parses array and generator comprehensions.
-
-  function parseComprehension(node, isGenerator) {
-    node.blocks = [];
-    while (tokType === _for) {
-      var block = startNode();
-      next();
-      expect(_parenL);
-      block.left = toAssignable(parseExprAtom());
-      checkLVal(block.left, true);
-      if (tokType !== _name || tokVal !== "of") unexpected();
-      next();
-      // `of` property is here for compatibility with Esprima's AST
-      // which also supports deprecated [for (... in ...) expr]
-      block.of = true;
-      block.right = parseExpression();
-      expect(_parenR);
-      node.blocks.push(finishNode(block, "ComprehensionBlock"));
-    }
-    node.filter = eat(_if) ? parseParenExpression() : null;
-    node.body = parseExpression();
-    expect(isGenerator ? _parenR : _bracketR);
-    node.generator = isGenerator;
-    return finishNode(node, "ComprehensionExpression");
-  }
-
-});
-
-},{}],63:[function(require,module,exports){
-module.exports = function () {
-    for (var i = 0; i < arguments.length; i++) {
-        if (arguments[i] !== undefined) return arguments[i];
-    }
-};
-
-},{}],64:[function(require,module,exports){
+},{"./display.js":46,"escodegen":48,"esprima":65,"traverse":66}],48:[function(require,module,exports){
 (function (global){
 /*
   Copyright (C) 2012-2014 Yusuke Suzuki <utatane.tea@gmail.com>
@@ -34540,7 +29970,7 @@ module.exports = function () {
 /* vim: set sw=4 ts=4 et tw=80 : */
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./package.json":80,"estraverse":65,"esutils":69,"source-map":70}],65:[function(require,module,exports){
+},{"./package.json":64,"estraverse":49,"esutils":53,"source-map":54}],49:[function(require,module,exports){
 /*
   Copyright (C) 2012-2013 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
@@ -35385,7 +30815,7 @@ module.exports = function () {
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],66:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -35531,7 +30961,7 @@ module.exports = function () {
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],67:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*
   Copyright (C) 2013-2014 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2014 Ivan Nikulin <ifaaan@gmail.com>
@@ -35634,7 +31064,7 @@ module.exports = function () {
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],68:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -35773,7 +31203,7 @@ module.exports = function () {
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{"./code":67}],69:[function(require,module,exports){
+},{"./code":51}],53:[function(require,module,exports){
 /*
   Copyright (C) 2013 Yusuke Suzuki <utatane.tea@gmail.com>
 
@@ -35808,7 +31238,7 @@ module.exports = function () {
 }());
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{"./ast":66,"./code":67,"./keyword":68}],70:[function(require,module,exports){
+},{"./ast":50,"./code":51,"./keyword":52}],54:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -35818,7 +31248,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":75,"./source-map/source-map-generator":76,"./source-map/source-node":77}],71:[function(require,module,exports){
+},{"./source-map/source-map-consumer":59,"./source-map/source-map-generator":60,"./source-map/source-node":61}],55:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -35917,7 +31347,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":78,"amdefine":79}],72:[function(require,module,exports){
+},{"./util":62,"amdefine":63}],56:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -36061,7 +31491,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":73,"amdefine":79}],73:[function(require,module,exports){
+},{"./base64":57,"amdefine":63}],57:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -36105,7 +31535,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":79}],74:[function(require,module,exports){
+},{"amdefine":63}],58:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -36187,7 +31617,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":79}],75:[function(require,module,exports){
+},{"amdefine":63}],59:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -36765,7 +32195,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":71,"./base64-vlq":72,"./binary-search":74,"./util":78,"amdefine":79}],76:[function(require,module,exports){
+},{"./array-set":55,"./base64-vlq":56,"./binary-search":58,"./util":62,"amdefine":63}],60:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -37168,7 +32598,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":71,"./base64-vlq":72,"./util":78,"amdefine":79}],77:[function(require,module,exports){
+},{"./array-set":55,"./base64-vlq":56,"./util":62,"amdefine":63}],61:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -37584,7 +33014,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":76,"./util":78,"amdefine":79}],78:[function(require,module,exports){
+},{"./source-map-generator":60,"./util":62,"amdefine":63}],62:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -37905,7 +33335,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":79}],79:[function(require,module,exports){
+},{"amdefine":63}],63:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 0.1.0 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
@@ -38208,7 +33638,7 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/rpl-www/node_modules/terrarium/node_modules/escodegen/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":9,"path":8}],80:[function(require,module,exports){
+},{"_process":9,"path":8}],64:[function(require,module,exports){
 module.exports={
   "name": "escodegen",
   "description": "ECMAScript code generator",
@@ -38297,7 +33727,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],81:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
@@ -42055,7 +37485,7 @@ parseStatement: true, parseSourceElement: true */
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],82:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var traverse = module.exports = function (obj) {
     return new Traverse(obj);
 };
@@ -42371,14 +37801,14 @@ var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
     return key in obj;
 };
 
-},{}],83:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports.Browser = require('./terrarium_browser.js');
 module.exports.Node = require('./terrarium_node.js');
+module.exports.instrument = require('./instrument.js');
 
-},{"./terrarium_browser.js":84,"./terrarium_node.js":85}],84:[function(require,module,exports){
+},{"./instrument.js":47,"./terrarium_browser.js":68,"./terrarium_node.js":69}],68:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
-var bundleDependencies = require('./bundle_dependencies.js');
 var util = require('util');
 
 function createObjectURL(blob) {
@@ -42398,51 +37828,35 @@ function Terrarium(options) {
   if (options && options.sandbox) {
     this.sandbox = options.sandbox;
   } else { this.sandbox = {}; }
-  if (options && options.browserify) this.browserify = true;
 }
 
 util.inherits(Terrarium, EventEmitter);
 
 Terrarium.prototype.run = function(source) {
-
   try {
+    var instrumented = instrument(source, this.name, 'browser');
+    var html = '<!DOCTYPE html><html><head></head><body>' +
+        '<script>window.onerror = function(e) { window.top.ERROR(e); }</script>' +
+        '<script>' +
+        instrumented.source + '</script></body></html>',
+      blob = new Blob([html], { encoding: 'UTF-8', type: 'text/html' }),
+      targetUrl = createObjectURL(blob);
 
+    this.setInstrument(this.name, instrumented);
 
-    var run = function(source) {
-      var instrumented = instrument(source, this.name, 'browser');
-      var html = '<!DOCTYPE html><html><head></head><body>' +
-          '<script>window.onerror = function(e) { window.top.ERROR(e); }</script>' +
-          '<script>' +
-          instrumented.source + '</script></body></html>',
-        blob = new Blob([html], { encoding: 'UTF-8', type: 'text/html' }),
-        targetUrl = createObjectURL(blob);
-
-      this.setInstrument(this.name, instrumented);
-
-      this.iframe.addEventListener('load', function() {
-        try {
-          for (var k in this.sandbox) {
-            this.iframe.contentWindow[k] = this.sandbox[k];
-          }
-          if (this.iframe.contentWindow.run) this.iframe.contentWindow.run();
-        } catch(e) {
-          this.emit('err', e);
-          this.emit('end');
+    this.iframe.addEventListener('load', function() {
+      try {
+        for (var k in this.sandbox) {
+          this.iframe.contentWindow[k] = this.sandbox[k];
         }
-      }.bind(this));
+        if (this.iframe.contentWindow.run) this.iframe.contentWindow.run();
+      } catch(e) {
+        this.emit('err', e);
+        this.emit('end');
+      }
+    }.bind(this));
 
-      this.iframe.src = targetUrl;
-    }.bind(this);
-
-    if (this.browserify) {
-      bundleDependencies(source, function(err, bundled) {
-        if (err) console.error(err);
-        run(bundled);
-      });
-    } else {
-      run(source);
-    }
-
+    this.iframe.src = targetUrl;
   } catch(e) {
     // the call to instrument() can throw a SyntaxError.
     this.emit('err', e);
@@ -42499,7 +37913,7 @@ Terrarium.prototype.setInstrument = function(thisTick, instrumented) {
 
 module.exports = Terrarium;
 
-},{"./bundle_dependencies.js":59,"./instrument":60,"events":6,"util":11}],85:[function(require,module,exports){
+},{"./instrument":47,"events":6,"util":11}],69:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -42573,7 +37987,7 @@ Terrarium.prototype.destroy = function() {
 
 module.exports = Terrarium;
 
-},{"./instrument":60,"child_process":1,"events":6,"fs":1,"util":11}],86:[function(require,module,exports){
+},{"./instrument":47,"child_process":1,"events":6,"fs":1,"util":11}],70:[function(require,module,exports){
 /**
  * Turf is a modular GIS engine written in JavaScript. It performs geospatial
  * processing tasks with GeoJSON data and can be run on a server or in a browser.
@@ -42642,7 +38056,7 @@ module.exports = {
   lineDistance: require('turf-line-distance')
 };
 
-},{"turf-aggregate":87,"turf-along":110,"turf-area":115,"turf-average":118,"turf-bbox-polygon":120,"turf-bearing":122,"turf-bezier":123,"turf-buffer":126,"turf-center":134,"turf-centroid":138,"turf-combine":141,"turf-concave":142,"turf-convex":156,"turf-count":158,"turf-destination":160,"turf-deviation":162,"turf-distance":165,"turf-envelope":166,"turf-erase":171,"turf-explode":176,"turf-extent":180,"turf-featurecollection":182,"turf-filter":183,"turf-flip":185,"turf-grid":186,"turf-hex":188,"turf-inside":190,"turf-intersect":191,"turf-isobands":198,"turf-isolines":220,"turf-jenks":239,"turf-kinks":241,"turf-line-distance":245,"turf-linestring":248,"turf-max":249,"turf-median":251,"turf-merge":253,"turf-midpoint":260,"turf-min":262,"turf-nearest":264,"turf-planepoint":266,"turf-point":278,"turf-point-on-surface":267,"turf-polygon":279,"turf-quantile":280,"turf-random":282,"turf-reclass":284,"turf-remove":286,"turf-sample":288,"turf-simplify":290,"turf-size":292,"turf-square":293,"turf-sum":298,"turf-tag":300,"turf-tin":302,"turf-union":305,"turf-variance":310,"turf-within":313}],87:[function(require,module,exports){
+},{"turf-aggregate":71,"turf-along":94,"turf-area":99,"turf-average":102,"turf-bbox-polygon":104,"turf-bearing":106,"turf-bezier":107,"turf-buffer":110,"turf-center":118,"turf-centroid":122,"turf-combine":125,"turf-concave":126,"turf-convex":140,"turf-count":142,"turf-destination":144,"turf-deviation":146,"turf-distance":149,"turf-envelope":150,"turf-erase":155,"turf-explode":160,"turf-extent":164,"turf-featurecollection":166,"turf-filter":167,"turf-flip":169,"turf-grid":170,"turf-hex":172,"turf-inside":174,"turf-intersect":175,"turf-isobands":182,"turf-isolines":204,"turf-jenks":223,"turf-kinks":225,"turf-line-distance":229,"turf-linestring":232,"turf-max":233,"turf-median":235,"turf-merge":237,"turf-midpoint":244,"turf-min":246,"turf-nearest":248,"turf-planepoint":250,"turf-point":262,"turf-point-on-surface":251,"turf-polygon":263,"turf-quantile":264,"turf-random":266,"turf-reclass":268,"turf-remove":270,"turf-sample":272,"turf-simplify":274,"turf-size":276,"turf-square":277,"turf-sum":282,"turf-tag":284,"turf-tin":286,"turf-union":289,"turf-variance":294,"turf-within":297}],71:[function(require,module,exports){
 var average = require('turf-average');
 var sum = require('turf-sum');
 var median = require('turf-median');
@@ -42775,7 +38189,7 @@ function isAggregationOperation(operation) {
     operation === 'count';
 }
 
-},{"turf-average":88,"turf-count":90,"turf-deviation":92,"turf-max":95,"turf-median":98,"turf-min":101,"turf-sum":104,"turf-variance":107}],88:[function(require,module,exports){
+},{"turf-average":72,"turf-count":74,"turf-deviation":76,"turf-max":79,"turf-median":82,"turf-min":85,"turf-sum":88,"turf-variance":91}],72:[function(require,module,exports){
 var inside = require('turf-inside');
 
 module.exports = function(polyFC, ptFC, inField, outField, done){
@@ -42799,7 +38213,7 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":89}],89:[function(require,module,exports){
+},{"turf-inside":73}],73:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -42846,7 +38260,7 @@ function inRing (pt, ring) {
 }
 
 
-},{}],90:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var inside = require('turf-inside');
 
 module.exports = function(polyFC, ptFC, outField, done){
@@ -42864,9 +38278,9 @@ module.exports = function(polyFC, ptFC, outField, done){
   return polyFC;
 }
 
-},{"turf-inside":91}],91:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],92:[function(require,module,exports){
+},{"turf-inside":75}],75:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],76:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -42887,7 +38301,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":93,"turf-inside":94}],93:[function(require,module,exports){
+},{"simple-statistics":77,"turf-inside":78}],77:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -44409,9 +39823,9 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],94:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],95:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],79:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -44432,11 +39846,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":96,"turf-inside":97}],96:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],97:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],98:[function(require,module,exports){
+},{"simple-statistics":80,"turf-inside":81}],80:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],81:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],82:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -44457,11 +39871,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":99,"turf-inside":100}],99:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],100:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],101:[function(require,module,exports){
+},{"simple-statistics":83,"turf-inside":84}],83:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],84:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],85:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -44482,11 +39896,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":102,"turf-inside":103}],102:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],103:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],104:[function(require,module,exports){
+},{"simple-statistics":86,"turf-inside":87}],86:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],87:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],88:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -44507,7 +39921,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":105,"turf-inside":106}],105:[function(require,module,exports){
+},{"simple-statistics":89,"turf-inside":90}],89:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -45925,7 +41339,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],106:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -45948,7 +41362,7 @@ module.exports = function(point, polygon){
 }
 
 
-},{}],107:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -45968,11 +41382,11 @@ module.exports = function (polyFC, ptFC, inField, outField, done) {
 
   return polyFC;
 }
-},{"simple-statistics":108,"turf-inside":109}],108:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],109:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],110:[function(require,module,exports){
+},{"simple-statistics":92,"turf-inside":93}],92:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],93:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],94:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 var bearing = require('turf-bearing');
@@ -46007,8 +41421,9 @@ module.exports = function (line, dist, units) {
   else throw new Error('input must be a LineString Feature or Geometry');
 
   var travelled = 0;
-  for(var i = 0; i < coords.length - 1; i++) {
-    if(travelled >= dist) {
+  for(var i = 0; i < coords.length; i++) {
+    if (dist >= travelled && i === coords.length - 1) break;
+    else if(travelled >= dist) {
       var overshot = dist - travelled;
       if(!overshot) return point(coords[i]);
       else {
@@ -46024,7 +41439,7 @@ module.exports = function (line, dist, units) {
   return point(coords[coords.length - 1]);
 }
 
-},{"turf-bearing":111,"turf-destination":112,"turf-distance":113,"turf-point":114}],111:[function(require,module,exports){
+},{"turf-bearing":95,"turf-destination":96,"turf-distance":97,"turf-point":98}],95:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -46053,7 +41468,7 @@ function toDeg(radian) {
     return radian * 180 / Math.PI;
 }
 
-},{}],112:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 var point = require('turf-point');
@@ -46119,7 +41534,7 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-},{"turf-point":114}],113:[function(require,module,exports){
+},{"turf-point":98}],97:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -46158,7 +41573,7 @@ function toRad(degree){
   return degree * Math.PI / 180;
 }
 
-},{}],114:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /**
  * Generates a new {@link Point} feature, given coordinates
  * and, optionally, properties.
@@ -46189,11 +41604,11 @@ module.exports = function(coordinates, properties) {
   };
 };
 
-},{}],115:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 var geometryArea = require('geojson-area').geometry;
 
 /**
- * Takes a {@link GeoJSON} feature or {@link FeatureCollection} of any type and returns Given any kind of GeoJSON feature, return the area of that feature,
+ * Takes a {@link GeoJSON} feature or {@link FeatureCollection} of any type and returns the area of that feature
  * in square meters.
  *
  * @module turf/area
@@ -46236,7 +41651,7 @@ module.exports = function(_) {
     }
 };
 
-},{"geojson-area":116}],116:[function(require,module,exports){
+},{"geojson-area":100}],100:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.geometry = geometry;
@@ -46312,12 +41727,12 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":117}],117:[function(require,module,exports){
+},{"wgs84":101}],101:[function(require,module,exports){
 module.exports.RADIUS = 6378137;
 module.exports.FLATTENING = 1/298.257223563;
 module.exports.POLAR_RADIUS = 6356752.3142;
 
-},{}],118:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -46383,9 +41798,9 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":119}],119:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],120:[function(require,module,exports){
+},{"turf-inside":103}],103:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],104:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -46418,7 +41833,7 @@ module.exports = function(bbox){
   return poly;
 }
 
-},{"turf-polygon":121}],121:[function(require,module,exports){
+},{"turf-polygon":105}],105:[function(require,module,exports){
 /**
  * Generates a new GeoJSON Polygon feature, given an array of coordinates
  * and list of properties.
@@ -46452,7 +41867,7 @@ module.exports = function(coordinates, properties){
   return polygon;
 }
 
-},{}],122:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -46502,7 +41917,7 @@ function toDeg(radian) {
     return radian * 180 / Math.PI;
 }
 
-},{}],123:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 var linestring = require('turf-linestring');
 var Spline = require('./spline.js');
 
@@ -46559,7 +41974,7 @@ module.exports = function(line, resolution, sharpness){
   return lineOut;
 };
 
-},{"./spline.js":125,"turf-linestring":124}],124:[function(require,module,exports){
+},{"./spline.js":109,"turf-linestring":108}],108:[function(require,module,exports){
 /**
  * Creates a {@link LineString} {@link Feature} based on a
  * coordinate array. Properties can be added optionally.
@@ -46601,7 +42016,7 @@ module.exports = function(coordinates, properties){
   };
 };
 
-},{}],125:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
  /**
    * BezierSpline
    * http://leszekr.github.com/
@@ -46740,7 +42155,7 @@ var Spline = function(options){
 
   module.exports = Spline;
 
-},{}],126:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 // http://stackoverflow.com/questions/839899/how-do-i-calculate-a-point-on-a-circles-circumference
 // radians = degrees * (pi/180)
 // https://github.com/bjornharrtell/jsts/blob/master/examples/buffer.html
@@ -46825,12 +42240,12 @@ var bufferOp = function(feature, radius){
   return buffered;
 }
 
-},{"jsts":127,"turf-combine":131,"turf-featurecollection":132,"turf-polygon":133}],127:[function(require,module,exports){
+},{"jsts":111,"turf-combine":115,"turf-featurecollection":116,"turf-polygon":117}],111:[function(require,module,exports){
 require('javascript.util');
 var jsts = require('./lib/jsts');
 module.exports = jsts
 
-},{"./lib/jsts":128,"javascript.util":130}],128:[function(require,module,exports){
+},{"./lib/jsts":112,"javascript.util":114}],112:[function(require,module,exports){
 /* The JSTS Topology Suite is a collection of JavaScript classes that
 implement the fundamental operations required to validate a given
 geo-spatial data set to a known topological specification.
@@ -48540,7 +43955,7 @@ return true;if(this.isBoundaryPoint(li,bdyNodes[1]))
 return true;return false;}else{for(var i=bdyNodes.iterator();i.hasNext();){var node=i.next();var pt=node.getCoordinate();if(li.isIntersection(pt))
 return true;}
 return false;}};})();
-},{}],129:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 (function (global){
 /*
   javascript.util is a port of selected parts of java.util to JavaScript which
@@ -48586,10 +44001,10 @@ L.prototype.iterator=L.prototype.f;function N(a){this.l=a}f("$jscomp.scope.Itera
 r,global.javascript.util.Set=x,global.javascript.util.SortedMap=A,global.javascript.util.SortedSet=B,global.javascript.util.Stack=C,global.javascript.util.TreeMap=H,global.javascript.util.TreeSet=L);}).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],130:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 require('./dist/javascript.util-node.min.js');
 
-},{"./dist/javascript.util-node.min.js":129}],131:[function(require,module,exports){
+},{"./dist/javascript.util-node.min.js":113}],115:[function(require,module,exports){
 module.exports = function(fc){
   var type = fc.features[0].geometry.type;
   var err;
@@ -48639,7 +44054,7 @@ function pluckCoods(multi){
     return geom.coordinates;
   });
 }
-},{}],132:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(features){
   var fc = {
     "type": "FeatureCollection",
@@ -48648,9 +44063,9 @@ module.exports = function(features){
 
   return fc;
 }
-},{}],133:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],134:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],118:[function(require,module,exports){
 var extent = require('turf-extent'),
     point = require('turf-point');
 
@@ -48693,7 +44108,7 @@ module.exports = function(layer, done){
   return point([x, y]);
 };
 
-},{"turf-extent":135,"turf-point":137}],135:[function(require,module,exports){
+},{"turf-extent":119,"turf-point":121}],119:[function(require,module,exports){
 var flatten = require('flatten');
 
 /**
@@ -48785,7 +44200,7 @@ function extent3(coords, extent) {
   }
 }
 
-},{"flatten":136}],136:[function(require,module,exports){
+},{"flatten":120}],120:[function(require,module,exports){
 module.exports = function flatten(list, depth) {
   depth = (typeof depth == 'number') ? depth : Infinity;
 
@@ -48803,14 +44218,14 @@ module.exports = function flatten(list, depth) {
   }
 };
 
-},{}],137:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],138:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],122:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 var point = require('turf-point');
 
 /**
- * Takes a {@link Feature} or {@link FeatureCollection} of any type and calculates the centroid using the geometric mean of all vertices.
+ * Takes a {@link Feature} or {@link FeatureCollection} of any type and calculates the centroid using the arithmetic mean of all vertices.
  * This lessens the effect of small islands and artifacts when calculating
  * the centroid of a set of polygons.
  *
@@ -48835,12 +44250,14 @@ var point = require('turf-point');
 module.exports = function(features){
   var xSum = 0, ySum = 0, len = 0;
   each(features, function(coord) {
-    xSum += coord[0]; ySum += coord[1]; len++;
+    xSum += coord[0];
+    ySum += coord[1];
+    len++;
   });
   return point([xSum / len, ySum / len]);
 };
 
-},{"turf-meta":139,"turf-point":140}],139:[function(require,module,exports){
+},{"turf-meta":123,"turf-point":124}],123:[function(require,module,exports){
 /**
  * Lazily iterate over coordinates in any GeoJSON object, similar to
  * Array.forEach.
@@ -48966,9 +44383,9 @@ function propReduce(layer, callback, memo) {
 }
 module.exports.propReduce = propReduce;
 
-},{}],140:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],141:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],125:[function(require,module,exports){
 /**
 * Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
 *
@@ -49036,7 +44453,7 @@ function pluckCoods(multi){
   });
 }
 
-},{}],142:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 // 1. run tin on points
 // 2. calculate lenth of all edges and area of all triangles
 // 3. remove triangles that fail the max length test
@@ -49100,9 +44517,9 @@ module.exports = function(points, maxEdge) {
   return t.merge(tinPolys);
 };
 
-},{"turf-distance":143,"turf-merge":144,"turf-point":151,"turf-tin":152}],143:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],144:[function(require,module,exports){
+},{"turf-distance":127,"turf-merge":128,"turf-point":135,"turf-tin":136}],127:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],128:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -49122,7 +44539,7 @@ module.exports = function(polygons, done){
   return merged;
 }
 
-},{"clone":145,"turf-union":146}],145:[function(require,module,exports){
+},{"clone":129,"turf-union":130}],129:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -49270,7 +44687,7 @@ clone.clonePrototype = function(parent) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":2}],146:[function(require,module,exports){
+},{"buffer":2}],130:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -49293,17 +44710,17 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":147}],147:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"./lib/jsts":148,"dup":127,"javascript.util":150}],148:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],149:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],150:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":149,"dup":130}],151:[function(require,module,exports){
+},{"jsts":131}],131:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./lib/jsts":132,"dup":111,"javascript.util":134}],132:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],133:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],134:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],152:[function(require,module,exports){
+},{"./dist/javascript.util-node.min.js":133,"dup":114}],135:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],136:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
@@ -49567,7 +44984,7 @@ function triangulate(vertices) {
     }
 }*/
 
-},{"turf-nearest":153,"turf-point":154,"turf-polygon":155}],153:[function(require,module,exports){
+},{"turf-nearest":137,"turf-point":138,"turf-polygon":139}],137:[function(require,module,exports){
 distance = require('turf-distance');
 
 module.exports = function(targetPoint, points){
@@ -49591,7 +45008,7 @@ module.exports = function(targetPoint, points){
   delete nearestPoint.properties.distance;
   return nearestPoint;
 }
-},{"turf-distance":143}],154:[function(require,module,exports){
+},{"turf-distance":127}],138:[function(require,module,exports){
 /**
  * Generates a new GeoJSON Point feature, given coordinates
  * and, optionally, properties.
@@ -49620,16 +45037,16 @@ module.exports = function(x, y, properties){
   };
 }
 
-},{}],155:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],156:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],140:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 
 // http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
 
 /**
- * Takes a {@link FeatureCollection} of {@link Point} features and
- * returns a [convex hull](http://en.wikipedia.org/wiki/Convex_hull) polygon.
+ * Takes any {@link GeoJSON} object and returns a 
+ * [convex hull](http://en.wikipedia.org/wiki/Convex_hull) polygon.
  *
  * Internally this implements
  * a [Monotone chain algorithm](http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript).
@@ -49696,9 +45113,9 @@ function cross(o, a, b) {
    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
 }
 
-},{"turf-meta":157}],157:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],158:[function(require,module,exports){
+},{"turf-meta":141}],141:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],142:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -49757,9 +45174,9 @@ module.exports = function(polyFC, ptFC, outField, done){
   return polyFC;
 };
 
-},{"turf-inside":159}],159:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],160:[function(require,module,exports){
+},{"turf-inside":143}],143:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],144:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 var point = require('turf-point');
@@ -49825,9 +45242,9 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-},{"turf-point":161}],161:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],162:[function(require,module,exports){
+},{"turf-point":145}],145:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],146:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -49899,11 +45316,11 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":163,"turf-inside":164}],163:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],164:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],165:[function(require,module,exports){
+},{"simple-statistics":147,"turf-inside":148}],147:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],148:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],149:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -49973,7 +45390,7 @@ function toRad(degree) {
   return degree * Math.PI / 180;
 }
 
-},{}],166:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 var extent = require('turf-extent');
 var bboxPolygon = require('turf-bbox-polygon');
 
@@ -50004,7 +45421,7 @@ module.exports = function(features, done){
   return poly;
 }
 
-},{"turf-bbox-polygon":167,"turf-extent":169}],167:[function(require,module,exports){
+},{"turf-bbox-polygon":151,"turf-extent":153}],151:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 module.exports = function(bbox){
@@ -50023,7 +45440,7 @@ module.exports = function(bbox){
   return poly;
 }
 
-},{"turf-polygon":168}],168:[function(require,module,exports){
+},{"turf-polygon":152}],152:[function(require,module,exports){
 module.exports = function(coordinates, properties){
   if(coordinates === null) return new Error('No coordinates passed')
   var polygon = { 
@@ -50041,11 +45458,11 @@ module.exports = function(coordinates, properties){
   
   return polygon
 }
-},{}],169:[function(require,module,exports){
-arguments[4][135][0].apply(exports,arguments)
-},{"dup":135,"flatten":170}],170:[function(require,module,exports){
-arguments[4][136][0].apply(exports,arguments)
-},{"dup":136}],171:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119,"flatten":154}],154:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],155:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 
@@ -50123,15 +45540,15 @@ module.exports = function(p1, p2, done){
   }
 };
 
-},{"jsts":172}],172:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"./lib/jsts":173,"dup":127,"javascript.util":175}],173:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],174:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],175:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":174,"dup":130}],176:[function(require,module,exports){
+},{"jsts":156}],156:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./lib/jsts":157,"dup":111,"javascript.util":159}],157:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],158:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],159:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":158,"dup":114}],160:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var each = require('turf-meta').coordEach;
 var point = require('turf-point');
@@ -50169,13 +45586,13 @@ module.exports = function(layer) {
   return featureCollection(points);
 };
 
-},{"turf-featurecollection":177,"turf-meta":178,"turf-point":179}],177:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],178:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],179:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],180:[function(require,module,exports){
+},{"turf-featurecollection":161,"turf-meta":162,"turf-point":163}],161:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],162:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],163:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],164:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 
 /**
@@ -50214,9 +45631,9 @@ module.exports = function(layer) {
     return extent;
 };
 
-},{"turf-meta":181}],181:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],182:[function(require,module,exports){
+},{"turf-meta":165}],165:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"dup":123}],166:[function(require,module,exports){
 /**
  * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
  *
@@ -50241,7 +45658,7 @@ module.exports = function(features){
   };
 };
 
-},{}],183:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -50281,9 +45698,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":184}],184:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],185:[function(require,module,exports){
+},{"turf-featurecollection":168}],168:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],169:[function(require,module,exports){
 /**
  * Takes a {@link GeoJSON} object of any type and flips all of its coordinates
  * from `[x, y]` to `[y, x]`.
@@ -50363,7 +45780,7 @@ function flip3(coords) {
       for(var k = 0; k < coords[i][j].length; k++) coords[i][j][k].reverse();
 }
 
-},{}],186:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 var point = require('turf-point');
 
 /**
@@ -50401,9 +45818,9 @@ module.exports = function(extents, depth) {
   return fc;
 }
 
-},{"turf-point":187}],187:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],188:[function(require,module,exports){
+},{"turf-point":171}],171:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],172:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -50515,9 +45932,9 @@ function hexgrid(bbox, radius) {
   return fc;
 }
 
-},{"turf-polygon":189}],189:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],190:[function(require,module,exports){
+},{"turf-polygon":173}],173:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],174:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -50595,7 +46012,7 @@ function inRing (pt, ring) {
 }
 
 
-},{}],191:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 var featurecollection = require('turf-featurecollection');
@@ -50654,17 +46071,17 @@ module.exports = function(poly1, poly2){
   }
 };
 
-},{"jsts":192,"turf-featurecollection":196}],192:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"./lib/jsts":193,"dup":127,"javascript.util":195}],193:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],194:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],195:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":194,"dup":130}],196:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],197:[function(require,module,exports){
+},{"jsts":176,"turf-featurecollection":180}],176:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./lib/jsts":177,"dup":111,"javascript.util":179}],177:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],178:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],179:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":178,"dup":114}],180:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],181:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -51179,7 +46596,7 @@ Conrec.prototype.contour = function(d, ilb, iub, jlb, jub, x, y, nc, z) {
 }
 
 
-},{}],198:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -51358,13 +46775,13 @@ function unique(a) {
   }, []);
 }
 
-},{"./conrec.js":197,"turf-extent":199,"turf-featurecollection":201,"turf-grid":202,"turf-inside":204,"turf-linestring":205,"turf-planepoint":206,"turf-point":207,"turf-polygon":208,"turf-size":209,"turf-square":210,"turf-tin":215}],199:[function(require,module,exports){
-arguments[4][135][0].apply(exports,arguments)
-},{"dup":135,"flatten":200}],200:[function(require,module,exports){
-arguments[4][136][0].apply(exports,arguments)
-},{"dup":136}],201:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],202:[function(require,module,exports){
+},{"./conrec.js":181,"turf-extent":183,"turf-featurecollection":185,"turf-grid":186,"turf-inside":188,"turf-linestring":189,"turf-planepoint":190,"turf-point":191,"turf-polygon":192,"turf-size":193,"turf-square":194,"turf-tin":199}],183:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119,"flatten":184}],184:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],185:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],186:[function(require,module,exports){
 var point = require('turf-point');
 
 module.exports = function(extents, depth) {
@@ -51387,13 +46804,13 @@ module.exports = function(extents, depth) {
   return fc;
 }
 
-},{"turf-point":203}],203:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],204:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],205:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],206:[function(require,module,exports){
+},{"turf-point":187}],187:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],188:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],189:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"dup":108}],190:[function(require,module,exports){
 module.exports = function(point, triangle, done){
   var x = point.geometry.coordinates[0],
       y = point.geometry.coordinates[1],
@@ -51415,11 +46832,11 @@ module.exports = function(point, triangle, done){
   return z;
 }
 
-},{}],207:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],208:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],209:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],192:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],193:[function(require,module,exports){
 module.exports = function(bbox, factor){
   var currentXDistance = (bbox[2] - bbox[0]);
   var currentYDistance = (bbox[3] - bbox[1]);
@@ -51436,7 +46853,7 @@ module.exports = function(bbox, factor){
   var sized = [lowX, lowY, highX, highY];
   return sized;
 }
-},{}],210:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 var midpoint = require('turf-midpoint');
 var point = require('turf-point');
 var distance = require('turf-distance');
@@ -51469,7 +46886,7 @@ module.exports = function(bbox){
 }
 
 
-},{"turf-distance":211,"turf-midpoint":212,"turf-point":214}],211:[function(require,module,exports){
+},{"turf-distance":195,"turf-midpoint":196,"turf-point":198}],195:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -51508,7 +46925,7 @@ function toRad(degree){
   return degree * Math.PI / 180
 }
 
-},{}],212:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
 var point = require('turf-point')
@@ -51532,7 +46949,7 @@ module.exports = function(point1, point2) {
 
   return midpoint
 }
-},{"turf-point":213}],213:[function(require,module,exports){
+},{"turf-point":197}],197:[function(require,module,exports){
 module.exports = function(x, y, properties){
   if(isNaN(x) || isNaN(y)) throw new Error('Invalid coordinates')
   return {
@@ -51545,17 +46962,17 @@ module.exports = function(x, y, properties){
   }
 }
 
-},{}],214:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],215:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"turf-nearest":216,"turf-point":218,"turf-polygon":208}],216:[function(require,module,exports){
-arguments[4][153][0].apply(exports,arguments)
-},{"dup":153,"turf-distance":217}],217:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],218:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],219:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],199:[function(require,module,exports){
+arguments[4][136][0].apply(exports,arguments)
+},{"dup":136,"turf-nearest":200,"turf-point":202,"turf-polygon":192}],200:[function(require,module,exports){
+arguments[4][137][0].apply(exports,arguments)
+},{"dup":137,"turf-distance":201}],201:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],202:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],203:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -52071,7 +47488,7 @@ arguments[4][154][0].apply(exports,arguments)
     }
   }
 
-},{}],220:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -52171,43 +47588,43 @@ module.exports = function(points, z, resolution, breaks, done){
 
 
 
-},{"./conrec":219,"turf-extent":221,"turf-featurecollection":223,"turf-grid":224,"turf-inside":226,"turf-linestring":227,"turf-planepoint":228,"turf-square":229,"turf-tin":234}],221:[function(require,module,exports){
-arguments[4][135][0].apply(exports,arguments)
-},{"dup":135,"flatten":222}],222:[function(require,module,exports){
+},{"./conrec":203,"turf-extent":205,"turf-featurecollection":207,"turf-grid":208,"turf-inside":210,"turf-linestring":211,"turf-planepoint":212,"turf-square":213,"turf-tin":218}],205:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119,"flatten":206}],206:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],207:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],208:[function(require,module,exports){
+arguments[4][186][0].apply(exports,arguments)
+},{"dup":186,"turf-point":209}],209:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],210:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],211:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"dup":108}],212:[function(require,module,exports){
+arguments[4][190][0].apply(exports,arguments)
+},{"dup":190}],213:[function(require,module,exports){
+arguments[4][194][0].apply(exports,arguments)
+},{"dup":194,"turf-distance":214,"turf-midpoint":215,"turf-point":217}],214:[function(require,module,exports){
+arguments[4][195][0].apply(exports,arguments)
+},{"dup":195}],215:[function(require,module,exports){
+arguments[4][196][0].apply(exports,arguments)
+},{"dup":196,"turf-point":216}],216:[function(require,module,exports){
+arguments[4][197][0].apply(exports,arguments)
+},{"dup":197}],217:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],218:[function(require,module,exports){
 arguments[4][136][0].apply(exports,arguments)
-},{"dup":136}],223:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],224:[function(require,module,exports){
-arguments[4][202][0].apply(exports,arguments)
-},{"dup":202,"turf-point":225}],225:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],226:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],227:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],228:[function(require,module,exports){
-arguments[4][206][0].apply(exports,arguments)
-},{"dup":206}],229:[function(require,module,exports){
-arguments[4][210][0].apply(exports,arguments)
-},{"dup":210,"turf-distance":230,"turf-midpoint":231,"turf-point":233}],230:[function(require,module,exports){
-arguments[4][211][0].apply(exports,arguments)
-},{"dup":211}],231:[function(require,module,exports){
-arguments[4][212][0].apply(exports,arguments)
-},{"dup":212,"turf-point":232}],232:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],233:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],234:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"turf-nearest":235,"turf-point":237,"turf-polygon":238}],235:[function(require,module,exports){
-arguments[4][153][0].apply(exports,arguments)
-},{"dup":153,"turf-distance":236}],236:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],237:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],238:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],239:[function(require,module,exports){
+},{"dup":136,"turf-nearest":219,"turf-point":221,"turf-polygon":222}],219:[function(require,module,exports){
+arguments[4][137][0].apply(exports,arguments)
+},{"dup":137,"turf-distance":220}],220:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],221:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],222:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],223:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -52244,9 +47661,9 @@ module.exports = function(fc, field, num){
   return breaks;
 };
 
-},{"simple-statistics":240}],240:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],241:[function(require,module,exports){
+},{"simple-statistics":224}],224:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],225:[function(require,module,exports){
 /**
  * Takes a {@link Polygon} feature and returns a {@link FeatureCollection} of {@link Point} features at all self-intersections.
  *
@@ -52345,13 +47762,13 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
   }
 }
 
-},{"turf-featurecollection":242,"turf-point":243,"turf-polygon":244}],242:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],243:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],244:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],245:[function(require,module,exports){
+},{"turf-featurecollection":226,"turf-point":227,"turf-polygon":228}],226:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],227:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],228:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],229:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 
@@ -52391,11 +47808,11 @@ module.exports = function (line, units) {
   return travelled;
 }
 
-},{"turf-distance":246,"turf-point":247}],246:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],247:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],248:[function(require,module,exports){
+},{"turf-distance":230,"turf-point":231}],230:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],231:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],232:[function(require,module,exports){
 /**
  * Creates a {@link LineString} {@link Feature} based on a
  * coordinate array. Properties can be added optionally.
@@ -52437,7 +47854,7 @@ module.exports = function(coordinates, properties){
   };
 };
 
-},{}],249:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -52509,9 +47926,9 @@ function max(x) {
     return value;
 }
 
-},{"turf-inside":250}],250:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],251:[function(require,module,exports){
+},{"turf-inside":234}],234:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],235:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -52593,35 +48010,33 @@ function median(x) {
     }
 }
 
-},{"turf-inside":252}],252:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],253:[function(require,module,exports){
+},{"turf-inside":236}],236:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],237:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
 /**
- * Takes a {@link FeatureCollection} of {@link Polygon} features and outputs a single merged
- * polygon feature.
+ * Takes a {@link FeatureCollection} of {@link Polygon} features and returns a single merged
+ * polygon feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
  * @module turf/merge
- * @param {FeatureCollection} fc - a FeatureCollection of Polygon features
- * @return {Feature} a {@link Polygon} feature
+ * @param {FeatureCollection} fc a FeatureCollection of {@link Polygon} features
+ * @return {Feature} a {@link Polygon} or {@link MultiPolygon} feature
  * @example
- * var poly1 = turf.polygon([[
- *  [9.994812, 53.549487],
- *  [10.046997, 53.598209],
- *  [10.117721, 53.531737],
- *  [9.994812, 53.549487]
- * ]]);
- * poly1.properties.fill = '#0f0';
- * var poly2 = turf.polygon([[
- *  [10.000991, 53.50418],
- *  [10.03807, 53.562539],
- *  [9.926834, 53.551731],
- *  [10.000991, 53.50418]
- * ]]);
- * poly2.properties.fill = '#00f';
- *
- * var polygons = turf.featurecollection([poly1, poly2]);
+ * var polygons = turf.featurecollection([
+ *  turf.polygon([[
+ *    [9.994812, 53.549487],
+ *    [10.046997, 53.598209],
+ *    [10.117721, 53.531737],
+ *    [9.994812, 53.549487]
+ *  ]], { fill: '#0f0' }),
+ *  turf.polygon([[
+ *    [10.000991, 53.50418],
+ *    [10.03807, 53.562539],
+ *    [9.926834, 53.551731],
+ *    [10.000991, 53.50418]
+ *  ]], { fill: '#00f' })
+ * ]);
  *
  * var merged = turf.merge(polygons);
  *
@@ -52645,19 +48060,19 @@ module.exports = function(polygons, done){
   return merged;
 };
 
-},{"clone":254,"turf-union":255}],254:[function(require,module,exports){
-arguments[4][145][0].apply(exports,arguments)
-},{"buffer":2,"dup":145}],255:[function(require,module,exports){
-arguments[4][146][0].apply(exports,arguments)
-},{"dup":146,"jsts":256}],256:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"./lib/jsts":257,"dup":127,"javascript.util":259}],257:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],258:[function(require,module,exports){
+},{"clone":238,"turf-union":239}],238:[function(require,module,exports){
 arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],259:[function(require,module,exports){
+},{"buffer":2,"dup":129}],239:[function(require,module,exports){
 arguments[4][130][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":258,"dup":130}],260:[function(require,module,exports){
+},{"dup":130,"jsts":240}],240:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./lib/jsts":241,"dup":111,"javascript.util":243}],241:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],242:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],243:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":242,"dup":114}],244:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
 var point = require('turf-point');
@@ -52701,9 +48116,9 @@ module.exports = function(point1, point2) {
   return point([midX, midY]);
 };
 
-},{"turf-point":261}],261:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],262:[function(require,module,exports){
+},{"turf-point":245}],245:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],246:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -52775,9 +48190,9 @@ function min(x) {
     return value;
 }
 
-},{"turf-inside":263}],263:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],264:[function(require,module,exports){
+},{"turf-inside":247}],247:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],248:[function(require,module,exports){
 var distance = require('turf-distance');
 
 /**
@@ -52826,9 +48241,9 @@ module.exports = function(targetPoint, points){
   return nearestPoint;
 }
 
-},{"turf-distance":265}],265:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],266:[function(require,module,exports){
+},{"turf-distance":249}],249:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],250:[function(require,module,exports){
 /**
  * Takes a triangular plane as a {@link Polygon} feature
  * and a {@link Point} feature within that triangle and returns the z-value
@@ -52882,7 +48297,7 @@ module.exports = function(point, triangle){
   return z;
 };
 
-},{}],267:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var centroid = require('turf-center');
 var distance = require('turf-distance');
@@ -53028,7 +48443,7 @@ function pointOnSegment (x, y, x1, y1, x2, y2) {
   }
 }
 
-},{"turf-center":268,"turf-distance":271,"turf-explode":272,"turf-featurecollection":276,"turf-inside":277}],268:[function(require,module,exports){
+},{"turf-center":252,"turf-distance":255,"turf-explode":256,"turf-featurecollection":260,"turf-inside":261}],252:[function(require,module,exports){
 var extent = require('turf-extent');
 
 module.exports = function(layer, done){
@@ -53044,13 +48459,13 @@ module.exports = function(layer, done){
   };
   return center;
 }
-},{"turf-extent":269}],269:[function(require,module,exports){
-arguments[4][135][0].apply(exports,arguments)
-},{"dup":135,"flatten":270}],270:[function(require,module,exports){
-arguments[4][136][0].apply(exports,arguments)
-},{"dup":136}],271:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],272:[function(require,module,exports){
+},{"turf-extent":253}],253:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119,"flatten":254}],254:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],255:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],256:[function(require,module,exports){
 var flatten = require('flatten');
 var featureCollection = require('turf-featurecollection');
 var point = require('turf-point');
@@ -53150,9 +48565,9 @@ function flatCoords(coords){
   })
   return newCoords;
 }
-},{"flatten":273,"turf-featurecollection":274,"turf-point":275}],273:[function(require,module,exports){
-arguments[4][136][0].apply(exports,arguments)
-},{"dup":136}],274:[function(require,module,exports){
+},{"flatten":257,"turf-featurecollection":258,"turf-point":259}],257:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],258:[function(require,module,exports){
 module.exports = function(features){
   var fc = {
     "type": "FeatureCollection",
@@ -53161,13 +48576,13 @@ module.exports = function(features){
 
   return fc
 }
-},{}],275:[function(require,module,exports){
-arguments[4][213][0].apply(exports,arguments)
-},{"dup":213}],276:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],277:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],278:[function(require,module,exports){
+},{}],259:[function(require,module,exports){
+arguments[4][197][0].apply(exports,arguments)
+},{"dup":197}],260:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],261:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],262:[function(require,module,exports){
 /**
  * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
  *
@@ -53198,7 +48613,7 @@ module.exports = function(coordinates, properties) {
   };
 };
 
-},{}],279:[function(require,module,exports){
+},{}],263:[function(require,module,exports){
 /**
  * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
  *
@@ -53252,7 +48667,7 @@ module.exports = function(coordinates, properties){
   return polygon;
 };
 
-},{}],280:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -53289,9 +48704,9 @@ module.exports = function(fc, field, percentiles){
   return quantiles;
 };
 
-},{"simple-statistics":281}],281:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],282:[function(require,module,exports){
+},{"simple-statistics":265}],265:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],266:[function(require,module,exports){
 var random = require('geojson-random');
 
 /**
@@ -53344,7 +48759,7 @@ module.exports = function(type, count, options) {
     }
 };
 
-},{"geojson-random":283}],283:[function(require,module,exports){
+},{"geojson-random":267}],267:[function(require,module,exports){
 module.exports = function() {
     throw new Error('call .point() or .polygon() instead');
 };
@@ -53452,7 +48867,7 @@ function collection(f) {
     };
 }
 
-},{}],284:[function(require,module,exports){
+},{}],268:[function(require,module,exports){
 var featurecollection = require('turf-featurecollection');
 var reclass = require('./index.js');
 
@@ -53504,9 +48919,9 @@ module.exports = function(fc, inField, outField, translations, done){
   return reclassed;
 };
 
-},{"./index.js":284,"turf-featurecollection":285}],285:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],286:[function(require,module,exports){
+},{"./index.js":268,"turf-featurecollection":269}],269:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],270:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -53546,9 +48961,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":287}],287:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],288:[function(require,module,exports){
+},{"turf-featurecollection":271}],271:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],272:[function(require,module,exports){
 // http://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
 var featureCollection = require('turf-featurecollection');
 
@@ -53584,9 +48999,9 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(min);
 }
 
-},{"turf-featurecollection":289}],289:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],290:[function(require,module,exports){
+},{"turf-featurecollection":273}],273:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],274:[function(require,module,exports){
 var simplify = require('simplify-js');
 
 /**
@@ -53670,7 +49085,7 @@ function simpleFeature (geom, properties) {
   };
 }
 
-},{"simplify-js":291}],291:[function(require,module,exports){
+},{"simplify-js":275}],275:[function(require,module,exports){
 /*
  (c) 2013, Vladimir Agafonkin
  Simplify.js, a high-performance JS polyline simplification library
@@ -53803,7 +49218,7 @@ else window.simplify = simplify;
 
 })();
 
-},{}],292:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 /**
  * Takes a bounding box and returns a new bounding box with a size expanded or contracted
  * by a factor of X.
@@ -53840,7 +49255,7 @@ module.exports = function(bbox, factor){
   return sized;
 }
 
-},{}],293:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 var midpoint = require('turf-midpoint');
 var point = require('turf-point');
 var distance = require('turf-distance');
@@ -53890,9 +49305,9 @@ module.exports = function(bbox){
 }
 
 
-},{"turf-distance":294,"turf-midpoint":295,"turf-point":297}],294:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],295:[function(require,module,exports){
+},{"turf-distance":278,"turf-midpoint":279,"turf-point":281}],278:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"dup":97}],279:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
 var point = require('turf-point');
@@ -53916,11 +49331,11 @@ module.exports = function(point1, point2) {
 
   return midpoint;
 }
-},{"turf-point":296}],296:[function(require,module,exports){
-arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],297:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],298:[function(require,module,exports){
+},{"turf-point":280}],280:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],281:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"dup":98}],282:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -53991,9 +49406,9 @@ function sum(x) {
     return value;
 }
 
-},{"turf-inside":299}],299:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],300:[function(require,module,exports){
+},{"turf-inside":283}],283:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],284:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -54050,9 +49465,9 @@ module.exports = function(points, polygons, field, outField){
   return points;
 };
 
-},{"turf-inside":301}],301:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],302:[function(require,module,exports){
+},{"turf-inside":285}],285:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],286:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
@@ -54296,11 +49711,11 @@ function triangulate(vertices) {
   return closed;
 }
 
-},{"turf-featurecollection":303,"turf-polygon":304}],303:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],304:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],305:[function(require,module,exports){
+},{"turf-featurecollection":287,"turf-polygon":288}],287:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],288:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],289:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -54309,12 +49724,12 @@ arguments[4][121][0].apply(exports,arguments)
 var jsts = require('jsts');
 
 /**
- * Takes two {@link Polygon} features and returnes a combined {@link Polygon} feature.
+ * Takes two {@link Polygon} features and returnes a combined {@link Polygon} feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
  *
  * @module turf/union
  * @param {Polygon} poly1 an input Polygon
  * @param {Polygon} poly2 another input Polygon
- * @return {Polygon} a combined Polygon
+ * @return {Feature} a combined {@link Polygon} or {@link MultiPolygon} feature
  * @example
  * var poly1 = turf.polygon([[
  *  [-82.574787, 35.594087],
@@ -54355,15 +49770,15 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":306}],306:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"./lib/jsts":307,"dup":127,"javascript.util":309}],307:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],308:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],309:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":308,"dup":130}],310:[function(require,module,exports){
+},{"jsts":290}],290:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./lib/jsts":291,"dup":111,"javascript.util":293}],291:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],292:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],293:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":292,"dup":114}],294:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -54426,11 +49841,11 @@ module.exports = function (polyFC, ptFC, inField, outField) {
   return polyFC;
 };
 
-},{"simple-statistics":311,"turf-inside":312}],311:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93}],312:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],313:[function(require,module,exports){
+},{"simple-statistics":295,"turf-inside":296}],295:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],296:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],297:[function(require,module,exports){
 var inside = require('turf-inside');
 var featureCollection = require('turf-featurecollection');
 
@@ -54483,11 +49898,11 @@ module.exports = function(ptFC, polyFC){
   return pointsWithin;
 };
 
-},{"turf-featurecollection":314,"turf-inside":315}],314:[function(require,module,exports){
-arguments[4][132][0].apply(exports,arguments)
-},{"dup":132}],315:[function(require,module,exports){
-arguments[4][89][0].apply(exports,arguments)
-},{"dup":89}],316:[function(require,module,exports){
+},{"turf-featurecollection":298,"turf-inside":299}],298:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116}],299:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],300:[function(require,module,exports){
 module.exports={
     "functions": [
         {
@@ -54572,7 +49987,7 @@ module.exports={
             "name": "turf/area",
             "access": "",
             "virtual": false,
-            "description": "Takes a  GeoJSON feature or {@link FeatureCollection} of any type and returns Given any kind of GeoJSON feature, return the area of that feature,\nin square meters.",
+            "description": "Takes a  GeoJSON feature or {@link FeatureCollection} of any type and returns the area of that feature\nin square meters.",
             "parameters": [
                 {
                     "name": "input",
@@ -54797,7 +50212,7 @@ module.exports={
             "name": "turf/centroid",
             "access": "",
             "virtual": false,
-            "description": "Takes a  Feature or {@link FeatureCollection} of any type and calculates the centroid using the geometric mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating\nthe centroid of a set of polygons.",
+            "description": "Takes a  Feature or {@link FeatureCollection} of any type and calculates the centroid using the arithmetic mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating\nthe centroid of a set of polygons.",
             "parameters": [
                 {
                     "name": "fc",
@@ -54874,7 +50289,7 @@ module.exports={
             "name": "turf/convex",
             "access": "",
             "virtual": false,
-            "description": "Takes a  FeatureCollection of {@link Point} features and\nreturns a convex hull polygon.\nInternally this implements\na Monotone chain algorithm.",
+            "description": "Takes any  GeoJSON object and returns a \nconvex hull polygon.\nInternally this implements\na Monotone chain algorithm.",
             "parameters": [
                 {
                     "name": "input",
@@ -55690,23 +51105,23 @@ module.exports={
             "name": "turf/merge",
             "access": "",
             "virtual": false,
-            "description": "Takes a  FeatureCollection of {@link Polygon} features and outputs a single merged\npolygon feature.",
+            "description": "Takes a  FeatureCollection of {@link Polygon} features and returns a single merged\npolygon feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.",
             "parameters": [
                 {
                     "name": "fc",
                     "type": "FeatureCollection",
-                    "description": "<p>a FeatureCollection of Polygon features</p>",
+                    "description": "<p>a FeatureCollection of {@link Polygon} features</p>",
                     "default": "",
                     "optional": "",
                     "nullable": ""
                 }
             ],
             "examples": [
-                "var poly1 = turf.polygon([[\n [9.994812, 53.549487],\n [10.046997, 53.598209],\n [10.117721, 53.531737],\n [9.994812, 53.549487]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [10.000991, 53.50418],\n [10.03807, 53.562539],\n [9.926834, 53.551731],\n [10.000991, 53.50418]\n]]);\npoly2.properties.fill = '#00f';\n\nvar polygons = turf.featurecollection([poly1, poly2]);\n\nvar merged = turf.merge(polygons);\n\n//=polygons\n\n//=merged"
+                "var polygons = turf.featurecollection([\n turf.polygon([[\n   [9.994812, 53.549487],\n   [10.046997, 53.598209],\n   [10.117721, 53.531737],\n   [9.994812, 53.549487]\n ]], { fill: '#0f0' }),\n turf.polygon([[\n   [10.000991, 53.50418],\n   [10.03807, 53.562539],\n   [9.926834, 53.551731],\n   [10.000991, 53.50418]\n ]], { fill: '#00f' })\n]);\n\nvar merged = turf.merge(polygons);\n\n//=polygons\n\n//=merged"
             ],
             "returns": {
                 "type": "Feature",
-                "description": "<p>a {@link Polygon} feature</p>"
+                "description": "<p>a {@link Polygon} or {@link MultiPolygon} feature</p>"
             }
         },
         {
@@ -56383,7 +51798,7 @@ module.exports={
             "name": "turf/union",
             "access": "",
             "virtual": false,
-            "description": "Takes two  Polygon features and returnes a combined {@link Polygon} feature.",
+            "description": "Takes two  Polygon features and returnes a combined {@link Polygon} feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.",
             "parameters": [
                 {
                     "name": "poly1",
@@ -56406,8 +51821,8 @@ module.exports={
                 "var poly1 = turf.polygon([[\n [-82.574787, 35.594087],\n [-82.574787, 35.615581],\n [-82.545261, 35.615581],\n [-82.545261, 35.594087],\n [-82.574787, 35.594087]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-82.560024, 35.585153],\n [-82.560024, 35.602602],\n [-82.52964, 35.602602],\n [-82.52964, 35.585153],\n [-82.560024, 35.585153]\n]]);\npoly2.properties.fill = '#00f';\nvar polyFC = turf.featurecollection([poly1, poly2]);\n\nvar union = turf.union(poly1, poly2);\n\n//=polyFC\n\n//=union"
             ],
             "returns": {
-                "type": "Polygon",
-                "description": "<p>a combined Polygon</p>"
+                "type": "Feature",
+                "description": "<p>a combined {@link Polygon} or {@link MultiPolygon} feature</p>"
             }
         },
         {
@@ -56491,7 +51906,7 @@ module.exports={
     ]
 }
 
-},{}],317:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 var turf = require('turf'),
     docs = require('./docs.json'),
     Rpl = require('rpl-www');
@@ -56512,4 +51927,4 @@ function fToTip(f) {
     return [f.name.replace('/', '.'), f.description];
 }
 
-},{"./docs.json":316,"rpl-www":12,"turf":86}]},{},[317]);
+},{"./docs.json":300,"rpl-www":12,"turf":70}]},{},[301]);
