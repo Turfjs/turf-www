@@ -41,12 +41,8 @@ var self = this;
 <?js } ?>
 
 <?js if (data.params && params.length) { ?>
-    <div class='space-bottom1'>
-        <h3>Parameters</h3>
-        <div class='small'>
-            <?js= this.partial('params.tmpl', params) ?>
-        </div>
-    </div>
+  <h3>Parameters</h3>
+  <?js= this.partial('params.tmpl', params) ?>
 <?js } ?>
 
 <?js= this.partial('details.tmpl', data) ?>
@@ -92,7 +88,6 @@ var self = this;
 } } ?>
 
 <?js if (data.returns && returns.length) { ?>
-    <div class='space-bottom1'>
 <h3>Returns</h3>
 <?js if (returns.length > 1) { ?><ul><?js
     returns.forEach(function(r) { ?>
@@ -103,7 +98,6 @@ var self = this;
         <?js= self.partial('returns.tmpl', r) ?>
     <?js });
 }?>
-</div>
 <?js } ?>
 
 <?js if (data.examples && examples.length) { ?>
