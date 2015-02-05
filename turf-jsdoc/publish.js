@@ -298,7 +298,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
         _.pairs(_.groupBy(items, getCategory))
             .forEach(function(pair) {
                 var items = pair[1], category = pair[0];
-                itemsNav += '<div class="space-bottom1"><strong>' + category + '</strong><ul>';
+                itemsNav += '<div class="space-bottom1"><div class="pad0y"><strong class="capitalize" keyline-all>' + category + '</strong></div><ul>';
                 items.forEach(function(item) {
                     if (!hasOwnProp.call(item, 'longname')) {
                         itemsNav += '<li class="code">' + linktoFn('', item.name) + '</li>';
