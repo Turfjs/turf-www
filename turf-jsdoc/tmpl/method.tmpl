@@ -42,10 +42,10 @@ var self = this;
 
 <?js if (data.params && params.length) { ?>
   <h3>Parameters</h3>
+  <p>
   <?js= this.partial('params.tmpl', params) ?>
+  </p>
 <?js } ?>
-
-<?js= this.partial('details.tmpl', data) ?>
 
 <?js if (data.kind !== 'module' && data.requires && data.requires.length) { ?>
 <h3>Requires</h3>
@@ -88,16 +88,17 @@ var self = this;
 } } ?>
 
 <?js if (data.returns && returns.length) { ?>
-<h3>Returns</h3>
-<?js if (returns.length > 1) { ?><ul><?js
+<span class='force-inline'>
+<?js if (returns.length > 1) { ?><?js
     returns.forEach(function(r) { ?>
-        <li><?js= self.partial('returns.tmpl', r) ?></li>
+        <?js= self.partial('returns.tmpl', r) ?>
     <?js });
-?></ul><?js } else {
+?><?js } else {
     returns.forEach(function(r) { ?>
         <?js= self.partial('returns.tmpl', r) ?>
     <?js });
 }?>
+</span>
 <?js } ?>
 
 <?js if (data.examples && examples.length) { ?>

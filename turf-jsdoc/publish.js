@@ -8,6 +8,7 @@ var logger = require('jsdoc/util/logger');
 var path = require('jsdoc/path');
 var taffy = require('taffydb').taffy;
 var template = require('jsdoc/template');
+var _ = require('lodash');
 var util = require('util');
 
 var htmlsafe = helper.htmlsafe;
@@ -294,21 +295,40 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
     if (items.length) {
         var itemsNav = '';
 
-        items.forEach(function(item) {
-            if ( !hasOwnProp.call(item, 'longname') ) {
-                itemsNav += '<li class="small">' + linktoFn('', item.name) + '</li>';
-            }
-            else if ( !hasOwnProp.call(itemsSeen, item.longname) ) {
-                itemsNav += '<li>' + linktoFn(item.longname, item.name
-                  .replace(/^module:/, '')
-                  .replace('turf.', '')) + '</li>';
-                itemsSeen[item.longname] = true;
-            }
-        });
+        _.pairs(_.groupBy(items, getCategory))
+            .forEach(function(pair) {
+                var items = pair[1], category = pair[0];
+                itemsNav += '<div class="space-bottom1"><strong>' + category + '</strong><ul>';
+                items.forEach(function(item) {
+                    if (!hasOwnProp.call(item, 'longname')) {
+                        itemsNav += '<li class="code">' + linktoFn('', item.name) + '</li>';
+                    }
+                    else if (!hasOwnProp.call(itemsSeen, item.longname)) {
+                        itemsNav += '<li class="code">' + linktoFn(item.longname, item.name
+                          .replace(/^module:/, '')
+                          .replace('turf.', '')) + '</li>';
+                        itemsSeen[item.longname] = true;
+                    }
+                });
+                itemsNav += '</ul></div>';
+            });
 
         if (itemsNav !== '') {
             nav += '<h3>' + itemHeading + '</h3><ul>' + itemsNav + '</ul>';
         }
+    }
+
+    function getCategory(item) {
+        var category = '';
+        if (item && item.tags) {
+            item.tags.forEach(function(t) {
+                if (t.title === 'category') category = t.text;
+            });
+        }
+        if (category === '') {
+            console.log(item.id);
+        }
+        return category;
     }
 
     return nav;

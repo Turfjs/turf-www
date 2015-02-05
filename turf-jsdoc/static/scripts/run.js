@@ -23933,33 +23933,99 @@ operations.count = count;
 * Calculates a series of aggregations for a set of {@link Point} features within a set of {@link Polygon} features. Sum, average, count, min, max, and deviation are supported.
 *
 * @module turf/aggregate
+* @category aggregation
 * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
 * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
 * @param {Array} aggregations an array of aggregation objects
 * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features with properties listed as `outField` values in `aggregations`
 * @example
-* var polygons = turf.featurecollection([
-*   turf.polygon([[
-*     [1.669921, 48.632908],
-*     [1.669921, 49.382372],
-*     [3.636474, 49.382372],
-*     [3.636474, 48.632908],
-*     [1.669921, 48.632908]]
-*   ]),
-*   turf.polygon([[
-*     [2.230224, 47.85003],
-*     [2.230224, 48.611121],
-*     [4.361572, 48.611121],
-*     [4.361572, 47.85003],
-*     [2.230224, 47.85003]]
-*   ])
-* ]);
-* var points = turf.featurecollection([
-*   turf.point([2.054443,49.138596], {population: 200}),
-*   turf.point([3.065185,48.850258], {population: 600}),
-*   turf.point([2.329101,48.79239], {population: 100}),
-*   turf.point([2.614746,48.334343], {population: 200}),
-*   turf.point([3.416748,48.056053], {population: 300})]);
+* var polygons = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [1.669921, 48.632908],
+*           [1.669921, 49.382372],
+*           [3.636474, 49.382372],
+*           [3.636474, 48.632908],
+*           [1.669921, 48.632908]
+*         ]]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [2.230224, 47.85003],
+*           [2.230224, 48.611121],
+*           [4.361572, 48.611121],
+*           [4.361572, 47.85003],
+*           [2.230224, 47.85003]
+*         ]]
+*       }
+*     }
+*   ]
+* };
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [2.054443,49.138596]
+*       }
+*     },
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 600
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [3.065185,48.850258]
+*       }
+*     },
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [2.329101,48.79239]
+*       }
+*     },
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [2.614746,48.334343]
+*       }
+*     },
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 300
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [3.416748,48.056053]
+*       }
+*     }
+*   ]
+* };
 * var aggregations = [
 *   {
 *     aggregation: 'sum',
@@ -27250,23 +27316,36 @@ var destination = require('turf-destination');
  * Takes a {@link LineString} feature and returns a {@link Point} feature at a specified distance along a line.
  *
  * @module turf/along
+ * @category measurement
  * @param {LineString} line a LineString feature
  * @param {Number} distance distance along the line
  * @param {String} [units=miles] can be degrees, radians, miles, or kilometers
  * @return {Point} Point along the line at `distance` distance
  * @example
- * var line = turf.linestring([
- *  [-77.031669, 38.878605],
- *  [-77.029609, 38.881946],
- *  [-77.020339, 38.884084],
- *  [-77.025661, 38.885821],
- *  [-77.021884, 38.889563],
- *  [-77.019824, 38.892368]
- * ]);
+ * var line = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "LineString",
+ *     "coordinates": [
+ *       [-77.031669, 38.878605],
+ *       [-77.029609, 38.881946],
+ *       [-77.020339, 38.884084],
+ *       [-77.025661, 38.885821],
+ *       [-77.021884, 38.889563],
+ *       [-77.019824, 38.892368]
+ *     ]
+ *   }
+ * };
  *
  * var along = turf.along(line, 1, 'miles');
  *
- * //=along
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [line, along]
+ * };
+ *
+ * //=result
  */
 module.exports = function (line, dist, units) {
   var coords;
@@ -27466,25 +27545,42 @@ var geometryArea = require('geojson-area').geometry;
  * in square meters.
  *
  * @module turf/area
+ * @category measurement
  * @param {GeoJSON} input a {@link Feature} or {@link FeatureCollection} of any type
  * @return {Number} area in square meters
  * @example
- * var polygons = turf.featurecollection([
- *   turf.polygon([[
- *     [-67.031021, 10.458102],
- *     [-67.031021, 10.53372],
- *     [-66.929397, 10.53372],
- *     [-66.929397, 10.458102],
- *     [-67.031021, 10.458102]
- *   ]]),
- *   turf.polygon([[
- *     [-66.919784, 10.397325],
- *     [-66.919784, 10.513467],
- *     [-66.805114, 10.513467],
- *     [-66.805114, 10.397325],
- *     [-66.919784, 10.397325]
- *   ]])
- * ]);
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-67.031021, 10.458102],
+ *           [-67.031021, 10.53372],
+ *           [-66.929397, 10.53372],
+ *           [-66.929397, 10.458102],
+ *           [-67.031021, 10.458102]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-66.919784, 10.397325],
+ *           [-66.919784, 10.513467],
+ *           [-66.805114, 10.513467],
+ *           [-66.805114, 10.397325],
+ *           [-66.919784, 10.397325]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var area = turf.area(polygons);
  *
@@ -27593,41 +27689,106 @@ var inside = require('turf-inside');
  * Calculates the average value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
  *
  * @module turf/average
+ * @category aggregation
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {string} field the field in the `points` features from which to pull values to average
  * @param {string} outputField the field in the `polygons` FeatureCollection to put results of the averages
  * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features with the value of `outField` set to the calculated average
  * @example
- * var polygons = turf.featurecollection([
- *  turf.polygon([[
- *    [10.666351, 59.890659],
- *    [10.666351, 59.936784],
- *    [10.762481, 59.936784],
- *    [10.762481, 59.890659],
- *    [10.666351, 59.890659]
- *  ]]),
- *  turf.polygon([[
- *    [10.764541, 59.889281],
- *    [10.764541, 59.937128],
- *    [10.866165, 59.937128],
- *    [10.866165, 59.889281],
- *    [10.764541, 59.889281]
- *  ]])
- * ]);
- * var points = turf.featurecollection([
- *  turf.point([10.724029, 59.926807], {population: 200}),
- *  turf.point([10.715789, 59.904778], {population: 600}),
- *  turf.point([10.746002, 59.908566], {population: 100}),
- *  turf.point([10.806427, 59.908910], {population: 200}),
- *  turf.point([10.79544, 59.931624], {population: 300})
- * ]);
+* var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.666351, 59.890659],
+ *           [10.666351, 59.936784],
+ *           [10.762481, 59.936784],
+ *           [10.762481, 59.890659],
+ *           [10.666351, 59.890659]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.764541, 59.889281],
+ *           [10.764541, 59.937128],
+ *           [10.866165, 59.937128],
+ *           [10.866165, 59.889281],
+ *           [10.764541, 59.889281]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.724029, 59.926807]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.715789, 59.904778]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.746002, 59.908566]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.806427, 59.908910]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.79544, 59.931624]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var averaged = turf.average(
  *  polygons, points, 'population', 'pop_avg');
  *
- * var result = turf.featurecollection(
- *  points.features.concat(averaged.features));
+ * var resultFeatures = points.features.concat(
+ *   averaged.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -27658,18 +27819,19 @@ arguments[4][47][0].apply(exports,arguments)
 var polygon = require('turf-polygon');
 
 /**
-* Takes a bbox and returns the equivalent {@link Polygon} feature.
-*
-* @module turf/bbox-polygon
-* @param {Array<number>} bbox an Array of bounding box coordinates in the form: ```[xLow, yLow, xHigh, yHigh]```
-* @return {Polygon} a Polygon representation of the bounding box
-* @example
-* var bbox = [0, 0, 10, 10];
-*
-* var poly = turf.bboxPolygon(bbox);
-*
-* //=poly
-*/
+ * Takes a bbox and returns the equivalent {@link Polygon} feature.
+ *
+ * @module turf/bbox-polygon
+ * @category measurement
+ * @param {Array<number>} bbox an Array of bounding box coordinates in the form: ```[xLow, yLow, xHigh, yHigh]```
+ * @return {Polygon} a Polygon representation of the bounding box
+ * @example
+ * var bbox = [0, 0, 10, 10];
+ *
+ * var poly = turf.bboxPolygon(bbox);
+ *
+ * //=poly
+ */
 
 module.exports = function(bbox){
   var lowLeft = [bbox[0], bbox[1]];
@@ -27729,16 +27891,37 @@ module.exports = function(coordinates, properties){
  * Takes two {@link Point} features and finds the bearing between them.
  *
  * @module turf/bearing
+ * @category measurement
  * @param {Point} start starting Point
  * @param {Point} end ending Point
+ * @category measurement
  * @returns {Number} bearing in decimal degrees
  * @example
- * var point1 = turf.point([-75.343, 39.984]);
- * point1.properties['marker-color'] = '#f00';
- * var point2 = turf.point([-75.534, 39.123]);
- * point2.properties['marker-color'] = '#0f0';
+ * var point1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": '#f00'
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
+ * var point2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": '#0f0'
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.534, 39.123]
+ *   }
+ * };
  *
- * var points = turf.featurecollection([point1, point2]);
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [point1, point2]
+ * };
  *
  * //=points
  *
@@ -27783,25 +27966,37 @@ var Spline = require('./spline.js');
  * The bezier spline implementation is by [Leszek Rybicki](http://leszek.rybicki.cc/).
  *
  * @module turf/bezier
+ * @category transformation
  * @param {LineString} line the input LineString
  * @param {number} [resolution=10000] time in milliseconds between points
  * @param {number} [sharpness=0.85] a measure of how curvy the path should be between splines
  * @returns {LineString} curved line
  * @example
- * var line = turf.linestring([
- *   [-76.091308, 18.427501],
- *   [-76.695556, 18.729501],
- *   [-76.552734, 19.40443],
- *   [-74.61914, 19.134789],
- *   [-73.652343, 20.07657],
- *   [-73.157958, 20.210656]], {
- *      stroke: '#f00'
- *   });
+ * var line = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "stroke": "#f00"
+ *   },
+ *   "geometry": {
+ *     "type": "LineString",
+ *     "coordinates": [
+ *       [-76.091308, 18.427501],
+ *       [-76.695556, 18.729501],
+ *       [-76.552734, 19.40443],
+ *       [-74.61914, 19.134789],
+ *       [-73.652343, 20.07657],
+ *       [-73.157958, 20.210656]
+ *     ]
+ *   }
+ * };
  *
  * var curved = turf.bezier(line);
  * curved.properties = { stroke: '#0f0' };
  *
- * var result = turf.featurecollection([line, curved]);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [line, curved]
+ * };
  *
  * //=result
  */
@@ -28023,19 +28218,30 @@ var jsts = require('jsts');
 * Calculates a buffer for a {@link Point}, {@link LineString}, or {@link Polygon} {@link Feature}/{@link FeatureCollection} for a given radius. Units supported are miles, kilometers, and degrees.
 *
 * @module turf/buffer
+* @category transformation
 * @param {FeatureCollection} feature a Feature or FeatureCollection of any type
 * @param {Number} distance distance to draw the buffer
 * @param {String} unit 'miles' or 'kilometers'
 * @return {FeatureCollection} a FeatureCollection containing {@link Polygon} features representing buffers
 *
 * @example
-* var pt = turf.point([-90.548630, 14.616599]);
+* var pt = {
+*   "type": "Feature",
+*   "properties": {},
+*   "geometry": {
+*     "type": "Point",
+*     "coordinates": [-90.548630, 14.616599]
+*   }
+* };
 * var unit = 'miles';
 *
 * var buffered = turf.buffer(pt, 500, unit);
 *
-* var result = turf.featurecollection(
-*   buffered.features.concat(pt));
+* var resultFeatures = buffered.features.concat(pt);
+* var result = {
+*   "type": "FeatureCollection",
+*   "features": resultFeatures
+* };
 *
 * //=result
 */
@@ -29927,30 +30133,111 @@ var extent = require('turf-extent'),
  * Takes a {@link FeatureCollection} of any type and returns the absolute center point of all features.
  *
  * @module turf/center
+ * @category measurement
  * @param {FeatureCollection} features a FeatureCollection of any type
  * @return {Point} a Point feature at the
  * absolute center point of all input features
  * @example
- * var features = turf.featurecollection([
- *     turf.point([-97.522259, 35.469100]),
- *     turf.point([-97.502754, 35.463455]),
- *     turf.point([-97.508269, 35.463245]),
- *     turf.point([-97.516809, 35.465779]),
- *     turf.point([-97.515372, 35.467072]),
- *     turf.point([-97.509363, 35.463053]),
- *     turf.point([-97.511123, 35.466601]),
- *     turf.point([-97.518547, 35.469327]),
- *     turf.point([-97.519706, 35.469659]),
- *     turf.point([-97.517839, 35.466998]),
- *     turf.point([-97.508678, 35.464942]),
- *     turf.point([-97.514914, 35.463453])
- * ]);
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.522259, 35.4691]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.502754, 35.463455]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.508269, 35.463245]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.516809, 35.465779]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.515372, 35.467072]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.509363, 35.463053]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.511123, 35.466601]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.518547, 35.469327]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.519706, 35.469659]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.517839, 35.466998]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.508678, 35.464942]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.514914, 35.463453]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var centerPt = turf.center(features);
  * centerPt.properties['marker-size'] = 'large';
  * centerPt.properties['marker-color'] = '#000';
  *
- * var result = turf.featurecollection(features.features.concat(centerPt));
+ * var resultFeatures = features.features.concat(centerPt);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -30084,20 +30371,31 @@ var point = require('turf-point');
  * the centroid of a set of polygons.
  *
  * @module turf/centroid
+ * @category measurement
  * @param {FeatureCollection} fc a {@link Feature} or FeatureCollection of any type
  * @return {Point} a Point feature at the centroid of the input feature(s)
  * @example
- * var poly = turf.polygon([[
- * 	[105.818939,21.004714],
- * 	[105.818939,21.061754],
- * 	[105.890007,21.061754],
- * 	[105.890007,21.004714],
- * 	[105.818939,21.004714]
- * ]]);
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [105.818939,21.004714],
+ *       [105.818939,21.061754],
+ *       [105.890007,21.061754],
+ *       [105.890007,21.004714],
+ *       [105.818939,21.004714]
+ *     ]]
+ *   }
+ * };
  *
  * var centroidPt = turf.centroid(poly);
  *
- * var result = turf.featurecollection([poly, centroidPt]);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [poly, centroidPt]
+ * };
  *
  * //=result
  */
@@ -30107,7 +30405,7 @@ module.exports = function(features){
     xSum += coord[0];
     ySum += coord[1];
     len++;
-  });
+  }, true);
   return point([xSum / len, ySum / len]);
 };
 
@@ -30241,37 +30539,38 @@ module.exports.propReduce = propReduce;
 arguments[4][72][0].apply(exports,arguments)
 },{"dup":72}],99:[function(require,module,exports){
 /**
-* Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
-*
-* @module turf/combine
-* @param {FeatureCollection} fc a FeatureCollection of any type
-* @return {FeatureCollection} a FeatureCollection of corresponding type to input
-* @example
-* var fc = {
-*   "type": "FeatureCollection",
-*   "features": [
-*     {
-*       "type": "Feature",
-*       "properties": {},
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [19.026432, 47.49134]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {},
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [19.074497, 47.509548]
-*       }
-*     }
-*   ]
-* };
-*
-* var combined = turf.combine(fc);
-*
-* //=combined
-*/
+ * Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
+ *
+ * @module turf/combine
+ * @category misc
+ * @param {FeatureCollection} fc a FeatureCollection of any type
+ * @return {FeatureCollection} a FeatureCollection of corresponding type to input
+ * @example
+ * var fc = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [19.026432, 47.49134]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [19.074497, 47.509548]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var combined = turf.combine(fc);
+ *
+ * //=combined
+ */
 
 module.exports = function(fc) {
   var type = fc.features[0].geometry.type;
@@ -30338,6 +30637,7 @@ t.point = require('turf-point');
  * a [Monotone chain algorithm](http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript).
  *
  * @module turf/concave
+ * @category transformation
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {number} maxEdge the size of an edge necessary for part of the
  * hull to become concave (in miles)
@@ -30918,21 +31218,66 @@ var each = require('turf-meta').coordEach,
  * implements a [monotone chain hull](http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain).
  *
  * @module turf/convex
+ * @category transformation
  * @param {GeoJSON} input any GeoJSON object
  * @returns {Feature} a {@link Polygon} feature
  * @example
- * var points = turf.featurecollection([
- *   turf.point([10.195312, 43.755225]),
- *   turf.point([10.404052, 43.8424511]),
- *   turf.point([10.579833, 43.659924]),
- *   turf.point([10.360107, 43.516688]),
- *   turf.point([10.14038, 43.588348]),
- *   turf.point([10.195312, 43.755225])]);
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.195312, 43.755225]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.404052, 43.8424511]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.579833, 43.659924]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.360107, 43.516688]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.14038, 43.588348]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.195312, 43.755225]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var hull = turf.convex(points);
  *
- * var result = turf.featurecollection(
- *   points.features.concat(hull));
+ * var resultFeatures = points.features.concat(hull);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -32967,37 +33312,76 @@ var inside = require('turf-inside');
  * Takes a {@link FeatureCollection} of {@link Point} features and a {@link FeatureCollection} of {@link Polygon} features and calculates the number of points that fall within the set of polygons.
  *
  * @module turf/count
+ * @category aggregation
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {String} countField a field to append to the attributes of the Polygon features representing Point counts
  * @return {FeatureCollection} a FeatureCollection of Polygon features with `countField` appended
  * @example
- * var polygons = turf.featurecollection([
- *  turf.polygon([[
- *    [-112.072391,46.586591],
- *    [-112.072391,46.61761],
- *    [-112.028102,46.61761],
- *    [-112.028102,46.586591],
- *    [-112.072391,46.586591]
- *  ]]),
- *  turf.polygon([[
- *    [-112.023983,46.570426],
- *    [-112.023983,46.615016],
- *    [-111.966133,46.615016],
- *    [-111.966133,46.570426],
- *    [-112.023983,46.570426]
- *  ]])
- * ]);
- * var points = turf.featurecollection([
- *  turf.point([-112.0372, 46.608058], {population: 200}),
- *  turf.point([-112.045955, 46.596264],
- *    {population: 600})
- * ]);
+* var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-112.072391,46.586591],
+ *           [-112.072391,46.61761],
+ *           [-112.028102,46.61761],
+ *           [-112.028102,46.586591],
+ *           [-112.072391,46.586591]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-112.023983,46.570426],
+ *           [-112.023983,46.615016],
+ *           [-111.966133,46.615016],
+ *           [-111.966133,46.570426],
+ *           [-112.023983,46.570426]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-112.0372, 46.608058]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-112.045955, 46.596264]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var counted = turf.count(polygons, points, 'pt_count');
  *
- * var result = turf.featurecollection(
- *   points.features.concat(counted.features));
+ * var resultFeatures = points.features.concat(counted.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -33030,22 +33414,34 @@ var point = require('turf-point');
  * Takes a {@link Point} feature and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
  *
  * @module turf/destination
+ * @category measurement
  * @param {Point} start a Point feature at the starting point
  * @param {Number} distance distance from the starting point
  * @param {Number} bearing ranging from -180 to 180
  * @param {String} units miles, kilometers, degrees, or radians
  * @returns {Point} a Point feature at the destination
  * @example
- * var point1 = turf.point([-75.343, 39.984]);
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
  * var distance = 50;
  * var bearing = 90;
  * var units = 'miles';
  *
- * var destination = turf.destination(point1, distance, bearing, units);
- * point1.properties['marker-color'] = '#0f0';
+ * var destination = turf.destination(point, distance, bearing, units);
  * destination.properties['marker-color'] = '#f00';
  *
- * var result = turf.featurecollection([point1, destination]);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [point, destination]
+ * };
  *
  * //=result
  */
@@ -33094,55 +33490,115 @@ var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
 /**
-* Calculates the standard deviation value of a field for points within a set of polygons.
-*
-* @module turf/deviation
-* @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
-* @param {FeatureCollection} points a FeatureCollection of {@link Point} features
-* @param {String} inField the field in `points` from which to aggregate
-* @param {String} outField the field to append to `polygons` representing deviation
-* @return {FeatureCollection} a FeatureCollection of Polygon features with appended field representing deviation
-* @example
-* var polygons = turf.featurecollection([
-*   turf.polygon([[
-*     [-97.807159, 30.270335],
-*     [-97.807159, 30.369913],
-*     [-97.612838, 30.369913],
-*     [-97.612838, 30.270335],
-*     [-97.807159, 30.270335]
-*   ]]),
-*   turf.polygon([[
-*     [-97.825698, 30.175405],
-*     [-97.825698, 30.264404],
-*     [-97.630691, 30.264404],
-*     [-97.630691, 30.175405],
-*     [-97.825698, 30.175405]
-*   ]])
-* ]);
-* var points = turf.featurecollection([
-*   turf.point([-97.709655, 30.311245],
-*     {population: 500}),
-*   turf.point([-97.766647, 30.345028],
-*     {population: 400}),
-*   turf.point([-97.765274, 30.294646],
-*     {population: 600}),
-*   turf.point([-97.753601, 30.216355],
-*     {population: 500}),
-*   turf.point([-97.667083, 30.208047],
-*   {population: 200})
-* ]);
-*
-* var inField = 'population';
-* var outField = 'pop_deviation';
-*
-* var deviated = turf.deviation(
-*   polygons, points, inField, outField);
-*
-* var result = turf.featurecollection(
-*   points.features.concat(deviated.features));
-*
-* //=result
-*/
+ * Calculates the standard deviation value of a field for points within a set of polygons.
+ *
+ * @module turf/deviation
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {String} inField the field in `points` from which to aggregate
+ * @param {String} outField the field to append to `polygons` representing deviation
+ * @return {FeatureCollection} a FeatureCollection of Polygon features with appended field representing deviation
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.807159, 30.270335],
+ *           [-97.807159, 30.369913],
+ *           [-97.612838, 30.369913],
+ *           [-97.612838, 30.270335],
+ *           [-97.807159, 30.270335]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.825698, 30.175405],
+ *           [-97.825698, 30.264404],
+ *           [-97.630691, 30.264404],
+ *           [-97.630691, 30.175405],
+ *           [-97.825698, 30.175405]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 500
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.709655, 30.311245]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 400
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.766647, 30.345028]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.765274, 30.294646]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 500
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.753601, 30.216355]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.667083, 30.208047]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var inField = "population";
+ * var outField = "pop_deviation";
+ *
+ * var deviated = turf.deviation(
+ *   polygons, points, inField, outField);
+ *
+ * var resultFeatures = points.features.concat(
+ *   deviated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
 
 module.exports = function(polyFC, ptFC, inField, outField, done){
   polyFC.features.forEach(function(poly){
@@ -33178,16 +33634,34 @@ var invariant = require('turf-invariant');
  * to account for global curvature.
  *
  * @module turf/distance
+ * @category measurement
  * @param {Feature} from origin point
  * @param {Feature} to destination point
  * @param {String} [units=kilometers] can be degrees, radians, miles, or kilometers
  * @return {Number} distance between the two points
  * @example
- * var point1 = turf.point([-75.343, 39.984]);
- * var point2 = turf.point([-75.534, 39.123]);
- * var units = 'miles';
+ * var point1 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
+ * var point2 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.534, 39.123]
+ *   }
+ * };
+ * var units = "miles";
  *
- * var points = turf.featurecollection([point1, point2]);
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [point1, point2]
+ * };
  *
  * //=points
  *
@@ -33316,19 +33790,51 @@ var bboxPolygon = require('turf-bbox-polygon');
  * Takes a {@link Feature} or {@link FeatureCollection} and returns a rectangular {@link Polygon} feature that encompasses all vertices.
  *
  * @module turf/envelope
+ * @category measurement
  * @param {FeatureCollection} fc a FeatureCollection of any type
  * @return {Polygon} a rectangular Polygon feature that encompasses all vertices
  * @example
- * var fc = turf.featurecollection([
- *  turf.point([-75.343, 39.984], {name: 'Location A'}),
- *  turf.point([-75.833, 39.284], {name: 'Location B'}),
- *  turf.point([-75.534, 39.123], {name: 'Location C'})
- * ]);
+ * var fc = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "name": "Location A"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-75.343, 39.984]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "name": "Location B"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-75.833, 39.284]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "name": "Location C"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-75.534, 39.123]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var enveloped = turf.envelope(fc);
  *
- * var result = turf.featurecollection(
- * 	fc.features.concat(enveloped));
+ * var resultFeatures = fc.features.concat(enveloped);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -33389,31 +33895,51 @@ var jsts = require('jsts');
  * polygon from the first.
  *
  * @module turf/erase
+ * @category transformation
  * @param {Polygon} poly1 input Polygon feaure
  * @param {Polygon} poly2 Polygon feature to erase from `poly1`
  * @return {Polygon} a Polygon feature showing the area of `poly1` excluding the area of `poly2`
  * @example
- * var poly1 = turf.polygon([[
- *  [-46.738586, -23.596711],
- *  [-46.738586, -23.458207],
- *  [-46.560058, -23.458207],
- *  [-46.560058, -23.596711],
- *  [-46.738586, -23.596711]
- * ]]);
- * poly1.properties.fill = '#0f0';
- * var poly2 = turf.polygon([[
- *  [-46.650009, -23.631314],
- *  [-46.650009, -23.5237],
- *  [-46.509246, -23.5237],
- *  [-46.509246, -23.631314],
- *  [-46.650009, -23.631314]
- * ]]);
- * poly2.properties.fill = '#00f';
+ * var poly1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-46.738586, -23.596711],
+ *       [-46.738586, -23.458207],
+ *       [-46.560058, -23.458207],
+ *       [-46.560058, -23.596711],
+ *       [-46.738586, -23.596711]
+ *     ]]
+ *   }
+ * };
+ * var poly2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#00f"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-46.650009, -23.631314],
+ *       [-46.650009, -23.5237],
+ *       [-46.509246, -23.5237],
+ *       [-46.509246, -23.631314],
+ *       [-46.650009, -23.631314]
+ *     ]]
+ *   }
+ * };
  *
  * var erased = turf.erase(poly1, poly2);
  * erased.properties.fill = '#f00';
  *
- * var polygons = turf.featurecollection([poly1, poly2]);
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [poly1, poly2]
+ * };
  *
  * //=polygons
  *
@@ -33476,6 +34002,7 @@ var point = require('turf-point');
  * a {@link FeatureCollection} of {@link Point} features.
  *
  * @module turf/explode
+ * @category misc
  * @param {GeoJSON} input input features
  * @return {FeatureCollection} a FeatureCollection of {@link Point} features representing the exploded input features
  * @throws {Error} if it encounters an unknown geometry type
@@ -33524,24 +34051,55 @@ var each = require('turf-meta').coordEach;
  * Takes any {@link GeoJSON} object, calculates the extent of all input features, and returns a bounding box.
  *
  * @module turf/extent
+ * @category measurement
  * @param {GeoJSON} input any valid GeoJSON Object
  * @return {Array<number>} the bounding box of `input` given
  * as an array in WSEN order (west, south, east, north)
  * @example
- * var input = turf.featurecollection([
- *  turf.point([114.175329, 22.2524]),
- *  turf.point([114.170007, 22.267969]),
- *  turf.point([114.200649, 22.274641]),
- *  turf.point([114.186744, 22.265745])
- * ]);
+ * var input = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.175329, 22.2524]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.170007, 22.267969]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.200649, 22.274641]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.186744, 22.265745]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var bbox = turf.extent(input);
  *
  * var bboxPolygon = turf.bboxPolygon(bbox);
- * bboxPolygon.properties.fill = '#00f';
  *
- * var result = turf.featurecollection(
- *  input.features.concat(bboxPolygon));
+ * var resultFeatures = input.features.concat(bboxPolygon);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -33563,6 +34121,7 @@ arguments[4][97][0].apply(exports,arguments)
  * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
  *
  * @module turf/featurecollection
+ * @category helper
  * @param {Feature} features input Features
  * @returns {FeatureCollection} a FeatureCollection of input features
  * @example
@@ -33590,22 +34149,75 @@ var featureCollection = require('turf-featurecollection');
  * Takes a {@link FeatureCollection} and filters it by a given property and value
  *
  * @module turf/filter
+ * @category data
  * @param {FeatureCollection} features input FeatureCollection of any type
  * @param {String} key the property on which to filter
  * @param {String} value the value of that property on which to filter
  * @return {FeatureCollection} a filtered collection with only features that match input `key` and `value`
  * @example
- * var features = turf.featurecollection([
- *  turf.point([-72.581777, 44.260875], {species: 'oak'}),
- *  turf.point([-72.570018, 44.260691], {species: 'birch'}),
- *  turf.point([-72.576284, 44.257925], {species: 'oak'}),
- *  turf.point([-72.56916, 44.254605], {species: 'redwood'}),
- *  turf.point([-72.581691, 44.24858], {species: 'maple'}),
- *  turf.point([-72.583837, 44.255773], {species: 'oak'})
- * ]);
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "oak"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.581777, 44.260875]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "birch"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.570018, 44.260691]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "oak"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.576284, 44.257925]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "redwood"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.56916, 44.254605]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "maple"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.581691, 44.24858]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "species": "oak"
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-72.583837, 44.255773]
+ *       }
+ *     }
+ *   ]
+ * };
  *
- * var key = 'species';
- * var value = 'oak';
+ * var key = "species";
+ * var value = "oak";
  *
  * var filtered = turf.filter(features, key, value);
  *
@@ -33631,16 +34243,24 @@ arguments[4][90][0].apply(exports,arguments)
  * from `[x, y]` to `[y, x]`.
  *
  * @module turf/flip
+ * @category misc
  * @param {GeoJSON} input input GeoJSON object
  * @returns {GeoJSON} a GeoJSON object of the same type as `input` with flipped coordinates
  * @example
- * var saudiArabia = turf.point([20.566406, 43.421008]);
- *
- * //=saudiArabia
- *
- * var serbia = turf.flip(saudiArabia);
+ * var serbia = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [20.566406, 43.421008]
+ *   }
+ * };
  *
  * //=serbia
+ *
+ * var saudiArabia = turf.flip(serbia);
+ *
+ * //=saudiArabia
  */
 module.exports = flipAny;
 
@@ -33712,6 +34332,7 @@ var point = require('turf-point');
  * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
  *
  * @module turf/grid
+ * @category interpolation
  * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
  * @param {Number} depth how many cells to output
  * @return {FeatureCollection} grid as FeatureCollection with {@link Point} features
@@ -33754,6 +34375,7 @@ var polygon = require('turf-polygon');
  * described in [Hexagonal Grids](http://www.redblobgames.com/grids/hexagons/)
  *
  * @module turf/hex
+ * @category interpolation
  * @param {Array<number>} bbox bounding box in [minX, minY, maxX, maxY] order
  * @param {Number} size size of cells in degrees
  * @return {FeatureCollection} a FeatureCollection of hexagonal {@link Polygon} features in a grid
@@ -33870,22 +34492,50 @@ arguments[4][79][0].apply(exports,arguments)
  * and accounts for holes.
  *
  * @module turf/inside
+ * @category joins
  * @param {Point} point a Point feature
  * @param {Polygon} polygon a Polygon feature
  * @return {Boolean} `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
  * @example
- * var pt1 = turf.point([-111.467285, 40.75766],
- *  {'marker-color': "#f00"});
- * var pt2 = turf.point([-111.873779, 40.647303],
- *  {'marker-color': "#0f0" });
- * var poly = turf.polygon([[
- *  [-112.074279, 40.52215],
- *  [-112.074279, 40.853293],
- *  [-111.610107, 40.853293],
- *  [-111.610107, 40.52215],
- *  [-112.074279, 40.52215]
- * ]]);
- * var features = turf.featurecollection([pt1, pt2, poly]);
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#f00"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.467285, 40.75766]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.873779, 40.647303]
+ *   }
+ * };
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-112.074279, 40.52215],
+ *       [-112.074279, 40.853293],
+ *       [-111.610107, 40.853293],
+ *       [-111.610107, 40.52215],
+ *       [-112.074279, 40.52215]
+ *     ]]
+ *   }
+ * };
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, poly]
+ * };
  *
  * //=features
  *
@@ -33946,6 +34596,7 @@ var featurecollection = require('turf-featurecollection');
  * Takes two {@link Polygon} features and finds their intersection.
  *
  * @module turf/intersect
+ * @category transformation
  * @param {Polygon} poly1 the first Polygon
  * @param {Polygon} poly2 the second Polygon
  * @return {Polygon} a Polygon feature representing the area where `poly1` and `poly2` overlap
@@ -34542,6 +35193,7 @@ var Conrec = require('./conrec.js');
  * value breaks and generates filled contour isobands.
  *
  * @module turf/isobands
+ * @category interpolation
  * @param {FeatureCollection} points a FeeatureCollection of {@link Point} features
  * @param {string} z the property name in `points` from which z-values will be pulled
  * @param {number} resolution resolution of the underlying grid
@@ -35431,6 +36083,7 @@ var Conrec = require('./conrec');
  * value breaks and generates [isolines](http://en.wikipedia.org/wiki/Isoline).
  *
  * @module turf/isolines
+ * @category interpolation
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {string} z the property name in `points` from which z-values will be pulled
  * @param {number} resolution resolution of the underlying grid
@@ -35556,17 +36209,63 @@ var ss = require('simple-statistics');
 * Takes a {@FeatureCollection} of any type and returns an array of the [Jenks Natural breaks](http://en.wikipedia.org/wiki/Jenks_natural_breaks_optimization)
 * for a given property
 * @module turf/jenks
+* @category classification
 * @param {FeatureCollection} input a FeatureCollection of any type
 * @param {string} field the property in `input` on which to calculate Jenks natural breaks
 * @param {number} numberOfBreaks number of classes in which to group the data
 * @return {Array<number>} the break number for each class plus the minimum and maximum values
 * @example
-* var points = turf.featurecollection([
-*   turf.point([49.859733, 40.400424], {population: 200}),
-*   turf.point([49.83879, 40.401209], {population: 600}),
-*   turf.point([49.817848, 40.376889], {population: 100}),
-*   turf.point([49.840507, 40.386043], {population: 200}),
-*   turf.point([49.854583, 40.37532], {population: 300})]);
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [49.859733, 40.400424]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 600
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [49.83879, 40.401209]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [49.817848, 40.376889]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [49.840507, 40.386043]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 300
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [49.854583, 40.37532]
+*       }
+*     }
+*   ]
+* };
 *
 * var breaks = turf.jenks(points, 'population', 3);
 *
@@ -35593,21 +36292,32 @@ arguments[4][51][0].apply(exports,arguments)
  * Takes a {@link Polygon} feature and returns a {@link FeatureCollection} of {@link Point} features at all self-intersections.
  *
  * @module turf/kinks
+ * @category misc
  * @param {Polygon} polygon a Polygon feature
  * @returns {FeatureCollection} a FeatureCollection of {@link Point} features representing self-intersections
  * @example
- * var poly = turf.polygon([[
- *  [-12.034835, 8.901183],
- *  [-12.060413, 8.899826],
- *  [-12.03638, 8.873199],
- *  [-12.059383, 8.871418],
- *  [-12.034835, 8.901183]
- * ]]);
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-12.034835, 8.901183],
+ *       [-12.060413, 8.899826],
+ *       [-12.03638, 8.873199],
+ *       [-12.059383, 8.871418],
+ *       [-12.034835, 8.901183]
+ *     ]]
+ *   }
+ * };
  * 
  * var kinks = turf.kinks(poly);
  *
- * var result = turf.featurecollection(
- *  kinks.intersections.features.concat(poly));
+ * var resultFeatures = kinks.intersections.features.concat(poly);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -35701,21 +36411,30 @@ var point = require('turf-point');
  * Takes a {@link LineString} feature and measures its length in the specified units.
  *
  * @module turf/line-distance
- *
+ * @category measurement
  * @param {LineString} Line to measure
  * @param {String} [units=miles] can be degrees, radians, miles, or kilometers
  * @return {Number} length of the LineString
  * @example
- * var line = turf.linestring([
- *   [-77.031669, 38.878605],
- *   [-77.029609, 38.881946],
- *   [-77.020339, 38.884084],
- *   [-77.025661, 38.885821],
- *   [-77.021884, 38.889563],
- *   [-77.019824, 38.892368]
- * ]);
+ * var line = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "LineString",
+ *     "coordinates": [
+ *       [-77.031669, 38.878605],
+ *       [-77.029609, 38.881946],
+ *       [-77.020339, 38.884084],
+ *       [-77.025661, 38.885821],
+ *       [-77.021884, 38.889563],
+ *       [-77.019824, 38.892368]
+ *     ]
+ *   }
+ * };
  *
  * var length = turf.lineDistance(line, 'miles');
+ *
+ * //=line
  *
  * //=length
  */
@@ -35743,6 +36462,7 @@ arguments[4][72][0].apply(exports,arguments)
  * coordinate array. Properties can be added optionally.
  *
  * @module turf/linestring
+ * @category helper
  * @param {Array<Array<Number>>} coordinates an array of Positions
  * @param {Object} properties an Object of key-value pairs to add as properties
  * @return {LineString} a LineString feature
@@ -35786,6 +36506,7 @@ var inside = require('turf-inside');
  * Calculates the maximum value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
  *
  * @module turf/max
+ * @category aggregation
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {string} inField the field in input data to analyze
@@ -35793,34 +36514,99 @@ var inside = require('turf-inside');
  * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
  * with properties listed as `outField` values
  * @example
- * var polygons = turf.featurecollection([
- *   turf.polygon([[
- *     [101.551437, 3.150114],
- *     [101.551437, 3.250208],
- *     [101.742324, 3.250208],
- *     [101.742324, 3.150114],
- *     [101.551437, 3.150114]
- *   ]]),
- *   turf.polygon([[
- *     [101.659927, 3.011612],
- *     [101.659927, 3.143944],
- *     [101.913986, 3.143944],
- *     [101.913986, 3.011612],
- *     [101.659927, 3.011612]
- *   ]])
- * ]);
- * var points = turf.featurecollection([
- *   turf.point([101.56105, 3.213874], {population: 200}),
- *   turf.point([101.709365, 3.211817], {population: 600}),
- *   turf.point([101.645507, 3.169311], {population: 100}),
- *   turf.point([101.708679, 3.071266], {population: 200}),
- *   turf.point([101.826782, 3.081551], {population: 300})]);
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [101.551437, 3.150114],
+ *           [101.551437, 3.250208],
+ *           [101.742324, 3.250208],
+ *           [101.742324, 3.150114],
+ *           [101.551437, 3.150114]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [101.659927, 3.011612],
+ *           [101.659927, 3.143944],
+ *           [101.913986, 3.143944],
+ *           [101.913986, 3.011612],
+ *           [101.659927, 3.011612]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.56105, 3.213874]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.709365, 3.211817]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.645507, 3.169311]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.708679, 3.071266]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.826782, 3.081551]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var aggregated = turf.max(
  *   polygons, points, 'population', 'max');
  *
- * var result = turf.featurecollection(
- *   points.features.concat(aggregated.features));
+ * var resultFeatures = points.features.concat(
+ *   aggregated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -35860,6 +36646,7 @@ var inside = require('turf-inside');
  * Calculates the median value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
  *
  * @module turf/median
+ * @category aggregation
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {string} inField the field in input data to analyze
@@ -35867,34 +36654,99 @@ var inside = require('turf-inside');
  * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
  * with properties listed as `outField` values
  * @example
- * var polygons = turf.featurecollection([
- *   turf.polygon([[
- *    [18.400039, -33.970697],
- *    [18.400039, -33.818518],
- *    [18.665771, -33.818518],
- *    [18.665771, -33.970697],
- *    [18.400039, -33.970697]
- *   ]]),
- *   turf.polygon([[
- *    [18.538742, -34.050383],
- *    [18.538742, -33.98721],
- *    [18.703536, -33.98721],
- *    [18.703536, -34.050383],
- *    [18.538742, -34.050383]
- *   ]])
- * ]);
- * var points = turf.featurecollection([
- *   turf.point([18.514022, -33.860152], {population: 200}),
- *   turf.point([18.48999, -33.926269], {population: 600}),
- *   turf.point([18.583374, -33.905755], {population: 100}),
- *   turf.point([18.591613, -34.024778], {population: 200}),
- *   turf.point([18.653411, -34.017949], {population: 300})
- * ]);
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [18.400039, -33.970697],
+ *           [18.400039, -33.818518],
+ *           [18.665771, -33.818518],
+ *           [18.665771, -33.970697],
+ *           [18.400039, -33.970697]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [18.538742, -34.050383],
+ *           [18.538742, -33.98721],
+ *           [18.703536, -33.98721],
+ *           [18.703536, -34.050383],
+ *           [18.538742, -34.050383]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.514022, -33.860152]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.48999, -33.926269]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.583374, -33.905755]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.591613, -34.024778]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.653411, -34.017949]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
  * var medians = turf.median(
  *  polygons, points, 'population', 'median');
  *
- * var result = turf.featurecollection(
- *  medians.features.concat(points.features));
+ * var resultFeatures = points.features.concat(
+ *   medians.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -35945,23 +36797,44 @@ var union = require('turf-union');
  * Takes a {@link FeatureCollection} of {@link Polygon} features and returns a single merged
  * polygon feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
  * @module turf/merge
+ * @category transformation
  * @param {FeatureCollection} fc a FeatureCollection of {@link Polygon} features
  * @return {Feature} a {@link Polygon} or {@link MultiPolygon} feature
  * @example
- * var polygons = turf.featurecollection([
- *  turf.polygon([[
- *    [9.994812, 53.549487],
- *    [10.046997, 53.598209],
- *    [10.117721, 53.531737],
- *    [9.994812, 53.549487]
- *  ]], { fill: '#0f0' }),
- *  turf.polygon([[
- *    [10.000991, 53.50418],
- *    [10.03807, 53.562539],
- *    [9.926834, 53.551731],
- *    [10.000991, 53.50418]
- *  ]], { fill: '#00f' })
- * ]);
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "fill": "#0f0"
+ *       },
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [9.994812, 53.549487],
+ *           [10.046997, 53.598209],
+ *           [10.117721, 53.531737],
+ *           [9.994812, 53.549487]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "fill": "#00f"
+ *       },
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.000991, 53.50418],
+ *           [10.03807, 53.562539],
+ *           [9.926834, 53.551731],
+ *           [10.000991, 53.50418]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var merged = turf.merge(polygons);
  *
@@ -36006,20 +36879,36 @@ var point = require('turf-point');
  * Takes two {@link Point} features and returns a Point midway between the two.
  *
  * @module turf/midpoint
+ * @category measurement
  * @param {Point} pt1 first point
  * @param {Point} pt2 second point
  * @return {Point} a point between the two
  * @example
- * var pt1 = turf.point([144.834823, -37.771257]);
- * pt1.properties['marker-color'] = '#00f';
- * var pt2 = turf.point([145.14244, -37.830937]);
- * pt2.properties['marker-color'] = '#00f';
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [144.834823, -37.771257]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [145.14244, -37.830937]
+ *   }
+ * };
  *
  * var midpointed = turf.midpoint(pt1, pt2);
  * midpointed.properties['marker-color'] = '#f00';
  *
- * var result = turf.featurecollection([
- *  pt1, pt2, midpointed]);
+ *
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, midpointed]
+ * };
  *
  * //=result
  */
@@ -36050,6 +36939,7 @@ var inside = require('turf-inside');
 * Calculates the minimum value of a field for {@link Point} features within a set of {@link Polygon} features.
 *
 * @module turf/min
+* @category aggregation
 * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
 * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
 * @param {string} inField the field in input data to analyze
@@ -36057,34 +36947,99 @@ var inside = require('turf-inside');
 * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
 * with properties listed as `outField` values
 * @example
-* var polygons = turf.featurecollection([
-*   turf.polygon([[
-*     [72.809658, 18.961818],
-*     [72.809658, 18.974805],
-*     [72.827167, 18.974805],
-*     [72.827167, 18.961818],
-*     [72.809658, 18.961818]
-*   ]]),
-*   turf.polygon([[
-*     [72.820987, 18.947043],
-*     [72.820987, 18.95922],
-*     [72.841243, 18.95922],
-*     [72.841243, 18.947043],
-*     [72.820987, 18.947043]
-*   ]])
-* ]);
-* var points = turf.featurecollection([
-*   turf.point([72.814464, 18.971396], {population: 200}),
-*   turf.point([72.820043, 18.969772], {population: 600}),
-*   turf.point([72.817296, 18.964253], {population: 100}),
-*   turf.point([72.83575, 18.954837], {population: 200}),
-*   turf.point([72.828197, 18.95094], {population: 300})]);
+* var polygons = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [72.809658, 18.961818],
+*           [72.809658, 18.974805],
+*           [72.827167, 18.974805],
+*           [72.827167, 18.961818],
+*           [72.809658, 18.961818]
+*         ]]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [72.820987, 18.947043],
+*           [72.820987, 18.95922],
+*           [72.841243, 18.95922],
+*           [72.841243, 18.947043],
+*           [72.820987, 18.947043]
+*         ]]
+*       }
+*     }
+*   ]
+* };
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.814464, 18.971396]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 600
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.820043, 18.969772]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.817296, 18.964253]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.83575, 18.954837]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 300
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.828197, 18.95094]
+*       }
+*     }
+*   ]
+* };
 *
 * var minimums = turf.min(
 *   polygons, points, 'population', 'min');
 *
-* var result = turf.featurecollection(
-*   points.features.concat(minimums.features));
+* var resultFeatures = points.features.concat(
+*   minimums.features);
+* var result = {
+*   "type": "FeatureCollection",
+*   "features": resultFeatures
+* };
 *
 * //=result
 */
@@ -36124,23 +37079,57 @@ var distance = require('turf-distance');
  * Takes a {@link Point} feature and a {@link FeatureCollection} of Point features and returns the Point feature from the FeatureCollection closest to the input point.
  *
  * @module turf/nearest
+ * @category classification
  * @param {Point} point the reference point
  * @param {FeatureCollection} against a FeatureCollection of Point features
  * @return {Feature} the closest Point feature in `against` to `point`
  * @example
- * var point = turf.point([28.965797, 41.010086]);
- * point.properties['marker-color'] = '#0f0';
- * var against = turf.featurecollection([
- *  turf.point([28.973865, 41.011122]),
- *  turf.point([28.948459, 41.024204]),
- *  turf.point([28.938674, 41.013324])
- * ]);
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [28.965797, 41.010086]
+ *   }
+ * };
+ * var against = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [28.973865, 41.011122]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [28.948459, 41.024204]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [28.938674, 41.013324]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var nearest = turf.nearest(point, against);
  * nearest.properties['marker-color'] = '#f00';
  *
- * var result = turf.featurecollection(
-  against.features.concat(point));
+ * var resultFeatures = against.features.concat(point);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
@@ -36176,24 +37165,45 @@ arguments[4][71][0].apply(exports,arguments)
  * that define the values at its three corners.
  *
  * @module turf/planepoint
+ * @category interpolation
  * @param {Point} interpolatedPoint the Point for which a z-value will be calculated
  * @param {Polygon} triangle a Polygon feature with three vertices
  * @return {number} the z-value for `interpolatedPoint`
  * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.3221, 39.529]
+ *   }
+ * };
  * var point = turf.point([-75.3221, 39.529]);
  * // triangle is a polygon with "a", "b",
  * // and "c" values representing
  * // the values of the coordinates in order.
- * var triangle = turf.polygon([[
- *  [-75.1221, 39.57],
- *  [-75.58, 39.18],
- *  [-75.97, 39.86],
- *  [-75.1221, 39.57]
- * ]],
- *   {"a": 11, "b": 122, "c": 44});
+ * var triangle = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "a": 11,
+ *     "b": 122,
+ *     "c": 44
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-75.1221, 39.57],
+ *       [-75.58, 39.18],
+ *       [-75.97, 39.86],
+ *       [-75.1221, 39.57]
+ *     ]]
+ *   }
+ * };
  *
- * var features = turf.featurecollection(
- *  [triangle, point]);
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [triangle, point]
+ * };
  *
  * var zValue = turf.planepoint(point, triangle);
  *
@@ -36238,6 +37248,7 @@ var explode = require('turf-explode');
  * * Given a {@link Point}, the point will the same as the input
  *
  * @module turf/pointOnSurface
+ * @category measurement
  * @param {GeoJSON} input any GeoJSON object
  * @returns {Feature} a point on the surface of `input`
  * @example
@@ -36512,6 +37523,7 @@ arguments[4][47][0].apply(exports,arguments)
  * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
  *
  * @module turf/point
+ * @category helper
  * @param {number} longitude position west to east in decimal degrees
  * @param {number} latitude position south to north in decimal degrees
  * @param {Object} properties an Object that is used as the {@link Feature}'s
@@ -36539,25 +37551,123 @@ module.exports = function(coordinates, properties) {
 };
 
 },{}],267:[function(require,module,exports){
-arguments[4][144][0].apply(exports,arguments)
-},{"dup":144}],268:[function(require,module,exports){
+/**
+ * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
+ *
+ * @module turf/polygon
+ * @category helper
+ * @param {Array<Array<Number>>} rings an array of LinearRings
+ * @param {Object} properties an optional properties object
+ * @return {Polygon} a Polygon feature
+ * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
+ * or if a LinearRing of the Polygon does not have matching Positions at the
+ * beginning & end.
+ * @example
+ * var polygon = turf.polygon([[
+ *  [-2.275543, 53.464547],
+ *  [-2.275543, 53.489271],
+ *  [-2.215118, 53.489271],
+ *  [-2.215118, 53.464547],
+ *  [-2.275543, 53.464547]
+ * ]], { name: 'poly1', population: 400});
+ *
+ * //=polygon
+ */
+module.exports = function(coordinates, properties){
+
+  if (coordinates === null) throw new Error('No coordinates passed');
+
+  for (var i = 0; i < coordinates.length; i++) {
+    var ring = coordinates[i];
+    for (var j = 0; j < ring[ring.length - 1].length; j++) {
+      if (ring.length < 4) {
+        throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
+      }
+      if (ring[ring.length - 1][j] !== ring[0][j]) {
+        throw new Error('First and last Position are not equivalent.');
+      }
+    }
+  }
+
+  var polygon = {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": coordinates
+    },
+    "properties": properties
+  };
+
+  if (!polygon.properties) {
+    polygon.properties = {};
+  }
+
+  return polygon;
+};
+
+},{}],268:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
 * Takes a {@link FeatureCollection}, a property name, and a set of percentiles and returns a quantile array.
 * @module turf/quantile
+* @category classification
 * @param {FeatureCollection} input a FeatureCollection of any type
 * @param {String} field the property in `input` from which to retrieve quantile values
 * @param {Array<number>} percentiles an Array of percentiles on which to calculate quantile values
 * @return {Array<number>} an array of the break values
 * @example
-* var points = turf.featurecollection([
-*   turf.point([5,5], {population: 5}),
-*   turf.point([1,3], {population: 40}),
-*   turf.point([14,2], {population: 80}),
-*   turf.point([13,1], {population: 90}),
-*   turf.point([19,7], {population: 100})
-* ]);
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 5
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [5, 5]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 40
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [1, 3]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 80
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [14, 2]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 90
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13, 1]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [19, 7]
+*       }
+*     }
+*   ]
+* };
 *
 * var breaks = turf.quantile(
 *   points, 'population', [25, 50, 75, 99]);
@@ -36587,6 +37697,7 @@ var random = require('geojson-random');
  * and experimentation.
  *
  * @module turf/random
+ * @category data
  * @param {String} [type='point'] type of features desired: 'points' or 'polygons'
  * @param {Number} [count=1] how many geometries should be generated.
  * @param {Object} options options relevant to the feature desired. Can include:
@@ -36749,19 +37860,64 @@ var reclass = require('./index.js');
  * an array of translations and outputs an identical FeatureCollection with
  * the output field property populated.
 * @module turf/reclass
+* @category classification
 * @param {FeatureCollection} input a FeatureCollection of any type
 * @param {string} inField the field to translate
 * @param {string} outField the field in which to store translated results
 * @param {Array<number>} translations an array of translations
 * @return {FeatureCollection} a FeatureCollection with identical geometries to `input` but with `outField` populated.
 * @example
-* var points = turf.featurecollection([
-*   turf.point([13.170547, 32.888669], {population: 200}),
-*   turf.point([13.182048, 32.889533], {population: 600}),
-*   turf.point([13.17398, 32.882182], {population: 100}),
-*   turf.point([13.174324, 32.895011], {population: 200}),
-*   turf.point([13.185825, 32.884344], {population: 300})
-* ]);
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13.170547, 32.888669]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 600
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13.182048, 32.889533]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13.17398, 32.882182]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13.174324, 32.895011]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 300
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [13.185825, 32.884344]
+*       }
+*     }
+*   ]
+* };
 * // 0 to 200 will map to "small", 200 to 400 will map to "medium", 400 to 600 will map to "large"
 * var translations = [
 *   [0, 200, "small"],
@@ -36803,20 +37959,81 @@ var featureCollection = require('turf-featurecollection');
  * property-value pair removed.
  *
  * @module turf/remove
+ * @category data
  * @param {FeatureCollection} features a FeatureCollection of any type
  * @param {String} property the property to filter
  * @param {String} value the value to filter
  * @return {FeatureCollection} the resulting FeatureCollection without features that match the property-value pair
  * @example
- * var points = turf.featurecollection([
- *  turf.point([-0.235004, 5.551918], {'marker-color': '#00f'}),
- *  turf.point([-0.209598, 5.56439], {'marker-color': '#f00'}),
- *  turf.point([-0.197753, 5.556018], {'marker-color': '#00f'}),
- *  turf.point([-0.217323, 5.549526], {'marker-color': '#000'}),
- *  turf.point([-0.211315, 5.543887], {'marker-color': '#0f0'}),
- *  turf.point([-0.202217, 5.547134], {'marker-color': '#00f'}),
- *  turf.point([-0.231227, 5.56644], {'marker-color': '#0f0'})
- * ]);
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#00f'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.235004, 5.551918]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#f00'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.209598, 5.56439]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#00f'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.197753, 5.556018]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#000'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.217323, 5.549526]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#0f0'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.211315, 5.543887]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#00f'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.202217, 5.547134]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         'marker-color': '#0f0'
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-0.231227, 5.56644]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * //=points
  *
@@ -36844,6 +38061,7 @@ var featureCollection = require('turf-featurecollection');
  * Takes a {@link FeatureCollection} and returns a FeatureCollection with given number of {@link Feature|features} at random.
  *
  * @module turf/sample
+ * @category data
  * @param {FeatureCollection} features a FeatureCollection of any type
  * @param {number} n number of features to select
  * @return {FeatureCollection} a FeatureCollection with `n` features
@@ -36881,34 +38099,43 @@ var simplify = require('simplify-js');
  * Takes a {@link LineString} or {@link Polygon} feature and returns a simplified version. Internally uses [simplify-js](http://mourner.github.io/simplify-js/) to perform simplification.
  *
  * @module turf/simplify
+ * @category transformation
  * @param {Feature} feature a {@link LineString} or {@link Polygon} feature to be simplified
  * @param {number} tolerance simplification tolerance
  * @param {boolean} highQuality whether or not to spend more time to create
  * a higher-quality simplification with a different algorithm
  * @return {Feature} a simplified feature
  * @example
- * var feature = turf.polygon([[
- *  [-70.603637, -33.399918],
- *  [-70.614624, -33.395332],
- *  [-70.639343, -33.392466],
- *  [-70.659942, -33.394759],
- *  [-70.683975, -33.404504],
- *  [-70.697021, -33.419406],
- *  [-70.701141, -33.434306],
- *  [-70.700454, -33.446339],
- *  [-70.694274, -33.458369],
- *  [-70.682601, -33.465816],
- *  [-70.668869, -33.472117],
- *  [-70.646209, -33.473835],
- *  [-70.624923, -33.472117],
- *  [-70.609817, -33.468107],
- *  [-70.595397, -33.458369],
- *  [-70.587158, -33.442901],
- *  [-70.587158, -33.426283],
- *  [-70.590591, -33.414248],
- *  [-70.594711, -33.406224],
- *  [-70.603637, -33.399918]
- * ]]);
+  * var feature = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-70.603637, -33.399918],
+ *       [-70.614624, -33.395332],
+ *       [-70.639343, -33.392466],
+ *       [-70.659942, -33.394759],
+ *       [-70.683975, -33.404504],
+ *       [-70.697021, -33.419406],
+ *       [-70.701141, -33.434306],
+ *       [-70.700454, -33.446339],
+ *       [-70.694274, -33.458369],
+ *       [-70.682601, -33.465816],
+ *       [-70.668869, -33.472117],
+ *       [-70.646209, -33.473835],
+ *       [-70.624923, -33.472117],
+ *       [-70.609817, -33.468107],
+ *       [-70.595397, -33.458369],
+ *       [-70.587158, -33.442901],
+ *       [-70.587158, -33.426283],
+ *       [-70.590591, -33.414248],
+ *       [-70.594711, -33.406224],
+ *       [-70.603637, -33.399918]
+ *     ]]
+ *   }
+ * };
+
  * var tolerance = 0.01;
  *
  * var simplified = turf.simplify(
@@ -37097,6 +38324,7 @@ else window.simplify = simplify;
  * by a factor of X.
  *
  * @module turf/size
+ * @category measurement
  * @param {Array<number>} bbox a bounding box
  * @param {number} factor the ratio of the new bbox to the input bbox
  * @return {Array<number>} the resized bbox
@@ -37105,9 +38333,13 @@ else window.simplify = simplify;
  *
  * var resized = turf.size(bbox, 2);
  *
- * var features = turf.featurecollection([
- *   turf.bboxPolygon(bbox),
- *   turf.bboxPolygon(resized)]);
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     turf.bboxPolygon(bbox),
+ *     turf.bboxPolygon(resized)
+ *   ]
+ * };
  *
  * //=features
  */
@@ -37137,6 +38369,7 @@ var distance = require('turf-distance');
  * Takes a bounding box and calculates the minimum square bounding box that would contain the input.
  *
  * @module turf/square
+ * @category measurement
  * @param {Array<number>} bbox a bounding box
  * @return {Array<number>} a square surrounding `bbox`
  * @example
@@ -37212,48 +38445,49 @@ arguments[4][72][0].apply(exports,arguments)
 var inside = require('turf-inside');
 
 /**
-* Calculates the sum of a field for {@link Point} features within a set of {@link Polygon} features.
-*
-* @module turf/sum
-* @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
-* @param {FeatureCollection} points a FeatureCollection of {@link Point} features
-* @param {String} inField the field in input data to analyze
-* @param {String} outField the field in which to store results
-* @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
-* with properties listed as `outField`
-* @example
-* var polygons = turf.featurecollection([
-*   turf.polygon([[
-*     [-87.990188, 43.026486],
-*     [-87.990188, 43.062115],
-*     [-87.913284, 43.062115],
-*     [-87.913284, 43.026486],
-*     [-87.990188, 43.026486]
-*   ]]),
-*   turf.polygon([[
-*     [-87.973709, 42.962452],
-*     [-87.973709, 43.014689],
-*     [-87.904014, 43.014689],
-*     [-87.904014, 42.962452],
-*     [-87.973709, 42.962452]
-*   ]])
-* ]);
-* var points = turf.featurecollection([
-*   turf.point([-87.974052, 43.049321], {population: 200}),
-*   turf.point([-87.957229, 43.037277], {population: 600}),
-*   turf.point([-87.931137, 43.048568], {population: 100}),
-*   turf.point([-87.963409, 42.99611], {population: 200}),
-*   turf.point([-87.94178, 42.974762], {population: 300})
-* ]);
-*
-* var aggregated = turf.sum(
-*   polygons, points, 'population', 'sum');
-*
-* var result = turf.featurecollection(
-*   points.features.concat(aggregated.features));
-*
-* //=result
-*/
+ * Calculates the sum of a field for {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/sum
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {String} inField the field in input data to analyze
+ * @param {String} outField the field in which to store results
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+ * with properties listed as `outField`
+ * @example
+ * var polygons = turf.featurecollection([
+ *   turf.polygon([[
+ *     [-87.990188, 43.026486],
+ *     [-87.990188, 43.062115],
+ *     [-87.913284, 43.062115],
+ *     [-87.913284, 43.026486],
+ *     [-87.990188, 43.026486]
+ *   ]]),
+ *   turf.polygon([[
+ *     [-87.973709, 42.962452],
+ *     [-87.973709, 43.014689],
+ *     [-87.904014, 43.014689],
+ *     [-87.904014, 42.962452],
+ *     [-87.973709, 42.962452]
+ *   ]])
+ * ]);
+ * var points = turf.featurecollection([
+ *   turf.point([-87.974052, 43.049321], {population: 200}),
+ *   turf.point([-87.957229, 43.037277], {population: 600}),
+ *   turf.point([-87.931137, 43.048568], {population: 100}),
+ *   turf.point([-87.963409, 42.99611], {population: 200}),
+ *   turf.point([-87.94178, 42.974762], {population: 300})
+ * ]);
+ *
+ * var aggregated = turf.sum(
+ *   polygons, points, 'population', 'sum');
+ *
+ * var result = turf.featurecollection(
+ *   points.features.concat(aggregated.features));
+ *
+ * //=result
+ */
 module.exports = function(polyFC, ptFC, inField, outField){
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
@@ -37288,6 +38522,7 @@ var inside = require('turf-inside');
  * Takes a {@link FeatureCollection} of {@link Point} features and a FeatureCollection of {@link Polygon} features and performs a spatial join.
  *
  * @module turf/tag
+ * @category joins
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @param {String} polyId property in `polygons` to add to joined Point features
@@ -37357,11 +38592,11 @@ var featurecollection = require('turf-featurecollection');
  * the points that represent the corners of the triangle.
  *
  * @module turf/tin
+ * @category interpolation
  * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
  * Features with {@link Point} geometries
  * @param {string=} propertyName - name of the property from which to pull z values.
- * This is optional: if not given, then there will be no extra data added to the
- * derived triangles.
+ * This is optional: if not given, then there will be no extra data added to the derived triangles.
  * @return {FeatureCollection} TIN output
  * @example
  * // generate some random point data
@@ -37421,8 +38656,8 @@ function Triangle(a, b, c) {
     G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
     minx, miny, dx, dy;
 
-  /* If the points of the triangle are collinear, then just find the
-   * extremes and use the midpoint as the center of the circumcircle. */
+  // If the points of the triangle are collinear, then just find the
+  // extremes and use the midpoint as the center of the circumcircle.
   if (Math.abs(G) < 0.000001) {
     minx = Math.min(a.x, b.x, c.x);
     miny = Math.min(a.y, b.y, c.y);
@@ -37468,13 +38703,13 @@ function dedup(edges) {
 }
 
 function triangulate(vertices) {
-  /* Bail if there aren't enough vertices to form any triangles. */
+  // Bail if there aren't enough vertices to form any triangles.
   if (vertices.length < 3)
     return [];
 
-    /* Ensure the vertex array is in order of descending X coordinate
-     * (which is needed to ensure a subquadratic runtime), and then find
-     * the bounding box around the points. */
+    // Ensure the vertex array is in order of descending X coordinate
+    // (which is needed to ensure a subquadratic runtime), and then find
+    // the bounding box around the points. 
   vertices.sort(byX);
 
   var i = vertices.length - 1,
@@ -37490,14 +38725,14 @@ function triangulate(vertices) {
       ymax = vertices[i].y;
   }
 
-  /* Find a supertriangle, which is a triangle that surrounds all the
-   * vertices. This is used like something of a sentinel value to remove
-   * cases in the main algorithm, and is removed before we return any
-   * results.
-   *
-   * Once found, put it in the "open" list. (The "open" list is for
-   * triangles who may still need to be considered; the "closed" list is
-   * for triangles which do not.) */
+  //Find a supertriangle, which is a triangle that surrounds all the
+  //vertices. This is used like something of a sentinel value to remove
+  //cases in the main algorithm, and is removed before we return any
+  // results.
+ 
+  // Once found, put it in the "open" list. (The "open" list is for
+  // triangles who may still need to be considered; the "closed" list is
+  // for triangles which do not.)
   var dx = xmax - xmin,
     dy = ymax - ymin,
     dmax = (dx > dy) ? dx : dy,
@@ -37524,18 +38759,18 @@ function triangulate(vertices) {
     edges = [],
     j, a, b;
 
-    /* Incrementally add each vertex to the mesh. */
+    // Incrementally add each vertex to the mesh.
   i = vertices.length;
   while (i--) {
-    /* For each open triangle, check to see if the current point is
-     * inside it's circumcircle. If it is, remove the triangle and add
-     * it's edges to an edge list. */
+    // For each open triangle, check to see if the current point is
+    // inside it's circumcircle. If it is, remove the triangle and add
+    // it's edges to an edge list.
     edges.length = 0;
     j = open.length;
     while (j--) {
-      /* If this point is to the right of this triangle's circumcircle,
-       * then this triangle should never get checked again. Remove it
-       * from the open list, add it to the closed list, and skip. */
+      // If this point is to the right of this triangle's circumcircle,
+      // then this triangle should never get checked again. Remove it
+      // from the open list, add it to the closed list, and skip.
       dx = vertices[i].x - open[j].x;
       if (dx > 0 && dx * dx > open[j].r) {
         closed.push(open[j]);
@@ -37543,12 +38778,12 @@ function triangulate(vertices) {
         continue;
       }
 
-      /* If not, skip this triangle. */
+      // If not, skip this triangle.
       dy = vertices[i].y - open[j].y;
       if (dx * dx + dy * dy > open[j].r)
         continue;
 
-      /* Remove the triangle and add it's edges to the edge list. */
+      // Remove the triangle and add it's edges to the edge list.
       edges.push(
         open[j].a, open[j].b,
         open[j].b, open[j].c,
@@ -37557,10 +38792,10 @@ function triangulate(vertices) {
       open.splice(j, 1);
     }
 
-    /* Remove any doubled edges. */
+    // Remove any doubled edges.
     dedup(edges);
 
-    /* Add a new triangle for each edge. */
+    // Add a new triangle for each edge.
     j = edges.length;
     while (j) {
       b = edges[--j];
@@ -37569,8 +38804,8 @@ function triangulate(vertices) {
     }
   }
 
-  /* Copy any remaining open triangles to the closed list, and then
-   * remove any triangles that share a vertex with the supertriangle. */
+  // Copy any remaining open triangles to the closed list, and then
+  // remove any triangles that share a vertex with the supertriangle.
   Array.prototype.push.apply(closed, open);
 
   i = closed.length;
@@ -37580,7 +38815,6 @@ function triangulate(vertices) {
       closed[i].c.__sentinel)
       closed.splice(i, 1);
 
-      /* Yay, we're done! */
   return closed;
 }
 
@@ -37600,6 +38834,7 @@ var jsts = require('jsts');
  * Takes two {@link Polygon} features and returnes a combined {@link Polygon} feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
  *
  * @module turf/union
+ * @category transformation
  * @param {Polygon} poly1 an input Polygon
  * @param {Polygon} poly2 another input Polygon
  * @return {Feature} a combined {@link Polygon} or {@link MultiPolygon} feature
@@ -37659,6 +38894,7 @@ var inside = require('turf-inside');
 * Calculates the variance value of a field for {@link Point} features within a set of {@link Polygon} features.
 *
 * @module turf/variance
+* @category aggregation
 * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
 * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
 * @param {string} inField the field in input data to analyze
@@ -37726,6 +38962,7 @@ var featureCollection = require('turf-featurecollection');
  * Takes a {@link FeatureCollection} of {@link Point} features and a FeatureCollection of {@link Polygon} features and returns a FeatureCollection of Point features representing all points that fall within a collection of polygons.
  *
  * @module turf/within
+ * @category joins
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
  * @return {FeatureCollection} a collection of all points that land
@@ -37810,7 +39047,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [1.669921, 48.632908],\n    [1.669921, 49.382372],\n    [3.636474, 49.382372],\n    [3.636474, 48.632908],\n    [1.669921, 48.632908]]\n  ]),\n  turf.polygon([[\n    [2.230224, 47.85003],\n    [2.230224, 48.611121],\n    [4.361572, 48.611121],\n    [4.361572, 47.85003],\n    [2.230224, 47.85003]]\n  ])\n]);\nvar points = turf.featurecollection([\n  turf.point([2.054443,49.138596], {population: 200}),\n  turf.point([3.065185,48.850258], {population: 600}),\n  turf.point([2.329101,48.79239], {population: 100}),\n  turf.point([2.614746,48.334343], {population: 200}),\n  turf.point([3.416748,48.056053], {population: 300})]);\nvar aggregations = [\n  {\n    aggregation: 'sum',\n    inField: 'population',\n    outField: 'pop_sum'\n  },\n  {\n    aggregation: 'average',\n    inField: 'population',\n    outField: 'pop_avg'\n  },\n  {\n    aggregation: 'median',\n    inField: 'population',\n    outField: 'pop_median'\n  },\n  {\n    aggregation: 'min',\n    inField: 'population',\n    outField: 'pop_min'\n  },\n  {\n    aggregation: 'max',\n    inField: 'population',\n    outField: 'pop_max'\n  },\n  {\n    aggregation: 'deviation',\n    inField: 'population',\n    outField: 'pop_deviation'\n  },\n  {\n    aggregation: 'variance',\n    inField: 'population',\n    outField: 'pop_variance'\n  },\n  {\n    aggregation: 'count',\n    inField: '',\n    outField: 'point_count'\n  }\n];\n\nvar aggregated = turf.aggregate(\n  polygons, points, aggregations);\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [1.669921, 48.632908],\n          [1.669921, 49.382372],\n          [3.636474, 49.382372],\n          [3.636474, 48.632908],\n          [1.669921, 48.632908]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [2.230224, 47.85003],\n          [2.230224, 48.611121],\n          [4.361572, 48.611121],\n          [4.361572, 47.85003],\n          [2.230224, 47.85003]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.054443,49.138596]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [3.065185,48.850258]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.329101,48.79239]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.614746,48.334343]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [3.416748,48.056053]\n      }\n    }\n  ]\n};\nvar aggregations = [\n  {\n    aggregation: 'sum',\n    inField: 'population',\n    outField: 'pop_sum'\n  },\n  {\n    aggregation: 'average',\n    inField: 'population',\n    outField: 'pop_avg'\n  },\n  {\n    aggregation: 'median',\n    inField: 'population',\n    outField: 'pop_median'\n  },\n  {\n    aggregation: 'min',\n    inField: 'population',\n    outField: 'pop_min'\n  },\n  {\n    aggregation: 'max',\n    inField: 'population',\n    outField: 'pop_max'\n  },\n  {\n    aggregation: 'deviation',\n    inField: 'population',\n    outField: 'pop_deviation'\n  },\n  {\n    aggregation: 'variance',\n    inField: 'population',\n    outField: 'pop_variance'\n  },\n  {\n    aggregation: 'count',\n    inField: '',\n    outField: 'point_count'\n  }\n];\n\nvar aggregated = turf.aggregate(\n  polygons, points, aggregations);\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -37849,7 +39086,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var line = turf.linestring([\n [-77.031669, 38.878605],\n [-77.029609, 38.881946],\n [-77.020339, 38.884084],\n [-77.025661, 38.885821],\n [-77.021884, 38.889563],\n [-77.019824, 38.892368]\n]);\n\nvar along = turf.along(line, 1, 'miles');\n\n//=along"
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\n\nvar along = turf.along(line, 1, 'miles');\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, along]\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Point",
@@ -37872,7 +39109,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [-67.031021, 10.458102],\n    [-67.031021, 10.53372],\n    [-66.929397, 10.53372],\n    [-66.929397, 10.458102],\n    [-67.031021, 10.458102]\n  ]]),\n  turf.polygon([[\n    [-66.919784, 10.397325],\n    [-66.919784, 10.513467],\n    [-66.805114, 10.513467],\n    [-66.805114, 10.397325],\n    [-66.919784, 10.397325]\n  ]])\n]);\n\nvar area = turf.area(polygons);\n\n//=area"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-67.031021, 10.458102],\n          [-67.031021, 10.53372],\n          [-66.929397, 10.53372],\n          [-66.929397, 10.458102],\n          [-67.031021, 10.458102]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-66.919784, 10.397325],\n          [-66.919784, 10.513467],\n          [-66.805114, 10.513467],\n          [-66.805114, 10.397325],\n          [-66.919784, 10.397325]\n        ]]\n      }\n    }\n  ]\n};\n\nvar area = turf.area(polygons);\n\n//=area"
             ],
             "returns": {
                 "type": "Number",
@@ -37919,7 +39156,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n turf.polygon([[\n   [10.666351, 59.890659],\n   [10.666351, 59.936784],\n   [10.762481, 59.936784],\n   [10.762481, 59.890659],\n   [10.666351, 59.890659]\n ]]),\n turf.polygon([[\n   [10.764541, 59.889281],\n   [10.764541, 59.937128],\n   [10.866165, 59.937128],\n   [10.866165, 59.889281],\n   [10.764541, 59.889281]\n ]])\n]);\nvar points = turf.featurecollection([\n turf.point([10.724029, 59.926807], {population: 200}),\n turf.point([10.715789, 59.904778], {population: 600}),\n turf.point([10.746002, 59.908566], {population: 100}),\n turf.point([10.806427, 59.908910], {population: 200}),\n turf.point([10.79544, 59.931624], {population: 300})\n]);\n\nvar averaged = turf.average(\n polygons, points, 'population', 'pop_avg');\n\nvar result = turf.featurecollection(\n points.features.concat(averaged.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.666351, 59.890659],\n          [10.666351, 59.936784],\n          [10.762481, 59.936784],\n          [10.762481, 59.890659],\n          [10.666351, 59.890659]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.764541, 59.889281],\n          [10.764541, 59.937128],\n          [10.866165, 59.937128],\n          [10.866165, 59.889281],\n          [10.764541, 59.889281]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.724029, 59.926807]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.715789, 59.904778]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.746002, 59.908566]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.806427, 59.908910]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.79544, 59.931624]\n      }\n    }\n  ]\n};\n\nvar averaged = turf.average(\n polygons, points, 'population', 'pop_avg');\n\nvar resultFeatures = points.features.concat(\n  averaged.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -37973,7 +39210,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var point1 = turf.point([-75.343, 39.984]);\npoint1.properties['marker-color'] = '#f00';\nvar point2 = turf.point([-75.534, 39.123]);\npoint2.properties['marker-color'] = '#0f0';\n\nvar points = turf.featurecollection([point1, point2]);\n\n//=points\n\nvar bearing = turf.bearing(point1, point2);\n\n//=bearing"
+                "var point1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": '#f00'\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar point2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": '#0f0'\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.534, 39.123]\n  }\n};\n\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point1, point2]\n};\n\n//=points\n\nvar bearing = turf.bearing(point1, point2);\n\n//=bearing"
             ],
             "returns": {
                 "type": "Number",
@@ -38012,7 +39249,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var line = turf.linestring([\n  [-76.091308, 18.427501],\n  [-76.695556, 18.729501],\n  [-76.552734, 19.40443],\n  [-74.61914, 19.134789],\n  [-73.652343, 20.07657],\n  [-73.157958, 20.210656]], {\n     stroke: '#f00'\n  });\n\nvar curved = turf.bezier(line);\ncurved.properties = { stroke: '#0f0' };\n\nvar result = turf.featurecollection([line, curved]);\n\n//=result"
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"stroke\": \"#f00\"\n  },\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-76.091308, 18.427501],\n      [-76.695556, 18.729501],\n      [-76.552734, 19.40443],\n      [-74.61914, 19.134789],\n      [-73.652343, 20.07657],\n      [-73.157958, 20.210656]\n    ]\n  }\n};\n\nvar curved = turf.bezier(line);\ncurved.properties = { stroke: '#0f0' };\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, curved]\n};\n\n//=result"
             ],
             "returns": {
                 "type": "LineString",
@@ -38051,7 +39288,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var pt = turf.point([-90.548630, 14.616599]);\nvar unit = 'miles';\n\nvar buffered = turf.buffer(pt, 500, unit);\n\nvar result = turf.featurecollection(\n  buffered.features.concat(pt));\n\n//=result"
+                "var pt = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-90.548630, 14.616599]\n  }\n};\nvar unit = 'miles';\n\nvar buffered = turf.buffer(pt, 500, unit);\n\nvar resultFeatures = buffered.features.concat(pt);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38074,7 +39311,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var features = turf.featurecollection([\n    turf.point([-97.522259, 35.469100]),\n    turf.point([-97.502754, 35.463455]),\n    turf.point([-97.508269, 35.463245]),\n    turf.point([-97.516809, 35.465779]),\n    turf.point([-97.515372, 35.467072]),\n    turf.point([-97.509363, 35.463053]),\n    turf.point([-97.511123, 35.466601]),\n    turf.point([-97.518547, 35.469327]),\n    turf.point([-97.519706, 35.469659]),\n    turf.point([-97.517839, 35.466998]),\n    turf.point([-97.508678, 35.464942]),\n    turf.point([-97.514914, 35.463453])\n]);\n\nvar centerPt = turf.center(features);\ncenterPt.properties['marker-size'] = 'large';\ncenterPt.properties['marker-color'] = '#000';\n\nvar result = turf.featurecollection(features.features.concat(centerPt));\n\n//=result"
+                "var features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.522259, 35.4691]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.502754, 35.463455]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.508269, 35.463245]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.516809, 35.465779]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.515372, 35.467072]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.509363, 35.463053]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.511123, 35.466601]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.518547, 35.469327]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.519706, 35.469659]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.517839, 35.466998]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.508678, 35.464942]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.514914, 35.463453]\n      }\n    }\n  ]\n};\n\nvar centerPt = turf.center(features);\ncenterPt.properties['marker-size'] = 'large';\ncenterPt.properties['marker-color'] = '#000';\n\nvar resultFeatures = features.features.concat(centerPt);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Point",
@@ -38097,7 +39334,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var poly = turf.polygon([[\n\t[105.818939,21.004714],\n\t[105.818939,21.061754],\n\t[105.890007,21.061754],\n\t[105.890007,21.004714],\n\t[105.818939,21.004714]\n]]);\n\nvar centroidPt = turf.centroid(poly);\n\nvar result = turf.featurecollection([poly, centroidPt]);\n\n//=result"
+                "var poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [105.818939,21.004714],\n      [105.818939,21.061754],\n      [105.890007,21.061754],\n      [105.890007,21.004714],\n      [105.818939,21.004714]\n    ]]\n  }\n};\n\nvar centroidPt = turf.centroid(poly);\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly, centroidPt]\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Point",
@@ -38174,7 +39411,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n  turf.point([10.195312, 43.755225]),\n  turf.point([10.404052, 43.8424511]),\n  turf.point([10.579833, 43.659924]),\n  turf.point([10.360107, 43.516688]),\n  turf.point([10.14038, 43.588348]),\n  turf.point([10.195312, 43.755225])]);\n\nvar hull = turf.convex(points);\n\nvar result = turf.featurecollection(\n  points.features.concat(hull));\n\n//=result"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.195312, 43.755225]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.404052, 43.8424511]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.579833, 43.659924]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.360107, 43.516688]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.14038, 43.588348]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.195312, 43.755225]\n      }\n    }\n  ]\n};\n\nvar hull = turf.convex(points);\n\nvar resultFeatures = points.features.concat(hull);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Feature",
@@ -38213,7 +39450,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n turf.polygon([[\n   [-112.072391,46.586591],\n   [-112.072391,46.61761],\n   [-112.028102,46.61761],\n   [-112.028102,46.586591],\n   [-112.072391,46.586591]\n ]]),\n turf.polygon([[\n   [-112.023983,46.570426],\n   [-112.023983,46.615016],\n   [-111.966133,46.615016],\n   [-111.966133,46.570426],\n   [-112.023983,46.570426]\n ]])\n]);\nvar points = turf.featurecollection([\n turf.point([-112.0372, 46.608058], {population: 200}),\n turf.point([-112.045955, 46.596264],\n   {population: 600})\n]);\n\nvar counted = turf.count(polygons, points, 'pt_count');\n\nvar result = turf.featurecollection(\n  points.features.concat(counted.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-112.072391,46.586591],\n          [-112.072391,46.61761],\n          [-112.028102,46.61761],\n          [-112.028102,46.586591],\n          [-112.072391,46.586591]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-112.023983,46.570426],\n          [-112.023983,46.615016],\n          [-111.966133,46.615016],\n          [-111.966133,46.570426],\n          [-112.023983,46.570426]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-112.0372, 46.608058]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-112.045955, 46.596264]\n      }\n    }\n  ]\n};\n\nvar counted = turf.count(polygons, points, 'pt_count');\n\nvar resultFeatures = points.features.concat(counted.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38260,7 +39497,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var point1 = turf.point([-75.343, 39.984]);\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point1, distance, bearing, units);\npoint1.properties['marker-color'] = '#0f0';\ndestination.properties['marker-color'] = '#f00';\n\nvar result = turf.featurecollection([point1, destination]);\n\n//=result"
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point, distance, bearing, units);\ndestination.properties['marker-color'] = '#f00';\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point, destination]\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Point",
@@ -38307,7 +39544,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [-97.807159, 30.270335],\n    [-97.807159, 30.369913],\n    [-97.612838, 30.369913],\n    [-97.612838, 30.270335],\n    [-97.807159, 30.270335]\n  ]]),\n  turf.polygon([[\n    [-97.825698, 30.175405],\n    [-97.825698, 30.264404],\n    [-97.630691, 30.264404],\n    [-97.630691, 30.175405],\n    [-97.825698, 30.175405]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([-97.709655, 30.311245],\n    {population: 500}),\n  turf.point([-97.766647, 30.345028],\n    {population: 400}),\n  turf.point([-97.765274, 30.294646],\n    {population: 600}),\n  turf.point([-97.753601, 30.216355],\n    {population: 500}),\n  turf.point([-97.667083, 30.208047],\n  {population: 200})\n]);\n\nvar inField = 'population';\nvar outField = 'pop_deviation';\n\nvar deviated = turf.deviation(\n  polygons, points, inField, outField);\n\nvar result = turf.featurecollection(\n  points.features.concat(deviated.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.807159, 30.270335],\n          [-97.807159, 30.369913],\n          [-97.612838, 30.369913],\n          [-97.612838, 30.270335],\n          [-97.807159, 30.270335]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.825698, 30.175405],\n          [-97.825698, 30.264404],\n          [-97.630691, 30.264404],\n          [-97.630691, 30.175405],\n          [-97.825698, 30.175405]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 500\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.709655, 30.311245]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 400\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.766647, 30.345028]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.765274, 30.294646]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 500\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.753601, 30.216355]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.667083, 30.208047]\n      }\n    }\n  ]\n};\n\nvar inField = \"population\";\nvar outField = \"pop_deviation\";\n\nvar deviated = turf.deviation(\n  polygons, points, inField, outField);\n\nvar resultFeatures = points.features.concat(\n  deviated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38346,7 +39583,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\nvar units = 'miles';\n\nvar points = turf.featurecollection([point1, point2]);\n\n//=points\n\nvar distance = turf.distance(point1, point2, units);\n\n//=distance"
+                "var point1 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar point2 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.534, 39.123]\n  }\n};\nvar units = \"miles\";\n\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point1, point2]\n};\n\n//=points\n\nvar distance = turf.distance(point1, point2, units);\n\n//=distance"
             ],
             "returns": {
                 "type": "Number",
@@ -38369,7 +39606,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var fc = turf.featurecollection([\n turf.point([-75.343, 39.984], {name: 'Location A'}),\n turf.point([-75.833, 39.284], {name: 'Location B'}),\n turf.point([-75.534, 39.123], {name: 'Location C'})\n]);\n\nvar enveloped = turf.envelope(fc);\n\nvar result = turf.featurecollection(\n\tfc.features.concat(enveloped));\n\n//=result"
+                "var fc = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location A\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.343, 39.984]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location B\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.833, 39.284]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location C\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.534, 39.123]\n      }\n    }\n  ]\n};\n\nvar enveloped = turf.envelope(fc);\n\nvar resultFeatures = fc.features.concat(enveloped);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Polygon",
@@ -38400,7 +39637,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var poly1 = turf.polygon([[\n [-46.738586, -23.596711],\n [-46.738586, -23.458207],\n [-46.560058, -23.458207],\n [-46.560058, -23.596711],\n [-46.738586, -23.596711]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-46.650009, -23.631314],\n [-46.650009, -23.5237],\n [-46.509246, -23.5237],\n [-46.509246, -23.631314],\n [-46.650009, -23.631314]\n]]);\npoly2.properties.fill = '#00f';\n\nvar erased = turf.erase(poly1, poly2);\nerased.properties.fill = '#f00';\n\nvar polygons = turf.featurecollection([poly1, poly2]);\n\n//=polygons\n\n//=erased"
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-46.738586, -23.596711],\n      [-46.738586, -23.458207],\n      [-46.560058, -23.458207],\n      [-46.560058, -23.596711],\n      [-46.738586, -23.596711]\n    ]]\n  }\n};\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-46.650009, -23.631314],\n      [-46.650009, -23.5237],\n      [-46.509246, -23.5237],\n      [-46.509246, -23.631314],\n      [-46.650009, -23.631314]\n    ]]\n  }\n};\n\nvar erased = turf.erase(poly1, poly2);\nerased.properties.fill = '#f00';\n\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\n//=polygons\n\n//=erased"
             ],
             "returns": {
                 "type": "Polygon",
@@ -38446,7 +39683,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var input = turf.featurecollection([\n turf.point([114.175329, 22.2524]),\n turf.point([114.170007, 22.267969]),\n turf.point([114.200649, 22.274641]),\n turf.point([114.186744, 22.265745])\n]);\n\nvar bbox = turf.extent(input);\n\nvar bboxPolygon = turf.bboxPolygon(bbox);\nbboxPolygon.properties.fill = '#00f';\n\nvar result = turf.featurecollection(\n input.features.concat(bboxPolygon));\n\n//=result"
+                "var input = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.175329, 22.2524]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.170007, 22.267969]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.200649, 22.274641]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.186744, 22.265745]\n      }\n    }\n  ]\n};\n\nvar bbox = turf.extent(input);\n\nvar bboxPolygon = turf.bboxPolygon(bbox);\n\nvar resultFeatures = input.features.concat(bboxPolygon);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Array.<number>",
@@ -38508,7 +39745,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var features = turf.featurecollection([\n turf.point([-72.581777, 44.260875], {species: 'oak'}),\n turf.point([-72.570018, 44.260691], {species: 'birch'}),\n turf.point([-72.576284, 44.257925], {species: 'oak'}),\n turf.point([-72.56916, 44.254605], {species: 'redwood'}),\n turf.point([-72.581691, 44.24858], {species: 'maple'}),\n turf.point([-72.583837, 44.255773], {species: 'oak'})\n]);\n\nvar key = 'species';\nvar value = 'oak';\n\nvar filtered = turf.filter(features, key, value);\n\n//=features\n\n//=filtered"
+                "var features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.581777, 44.260875]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"birch\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.570018, 44.260691]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.576284, 44.257925]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"redwood\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.56916, 44.254605]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"maple\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.581691, 44.24858]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.583837, 44.255773]\n      }\n    }\n  ]\n};\n\nvar key = \"species\";\nvar value = \"oak\";\n\nvar filtered = turf.filter(features, key, value);\n\n//=features\n\n//=filtered"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38531,7 +39768,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var saudiArabia = turf.point([20.566406, 43.421008]);\n\n//=saudiArabia\n\nvar serbia = turf.flip(saudiArabia);\n\n//=serbia"
+                "var serbia = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [20.566406, 43.421008]\n  }\n};\n\n//=serbia\n\nvar saudiArabia = turf.flip(serbia);\n\n//=saudiArabia"
             ],
             "returns": {
                 "type": "GeoJSON",
@@ -38624,7 +39861,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var pt1 = turf.point([-111.467285, 40.75766],\n {'marker-color': \"#f00\"});\nvar pt2 = turf.point([-111.873779, 40.647303],\n {'marker-color': \"#0f0\" });\nvar poly = turf.polygon([[\n [-112.074279, 40.52215],\n [-112.074279, 40.853293],\n [-111.610107, 40.853293],\n [-111.610107, 40.52215],\n [-112.074279, 40.52215]\n]]);\nvar features = turf.featurecollection([pt1, pt2, poly]);\n\n//=features\n\nvar isInside1 = turf.inside(pt1, poly);\n//=isInside1\n\nvar isInside2 = turf.inside(pt2, poly);\n//=isInside2"
+                "var pt1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#f00\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-111.467285, 40.75766]\n  }\n};\nvar pt2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-111.873779, 40.647303]\n  }\n};\nvar poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-112.074279, 40.52215],\n      [-112.074279, 40.853293],\n      [-111.610107, 40.853293],\n      [-111.610107, 40.52215],\n      [-112.074279, 40.52215]\n    ]]\n  }\n};\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [pt1, pt2, poly]\n};\n\n//=features\n\nvar isInside1 = turf.inside(pt1, poly);\n//=isInside1\n\nvar isInside2 = turf.inside(pt2, poly);\n//=isInside2"
             ],
             "returns": {
                 "type": "Boolean",
@@ -38788,7 +40025,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n  turf.point([49.859733, 40.400424], {population: 200}),\n  turf.point([49.83879, 40.401209], {population: 600}),\n  turf.point([49.817848, 40.376889], {population: 100}),\n  turf.point([49.840507, 40.386043], {population: 200}),\n  turf.point([49.854583, 40.37532], {population: 300})]);\n\nvar breaks = turf.jenks(points, 'population', 3);\n\n//=breaks"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.859733, 40.400424]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.83879, 40.401209]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.817848, 40.376889]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.840507, 40.386043]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.854583, 40.37532]\n      }\n    }\n  ]\n};\n\nvar breaks = turf.jenks(points, 'population', 3);\n\n//=breaks"
             ],
             "returns": {
                 "type": "Array.<number>",
@@ -38811,7 +40048,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var poly = turf.polygon([[\n [-12.034835, 8.901183],\n [-12.060413, 8.899826],\n [-12.03638, 8.873199],\n [-12.059383, 8.871418],\n [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n\nvar result = turf.featurecollection(\n kinks.intersections.features.concat(poly));\n\n//=result"
+                "var poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-12.034835, 8.901183],\n      [-12.060413, 8.899826],\n      [-12.03638, 8.873199],\n      [-12.059383, 8.871418],\n      [-12.034835, 8.901183]\n    ]]\n  }\n};\n\nvar kinks = turf.kinks(poly);\n\nvar resultFeatures = kinks.intersections.features.concat(poly);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38842,7 +40079,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var line = turf.linestring([\n  [-77.031669, 38.878605],\n  [-77.029609, 38.881946],\n  [-77.020339, 38.884084],\n  [-77.025661, 38.885821],\n  [-77.021884, 38.889563],\n  [-77.019824, 38.892368]\n]);\n\nvar length = turf.lineDistance(line, 'miles');\n\n//=length"
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\n\nvar length = turf.lineDistance(line, 'miles');\n\n//=line\n\n//=length"
             ],
             "returns": {
                 "type": "Number",
@@ -38920,7 +40157,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [101.551437, 3.150114],\n    [101.551437, 3.250208],\n    [101.742324, 3.250208],\n    [101.742324, 3.150114],\n    [101.551437, 3.150114]\n  ]]),\n  turf.polygon([[\n    [101.659927, 3.011612],\n    [101.659927, 3.143944],\n    [101.913986, 3.143944],\n    [101.913986, 3.011612],\n    [101.659927, 3.011612]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([101.56105, 3.213874], {population: 200}),\n  turf.point([101.709365, 3.211817], {population: 600}),\n  turf.point([101.645507, 3.169311], {population: 100}),\n  turf.point([101.708679, 3.071266], {population: 200}),\n  turf.point([101.826782, 3.081551], {population: 300})]);\n\nvar aggregated = turf.max(\n  polygons, points, 'population', 'max');\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [101.551437, 3.150114],\n          [101.551437, 3.250208],\n          [101.742324, 3.250208],\n          [101.742324, 3.150114],\n          [101.551437, 3.150114]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [101.659927, 3.011612],\n          [101.659927, 3.143944],\n          [101.913986, 3.143944],\n          [101.913986, 3.011612],\n          [101.659927, 3.011612]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.56105, 3.213874]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.709365, 3.211817]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.645507, 3.169311]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.708679, 3.071266]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.826782, 3.081551]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.max(\n  polygons, points, 'population', 'max');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38967,7 +40204,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n   [18.400039, -33.970697],\n   [18.400039, -33.818518],\n   [18.665771, -33.818518],\n   [18.665771, -33.970697],\n   [18.400039, -33.970697]\n  ]]),\n  turf.polygon([[\n   [18.538742, -34.050383],\n   [18.538742, -33.98721],\n   [18.703536, -33.98721],\n   [18.703536, -34.050383],\n   [18.538742, -34.050383]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([18.514022, -33.860152], {population: 200}),\n  turf.point([18.48999, -33.926269], {population: 600}),\n  turf.point([18.583374, -33.905755], {population: 100}),\n  turf.point([18.591613, -34.024778], {population: 200}),\n  turf.point([18.653411, -34.017949], {population: 300})\n]);\nvar medians = turf.median(\n polygons, points, 'population', 'median');\n\nvar result = turf.featurecollection(\n medians.features.concat(points.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [18.400039, -33.970697],\n          [18.400039, -33.818518],\n          [18.665771, -33.818518],\n          [18.665771, -33.970697],\n          [18.400039, -33.970697]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [18.538742, -34.050383],\n          [18.538742, -33.98721],\n          [18.703536, -33.98721],\n          [18.703536, -34.050383],\n          [18.538742, -34.050383]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.514022, -33.860152]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.48999, -33.926269]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.583374, -33.905755]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.591613, -34.024778]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.653411, -34.017949]\n      }\n    }\n  ]\n};\n\nvar medians = turf.median(\n polygons, points, 'population', 'median');\n\nvar resultFeatures = points.features.concat(\n  medians.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -38990,7 +40227,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n turf.polygon([[\n   [9.994812, 53.549487],\n   [10.046997, 53.598209],\n   [10.117721, 53.531737],\n   [9.994812, 53.549487]\n ]], { fill: '#0f0' }),\n turf.polygon([[\n   [10.000991, 53.50418],\n   [10.03807, 53.562539],\n   [9.926834, 53.551731],\n   [10.000991, 53.50418]\n ]], { fill: '#00f' })\n]);\n\nvar merged = turf.merge(polygons);\n\n//=polygons\n\n//=merged"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"fill\": \"#0f0\"\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [9.994812, 53.549487],\n          [10.046997, 53.598209],\n          [10.117721, 53.531737],\n          [9.994812, 53.549487]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"fill\": \"#00f\"\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.000991, 53.50418],\n          [10.03807, 53.562539],\n          [9.926834, 53.551731],\n          [10.000991, 53.50418]\n        ]]\n      }\n    }\n  ]\n};\n\nvar merged = turf.merge(polygons);\n\n//=polygons\n\n//=merged"
             ],
             "returns": {
                 "type": "Feature",
@@ -39021,7 +40258,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var pt1 = turf.point([144.834823, -37.771257]);\npt1.properties['marker-color'] = '#00f';\nvar pt2 = turf.point([145.14244, -37.830937]);\npt2.properties['marker-color'] = '#00f';\n\nvar midpointed = turf.midpoint(pt1, pt2);\nmidpointed.properties['marker-color'] = '#f00';\n\nvar result = turf.featurecollection([\n pt1, pt2, midpointed]);\n\n//=result"
+                "var pt1 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [144.834823, -37.771257]\n  }\n};\nvar pt2 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [145.14244, -37.830937]\n  }\n};\n\nvar midpointed = turf.midpoint(pt1, pt2);\nmidpointed.properties['marker-color'] = '#f00';\n\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [pt1, pt2, midpointed]\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Point",
@@ -39068,7 +40305,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [72.809658, 18.961818],\n    [72.809658, 18.974805],\n    [72.827167, 18.974805],\n    [72.827167, 18.961818],\n    [72.809658, 18.961818]\n  ]]),\n  turf.polygon([[\n    [72.820987, 18.947043],\n    [72.820987, 18.95922],\n    [72.841243, 18.95922],\n    [72.841243, 18.947043],\n    [72.820987, 18.947043]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([72.814464, 18.971396], {population: 200}),\n  turf.point([72.820043, 18.969772], {population: 600}),\n  turf.point([72.817296, 18.964253], {population: 100}),\n  turf.point([72.83575, 18.954837], {population: 200}),\n  turf.point([72.828197, 18.95094], {population: 300})]);\n\nvar minimums = turf.min(\n  polygons, points, 'population', 'min');\n\nvar result = turf.featurecollection(\n  points.features.concat(minimums.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [72.809658, 18.961818],\n          [72.809658, 18.974805],\n          [72.827167, 18.974805],\n          [72.827167, 18.961818],\n          [72.809658, 18.961818]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [72.820987, 18.947043],\n          [72.820987, 18.95922],\n          [72.841243, 18.95922],\n          [72.841243, 18.947043],\n          [72.820987, 18.947043]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.814464, 18.971396]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.820043, 18.969772]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.817296, 18.964253]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.83575, 18.954837]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.828197, 18.95094]\n      }\n    }\n  ]\n};\n\nvar minimums = turf.min(\n  polygons, points, 'population', 'min');\n\nvar resultFeatures = points.features.concat(\n  minimums.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -39099,7 +40336,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var point = turf.point([28.965797, 41.010086]);\npoint.properties['marker-color'] = '#0f0';\nvar against = turf.featurecollection([\n turf.point([28.973865, 41.011122]),\n turf.point([28.948459, 41.024204]),\n turf.point([28.938674, 41.013324])\n]);\n\nvar nearest = turf.nearest(point, against);\nnearest.properties['marker-color'] = '#f00';\n\nvar result = turf.featurecollection(\n  against.features.concat(point));\n\n//=result"
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [28.965797, 41.010086]\n  }\n};\nvar against = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.973865, 41.011122]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.948459, 41.024204]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.938674, 41.013324]\n      }\n    }\n  ]\n};\n\nvar nearest = turf.nearest(point, against);\nnearest.properties['marker-color'] = '#f00';\n\nvar resultFeatures = against.features.concat(point);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Feature",
@@ -39130,7 +40367,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var point = turf.point([-75.3221, 39.529]);\n// triangle is a polygon with \"a\", \"b\",\n// and \"c\" values representing\n// the values of the coordinates in order.\nvar triangle = turf.polygon([[\n [-75.1221, 39.57],\n [-75.58, 39.18],\n [-75.97, 39.86],\n [-75.1221, 39.57]\n]],\n  {\"a\": 11, \"b\": 122, \"c\": 44});\n\nvar features = turf.featurecollection(\n [triangle, point]);\n\nvar zValue = turf.planepoint(point, triangle);\n\n//=features\n\n//=zValue"
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.3221, 39.529]\n  }\n};\nvar point = turf.point([-75.3221, 39.529]);\n// triangle is a polygon with \"a\", \"b\",\n// and \"c\" values representing\n// the values of the coordinates in order.\nvar triangle = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"a\": 11,\n    \"b\": 122,\n    \"c\": 44\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-75.1221, 39.57],\n      [-75.58, 39.18],\n      [-75.97, 39.86],\n      [-75.1221, 39.57]\n    ]]\n  }\n};\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [triangle, point]\n};\n\nvar zValue = turf.planepoint(point, triangle);\n\n//=features\n\n//=zValue"
             ],
             "returns": {
                 "type": "number",
@@ -39262,7 +40499,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n  turf.point([5,5], {population: 5}),\n  turf.point([1,3], {population: 40}),\n  turf.point([14,2], {population: 80}),\n  turf.point([13,1], {population: 90}),\n  turf.point([19,7], {population: 100})\n]);\n\nvar breaks = turf.quantile(\n  points, 'population', [25, 50, 75, 99]);\n\n//=breaks"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 5\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [5, 5]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 40\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [1, 3]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 80\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [14, 2]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 90\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13, 1]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [19, 7]\n      }\n    }\n  ]\n};\n\nvar breaks = turf.quantile(\n  points, 'population', [25, 50, 75, 99]);\n\n//=breaks"
             ],
             "returns": {
                 "type": "Array.<number>",
@@ -39372,7 +40609,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n  turf.point([13.170547, 32.888669], {population: 200}),\n  turf.point([13.182048, 32.889533], {population: 600}),\n  turf.point([13.17398, 32.882182], {population: 100}),\n  turf.point([13.174324, 32.895011], {population: 200}),\n  turf.point([13.185825, 32.884344], {population: 300})\n]);\n// 0 to 200 will map to \"small\", 200 to 400 will map to \"medium\", 400 to 600 will map to \"large\"\nvar translations = [\n  [0, 200, \"small\"],\n  [200, 400, \"medium\"],\n  [400, 600, \"large\"]\n];\n\nvar reclassed = turf.reclass(\n  points, 'population', 'size', translations);\n\n//=reclassed"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.170547, 32.888669]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.182048, 32.889533]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.17398, 32.882182]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.174324, 32.895011]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.185825, 32.884344]\n      }\n    }\n  ]\n};\n// 0 to 200 will map to \"small\", 200 to 400 will map to \"medium\", 400 to 600 will map to \"large\"\nvar translations = [\n  [0, 200, \"small\"],\n  [200, 400, \"medium\"],\n  [400, 600, \"large\"]\n];\n\nvar reclassed = turf.reclass(\n  points, 'population', 'size', translations);\n\n//=reclassed"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -39411,7 +40648,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n turf.point([-0.235004, 5.551918], {'marker-color': '#00f'}),\n turf.point([-0.209598, 5.56439], {'marker-color': '#f00'}),\n turf.point([-0.197753, 5.556018], {'marker-color': '#00f'}),\n turf.point([-0.217323, 5.549526], {'marker-color': '#000'}),\n turf.point([-0.211315, 5.543887], {'marker-color': '#0f0'}),\n turf.point([-0.202217, 5.547134], {'marker-color': '#00f'}),\n turf.point([-0.231227, 5.56644], {'marker-color': '#0f0'})\n]);\n\n//=points\n\nvar filtered = turf.remove(points, 'marker-color', '#00f');\n\n//=filtered"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.235004, 5.551918]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#f00'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.209598, 5.56439]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.197753, 5.556018]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#000'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.217323, 5.549526]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#0f0'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.211315, 5.543887]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.202217, 5.547134]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#0f0'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.231227, 5.56644]\n      }\n    }\n  ]\n};\n\n//=points\n\nvar filtered = turf.remove(points, 'marker-color', '#00f');\n\n//=filtered"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -39481,7 +40718,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var feature = turf.polygon([[\n [-70.603637, -33.399918],\n [-70.614624, -33.395332],\n [-70.639343, -33.392466],\n [-70.659942, -33.394759],\n [-70.683975, -33.404504],\n [-70.697021, -33.419406],\n [-70.701141, -33.434306],\n [-70.700454, -33.446339],\n [-70.694274, -33.458369],\n [-70.682601, -33.465816],\n [-70.668869, -33.472117],\n [-70.646209, -33.473835],\n [-70.624923, -33.472117],\n [-70.609817, -33.468107],\n [-70.595397, -33.458369],\n [-70.587158, -33.442901],\n [-70.587158, -33.426283],\n [-70.590591, -33.414248],\n [-70.594711, -33.406224],\n [-70.603637, -33.399918]\n]]);\nvar tolerance = 0.01;\n\nvar simplified = turf.simplify(\n feature, tolerance, false);\n\n//=feature\n\n//=simplified"
+                "var feature = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-70.603637, -33.399918],\n      [-70.614624, -33.395332],\n      [-70.639343, -33.392466],\n      [-70.659942, -33.394759],\n      [-70.683975, -33.404504],\n      [-70.697021, -33.419406],\n      [-70.701141, -33.434306],\n      [-70.700454, -33.446339],\n      [-70.694274, -33.458369],\n      [-70.682601, -33.465816],\n      [-70.668869, -33.472117],\n      [-70.646209, -33.473835],\n      [-70.624923, -33.472117],\n      [-70.609817, -33.468107],\n      [-70.595397, -33.458369],\n      [-70.587158, -33.442901],\n      [-70.587158, -33.426283],\n      [-70.590591, -33.414248],\n      [-70.594711, -33.406224],\n      [-70.603637, -33.399918]\n    ]]\n  }\n};\nvar tolerance = 0.01;\n\nvar simplified = turf.simplify(\n feature, tolerance, false);\n\n//=feature\n\n//=simplified"
             ],
             "returns": {
                 "type": "Feature",
@@ -39512,7 +40749,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var bbox = [0, 0, 10, 10]\n\nvar resized = turf.size(bbox, 2);\n\nvar features = turf.featurecollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(resized)]);\n\n//=features"
+                "var bbox = [0, 0, 10, 10]\n\nvar resized = turf.size(bbox, 2);\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    turf.bboxPolygon(bbox),\n    turf.bboxPolygon(resized)\n  ]\n};\n\n//=features"
             ],
             "returns": {
                 "type": "Array.<number>",
@@ -39653,7 +40890,7 @@ module.exports={
                 {
                     "name": "propertyName",
                     "type": "string",
-                    "description": "<p>name of the property from which to pull z values.\nThis is optional: if not given, then there will be no extra data added to the\nderived triangles.</p>",
+                    "description": "<p>name of the property from which to pull z values.\nThis is optional: if not given, then there will be no extra data added to the derived triangles.</p>",
                     "default": "",
                     "optional": true,
                     "nullable": ""

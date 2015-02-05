@@ -16,35 +16,33 @@
 </head>
 
 <body>
-<div class='limiter'>
-  <div class='pad2y'>
-  <div class='col10 margin1 clearfix'>
-    <div class='round clearfix fill-turf-green dark center'>
-        <a href='/'>
-          <img
-          width=80
-          class='logo' href='http://turfjs.org' src='/static/assets/img/logo.png' alt='turf'>
-        </a>
-      <div class='inline pad2y'>
-        <div class='tabs'>
-          <a href='/static/docs/' class='active'>API Docs</a><a
-            href='https://github.com/Turfjs/turf' class='icon github' target="_blank">Source</a>
-        </div>
+
+
+
+<div class='hide-mobile pin-left pint-top pin-bottom col2 quiet-scroll scroll-styled fixed'>
+
+  <div class='clearfix fill-turf-green dark center'>
+      <a href='/'>
+        <img
+        width=80
+        class='logo' href='http://turfjs.org' src='/static/assets/img/logo.png' alt='turf'>
+      </a>
+    <div class='inline pad2y'>
+      <div class='tabs'>
+        <a href='/static/docs/' class='active'>API Docs</a><a
+          href='https://github.com/Turfjs/turf' class='icon github' target="_blank">Source</a>
       </div>
     </div>
-   <div class='clearfix fill-white'>
-      <div class='pad2y clearfix'>
-        <div class='col3'>
-          <div class='pad1 space-top0'>
-            <?js= this.nav ?>
-          </div>
-        </div>
-        <div class='pad1y pad2x col9 fill-white'>
-          <div class='prose'>
-            <h2><?js= title ?></h2>
-            <?js= content ?>
-          </div>
-        </div>
+  </div>
+  <div class='pad1'>
+    <?js= this.nav ?>
+  </div>
+</div>
+<div class='limiter margin2'>
+    <div class='pad1y pad2x fill-white'>
+      <div class='prose'>
+        <h1 class='code'><?js= title ?></h1>
+        <?js= content ?>
       </div>
     </div>
     <div class='quiet small center pad1y'>
