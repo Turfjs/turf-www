@@ -197,10 +197,12 @@ var geojsonOptions = {
 
 var mapOptions = { attributionControl: false, zoomControl: false };
 var map1 = L.mapbox.map('map1', 'tmcw.kncfa9dj', mapOptions);
+map1.scrollWheelZoom.disable();
 var pointsLayer1 = L.geoJson(points, geojsonOptions).addTo(map1);
 map1.fitBounds(pointsLayer1.getBounds());
 
 var map2 = L.mapbox.map('map2', 'tmcw.kncfa9dj', mapOptions);
+map2.scrollWheelZoom.disable();
 var tin = turf.tin(points, 'price');
 map2.addLayer(L.geoJson(tin, geojsonOptions));
 var pointsLayer2 = L.geoJson(points, geojsonOptions).addTo(map2);
