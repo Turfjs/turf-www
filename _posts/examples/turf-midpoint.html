@@ -13,10 +13,10 @@ L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.Fu
 var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
     .setView([35.465453, -97.513914], 15);
 
-var pt1 = turf.point(-97.514914, 35.463453, {
+var pt1 = turf.point([-97.514914, 35.463453], {
     "marker-color": "#6BC65F",
 });
-var pt2 = turf.point(-97.517839, 35.466998, {
+var pt2 = turf.point([-97.517839, 35.466998], {
     "marker-color": "#6BC65F",
 });
 var pts = turf.featurecollection([pt1, pt2]);
