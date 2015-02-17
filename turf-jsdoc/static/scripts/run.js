@@ -38053,12 +38053,12 @@ module.exports = {
   pointOnSurface: require('turf-point-on-surface'),
   area: require('turf-area'),
   along: require('turf-along'),
-  lineDistance: require('turf-line-distance')
+  lineDistance: require('turf-line-distance'),
+  lineSlice: require('turf-line-slice'),
+  pointOnLine: require('turf-point-on-line')
 };
 
-},{"turf-aggregate":72,"turf-along":95,"turf-area":100,"turf-average":103,"turf-bbox-polygon":105,"turf-bearing":107,"turf-bezier":108,"turf-buffer":111,"turf-center":119,"turf-centroid":123,"turf-combine":126,"turf-concave":127,"turf-convex":141,"turf-count":172,"turf-destination":174,"turf-deviation":176,"turf-distance":179,"turf-envelope":181,"turf-erase":186,"turf-explode":191,"turf-extent":195,"turf-featurecollection":197,"turf-filter":198,"turf-flip":200,"turf-grid":201,"turf-hex":203,"turf-inside":205,"turf-intersect":206,"turf-isobands":213,"turf-isolines":235,"turf-jenks":254,"turf-kinks":256,"turf-line-distance":260,"turf-linestring":263,"turf-max":264,"turf-median":266,"turf-merge":268,"turf-midpoint":275,"turf-min":277,"turf-nearest":279,"turf-planepoint":281,"turf-point":293,"turf-point-on-surface":282,"turf-polygon":294,"turf-quantile":295,"turf-random":297,"turf-reclass":299,"turf-remove":301,"turf-sample":303,"turf-simplify":305,"turf-size":307,"turf-square":308,"turf-sum":313,"turf-tag":315,"turf-tin":317,"turf-union":320,"turf-variance":325,"turf-within":328}],71:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],72:[function(require,module,exports){
+},{"turf-aggregate":71,"turf-along":90,"turf-area":96,"turf-average":99,"turf-bbox-polygon":101,"turf-bearing":103,"turf-bezier":104,"turf-buffer":107,"turf-center":115,"turf-centroid":119,"turf-combine":122,"turf-concave":123,"turf-convex":137,"turf-count":168,"turf-destination":170,"turf-deviation":172,"turf-distance":175,"turf-envelope":177,"turf-erase":182,"turf-explode":187,"turf-extent":191,"turf-featurecollection":193,"turf-filter":194,"turf-flip":196,"turf-grid":197,"turf-hex":199,"turf-inside":201,"turf-intersect":203,"turf-isobands":209,"turf-isolines":226,"turf-jenks":242,"turf-kinks":244,"turf-line-distance":248,"turf-line-slice":252,"turf-linestring":259,"turf-max":260,"turf-median":262,"turf-merge":264,"turf-midpoint":271,"turf-min":273,"turf-nearest":275,"turf-planepoint":278,"turf-point":298,"turf-point-on-line":279,"turf-point-on-surface":286,"turf-polygon":299,"turf-quantile":300,"turf-random":302,"turf-reclass":304,"turf-remove":306,"turf-sample":308,"turf-simplify":310,"turf-size":312,"turf-square":313,"turf-sum":318,"turf-tag":320,"turf-tin":322,"turf-union":325,"turf-variance":330,"turf-within":333}],71:[function(require,module,exports){
 var average = require('turf-average');
 var sum = require('turf-sum');
 var median = require('turf-median');
@@ -38257,9 +38257,116 @@ function isAggregationOperation(operation) {
     operation === 'count';
 }
 
-},{"turf-average":73,"turf-count":75,"turf-deviation":77,"turf-max":80,"turf-median":83,"turf-min":86,"turf-sum":89,"turf-variance":92}],73:[function(require,module,exports){
+},{"turf-average":72,"turf-count":74,"turf-deviation":76,"turf-max":79,"turf-median":81,"turf-min":83,"turf-sum":85,"turf-variance":87}],72:[function(require,module,exports){
 var inside = require('turf-inside');
 
+/**
+ * Calculates the average value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/average
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {string} field the field in the `points` features from which to pull values to average
+ * @param {string} outputField the field in the `polygons` FeatureCollection to put results of the averages
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features with the value of `outField` set to the calculated average
+ * @example
+* var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.666351, 59.890659],
+ *           [10.666351, 59.936784],
+ *           [10.762481, 59.936784],
+ *           [10.762481, 59.890659],
+ *           [10.666351, 59.890659]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.764541, 59.889281],
+ *           [10.764541, 59.937128],
+ *           [10.866165, 59.937128],
+ *           [10.866165, 59.889281],
+ *           [10.764541, 59.889281]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.724029, 59.926807]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.715789, 59.904778]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.746002, 59.908566]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.806427, 59.908910]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [10.79544, 59.931624]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var averaged = turf.average(
+ *  polygons, points, 'population', 'pop_avg');
+ *
+ * var resultFeatures = points.features.concat(
+ *   averaged.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
 module.exports = function(polyFC, ptFC, inField, outField, done){
   polyFC.features.forEach(function(poly){
     if(!poly.properties) poly.properties = {};
@@ -38281,11 +38388,70 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":74}],74:[function(require,module,exports){
+},{"turf-inside":73}],73:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
+/**
+ * Takes a {@link Point} feature and a {@link Polygon} feature and determines if the Point resides inside the Polygon. The Polygon can
+ * be convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}
+ * and accounts for holes.
+ *
+ * @module turf/inside
+ * @category joins
+ * @param {Point} point a Point feature
+ * @param {Polygon} polygon a Polygon feature
+ * @return {Boolean} `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
+ * @example
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#f00"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.467285, 40.75766]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.873779, 40.647303]
+ *   }
+ * };
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-112.074279, 40.52215],
+ *       [-112.074279, 40.853293],
+ *       [-111.610107, 40.853293],
+ *       [-111.610107, 40.52215],
+ *       [-112.074279, 40.52215]
+ *     ]]
+ *   }
+ * };
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, poly]
+ * };
+ *
+ * //=features
+ *
+ * var isInside1 = turf.inside(pt1, poly);
+ * //=isInside1
+ *
+ * var isInside2 = turf.inside(pt2, poly);
+ * //=isInside2
+ */
 module.exports = function(point, polygon) {
   var polys = polygon.geometry.coordinates;
   var pt = [point.geometry.coordinates[0], point.geometry.coordinates[1]];
@@ -38328,29 +38494,220 @@ function inRing (pt, ring) {
 }
 
 
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var inside = require('turf-inside');
+
+/**
+ * Takes a {@link FeatureCollection} of {@link Point} features and a {@link FeatureCollection} of {@link Polygon} features and calculates the number of points that fall within the set of polygons.
+ *
+ * @module turf/count
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {String} countField a field to append to the attributes of the Polygon features representing Point counts
+ * @return {FeatureCollection} a FeatureCollection of Polygon features with `countField` appended
+ * @example
+* var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-112.072391,46.586591],
+ *           [-112.072391,46.61761],
+ *           [-112.028102,46.61761],
+ *           [-112.028102,46.586591],
+ *           [-112.072391,46.586591]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-112.023983,46.570426],
+ *           [-112.023983,46.615016],
+ *           [-111.966133,46.615016],
+ *           [-111.966133,46.570426],
+ *           [-112.023983,46.570426]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-112.0372, 46.608058]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-112.045955, 46.596264]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var counted = turf.count(polygons, points, 'pt_count');
+ *
+ * var resultFeatures = points.features.concat(counted.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
 
 module.exports = function(polyFC, ptFC, outField, done){
-  polyFC.features.forEach(function(poly){
+  for (var i = 0; i < polyFC.features.length; i++) {
+    var poly = polyFC.features[i];
     if(!poly.properties) poly.properties = {};
-    var values = [];
-    ptFC.features.forEach(function(pt){
+    var values = 0;
+    for (var j = 0; j < ptFC.features.length; j++) {
+      var pt = ptFC.features[j];
       if (inside(pt, poly)) {
-        values.push(1);
+        values++;
       }
-    })
-    poly.properties[outField] = values.length;
-  })
+    }
+    poly.properties[outField] = values;
+  }
 
   return polyFC;
-}
+};
 
-},{"turf-inside":76}],76:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],77:[function(require,module,exports){
+},{"turf-inside":75}],75:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],76:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
+
+/**
+ * Calculates the standard deviation value of a field for points within a set of polygons.
+ *
+ * @module turf/deviation
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {String} inField the field in `points` from which to aggregate
+ * @param {String} outField the field to append to `polygons` representing deviation
+ * @return {FeatureCollection} a FeatureCollection of Polygon features with appended field representing deviation
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.807159, 30.270335],
+ *           [-97.807159, 30.369913],
+ *           [-97.612838, 30.369913],
+ *           [-97.612838, 30.270335],
+ *           [-97.807159, 30.270335]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.825698, 30.175405],
+ *           [-97.825698, 30.264404],
+ *           [-97.630691, 30.264404],
+ *           [-97.630691, 30.175405],
+ *           [-97.825698, 30.175405]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 500
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.709655, 30.311245]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 400
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.766647, 30.345028]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.765274, 30.294646]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 500
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.753601, 30.216355]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.667083, 30.208047]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var inField = "population";
+ * var outField = "pop_deviation";
+ *
+ * var deviated = turf.deviation(
+ *   polygons, points, inField, outField);
+ *
+ * var resultFeatures = points.features.concat(
+ *   deviated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
 
 module.exports = function(polyFC, ptFC, inField, outField, done){
   polyFC.features.forEach(function(poly){
@@ -38369,7 +38726,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":78,"turf-inside":79}],78:[function(require,module,exports){
+},{"simple-statistics":77,"turf-inside":78}],77:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -39891,38 +40248,120 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],79:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],80:[function(require,module,exports){
-var ss = require('simple-statistics');
+},{}],78:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],79:[function(require,module,exports){
 var inside = require('turf-inside');
 
-module.exports = function(polyFC, ptFC, inField, outField, done){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    })
-    poly.properties[outField] = ss.max(values);
-  })
-
-  return polyFC;
-}
-
-},{"simple-statistics":81,"turf-inside":82}],81:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],82:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],83:[function(require,module,exports){
-var ss = require('simple-statistics');
-var inside = require('turf-inside');
-
-module.exports = function(polyFC, ptFC, inField, outField, done){
+/**
+ * Calculates the maximum value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/max
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {string} inField the field in input data to analyze
+ * @param {string} outField the field in which to store results
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+ * with properties listed as `outField` values
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [101.551437, 3.150114],
+ *           [101.551437, 3.250208],
+ *           [101.742324, 3.250208],
+ *           [101.742324, 3.150114],
+ *           [101.551437, 3.150114]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [101.659927, 3.011612],
+ *           [101.659927, 3.143944],
+ *           [101.913986, 3.143944],
+ *           [101.913986, 3.011612],
+ *           [101.659927, 3.011612]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.56105, 3.213874]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.709365, 3.211817]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.645507, 3.169311]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.708679, 3.071266]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [101.826782, 3.081551]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var aggregated = turf.max(
+ *   polygons, points, 'population', 'max');
+ *
+ * var resultFeatures = points.features.concat(
+ *   aggregated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+module.exports = function(polyFC, ptFC, inField, outField){
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
       poly.properties = {};
@@ -39933,21 +40372,136 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
         values.push(pt.properties[inField]);
       }
     });
-    poly.properties[outField] = ss.median(values);
+    poly.properties[outField] = max(values);
   });
 
   return polyFC;
 }
 
-},{"simple-statistics":84,"turf-inside":85}],84:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],85:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],86:[function(require,module,exports){
-var ss = require('simple-statistics');
+function max(x) {
+    var value;
+    for (var i = 0; i < x.length; i++) {
+        // On the first iteration of this loop, max is
+        // undefined and is thus made the maximum element in the array
+        if (x[i] > value || value === undefined) value = x[i];
+    }
+    return value;
+}
+
+},{"turf-inside":80}],80:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],81:[function(require,module,exports){
 var inside = require('turf-inside');
 
-module.exports = function(polyFC, ptFC, inField, outField, done){
+/**
+ * Calculates the median value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/median
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {string} inField the field in input data to analyze
+ * @param {string} outField the field in which to store results
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+ * with properties listed as `outField` values
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [18.400039, -33.970697],
+ *           [18.400039, -33.818518],
+ *           [18.665771, -33.818518],
+ *           [18.665771, -33.970697],
+ *           [18.400039, -33.970697]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [18.538742, -34.050383],
+ *           [18.538742, -33.98721],
+ *           [18.703536, -33.98721],
+ *           [18.703536, -34.050383],
+ *           [18.538742, -34.050383]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.514022, -33.860152]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.48999, -33.926269]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.583374, -33.905755]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.591613, -34.024778]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [18.653411, -34.017949]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var medians = turf.median(
+ *  polygons, points, 'population', 'median');
+ *
+ * var resultFeatures = points.features.concat(
+ *   medians.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+module.exports = function(polyFC, ptFC, inField, outField){
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
       poly.properties = {};
@@ -39958,21 +40512,146 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
         values.push(pt.properties[inField]);
       }
     });
-    poly.properties[outField] = ss.min(values);
-  })
+    poly.properties[outField] = median(values);
+  });
 
   return polyFC;
+};
+
+function median(x) {
+    // The median of an empty list is null
+    if (x.length === 0) return null;
+
+    // Sorting the array makes it easy to find the center, but
+    // use `.slice()` to ensure the original array `x` is not modified
+    var sorted = x.slice().sort(function (a, b) { return a - b; });
+
+    // If the length of the list is odd, it's the central number
+    if (sorted.length % 2 === 1) {
+        return sorted[(sorted.length - 1) / 2];
+    // Otherwise, the median is the average of the two numbers
+    // at the center of the list
+    } else {
+        var a = sorted[(sorted.length / 2) - 1];
+        var b = sorted[(sorted.length / 2)];
+        return (a + b) / 2;
+    }
 }
 
-},{"simple-statistics":87,"turf-inside":88}],87:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],88:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],89:[function(require,module,exports){
-var ss = require('simple-statistics');
+},{"turf-inside":82}],82:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],83:[function(require,module,exports){
 var inside = require('turf-inside');
 
-module.exports = function(polyFC, ptFC, inField, outField, done){
+/**
+* Calculates the minimum value of a field for {@link Point} features within a set of {@link Polygon} features.
+*
+* @module turf/min
+* @category aggregation
+* @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+* @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+* @param {string} inField the field in input data to analyze
+* @param {string} outField the field in which to store results
+* @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+* with properties listed as `outField` values
+* @example
+* var polygons = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [72.809658, 18.961818],
+*           [72.809658, 18.974805],
+*           [72.827167, 18.974805],
+*           [72.827167, 18.961818],
+*           [72.809658, 18.961818]
+*         ]]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {},
+*       "geometry": {
+*         "type": "Polygon",
+*         "coordinates": [[
+*           [72.820987, 18.947043],
+*           [72.820987, 18.95922],
+*           [72.841243, 18.95922],
+*           [72.841243, 18.947043],
+*           [72.820987, 18.947043]
+*         ]]
+*       }
+*     }
+*   ]
+* };
+* var points = {
+*   "type": "FeatureCollection",
+*   "features": [
+*     {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.814464, 18.971396]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 600
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.820043, 18.969772]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 100
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.817296, 18.964253]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 200
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.83575, 18.954837]
+*       }
+*     }, {
+*       "type": "Feature",
+*       "properties": {
+*         "population": 300
+*       },
+*       "geometry": {
+*         "type": "Point",
+*         "coordinates": [72.828197, 18.95094]
+*       }
+*     }
+*   ]
+* };
+*
+* var minimums = turf.min(
+*   polygons, points, 'population', 'min');
+*
+* var resultFeatures = points.features.concat(
+*   minimums.features);
+* var result = {
+*   "type": "FeatureCollection",
+*   "features": resultFeatures
+* };
+*
+* //=result
+*/
+module.exports = function(polyFC, ptFC, inField, outField){
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
       poly.properties = {};
@@ -39982,1459 +40661,276 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
       if (inside(pt, poly)) {
         values.push(pt.properties[inField]);
       }
-    })
-    poly.properties[outField] = ss.sum(values);
-  })
+    });
+    poly.properties[outField] = min(values);
+  });
 
   return polyFC;
+};
+
+function min(x) {
+    var value;
+    for (var i = 0; i < x.length; i++) {
+        // On the first iteration of this loop, min is
+        // undefined and is thus made the minimum element in the array
+        if (x[i] < value || value === undefined) value = x[i];
+    }
+    return value;
 }
 
-},{"simple-statistics":90,"turf-inside":91}],90:[function(require,module,exports){
-/* global module */
-// # simple-statistics
-//
-// A simple, literate statistics system. The code below uses the
-// [Javascript module pattern](http://www.adequatelygood.com/2010/3/JavaScript-Module-Pattern-In-Depth),
-// eventually assigning `simple-statistics` to `ss` in browsers or the
-// `exports` object for node.js
-(function() {
-    var ss = {};
+},{"turf-inside":84}],84:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],85:[function(require,module,exports){
+var inside = require('turf-inside');
 
-    if (typeof module !== 'undefined') {
-        // Assign the `ss` object to exports, so that you can require
-        // it in [node.js](http://nodejs.org/)
-        module.exports = ss;
-    } else {
-        // Otherwise, in a browser, we assign `ss` to the window object,
-        // so you can simply refer to it as `ss`.
-        this.ss = ss;
+/**
+ * Calculates the sum of a field for {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/sum
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {String} inField the field in input data to analyze
+ * @param {String} outField the field in which to store results
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+ * with properties listed as `outField`
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-87.990188, 43.026486],
+ *           [-87.990188, 43.062115],
+ *           [-87.913284, 43.062115],
+ *           [-87.913284, 43.026486],
+ *           [-87.990188, 43.026486]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-87.973709, 42.962452],
+ *           [-87.973709, 43.014689],
+ *           [-87.904014, 43.014689],
+ *           [-87.904014, 42.962452],
+ *           [-87.973709, 42.962452]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-87.974052, 43.049321]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-87.957229, 43.037277]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-87.931137, 43.048568]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-87.963409, 42.99611]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-87.94178, 42.974762]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var aggregated = turf.sum(
+ *   polygons, points, 'population', 'sum');
+ *
+ * var resultFeatures = points.features.concat(
+ *   aggregated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+module.exports = function(polyFC, ptFC, inField, outField){
+  polyFC.features.forEach(function(poly){
+    if(!poly.properties){
+      poly.properties = {};
     }
+    var values = [];
+    ptFC.features.forEach(function(pt){
+      if (inside(pt, poly)) {
+        values.push(pt.properties[inField]);
+      }
+    });
+    poly.properties[outField] = sum(values);
+  });
 
-    // # [Linear Regression](http://en.wikipedia.org/wiki/Linear_regression)
-    //
-    // [Simple linear regression](http://en.wikipedia.org/wiki/Simple_linear_regression)
-    // is a simple way to find a fitted line
-    // between a set of coordinates.
-    function linear_regression() {
-        var linreg = {},
-            data = [];
+  return polyFC;
+};
 
-        // Assign data to the model. Data is assumed to be an array.
-        linreg.data = function(x) {
-            if (!arguments.length) return data;
-            data = x.slice();
-            return linreg;
-        };
-
-        // Calculate the slope and y-intercept of the regression line
-        // by calculating the least sum of squares
-        linreg.mb = function() {
-            var m, b;
-
-            // Store data length in a local variable to reduce
-            // repeated object property lookups
-            var data_length = data.length;
-
-            //if there's only one point, arbitrarily choose a slope of 0
-            //and a y-intercept of whatever the y of the initial point is
-            if (data_length === 1) {
-                m = 0;
-                b = data[0][1];
-            } else {
-                // Initialize our sums and scope the `m` and `b`
-                // variables that define the line.
-                var sum_x = 0, sum_y = 0,
-                    sum_xx = 0, sum_xy = 0;
-
-                // Use local variables to grab point values
-                // with minimal object property lookups
-                var point, x, y;
-
-                // Gather the sum of all x values, the sum of all
-                // y values, and the sum of x^2 and (x*y) for each
-                // value.
-                //
-                // In math notation, these would be SS_x, SS_y, SS_xx, and SS_xy
-                for (var i = 0; i < data_length; i++) {
-                    point = data[i];
-                    x = point[0];
-                    y = point[1];
-
-                    sum_x += x;
-                    sum_y += y;
-
-                    sum_xx += x * x;
-                    sum_xy += x * y;
-                }
-
-                // `m` is the slope of the regression line
-                m = ((data_length * sum_xy) - (sum_x * sum_y)) /
-                    ((data_length * sum_xx) - (sum_x * sum_x));
-
-                // `b` is the y-intercept of the line.
-                b = (sum_y / data_length) - ((m * sum_x) / data_length);
-            }
-
-            // Return both values as an object.
-            return { m: m, b: b };
-        };
-
-        // a shortcut for simply getting the slope of the regression line
-        linreg.m = function() {
-            return linreg.mb().m;
-        };
-
-        // a shortcut for simply getting the y-intercept of the regression
-        // line.
-        linreg.b = function() {
-            return linreg.mb().b;
-        };
-
-        // ## Fitting The Regression Line
-        //
-        // This is called after `.data()` and returns the
-        // equation `y = f(x)` which gives the position
-        // of the regression line at each point in `x`.
-        linreg.line = function() {
-
-            // Get the slope, `m`, and y-intercept, `b`, of the line.
-            var mb = linreg.mb(),
-                m = mb.m,
-                b = mb.b;
-
-            // Return a function that computes a `y` value for each
-            // x value it is given, based on the values of `b` and `a`
-            // that we just computed.
-            return function(x) {
-                return b + (m * x);
-            };
-        };
-
-        return linreg;
+function sum(x) {
+    var value = 0;
+    for (var i = 0; i < x.length; i++) {
+        value += x[i];
     }
-
-    // # [R Squared](http://en.wikipedia.org/wiki/Coefficient_of_determination)
-    //
-    // The r-squared value of data compared with a function `f`
-    // is the sum of the squared differences between the prediction
-    // and the actual value.
-    function r_squared(data, f) {
-        if (data.length < 2) return 1;
-
-        // Compute the average y value for the actual
-        // data set in order to compute the
-        // _total sum of squares_
-        var sum = 0, average;
-        for (var i = 0; i < data.length; i++) {
-            sum += data[i][1];
-        }
-        average = sum / data.length;
-
-        // Compute the total sum of squares - the
-        // squared difference between each point
-        // and the average of all points.
-        var sum_of_squares = 0;
-        for (var j = 0; j < data.length; j++) {
-            sum_of_squares += Math.pow(average - data[j][1], 2);
-        }
-
-        // Finally estimate the error: the squared
-        // difference between the estimate and the actual data
-        // value at each point.
-        var err = 0;
-        for (var k = 0; k < data.length; k++) {
-            err += Math.pow(data[k][1] - f(data[k][0]), 2);
-        }
-
-        // As the error grows larger, its ratio to the
-        // sum of squares increases and the r squared
-        // value grows lower.
-        return 1 - (err / sum_of_squares);
-    }
-
-
-    // # [Bayesian Classifier](http://en.wikipedia.org/wiki/Naive_Bayes_classifier)
-    //
-    // This is a naïve bayesian classifier that takes
-    // singly-nested objects.
-    function bayesian() {
-        // The `bayes_model` object is what will be exposed
-        // by this closure, with all of its extended methods, and will
-        // have access to all scope variables, like `total_count`.
-        var bayes_model = {},
-            // The number of items that are currently
-            // classified in the model
-            total_count = 0,
-            // Every item classified in the model
-            data = {};
-
-        // ## Train
-        // Train the classifier with a new item, which has a single
-        // dimension of Javascript literal keys and values.
-        bayes_model.train = function(item, category) {
-            // If the data object doesn't have any values
-            // for this category, create a new object for it.
-            if (!data[category]) data[category] = {};
-
-            // Iterate through each key in the item.
-            for (var k in item) {
-                var v = item[k];
-                // Initialize the nested object `data[category][k][item[k]]`
-                // with an object of keys that equal 0.
-                if (data[category][k] === undefined) data[category][k] = {};
-                if (data[category][k][v] === undefined) data[category][k][v] = 0;
-
-                // And increment the key for this key/value combination.
-                data[category][k][item[k]]++;
-            }
-            // Increment the number of items classified
-            total_count++;
-        };
-
-        // ## Score
-        // Generate a score of how well this item matches all
-        // possible categories based on its attributes
-        bayes_model.score = function(item) {
-            // Initialize an empty array of odds per category.
-            var odds = {}, category;
-            // Iterate through each key in the item,
-            // then iterate through each category that has been used
-            // in previous calls to `.train()`
-            for (var k in item) {
-                var v = item[k];
-                for (category in data) {
-                    // Create an empty object for storing key - value combinations
-                    // for this category.
-                    if (odds[category] === undefined) odds[category] = {};
-
-                    // If this item doesn't even have a property, it counts for nothing,
-                    // but if it does have the property that we're looking for from
-                    // the item to categorize, it counts based on how popular it is
-                    // versus the whole population.
-                    if (data[category][k]) {
-                        odds[category][k + '_' + v] = (data[category][k][v] || 0) / total_count;
-                    } else {
-                        odds[category][k + '_' + v] = 0;
-                    }
-                }
-            }
-
-            // Set up a new object that will contain sums of these odds by category
-            var odds_sums = {};
-
-            for (category in odds) {
-                // Tally all of the odds for each category-combination pair -
-                // the non-existence of a category does not add anything to the
-                // score.
-                for (var combination in odds[category]) {
-                    if (odds_sums[category] === undefined) odds_sums[category] = 0;
-                    odds_sums[category] += odds[category][combination];
-                }
-            }
-
-            return odds_sums;
-        };
-
-        // Return the completed model.
-        return bayes_model;
-    }
-
-    // # sum
-    //
-    // is simply the result of adding all numbers
-    // together, starting from zero.
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function sum(x) {
-        var value = 0;
-        for (var i = 0; i < x.length; i++) {
-            value += x[i];
-        }
-        return value;
-    }
-
-    // # mean
-    //
-    // is the sum over the number of values
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function mean(x) {
-        // The mean of no numbers is null
-        if (x.length === 0) return null;
-
-        return sum(x) / x.length;
-    }
-
-    // # geometric mean
-    //
-    // a mean function that is more useful for numbers in different
-    // ranges.
-    //
-    // this is the nth root of the input numbers multiplied by each other
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function geometric_mean(x) {
-        // The mean of no numbers is null
-        if (x.length === 0) return null;
-
-        // the starting value.
-        var value = 1;
-
-        for (var i = 0; i < x.length; i++) {
-            // the geometric mean is only valid for positive numbers
-            if (x[i] <= 0) return null;
-
-            // repeatedly multiply the value by each number
-            value *= x[i];
-        }
-
-        return Math.pow(value, 1 / x.length);
-    }
-
-
-    // # harmonic mean
-    //
-    // a mean function typically used to find the average of rates
-    //
-    // this is the reciprocal of the arithmetic mean of the reciprocals
-    // of the input numbers
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function harmonic_mean(x) {
-        // The mean of no numbers is null
-        if (x.length === 0) return null;
-
-        var reciprocal_sum = 0;
-
-        for (var i = 0; i < x.length; i++) {
-            // the harmonic mean is only valid for positive numbers
-            if (x[i] <= 0) return null;
-
-            reciprocal_sum += 1 / x[i];
-        }
-
-        // divide n by the the reciprocal sum
-        return x.length / reciprocal_sum;
-    }
-
-
-    // # min
-    //
-    // This is simply the minimum number in the set.
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function min(x) {
-        var value;
-        for (var i = 0; i < x.length; i++) {
-            // On the first iteration of this loop, min is
-            // undefined and is thus made the minimum element in the array
-            if (x[i] < value || value === undefined) value = x[i];
-        }
-        return value;
-    }
-
-    // # max
-    //
-    // This is simply the maximum number in the set.
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function max(x) {
-        var value;
-        for (var i = 0; i < x.length; i++) {
-            // On the first iteration of this loop, max is
-            // undefined and is thus made the maximum element in the array
-            if (x[i] > value || value === undefined) value = x[i];
-        }
-        return value;
-    }
-
-    // # [variance](http://en.wikipedia.org/wiki/Variance)
-    //
-    // is the sum of squared deviations from the mean
-    //
-    // depends on `mean()`
-    function variance(x) {
-        // The variance of no numbers is null
-        if (x.length === 0) return null;
-
-        var mean_value = mean(x),
-            deviations = [];
-
-        // Make a list of squared deviations from the mean.
-        for (var i = 0; i < x.length; i++) {
-            deviations.push(Math.pow(x[i] - mean_value, 2));
-        }
-
-        // Find the mean value of that list
-        return mean(deviations);
-    }
-
-    // # [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
-    //
-    // is just the square root of the variance.
-    //
-    // depends on `variance()`
-    function standard_deviation(x) {
-        // The standard deviation of no numbers is null
-        if (x.length === 0) return null;
-
-        return Math.sqrt(variance(x));
-    }
-
-    // The sum of deviations to the Nth power.
-    // When n=2 it's the sum of squared deviations.
-    // When n=3 it's the sum of cubed deviations.
-    //
-    // depends on `mean()`
-    function sum_nth_power_deviations(x, n) {
-        var mean_value = mean(x),
-            sum = 0;
-
-        for (var i = 0; i < x.length; i++) {
-            sum += Math.pow(x[i] - mean_value, n);
-        }
-
-        return sum;
-    }
-
-    // # [variance](http://en.wikipedia.org/wiki/Variance)
-    //
-    // is the sum of squared deviations from the mean
-    //
-    // depends on `sum_nth_power_deviations`
-    function sample_variance(x) {
-        // The variance of no numbers is null
-        if (x.length <= 1) return null;
-
-        var sum_squared_deviations_value = sum_nth_power_deviations(x, 2);
-
-        // Find the mean value of that list
-        return sum_squared_deviations_value / (x.length - 1);
-    }
-
-    // # [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
-    //
-    // is just the square root of the variance.
-    //
-    // depends on `sample_variance()`
-    function sample_standard_deviation(x) {
-        // The standard deviation of no numbers is null
-        if (x.length <= 1) return null;
-
-        return Math.sqrt(sample_variance(x));
-    }
-
-    // # [covariance](http://en.wikipedia.org/wiki/Covariance)
-    //
-    // sample covariance of two datasets:
-    // how much do the two datasets move together?
-    // x and y are two datasets, represented as arrays of numbers.
-    //
-    // depends on `mean()`
-    function sample_covariance(x, y) {
-
-        // The two datasets must have the same length which must be more than 1
-        if (x.length <= 1 || x.length != y.length){
-            return null;
-        }
-
-        // determine the mean of each dataset so that we can judge each
-        // value of the dataset fairly as the difference from the mean. this
-        // way, if one dataset is [1, 2, 3] and [2, 3, 4], their covariance
-        // does not suffer because of the difference in absolute values
-        var xmean = mean(x),
-            ymean = mean(y),
-            sum = 0;
-
-        // for each pair of values, the covariance increases when their
-        // difference from the mean is associated - if both are well above
-        // or if both are well below
-        // the mean, the covariance increases significantly.
-        for (var i = 0; i < x.length; i++){
-            sum += (x[i] - xmean) * (y[i] - ymean);
-        }
-
-        // the covariance is weighted by the length of the datasets.
-        return sum / (x.length - 1);
-    }
-
-    // # [correlation](http://en.wikipedia.org/wiki/Correlation_and_dependence)
-    //
-    // Gets a measure of how correlated two datasets are, between -1 and 1
-    //
-    // depends on `sample_standard_deviation()` and `sample_covariance()`
-    function sample_correlation(x, y) {
-        var cov = sample_covariance(x, y),
-            xstd = sample_standard_deviation(x),
-            ystd = sample_standard_deviation(y);
-
-        if (cov === null || xstd === null || ystd === null) {
-            return null;
-        }
-
-        return cov / xstd / ystd;
-    }
-
-    // # [median](http://en.wikipedia.org/wiki/Median)
-    //
-    // The middle number of a list. This is often a good indicator of 'the middle'
-    // when there are outliers that skew the `mean()` value.
-    function median(x) {
-        // The median of an empty list is null
-        if (x.length === 0) return null;
-
-        // Sorting the array makes it easy to find the center, but
-        // use `.slice()` to ensure the original array `x` is not modified
-        var sorted = x.slice().sort(function (a, b) { return a - b; });
-
-        // If the length of the list is odd, it's the central number
-        if (sorted.length % 2 === 1) {
-            return sorted[(sorted.length - 1) / 2];
-        // Otherwise, the median is the average of the two numbers
-        // at the center of the list
-        } else {
-            var a = sorted[(sorted.length / 2) - 1];
-            var b = sorted[(sorted.length / 2)];
-            return (a + b) / 2;
-        }
-    }
-
-    // # [mode](http://bit.ly/W5K4Yt)
-    //
-    // The mode is the number that appears in a list the highest number of times.
-    // There can be multiple modes in a list: in the event of a tie, this
-    // algorithm will return the most recently seen mode.
-    //
-    // This implementation is inspired by [science.js](https://github.com/jasondavies/science.js/blob/master/src/stats/mode.js)
-    //
-    // This runs on `O(n)`, linear time in respect to the array
-    function mode(x) {
-
-        // Handle edge cases:
-        // The median of an empty list is null
-        if (x.length === 0) return null;
-        else if (x.length === 1) return x[0];
-
-        // Sorting the array lets us iterate through it below and be sure
-        // that every time we see a new number it's new and we'll never
-        // see the same number twice
-        var sorted = x.slice().sort(function (a, b) { return a - b; });
-
-        // This assumes it is dealing with an array of size > 1, since size
-        // 0 and 1 are handled immediately. Hence it starts at index 1 in the
-        // array.
-        var last = sorted[0],
-            // store the mode as we find new modes
-            value,
-            // store how many times we've seen the mode
-            max_seen = 0,
-            // how many times the current candidate for the mode
-            // has been seen
-            seen_this = 1;
-
-        // end at sorted.length + 1 to fix the case in which the mode is
-        // the highest number that occurs in the sequence. the last iteration
-        // compares sorted[i], which is undefined, to the highest number
-        // in the series
-        for (var i = 1; i < sorted.length + 1; i++) {
-            // we're seeing a new number pass by
-            if (sorted[i] !== last) {
-                // the last number is the new mode since we saw it more
-                // often than the old one
-                if (seen_this > max_seen) {
-                    max_seen = seen_this;
-                    value = last;
-                }
-                seen_this = 1;
-                last = sorted[i];
-            // if this isn't a new number, it's one more occurrence of
-            // the potential mode
-            } else { seen_this++; }
-        }
-        return value;
-    }
-
-    // # [t-test](http://en.wikipedia.org/wiki/Student's_t-test)
-    //
-    // This is to compute a one-sample t-test, comparing the mean
-    // of a sample to a known value, x.
-    //
-    // in this case, we're trying to determine whether the
-    // population mean is equal to the value that we know, which is `x`
-    // here. usually the results here are used to look up a
-    // [p-value](http://en.wikipedia.org/wiki/P-value), which, for
-    // a certain level of significance, will let you determine that the
-    // null hypothesis can or cannot be rejected.
-    //
-    // Depends on `standard_deviation()` and `mean()`
-    function t_test(sample, x) {
-        // The mean of the sample
-        var sample_mean = mean(sample);
-
-        // The standard deviation of the sample
-        var sd = standard_deviation(sample);
-
-        // Square root the length of the sample
-        var rootN = Math.sqrt(sample.length);
-
-        // Compute the known value against the sample,
-        // returning the t value
-        return (sample_mean - x) / (sd / rootN);
-    }
-
-    // # [2-sample t-test](http://en.wikipedia.org/wiki/Student's_t-test)
-    //
-    // This is to compute two sample t-test.
-    // Tests whether "mean(X)-mean(Y) = difference", (
-    // in the most common case, we often have `difference == 0` to test if two samples
-    // are likely to be taken from populations with the same mean value) with
-    // no prior knowledge on standard deviations of both samples
-    // other than the fact that they have the same standard deviation.
-    //
-    // Usually the results here are used to look up a
-    // [p-value](http://en.wikipedia.org/wiki/P-value), which, for
-    // a certain level of significance, will let you determine that the
-    // null hypothesis can or cannot be rejected.
-    //
-    // `diff` can be omitted if it equals 0.
-    //
-    // [This is used to confirm or deny](http://www.monarchlab.org/Lab/Research/Stats/2SampleT.aspx)
-    // a null hypothesis that the two populations that have been sampled into
-    // `sample_x` and `sample_y` are equal to each other.
-    //
-    // Depends on `sample_variance()` and `mean()`
-    function t_test_two_sample(sample_x, sample_y, difference) {
-        var n = sample_x.length,
-            m = sample_y.length;
-
-        // If either sample doesn't actually have any values, we can't
-        // compute this at all, so we return `null`.
-        if (!n || !m) return null ;
-
-        // default difference (mu) is zero
-        if (!difference) difference = 0;
-
-        var meanX = mean(sample_x),
-            meanY = mean(sample_y);
-
-        var weightedVariance = ((n - 1) * sample_variance(sample_x) +
-            (m - 1) * sample_variance(sample_y)) / (n + m - 2);
-
-        return (meanX - meanY - difference) /
-            Math.sqrt(weightedVariance * (1 / n + 1 / m));
-    }
-
-    // # quantile
-    //
-    // This is a population quantile, since we assume to know the entire
-    // dataset in this library. Thus I'm trying to follow the
-    // [Quantiles of a Population](http://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population)
-    // algorithm from wikipedia.
-    //
-    // Sample is a one-dimensional array of numbers,
-    // and p is either a decimal number from 0 to 1 or an array of decimal
-    // numbers from 0 to 1.
-    // In terms of a k/q quantile, p = k/q - it's just dealing with fractions or dealing
-    // with decimal values.
-    // When p is an array, the result of the function is also an array containing the appropriate
-    // quantiles in input order
-    function quantile(sample, p) {
-
-        // We can't derive quantiles from an empty list
-        if (sample.length === 0) return null;
-
-        // Sort a copy of the array. We'll need a sorted array to index
-        // the values in sorted order.
-        var sorted = sample.slice().sort(function (a, b) { return a - b; });
-
-        if (p.length) {
-            // Initialize the result array
-            var results = [];
-            // For each requested quantile
-            for (var i = 0; i < p.length; i++) {
-                results[i] = quantile_sorted(sorted, p[i]);
-            }
-            return results;
-        } else {
-            return quantile_sorted(sorted, p);
-        }
-    }
-
-    // # quantile
-    //
-    // This is the internal implementation of quantiles: when you know
-    // that the order is sorted, you don't need to re-sort it, and the computations
-    // are much faster.
-    function quantile_sorted(sample, p) {
-        var idx = (sample.length) * p;
-        if (p < 0 || p > 1) {
-            return null;
-        } else if (p === 1) {
-            // If p is 1, directly return the last element
-            return sample[sample.length - 1];
-        } else if (p === 0) {
-            // If p is 0, directly return the first element
-            return sample[0];
-        } else if (idx % 1 !== 0) {
-            // If p is not integer, return the next element in array
-            return sample[Math.ceil(idx) - 1];
-        } else if (sample.length % 2 === 0) {
-            // If the list has even-length, we'll take the average of this number
-            // and the next value, if there is one
-            return (sample[idx - 1] + sample[idx]) / 2;
-        } else {
-            // Finally, in the simple case of an integer value
-            // with an odd-length list, return the sample value at the index.
-            return sample[idx];
-        }
-    }
-
-    // # [Interquartile range](http://en.wikipedia.org/wiki/Interquartile_range)
-    //
-    // A measure of statistical dispersion, or how scattered, spread, or
-    // concentrated a distribution is. It's computed as the difference between
-    // the third quartile and first quartile.
-    function iqr(sample) {
-        // We can't derive quantiles from an empty list
-        if (sample.length === 0) return null;
-
-        // Interquartile range is the span between the upper quartile,
-        // at `0.75`, and lower quartile, `0.25`
-        return quantile(sample, 0.75) - quantile(sample, 0.25);
-    }
-
-    // # [Median Absolute Deviation](http://en.wikipedia.org/wiki/Median_absolute_deviation)
-    //
-    // The Median Absolute Deviation (MAD) is a robust measure of statistical
-    // dispersion. It is more resilient to outliers than the standard deviation.
-    function mad(x) {
-        // The mad of nothing is null
-        if (!x || x.length === 0) return null;
-
-        var median_value = median(x),
-            median_absolute_deviations = [];
-
-        // Make a list of absolute deviations from the median
-        for (var i = 0; i < x.length; i++) {
-            median_absolute_deviations.push(Math.abs(x[i] - median_value));
-        }
-
-        // Find the median value of that list
-        return median(median_absolute_deviations);
-    }
-
-    // ## Compute Matrices for Jenks
-    //
-    // Compute the matrices required for Jenks breaks. These matrices
-    // can be used for any classing of data with `classes <= n_classes`
-    function jenksMatrices(data, n_classes) {
-
-        // in the original implementation, these matrices are referred to
-        // as `LC` and `OP`
-        //
-        // * lower_class_limits (LC): optimal lower class limits
-        // * variance_combinations (OP): optimal variance combinations for all classes
-        var lower_class_limits = [],
-            variance_combinations = [],
-            // loop counters
-            i, j,
-            // the variance, as computed at each step in the calculation
-            variance = 0;
-
-        // Initialize and fill each matrix with zeroes
-        for (i = 0; i < data.length + 1; i++) {
-            var tmp1 = [], tmp2 = [];
-            // despite these arrays having the same values, we need
-            // to keep them separate so that changing one does not change
-            // the other
-            for (j = 0; j < n_classes + 1; j++) {
-                tmp1.push(0);
-                tmp2.push(0);
-            }
-            lower_class_limits.push(tmp1);
-            variance_combinations.push(tmp2);
-        }
-
-        for (i = 1; i < n_classes + 1; i++) {
-            lower_class_limits[1][i] = 1;
-            variance_combinations[1][i] = 0;
-            // in the original implementation, 9999999 is used but
-            // since Javascript has `Infinity`, we use that.
-            for (j = 2; j < data.length + 1; j++) {
-                variance_combinations[j][i] = Infinity;
-            }
-        }
-
-        for (var l = 2; l < data.length + 1; l++) {
-
-            // `SZ` originally. this is the sum of the values seen thus
-            // far when calculating variance.
-            var sum = 0,
-                // `ZSQ` originally. the sum of squares of values seen
-                // thus far
-                sum_squares = 0,
-                // `WT` originally. This is the number of
-                w = 0,
-                // `IV` originally
-                i4 = 0;
-
-            // in several instances, you could say `Math.pow(x, 2)`
-            // instead of `x * x`, but this is slower in some browsers
-            // introduces an unnecessary concept.
-            for (var m = 1; m < l + 1; m++) {
-
-                // `III` originally
-                var lower_class_limit = l - m + 1,
-                    val = data[lower_class_limit - 1];
-
-                // here we're estimating variance for each potential classing
-                // of the data, for each potential number of classes. `w`
-                // is the number of data points considered so far.
-                w++;
-
-                // increase the current sum and sum-of-squares
-                sum += val;
-                sum_squares += val * val;
-
-                // the variance at this point in the sequence is the difference
-                // between the sum of squares and the total x 2, over the number
-                // of samples.
-                variance = sum_squares - (sum * sum) / w;
-
-                i4 = lower_class_limit - 1;
-
-                if (i4 !== 0) {
-                    for (j = 2; j < n_classes + 1; j++) {
-                        // if adding this element to an existing class
-                        // will increase its variance beyond the limit, break
-                        // the class at this point, setting the `lower_class_limit`
-                        // at this point.
-                        if (variance_combinations[l][j] >=
-                            (variance + variance_combinations[i4][j - 1])) {
-                            lower_class_limits[l][j] = lower_class_limit;
-                            variance_combinations[l][j] = variance +
-                                variance_combinations[i4][j - 1];
-                        }
-                    }
-                }
-            }
-
-            lower_class_limits[l][1] = 1;
-            variance_combinations[l][1] = variance;
-        }
-
-        // return the two matrices. for just providing breaks, only
-        // `lower_class_limits` is needed, but variances can be useful to
-        // evaluate goodness of fit.
-        return {
-            lower_class_limits: lower_class_limits,
-            variance_combinations: variance_combinations
-        };
-    }
-
-    // ## Pull Breaks Values for Jenks
-    //
-    // the second part of the jenks recipe: take the calculated matrices
-    // and derive an array of n breaks.
-    function jenksBreaks(data, lower_class_limits, n_classes) {
-
-        var k = data.length - 1,
-            kclass = [],
-            countNum = n_classes;
-
-        // the calculation of classes will never include the upper and
-        // lower bounds, so we need to explicitly set them
-        kclass[n_classes] = data[data.length - 1];
-        kclass[0] = data[0];
-
-        // the lower_class_limits matrix is used as indices into itself
-        // here: the `k` variable is reused in each iteration.
-        while (countNum > 1) {
-            kclass[countNum - 1] = data[lower_class_limits[k][countNum] - 2];
-            k = lower_class_limits[k][countNum] - 1;
-            countNum--;
-        }
-
-        return kclass;
-    }
-
-    // # [Jenks natural breaks optimization](http://en.wikipedia.org/wiki/Jenks_natural_breaks_optimization)
-    //
-    // Implementations: [1](http://danieljlewis.org/files/2010/06/Jenks.pdf) (python),
-    // [2](https://github.com/vvoovv/djeo-jenks/blob/master/main.js) (buggy),
-    // [3](https://github.com/simogeo/geostats/blob/master/lib/geostats.js#L407) (works)
-    //
-    // Depends on `jenksBreaks()` and `jenksMatrices()`
-    function jenks(data, n_classes) {
-
-        if (n_classes > data.length) return null;
-
-        // sort data in numerical order, since this is expected
-        // by the matrices function
-        data = data.slice().sort(function (a, b) { return a - b; });
-
-        // get our basic matrices
-        var matrices = jenksMatrices(data, n_classes),
-            // we only need lower class limits here
-            lower_class_limits = matrices.lower_class_limits;
-
-        // extract n_classes out of the computed matrices
-        return jenksBreaks(data, lower_class_limits, n_classes);
-
-    }
-
-    // # [Skewness](http://en.wikipedia.org/wiki/Skewness)
-    //
-    // A measure of the extent to which a probability distribution of a
-    // real-valued random variable "leans" to one side of the mean.
-    // The skewness value can be positive or negative, or even undefined.
-    //
-    // Implementation is based on the adjusted Fisher-Pearson standardized
-    // moment coefficient, which is the version found in Excel and several
-    // statistical packages including Minitab, SAS and SPSS.
-    //
-    // Depends on `sum_nth_power_deviations()` and `sample_standard_deviation`
-    function sample_skewness(x) {
-        // The skewness of less than three arguments is null
-        if (x.length < 3) return null;
-
-        var n = x.length,
-            cubed_s = Math.pow(sample_standard_deviation(x), 3),
-            sum_cubed_deviations = sum_nth_power_deviations(x, 3);
-
-        return n * sum_cubed_deviations / ((n - 1) * (n - 2) * cubed_s);
-    }
-
-    // # Standard Normal Table
-    // A standard normal table, also called the unit normal table or Z table,
-    // is a mathematical table for the values of Φ (phi), which are the values of
-    // the cumulative distribution function of the normal distribution.
-    // It is used to find the probability that a statistic is observed below,
-    // above, or between values on the standard normal distribution, and by
-    // extension, any normal distribution.
-    //
-    // The probabilities are taken from http://en.wikipedia.org/wiki/Standard_normal_table
-    // The table used is the cumulative, and not cumulative from 0 to mean
-    // (even though the latter has 5 digits precision, instead of 4).
-    var standard_normal_table = [
-        /*  z      0.00    0.01    0.02    0.03    0.04    0.05    0.06    0.07    0.08    0.09 */
-        /* 0.0 */
-        0.5000, 0.5040, 0.5080, 0.5120, 0.5160, 0.5199, 0.5239, 0.5279, 0.5319, 0.5359,
-        /* 0.1 */
-        0.5398, 0.5438, 0.5478, 0.5517, 0.5557, 0.5596, 0.5636, 0.5675, 0.5714, 0.5753,
-        /* 0.2 */
-        0.5793, 0.5832, 0.5871, 0.5910, 0.5948, 0.5987, 0.6026, 0.6064, 0.6103, 0.6141,
-        /* 0.3 */
-        0.6179, 0.6217, 0.6255, 0.6293, 0.6331, 0.6368, 0.6406, 0.6443, 0.6480, 0.6517,
-        /* 0.4 */
-        0.6554, 0.6591, 0.6628, 0.6664, 0.6700, 0.6736, 0.6772, 0.6808, 0.6844, 0.6879,
-        /* 0.5 */
-        0.6915, 0.6950, 0.6985, 0.7019, 0.7054, 0.7088, 0.7123, 0.7157, 0.7190, 0.7224,
-        /* 0.6 */
-        0.7257, 0.7291, 0.7324, 0.7357, 0.7389, 0.7422, 0.7454, 0.7486, 0.7517, 0.7549,
-        /* 0.7 */
-        0.7580, 0.7611, 0.7642, 0.7673, 0.7704, 0.7734, 0.7764, 0.7794, 0.7823, 0.7852,
-        /* 0.8 */
-        0.7881, 0.7910, 0.7939, 0.7967, 0.7995, 0.8023, 0.8051, 0.8078, 0.8106, 0.8133,
-        /* 0.9 */
-        0.8159, 0.8186, 0.8212, 0.8238, 0.8264, 0.8289, 0.8315, 0.8340, 0.8365, 0.8389,
-        /* 1.0 */
-        0.8413, 0.8438, 0.8461, 0.8485, 0.8508, 0.8531, 0.8554, 0.8577, 0.8599, 0.8621,
-        /* 1.1 */
-        0.8643, 0.8665, 0.8686, 0.8708, 0.8729, 0.8749, 0.8770, 0.8790, 0.8810, 0.8830,
-        /* 1.2 */
-        0.8849, 0.8869, 0.8888, 0.8907, 0.8925, 0.8944, 0.8962, 0.8980, 0.8997, 0.9015,
-        /* 1.3 */
-        0.9032, 0.9049, 0.9066, 0.9082, 0.9099, 0.9115, 0.9131, 0.9147, 0.9162, 0.9177,
-        /* 1.4 */
-        0.9192, 0.9207, 0.9222, 0.9236, 0.9251, 0.9265, 0.9279, 0.9292, 0.9306, 0.9319,
-        /* 1.5 */
-        0.9332, 0.9345, 0.9357, 0.9370, 0.9382, 0.9394, 0.9406, 0.9418, 0.9429, 0.9441,
-        /* 1.6 */
-        0.9452, 0.9463, 0.9474, 0.9484, 0.9495, 0.9505, 0.9515, 0.9525, 0.9535, 0.9545,
-        /* 1.7 */
-        0.9554, 0.9564, 0.9573, 0.9582, 0.9591, 0.9599, 0.9608, 0.9616, 0.9625, 0.9633,
-        /* 1.8 */
-        0.9641, 0.9649, 0.9656, 0.9664, 0.9671, 0.9678, 0.9686, 0.9693, 0.9699, 0.9706,
-        /* 1.9 */
-        0.9713, 0.9719, 0.9726, 0.9732, 0.9738, 0.9744, 0.9750, 0.9756, 0.9761, 0.9767,
-        /* 2.0 */
-        0.9772, 0.9778, 0.9783, 0.9788, 0.9793, 0.9798, 0.9803, 0.9808, 0.9812, 0.9817,
-        /* 2.1 */
-        0.9821, 0.9826, 0.9830, 0.9834, 0.9838, 0.9842, 0.9846, 0.9850, 0.9854, 0.9857,
-        /* 2.2 */
-        0.9861, 0.9864, 0.9868, 0.9871, 0.9875, 0.9878, 0.9881, 0.9884, 0.9887, 0.9890,
-        /* 2.3 */
-        0.9893, 0.9896, 0.9898, 0.9901, 0.9904, 0.9906, 0.9909, 0.9911, 0.9913, 0.9916,
-        /* 2.4 */
-        0.9918, 0.9920, 0.9922, 0.9925, 0.9927, 0.9929, 0.9931, 0.9932, 0.9934, 0.9936,
-        /* 2.5 */
-        0.9938, 0.9940, 0.9941, 0.9943, 0.9945, 0.9946, 0.9948, 0.9949, 0.9951, 0.9952,
-        /* 2.6 */
-        0.9953, 0.9955, 0.9956, 0.9957, 0.9959, 0.9960, 0.9961, 0.9962, 0.9963, 0.9964,
-        /* 2.7 */
-        0.9965, 0.9966, 0.9967, 0.9968, 0.9969, 0.9970, 0.9971, 0.9972, 0.9973, 0.9974,
-        /* 2.8 */
-        0.9974, 0.9975, 0.9976, 0.9977, 0.9977, 0.9978, 0.9979, 0.9979, 0.9980, 0.9981,
-        /* 2.9 */
-        0.9981, 0.9982, 0.9982, 0.9983, 0.9984, 0.9984, 0.9985, 0.9985, 0.9986, 0.9986,
-        /* 3.0 */
-        0.9987, 0.9987, 0.9987, 0.9988, 0.9988, 0.9989, 0.9989, 0.9989, 0.9990, 0.9990
-    ];
-
-    // # [Cumulative Standard Normal Probability](http://en.wikipedia.org/wiki/Standard_normal_table)
-    //
-    // Since probability tables cannot be
-    // printed for every normal distribution, as there are an infinite variety
-    // of normal distributions, it is common practice to convert a normal to a
-    // standard normal and then use the standard normal table to find probabilities
-    function cumulative_std_normal_probability(z) {
-
-        // Calculate the position of this value.
-        var absZ = Math.abs(z),
-            // Each row begins with a different
-            // significant digit: 0.5, 0.6, 0.7, and so on. So the row is simply
-            // this value's significant digit: 0.567 will be in row 0, so row=0,
-            // 0.643 will be in row 1, so row=10.
-            row = Math.floor(absZ * 10),
-            column = 10 * (Math.floor(absZ * 100) / 10 - Math.floor(absZ * 100 / 10)),
-            index = Math.min((row * 10) + column, standard_normal_table.length - 1);
-
-        // The index we calculate must be in the table as a positive value,
-        // but we still pay attention to whether the input is positive
-        // or negative, and flip the output value as a last step.
-        if (z >= 0) {
-            return standard_normal_table[index];
-        } else {
-            // due to floating-point arithmetic, values in the table with
-            // 4 significant figures can nevertheless end up as repeating
-            // fractions when they're computed here.
-            return +(1 - standard_normal_table[index]).toFixed(4);
-        }
-    }
-
-    // # [Z-Score, or Standard Score](http://en.wikipedia.org/wiki/Standard_score)
-    //
-    // The standard score is the number of standard deviations an observation
-    // or datum is above or below the mean. Thus, a positive standard score
-    // represents a datum above the mean, while a negative standard score
-    // represents a datum below the mean. It is a dimensionless quantity
-    // obtained by subtracting the population mean from an individual raw
-    // score and then dividing the difference by the population standard
-    // deviation.
-    //
-    // The z-score is only defined if one knows the population parameters;
-    // if one only has a sample set, then the analogous computation with
-    // sample mean and sample standard deviation yields the
-    // Student's t-statistic.
-    function z_score(x, mean, standard_deviation) {
-        return (x - mean) / standard_deviation;
-    }
-
-    // We use `ε`, epsilon, as a stopping criterion when we want to iterate
-    // until we're "close enough".
-    var epsilon = 0.0001;
-
-    // # [Factorial](https://en.wikipedia.org/wiki/Factorial)
-    //
-    // A factorial, usually written n!, is the product of all positive
-    // integers less than or equal to n. Often factorial is implemented
-    // recursively, but this iterative approach is significantly faster
-    // and simpler.
-    function factorial(n) {
-
-        // factorial is mathematically undefined for negative numbers
-        if (n < 0 ) { return null; }
-
-        // typically you'll expand the factorial function going down, like
-        // 5! = 5 * 4 * 3 * 2 * 1. This is going in the opposite direction,
-        // counting from 2 up to the number in question, and since anything
-        // multiplied by 1 is itself, the loop only needs to start at 2.
-        var accumulator = 1;
-        for (var i = 2; i <= n; i++) {
-            // for each number up to and including the number `n`, multiply
-            // the accumulator my that number.
-            accumulator *= i;
-        }
-        return accumulator;
-    }
-
-    // # Bernoulli Distribution
-    //
-    // The [Bernoulli distribution](http://en.wikipedia.org/wiki/Bernoulli_distribution)
-    // is the probability discrete
-    // distribution of a random variable which takes value 1 with success
-    // probability `p` and value 0 with failure
-    // probability `q` = 1 - `p`. It can be used, for example, to represent the
-    // toss of a coin, where "1" is defined to mean "heads" and "0" is defined
-    // to mean "tails" (or vice versa). It is
-    // a special case of a Binomial Distribution
-    // where `n` = 1.
-    function bernoulli_distribution(p) {
-        // Check that `p` is a valid probability (0 ≤ p ≤ 1)
-        if (p < 0 || p > 1 ) { return null; }
-
-        return binomial_distribution(1, p);
-    }
-
-    // # Binomial Distribution
-    //
-    // The [Binomial Distribution](http://en.wikipedia.org/wiki/Binomial_distribution) is the discrete probability
-    // distribution of the number of successes in a sequence of n independent yes/no experiments, each of which yields
-    // success with probability `probability`. Such a success/failure experiment is also called a Bernoulli experiment or
-    // Bernoulli trial; when trials = 1, the Binomial Distribution is a Bernoulli Distribution.
-    function binomial_distribution(trials, probability) {
-        // Check that `p` is a valid probability (0 ≤ p ≤ 1),
-        // that `n` is an integer, strictly positive.
-        if (probability < 0 || probability > 1 ||
-            trials <= 0 || trials % 1 !== 0) {
-            return null;
-        }
-
-        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
-        function probability_mass(x, trials, probability) {
-            return factorial(trials) /
-                (factorial(x) * factorial(trials - x)) *
-                (Math.pow(probability, x) * Math.pow(1 - probability, trials - x));
-        }
-
-        // We initialize `x`, the random variable, and `accumulator`, an accumulator
-        // for the cumulative distribution function to 0. `distribution_functions`
-        // is the object we'll return with the `probability_of_x` and the
-        // `cumulative_probability_of_x`, as well as the calculated mean &
-        // variance. We iterate until the `cumulative_probability_of_x` is
-        // within `epsilon` of 1.0.
-        var x = 0,
-            cumulative_probability = 0,
-            cells = {};
-
-        // This algorithm iterates through each potential outcome,
-        // until the `cumulative_probability` is very close to 1, at
-        // which point we've defined the vast majority of outcomes
-        do {
-            cells[x] = probability_mass(x, trials, probability);
-            cumulative_probability += cells[x];
-            x++;
-        // when the cumulative_probability is nearly 1, we've calculated
-        // the useful range of this distribution
-        } while (cumulative_probability < 1 - epsilon);
-
-        return cells;
-    }
-
-    // # Poisson Distribution
-    //
-    // The [Poisson Distribution](http://en.wikipedia.org/wiki/Poisson_distribution)
-    // is a discrete probability distribution that expresses the probability
-    // of a given number of events occurring in a fixed interval of time
-    // and/or space if these events occur with a known average rate and
-    // independently of the time since the last event.
-    //
-    // The Poisson Distribution is characterized by the strictly positive
-    // mean arrival or occurrence rate, `λ`.
-    function poisson_distribution(lambda) {
-        // Check that lambda is strictly positive
-        if (lambda <= 0) { return null; }
-
-        // our current place in the distribution
-        var x = 0,
-            // and we keep track of the current cumulative probability, in
-            // order to know when to stop calculating chances.
-            cumulative_probability = 0,
-            // the calculated cells to be returned
-            cells = {};
-
-        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
-        function probability_mass(x, lambda) {
-            return (Math.pow(Math.E, -lambda) * Math.pow(lambda, x)) /
-                factorial(x);
-        }
-
-        // This algorithm iterates through each potential outcome,
-        // until the `cumulative_probability` is very close to 1, at
-        // which point we've defined the vast majority of outcomes
-        do {
-            cells[x] = probability_mass(x, lambda);
-            cumulative_probability += cells[x];
-            x++;
-        // when the cumulative_probability is nearly 1, we've calculated
-        // the useful range of this distribution
-        } while (cumulative_probability < 1 - epsilon);
-
-        return cells;
-    }
-
-    // # Percentage Points of the χ2 (Chi-Squared) Distribution
-    // The [χ2 (Chi-Squared) Distribution](http://en.wikipedia.org/wiki/Chi-squared_distribution) is used in the common
-    // chi-squared tests for goodness of fit of an observed distribution to a theoretical one, the independence of two
-    // criteria of classification of qualitative data, and in confidence interval estimation for a population standard
-    // deviation of a normal distribution from a sample standard deviation.
-    //
-    // Values from Appendix 1, Table III of William W. Hines & Douglas C. Montgomery, "Probability and Statistics in
-    // Engineering and Management Science", Wiley (1980).
-    var chi_squared_distribution_table = {
-        1: { 0.995:  0.00, 0.99:  0.00, 0.975:  0.00, 0.95:  0.00, 0.9:  0.02, 0.5:  0.45, 0.1:  2.71, 0.05:  3.84, 0.025:  5.02, 0.01:  6.63, 0.005:  7.88 },
-        2: { 0.995:  0.01, 0.99:  0.02, 0.975:  0.05, 0.95:  0.10, 0.9:  0.21, 0.5:  1.39, 0.1:  4.61, 0.05:  5.99, 0.025:  7.38, 0.01:  9.21, 0.005: 10.60 },
-        3: { 0.995:  0.07, 0.99:  0.11, 0.975:  0.22, 0.95:  0.35, 0.9:  0.58, 0.5:  2.37, 0.1:  6.25, 0.05:  7.81, 0.025:  9.35, 0.01: 11.34, 0.005: 12.84 },
-        4: { 0.995:  0.21, 0.99:  0.30, 0.975:  0.48, 0.95:  0.71, 0.9:  1.06, 0.5:  3.36, 0.1:  7.78, 0.05:  9.49, 0.025: 11.14, 0.01: 13.28, 0.005: 14.86 },
-        5: { 0.995:  0.41, 0.99:  0.55, 0.975:  0.83, 0.95:  1.15, 0.9:  1.61, 0.5:  4.35, 0.1:  9.24, 0.05: 11.07, 0.025: 12.83, 0.01: 15.09, 0.005: 16.75 },
-        6: { 0.995:  0.68, 0.99:  0.87, 0.975:  1.24, 0.95:  1.64, 0.9:  2.20, 0.5:  5.35, 0.1: 10.65, 0.05: 12.59, 0.025: 14.45, 0.01: 16.81, 0.005: 18.55 },
-        7: { 0.995:  0.99, 0.99:  1.25, 0.975:  1.69, 0.95:  2.17, 0.9:  2.83, 0.5:  6.35, 0.1: 12.02, 0.05: 14.07, 0.025: 16.01, 0.01: 18.48, 0.005: 20.28 },
-        8: { 0.995:  1.34, 0.99:  1.65, 0.975:  2.18, 0.95:  2.73, 0.9:  3.49, 0.5:  7.34, 0.1: 13.36, 0.05: 15.51, 0.025: 17.53, 0.01: 20.09, 0.005: 21.96 },
-        9: { 0.995:  1.73, 0.99:  2.09, 0.975:  2.70, 0.95:  3.33, 0.9:  4.17, 0.5:  8.34, 0.1: 14.68, 0.05: 16.92, 0.025: 19.02, 0.01: 21.67, 0.005: 23.59 },
-        10: { 0.995:  2.16, 0.99:  2.56, 0.975:  3.25, 0.95:  3.94, 0.9:  4.87, 0.5:  9.34, 0.1: 15.99, 0.05: 18.31, 0.025: 20.48, 0.01: 23.21, 0.005: 25.19 },
-        11: { 0.995:  2.60, 0.99:  3.05, 0.975:  3.82, 0.95:  4.57, 0.9:  5.58, 0.5: 10.34, 0.1: 17.28, 0.05: 19.68, 0.025: 21.92, 0.01: 24.72, 0.005: 26.76 },
-        12: { 0.995:  3.07, 0.99:  3.57, 0.975:  4.40, 0.95:  5.23, 0.9:  6.30, 0.5: 11.34, 0.1: 18.55, 0.05: 21.03, 0.025: 23.34, 0.01: 26.22, 0.005: 28.30 },
-        13: { 0.995:  3.57, 0.99:  4.11, 0.975:  5.01, 0.95:  5.89, 0.9:  7.04, 0.5: 12.34, 0.1: 19.81, 0.05: 22.36, 0.025: 24.74, 0.01: 27.69, 0.005: 29.82 },
-        14: { 0.995:  4.07, 0.99:  4.66, 0.975:  5.63, 0.95:  6.57, 0.9:  7.79, 0.5: 13.34, 0.1: 21.06, 0.05: 23.68, 0.025: 26.12, 0.01: 29.14, 0.005: 31.32 },
-        15: { 0.995:  4.60, 0.99:  5.23, 0.975:  6.27, 0.95:  7.26, 0.9:  8.55, 0.5: 14.34, 0.1: 22.31, 0.05: 25.00, 0.025: 27.49, 0.01: 30.58, 0.005: 32.80 },
-        16: { 0.995:  5.14, 0.99:  5.81, 0.975:  6.91, 0.95:  7.96, 0.9:  9.31, 0.5: 15.34, 0.1: 23.54, 0.05: 26.30, 0.025: 28.85, 0.01: 32.00, 0.005: 34.27 },
-        17: { 0.995:  5.70, 0.99:  6.41, 0.975:  7.56, 0.95:  8.67, 0.9: 10.09, 0.5: 16.34, 0.1: 24.77, 0.05: 27.59, 0.025: 30.19, 0.01: 33.41, 0.005: 35.72 },
-        18: { 0.995:  6.26, 0.99:  7.01, 0.975:  8.23, 0.95:  9.39, 0.9: 10.87, 0.5: 17.34, 0.1: 25.99, 0.05: 28.87, 0.025: 31.53, 0.01: 34.81, 0.005: 37.16 },
-        19: { 0.995:  6.84, 0.99:  7.63, 0.975:  8.91, 0.95: 10.12, 0.9: 11.65, 0.5: 18.34, 0.1: 27.20, 0.05: 30.14, 0.025: 32.85, 0.01: 36.19, 0.005: 38.58 },
-        20: { 0.995:  7.43, 0.99:  8.26, 0.975:  9.59, 0.95: 10.85, 0.9: 12.44, 0.5: 19.34, 0.1: 28.41, 0.05: 31.41, 0.025: 34.17, 0.01: 37.57, 0.005: 40.00 },
-        21: { 0.995:  8.03, 0.99:  8.90, 0.975: 10.28, 0.95: 11.59, 0.9: 13.24, 0.5: 20.34, 0.1: 29.62, 0.05: 32.67, 0.025: 35.48, 0.01: 38.93, 0.005: 41.40 },
-        22: { 0.995:  8.64, 0.99:  9.54, 0.975: 10.98, 0.95: 12.34, 0.9: 14.04, 0.5: 21.34, 0.1: 30.81, 0.05: 33.92, 0.025: 36.78, 0.01: 40.29, 0.005: 42.80 },
-        23: { 0.995:  9.26, 0.99: 10.20, 0.975: 11.69, 0.95: 13.09, 0.9: 14.85, 0.5: 22.34, 0.1: 32.01, 0.05: 35.17, 0.025: 38.08, 0.01: 41.64, 0.005: 44.18 },
-        24: { 0.995:  9.89, 0.99: 10.86, 0.975: 12.40, 0.95: 13.85, 0.9: 15.66, 0.5: 23.34, 0.1: 33.20, 0.05: 36.42, 0.025: 39.36, 0.01: 42.98, 0.005: 45.56 },
-        25: { 0.995: 10.52, 0.99: 11.52, 0.975: 13.12, 0.95: 14.61, 0.9: 16.47, 0.5: 24.34, 0.1: 34.28, 0.05: 37.65, 0.025: 40.65, 0.01: 44.31, 0.005: 46.93 },
-        26: { 0.995: 11.16, 0.99: 12.20, 0.975: 13.84, 0.95: 15.38, 0.9: 17.29, 0.5: 25.34, 0.1: 35.56, 0.05: 38.89, 0.025: 41.92, 0.01: 45.64, 0.005: 48.29 },
-        27: { 0.995: 11.81, 0.99: 12.88, 0.975: 14.57, 0.95: 16.15, 0.9: 18.11, 0.5: 26.34, 0.1: 36.74, 0.05: 40.11, 0.025: 43.19, 0.01: 46.96, 0.005: 49.65 },
-        28: { 0.995: 12.46, 0.99: 13.57, 0.975: 15.31, 0.95: 16.93, 0.9: 18.94, 0.5: 27.34, 0.1: 37.92, 0.05: 41.34, 0.025: 44.46, 0.01: 48.28, 0.005: 50.99 },
-        29: { 0.995: 13.12, 0.99: 14.26, 0.975: 16.05, 0.95: 17.71, 0.9: 19.77, 0.5: 28.34, 0.1: 39.09, 0.05: 42.56, 0.025: 45.72, 0.01: 49.59, 0.005: 52.34 },
-        30: { 0.995: 13.79, 0.99: 14.95, 0.975: 16.79, 0.95: 18.49, 0.9: 20.60, 0.5: 29.34, 0.1: 40.26, 0.05: 43.77, 0.025: 46.98, 0.01: 50.89, 0.005: 53.67 },
-        40: { 0.995: 20.71, 0.99: 22.16, 0.975: 24.43, 0.95: 26.51, 0.9: 29.05, 0.5: 39.34, 0.1: 51.81, 0.05: 55.76, 0.025: 59.34, 0.01: 63.69, 0.005: 66.77 },
-        50: { 0.995: 27.99, 0.99: 29.71, 0.975: 32.36, 0.95: 34.76, 0.9: 37.69, 0.5: 49.33, 0.1: 63.17, 0.05: 67.50, 0.025: 71.42, 0.01: 76.15, 0.005: 79.49 },
-        60: { 0.995: 35.53, 0.99: 37.48, 0.975: 40.48, 0.95: 43.19, 0.9: 46.46, 0.5: 59.33, 0.1: 74.40, 0.05: 79.08, 0.025: 83.30, 0.01: 88.38, 0.005: 91.95 },
-        70: { 0.995: 43.28, 0.99: 45.44, 0.975: 48.76, 0.95: 51.74, 0.9: 55.33, 0.5: 69.33, 0.1: 85.53, 0.05: 90.53, 0.025: 95.02, 0.01: 100.42, 0.005: 104.22 },
-        80: { 0.995: 51.17, 0.99: 53.54, 0.975: 57.15, 0.95: 60.39, 0.9: 64.28, 0.5: 79.33, 0.1: 96.58, 0.05: 101.88, 0.025: 106.63, 0.01: 112.33, 0.005: 116.32 },
-        90: { 0.995: 59.20, 0.99: 61.75, 0.975: 65.65, 0.95: 69.13, 0.9: 73.29, 0.5: 89.33, 0.1: 107.57, 0.05: 113.14, 0.025: 118.14, 0.01: 124.12, 0.005: 128.30 },
-        100: { 0.995: 67.33, 0.99: 70.06, 0.975: 74.22, 0.95: 77.93, 0.9: 82.36, 0.5: 99.33, 0.1: 118.50, 0.05: 124.34, 0.025: 129.56, 0.01: 135.81, 0.005: 140.17 }
-    };
-
-    // # χ2 (Chi-Squared) Goodness-of-Fit Test
-    //
-    // The [χ2 (Chi-Squared) Goodness-of-Fit Test](http://en.wikipedia.org/wiki/Goodness_of_fit#Pearson.27s_chi-squared_test)
-    // uses a measure of goodness of fit which is the sum of differences between observed and expected outcome frequencies
-    // (that is, counts of observations), each squared and divided by the number of observations expected given the
-    // hypothesized distribution. The resulting χ2 statistic, `chi_squared`, can be compared to the chi-squared distribution
-    // to determine the goodness of fit. In order to determine the degrees of freedom of the chi-squared distribution, one
-    // takes the total number of observed frequencies and subtracts the number of estimated parameters. The test statistic
-    // follows, approximately, a chi-square distribution with (k − c) degrees of freedom where `k` is the number of non-empty
-    // cells and `c` is the number of estimated parameters for the distribution.
-    function chi_squared_goodness_of_fit(data, distribution_type, significance) {
-        // Estimate from the sample data, a weighted mean.
-        var input_mean = mean(data),
-            // Calculated value of the χ2 statistic.
-            chi_squared = 0,
-            // Degrees of freedom, calculated as (number of class intervals -
-            // number of hypothesized distribution parameters estimated - 1)
-            degrees_of_freedom,
-            // Number of hypothesized distribution parameters estimated, expected to be supplied in the distribution test.
-            // Lose one degree of freedom for estimating `lambda` from the sample data.
-            c = 1,
-            // The hypothesized distribution.
-            // Generate the hypothesized distribution.
-            hypothesized_distribution = distribution_type(input_mean),
-            observed_frequencies = [],
-            expected_frequencies = [],
-            k;
-
-        // Create an array holding a histogram from the sample data, of
-        // the form `{ value: numberOfOcurrences }`
-        for (var i = 0; i < data.length; i++) {
-            if (observed_frequencies[data[i]] === undefined) {
-                observed_frequencies[data[i]] = 0;
-            }
-            observed_frequencies[data[i]]++;
-        }
-
-        // The histogram we created might be sparse - there might be gaps
-        // between values. So we iterate through the histogram, making
-        // sure that instead of undefined, gaps have 0 values.
-        for (i = 0; i < observed_frequencies.length; i++) {
-            if (observed_frequencies[i] === undefined) {
-                observed_frequencies[i] = 0;
-            }
-        }
-
-        // Create an array holding a histogram of expected data given the
-        // sample size and hypothesized distribution.
-        for (k in hypothesized_distribution) {
-            if (k in observed_frequencies) {
-                expected_frequencies[k] = hypothesized_distribution[k] * data.length;
-            }
-        }
-
-        // Working backward through the expected frequencies, collapse classes
-        // if less than three observations are expected for a class.
-        // This transformation is applied to the observed frequencies as well.
-        for (k = expected_frequencies.length - 1; k >= 0; k--) {
-            if (expected_frequencies[k] < 3) {
-                expected_frequencies[k - 1] += expected_frequencies[k];
-                expected_frequencies.pop();
-
-                observed_frequencies[k - 1] += observed_frequencies[k];
-                observed_frequencies.pop();
-            }
-        }
-
-        // Iterate through the squared differences between observed & expected
-        // frequencies, accumulating the `chi_squared` statistic.
-        for (k = 0; k < observed_frequencies.length; k++) {
-            chi_squared += Math.pow(
-                observed_frequencies[k] - expected_frequencies[k], 2) /
-                expected_frequencies[k];
-        }
-
-        // Calculate degrees of freedom for this test and look it up in the
-        // `chi_squared_distribution_table` in order to
-        // accept or reject the goodness-of-fit of the hypothesized distribution.
-        degrees_of_freedom = observed_frequencies.length - c - 1;
-        return chi_squared_distribution_table[degrees_of_freedom][significance] < chi_squared;
-    }
-
-    // # Mixin
-    //
-    // Mixin simple_statistics to a single Array instance if provided
-    // or the Array native object if not. This is an optional
-    // feature that lets you treat simple_statistics as a native feature
-    // of Javascript.
-    function mixin(array) {
-        var support = !!(Object.defineProperty && Object.defineProperties);
-        if (!support) throw new Error('without defineProperty, simple-statistics cannot be mixed in');
-
-        // only methods which work on basic arrays in a single step
-        // are supported
-        var arrayMethods = ['median', 'standard_deviation', 'sum',
-            'sample_skewness',
-            'mean', 'min', 'max', 'quantile', 'geometric_mean',
-            'harmonic_mean'];
-
-        // create a closure with a method name so that a reference
-        // like `arrayMethods[i]` doesn't follow the loop increment
-        function wrap(method) {
-            return function() {
-                // cast any arguments into an array, since they're
-                // natively objects
-                var args = Array.prototype.slice.apply(arguments);
-                // make the first argument the array itself
-                args.unshift(this);
-                // return the result of the ss method
-                return ss[method].apply(ss, args);
-            };
-        }
-
-        // select object to extend
-        var extending;
-        if (array) {
-            // create a shallow copy of the array so that our internal
-            // operations do not change it by reference
-            extending = array.slice();
-        } else {
-            extending = Array.prototype;
-        }
-
-        // for each array function, define a function that gets
-        // the array as the first argument.
-        // We use [defineProperty](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/defineProperty)
-        // because it allows these properties to be non-enumerable:
-        // `for (var in x)` loops will not run into problems with this
-        // implementation.
-        for (var i = 0; i < arrayMethods.length; i++) {
-            Object.defineProperty(extending, arrayMethods[i], {
-                value: wrap(arrayMethods[i]),
-                configurable: true,
-                enumerable: false,
-                writable: true
-            });
-        }
-
-        return extending;
-    }
-
-    ss.linear_regression = linear_regression;
-    ss.standard_deviation = standard_deviation;
-    ss.r_squared = r_squared;
-    ss.median = median;
-    ss.mean = mean;
-    ss.mode = mode;
-    ss.min = min;
-    ss.max = max;
-    ss.sum = sum;
-    ss.quantile = quantile;
-    ss.quantile_sorted = quantile_sorted;
-    ss.iqr = iqr;
-    ss.mad = mad;
-
-    ss.sample_covariance = sample_covariance;
-    ss.sample_correlation = sample_correlation;
-    ss.sample_variance = sample_variance;
-    ss.sample_standard_deviation = sample_standard_deviation;
-    ss.sample_skewness = sample_skewness;
-
-    ss.geometric_mean = geometric_mean;
-    ss.harmonic_mean = harmonic_mean;
-    ss.variance = variance;
-    ss.t_test = t_test;
-    ss.t_test_two_sample = t_test_two_sample;
-
-    // jenks
-    ss.jenksMatrices = jenksMatrices;
-    ss.jenksBreaks = jenksBreaks;
-    ss.jenks = jenks;
-
-    ss.bayesian = bayesian;
-
-    // Distribution-related methods
-    ss.epsilon = epsilon; // We make ε available to the test suite.
-    ss.factorial = factorial;
-    ss.bernoulli_distribution = bernoulli_distribution;
-    ss.binomial_distribution = binomial_distribution;
-    ss.poisson_distribution = poisson_distribution;
-    ss.chi_squared_goodness_of_fit = chi_squared_goodness_of_fit;
-
-    // Normal distribution
-    ss.z_score = z_score;
-    ss.cumulative_std_normal_probability = cumulative_std_normal_probability;
-    ss.standard_normal_table = standard_normal_table;
-
-    // Alias this into its common name
-    ss.average = mean;
-    ss.interquartile_range = iqr;
-    ss.mixin = mixin;
-    ss.median_absolute_deviation = mad;
-
-})(this);
-
-},{}],91:[function(require,module,exports){
-// http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
-// modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
-// which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-module.exports = function(point, polygon){
-  var x = point.geometry.coordinates[0]
-  var y = point.geometry.coordinates[1]
-  var vs = polygon.geometry.coordinates[0]
-
-  var isInside = false;
-  for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-    var xi = vs[i][0], yi = vs[i][1];
-    var xj = vs[j][0], yj = vs[j][1];
-    
-    var intersect = ((yi > y) != (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) isInside = !isInside;
-  }
-  return isInside
+    return value;
 }
 
-
-},{}],92:[function(require,module,exports){
+},{"turf-inside":86}],86:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],87:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
-module.exports = function (polyFC, ptFC, inField, outField, done) {
+/**
+ * Calculates the variance value of a field for {@link Point} features within a set of {@link Polygon} features.
+ *
+ * @module turf/variance
+ * @category aggregation
+ * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
+ * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
+ * @param {string} inField the field in input data to analyze
+ * @param {string} outField the field in which to store results
+ * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
+ * with properties listed as `outField`
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.414398, 37.684092],
+ *           [-97.414398, 37.731353],
+ *           [-97.332344, 37.731353],
+ *           [-97.332344, 37.684092],
+ *           [-97.414398, 37.684092]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-97.333717, 37.606072],
+ *           [-97.333717, 37.675397],
+ *           [-97.237586, 37.675397],
+ *           [-97.237586, 37.606072],
+ *           [-97.333717, 37.606072]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.401351, 37.719676]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 600
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.355346, 37.706639]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 100
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.387962, 37.70012]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 200
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.301788, 37.66507]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "population": 300
+ *       },
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.265052, 37.643325]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var aggregated = turf.variance(
+ *   polygons, points, 'population', 'variance');
+ *
+ * var resultFeatures = points.features.concat(
+ *   aggregated.features);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+module.exports = function (polyFC, ptFC, inField, outField) {
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
       poly.properties = {};
@@ -41446,15 +40942,16 @@ module.exports = function (polyFC, ptFC, inField, outField, done) {
       }
     });
     poly.properties[outField] = ss.variance(values);
-  })
+  });
 
   return polyFC;
-}
-},{"simple-statistics":93,"turf-inside":94}],93:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],94:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],95:[function(require,module,exports){
+};
+
+},{"simple-statistics":88,"turf-inside":89}],88:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],89:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],90:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 var bearing = require('turf-bearing');
@@ -41520,10 +41017,52 @@ module.exports = function (line, dist, units) {
   return point(coords[coords.length - 1]);
 }
 
-},{"turf-bearing":96,"turf-destination":97,"turf-distance":98,"turf-point":99}],96:[function(require,module,exports){
+},{"turf-bearing":91,"turf-destination":92,"turf-distance":93,"turf-point":95}],91:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
+/**
+ * Takes two {@link Point} features and finds the bearing between them.
+ *
+ * @module turf/bearing
+ * @category measurement
+ * @param {Point} start starting Point
+ * @param {Point} end ending Point
+ * @category measurement
+ * @returns {Number} bearing in decimal degrees
+ * @example
+ * var point1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": '#f00'
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
+ * var point2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": '#0f0'
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.534, 39.123]
+ *   }
+ * };
+ *
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [point1, point2]
+ * };
+ *
+ * //=points
+ *
+ * var bearing = turf.bearing(point1, point2);
+ *
+ * //=bearing
+ */
 module.exports = function (point1, point2) {
     var coordinates1 = point1.geometry.coordinates;
     var coordinates2 = point2.geometry.coordinates;
@@ -41539,7 +41078,7 @@ module.exports = function (point1, point2) {
     var bearing = toDeg(Math.atan2(a, b));
 
     return bearing;
-}
+};
 
 function toRad(degree) {
     return degree * Math.PI / 180;
@@ -41549,31 +41088,43 @@ function toDeg(radian) {
     return radian * 180 / Math.PI;
 }
 
-},{}],97:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 var point = require('turf-point');
 
 /**
- * Calculates the destination point given a {@link Point} feature; distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
+ * Takes a {@link Point} feature and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
  *
  * @module turf/destination
+ * @category measurement
  * @param {Point} start a Point feature at the starting point
  * @param {Number} distance distance from the starting point
  * @param {Number} bearing ranging from -180 to 180
  * @param {String} units miles, kilometers, degrees, or radians
- * @returns {Point} a {@link Point} feature at the destination
+ * @returns {Point} a Point feature at the destination
  * @example
- * var point1 = turf.point([-75.343, 39.984]);
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
  * var distance = 50;
  * var bearing = 90;
  * var units = 'miles';
  *
- * var destination = turf.destination(point1, distance, bearing, units);
- * point1.properties['marker-color'] = '#f00';
- * destination.properties['marker-color'] = '#0f0';
+ * var destination = turf.destination(point, distance, bearing, units);
+ * destination.properties['marker-color'] = '#f00';
  *
- * var result = turf.featurecollection([point1, destination]);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [point, destination]
+ * };
  *
  * //=result
  */
@@ -41615,11 +41166,57 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-},{"turf-point":99}],98:[function(require,module,exports){
+},{"turf-point":95}],93:[function(require,module,exports){
+var invariant = require('turf-invariant');
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
+/**
+ * Takes two {@link Point} features and calculates
+ * the distance between them in degress, radians,
+ * miles, or kilometers. This uses the
+ * [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula)
+ * to account for global curvature.
+ *
+ * @module turf/distance
+ * @category measurement
+ * @param {Feature} from origin point
+ * @param {Feature} to destination point
+ * @param {String} [units=kilometers] can be degrees, radians, miles, or kilometers
+ * @return {Number} distance between the two points
+ * @example
+ * var point1 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.343, 39.984]
+ *   }
+ * };
+ * var point2 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.534, 39.123]
+ *   }
+ * };
+ * var units = "miles";
+ *
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [point1, point2]
+ * };
+ *
+ * //=points
+ *
+ * var distance = turf.distance(point1, point2, units);
+ *
+ * //=distance
+ */
 module.exports = function(point1, point2, units){
+  invariant.featureOf(point1, 'Point', 'distance');
+  invariant.featureOf(point2, 'Point', 'distance');
   var coordinates1 = point1.geometry.coordinates;
   var coordinates2 = point2.geometry.coordinates;
 
@@ -41631,42 +41228,117 @@ module.exports = function(point1, point2, units){
           Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-  var R = 0;
+  var R;
   switch(units){
     case 'miles':
       R = 3960;
-      break
+      break;
     case 'kilometers':
       R = 6373;
-      break
+      break;
     case 'degrees':
       R = 57.2957795;
-      break
+      break;
     case 'radians':
       R = 1;
-      break
+      break;
+    case undefined:
+      R = 6373;
+      break;
+    default:
+      throw new Error('unknown option given to "units"');
   }
+
   var distance = R * c;
   return distance;
-}
+};
 
-function toRad(degree){
+function toRad(degree) {
   return degree * Math.PI / 180;
 }
 
-},{}],99:[function(require,module,exports){
+},{"turf-invariant":94}],94:[function(require,module,exports){
+module.exports.geojsonType = geojsonType;
+module.exports.collectionOf = collectionOf;
+module.exports.featureOf = featureOf;
+
 /**
- * Generates a new {@link Point} feature, given coordinates
- * and, optionally, properties.
+ * Enforce expectations about types of GeoJSON objects for Turf.
+ *
+ * @alias geojsonType
+ * @param {GeoJSON} value any GeoJSON object
+ * @param {string} type expected GeoJSON type
+ * @param {String} name name of calling function
+ * @throws Error if value is not the expected type.
+ */
+function geojsonType(value, type, name) {
+    if (!type || !name) throw new Error('type and name required');
+
+    if (!value || value.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link Feature} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @alias featureOf
+ * @param {Feature} feature a feature with an expected geometry type
+ * @param {string} type expected GeoJSON type
+ * @param {String} name name of calling function
+ * @throws Error if value is not the expected type.
+ */
+function featureOf(value, type, name) {
+    if (!name) throw new Error('.featureOf() requires a name');
+    if (!value || value.type !== 'Feature' || !value.geometry) {
+        throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+    }
+    if (!value.geometry || value.geometry.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.geometry.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @alias collectionOf
+ * @param {FeatureCollection} featurecollection a featurecollection for which features will be judged
+ * @param {string} type expected GeoJSON type
+ * @param {String} name name of calling function
+ * @throws Error if value is not the expected type.
+ */
+function collectionOf(value, type, name) {
+    if (!name) throw new Error('.collectionOf() requires a name');
+    if (!value || value.type !== 'FeatureCollection') {
+        throw new Error('Invalid input to ' + name + ', FeatureCollection required');
+    }
+    for (var i = 0; i < value.features.length; i++) {
+        var feature = value.features[i];
+        if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+            throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+        }
+        if (!feature.geometry || feature.geometry.type !== type) {
+            throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+        }
+    }
+}
+
+},{}],95:[function(require,module,exports){
+/**
+ * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
  *
  * @module turf/point
- * @param {number} longitude - position west to east in decimal degrees
- * @param {number} latitude - position south to north in decimal degrees
- * @param {Object} properties - an optional object that is used as the Feature's
+ * @category helper
+ * @param {number} longitude position west to east in decimal degrees
+ * @param {number} latitude position south to north in decimal degrees
+ * @param {Object} properties an Object that is used as the {@link Feature}'s
  * properties
- * @return {Point} output
+ * @return {Point} a Point feature
  * @example
  * var pt1 = turf.point([-75.343, 39.984]);
+ *
  * //=pt1
  */
 var isArray = Array.isArray || function(arg) {
@@ -41685,7 +41357,7 @@ module.exports = function(coordinates, properties) {
   };
 };
 
-},{}],100:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 var geometryArea = require('geojson-area').geometry;
 
 /**
@@ -41749,7 +41421,7 @@ module.exports = function(_) {
     }
 };
 
-},{"geojson-area":101}],101:[function(require,module,exports){
+},{"geojson-area":97}],97:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.geometry = geometry;
@@ -41825,145 +41497,16 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":102}],102:[function(require,module,exports){
+},{"wgs84":98}],98:[function(require,module,exports){
 module.exports.RADIUS = 6378137;
 module.exports.FLATTENING = 1/298.257223563;
 module.exports.POLAR_RADIUS = 6356752.3142;
 
-},{}],103:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
- * Calculates the average value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
- *
- * @module turf/average
- * @category aggregation
- * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
- * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
- * @param {string} field the field in the `points` features from which to pull values to average
- * @param {string} outputField the field in the `polygons` FeatureCollection to put results of the averages
- * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features with the value of `outField` set to the calculated average
- * @example
-* var polygons = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [10.666351, 59.890659],
- *           [10.666351, 59.936784],
- *           [10.762481, 59.936784],
- *           [10.762481, 59.890659],
- *           [10.666351, 59.890659]
- *         ]]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [10.764541, 59.889281],
- *           [10.764541, 59.937128],
- *           [10.866165, 59.937128],
- *           [10.866165, 59.889281],
- *           [10.764541, 59.889281]
- *         ]]
- *       }
- *     }
- *   ]
- * };
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [10.724029, 59.926807]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 600
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [10.715789, 59.904778]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 100
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [10.746002, 59.908566]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [10.806427, 59.908910]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 300
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [10.79544, 59.931624]
- *       }
- *     }
- *   ]
- * };
- *
- * var averaged = turf.average(
- *  polygons, points, 'population', 'pop_avg');
- *
- * var resultFeatures = points.features.concat(
- *   averaged.features);
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": resultFeatures
- * };
- *
- * //=result
- */
-module.exports = function(polyFC, ptFC, inField, outField, done){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties) poly.properties = {};
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) values.push(pt.properties[inField]);
-    });
-    poly.properties[outField] = average(values);
-  });
-
-  return polyFC;
-}
-
-function average(values) {
-  var sum = 0;
-  for (var i = 0; i < values.length; i++) {
-    sum += values[i];
-  }
-  return sum / values.length;
-}
-
-},{"turf-inside":104}],104:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],105:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"dup":72,"turf-inside":100}],100:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],101:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -41997,25 +41540,46 @@ module.exports = function(bbox){
   return poly;
 }
 
-},{"turf-polygon":106}],106:[function(require,module,exports){
+},{"turf-polygon":102}],102:[function(require,module,exports){
 /**
- * Generates a new GeoJSON Polygon feature, given an array of coordinates
- * and list of properties.
+ * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
  *
  * @module turf/polygon
- * @param {number[][]} rings - an array of LinearRings
- * @param {Object} properties - an optional properties object
- * @return {GeoJSONPolygon} output
+ * @category helper
+ * @param {Array<Array<Number>>} rings an array of LinearRings
+ * @param {Object} properties an optional properties object
+ * @return {Polygon} a Polygon feature
+ * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
+ * or if a LinearRing of the Polygon does not have matching Positions at the
+ * beginning & end.
  * @example
- * var poly1 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]])
- * var poly2 = turf.polygon([[[20.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]]],
- *   {name: 'line 1', distance: 145})
- * console.log(poly1)
- * console.log(poly2)
+ * var polygon = turf.polygon([[
+ *  [-2.275543, 53.464547],
+ *  [-2.275543, 53.489271],
+ *  [-2.215118, 53.489271],
+ *  [-2.215118, 53.464547],
+ *  [-2.275543, 53.464547]
+ * ]], { name: 'poly1', population: 400});
+ *
+ * //=polygon
  */
 module.exports = function(coordinates, properties){
-  if(coordinates === null) return new Error('No coordinates passed');
-  var polygon = { 
+
+  if (coordinates === null) throw new Error('No coordinates passed');
+
+  for (var i = 0; i < coordinates.length; i++) {
+    var ring = coordinates[i];
+    for (var j = 0; j < ring[ring.length - 1].length; j++) {
+      if (ring.length < 4) {
+        throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
+      }
+      if (ring[ring.length - 1][j] !== ring[0][j]) {
+        throw new Error('First and last Position are not equivalent.');
+      }
+    }
+  }
+
+  var polygon = {
     "type": "Feature",
     "geometry": {
       "type": "Polygon",
@@ -42024,85 +41588,16 @@ module.exports = function(coordinates, properties){
     "properties": properties
   };
 
-  if(!polygon.properties){
+  if (!polygon.properties) {
     polygon.properties = {};
   }
-  
+
   return polygon;
-}
-
-},{}],107:[function(require,module,exports){
-//http://en.wikipedia.org/wiki/Haversine_formula
-//http://www.movable-type.co.uk/scripts/latlong.html
-
-/**
- * Takes two {@link Point} features and finds the bearing between them.
- *
- * @module turf/bearing
- * @category measurement
- * @param {Point} start starting Point
- * @param {Point} end ending Point
- * @category measurement
- * @returns {Number} bearing in decimal degrees
- * @example
- * var point1 = {
- *   "type": "Feature",
- *   "properties": {
- *     "marker-color": '#f00'
- *   },
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.343, 39.984]
- *   }
- * };
- * var point2 = {
- *   "type": "Feature",
- *   "properties": {
- *     "marker-color": '#0f0'
- *   },
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.534, 39.123]
- *   }
- * };
- *
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [point1, point2]
- * };
- *
- * //=points
- *
- * var bearing = turf.bearing(point1, point2);
- *
- * //=bearing
- */
-module.exports = function (point1, point2) {
-    var coordinates1 = point1.geometry.coordinates;
-    var coordinates2 = point2.geometry.coordinates;
-
-    var lon1 = toRad(coordinates1[0]);
-    var lon2 = toRad(coordinates2[0]);
-    var lat1 = toRad(coordinates1[1]);
-    var lat2 = toRad(coordinates2[1]);
-    var a = Math.sin(lon2 - lon1) * Math.cos(lat2);
-    var b = Math.cos(lat1) * Math.sin(lat2) -
-        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-
-    var bearing = toDeg(Math.atan2(a, b));
-
-    return bearing;
 };
 
-function toRad(degree) {
-    return degree * Math.PI / 180;
-}
-
-function toDeg(radian) {
-    return radian * 180 / Math.PI;
-}
-
-},{}],108:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"dup":91}],104:[function(require,module,exports){
 var linestring = require('turf-linestring');
 var Spline = require('./spline.js');
 
@@ -42171,14 +41666,15 @@ module.exports = function(line, resolution, sharpness){
   return lineOut;
 };
 
-},{"./spline.js":110,"turf-linestring":109}],109:[function(require,module,exports){
+},{"./spline.js":106,"turf-linestring":105}],105:[function(require,module,exports){
 /**
  * Creates a {@link LineString} {@link Feature} based on a
  * coordinate array. Properties can be added optionally.
  *
  * @module turf/linestring
- * @param {Array<Array<Number>>} coordinates - an array of Positions
- * @param {Object} properties an Object consisting of key-value pairs to add as properties
+ * @category helper
+ * @param {Array<Array<Number>>} coordinates an array of Positions
+ * @param {Object} properties an Object of key-value pairs to add as properties
  * @return {LineString} a LineString feature
  * @throws {Error} if no coordinates are passed
  * @example
@@ -42213,7 +41709,7 @@ module.exports = function(coordinates, properties){
   };
 };
 
-},{}],110:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
  /**
    * BezierSpline
    * http://leszekr.github.com/
@@ -42352,7 +41848,7 @@ var Spline = function(options){
 
   module.exports = Spline;
 
-},{}],111:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 // http://stackoverflow.com/questions/839899/how-do-i-calculate-a-point-on-a-circles-circumference
 // radians = degrees * (pi/180)
 // https://github.com/bjornharrtell/jsts/blob/master/examples/buffer.html
@@ -42369,7 +41865,7 @@ var jsts = require('jsts');
 * @category transformation
 * @param {FeatureCollection} feature a Feature or FeatureCollection of any type
 * @param {Number} distance distance to draw the buffer
-* @param {String} unit 'miles' or 'kilometers'
+* @param {String} unit 'miles', 'feet', 'kilometers', 'meters', or 'degrees'
 * @return {FeatureCollection} a FeatureCollection containing {@link Polygon} features representing buffers
 *
 * @example
@@ -42448,12 +41944,12 @@ var bufferOp = function(feature, radius){
   return buffered;
 }
 
-},{"jsts":112,"turf-combine":116,"turf-featurecollection":117,"turf-polygon":118}],112:[function(require,module,exports){
+},{"jsts":108,"turf-combine":112,"turf-featurecollection":113,"turf-polygon":114}],108:[function(require,module,exports){
 require('javascript.util');
 var jsts = require('./lib/jsts');
 module.exports = jsts
 
-},{"./lib/jsts":113,"javascript.util":115}],113:[function(require,module,exports){
+},{"./lib/jsts":109,"javascript.util":111}],109:[function(require,module,exports){
 /* The JSTS Topology Suite is a collection of JavaScript classes that
 implement the fundamental operations required to validate a given
 geo-spatial data set to a known topological specification.
@@ -44163,7 +43659,7 @@ return true;if(this.isBoundaryPoint(li,bdyNodes[1]))
 return true;return false;}else{for(var i=bdyNodes.iterator();i.hasNext();){var node=i.next();var pt=node.getCoordinate();if(li.isIntersection(pt))
 return true;}
 return false;}};})();
-},{}],114:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 (function (global){
 /*
   javascript.util is a port of selected parts of java.util to JavaScript which
@@ -44209,71 +43705,118 @@ L.prototype.iterator=L.prototype.f;function N(a){this.l=a}f("$jscomp.scope.Itera
 r,global.javascript.util.Set=x,global.javascript.util.SortedMap=A,global.javascript.util.SortedSet=B,global.javascript.util.Stack=C,global.javascript.util.TreeMap=H,global.javascript.util.TreeSet=L);}).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],115:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 require('./dist/javascript.util-node.min.js');
 
-},{"./dist/javascript.util-node.min.js":114}],116:[function(require,module,exports){
-module.exports = function(fc){
-  var type = fc.features[0].geometry.type;
-  var err;
-  var geometries = fc.features.map(function(f){
-    return f.geometry;
-  })
+},{"./dist/javascript.util-node.min.js":110}],112:[function(require,module,exports){
+/**
+ * Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
+ *
+ * @module turf/combine
+ * @category misc
+ * @param {FeatureCollection} fc a FeatureCollection of any type
+ * @return {FeatureCollection} a FeatureCollection of corresponding type to input
+ * @example
+ * var fc = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [19.026432, 47.49134]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [19.074497, 47.509548]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var combined = turf.combine(fc);
+ *
+ * //=combined
+ */
 
-  switch(type){
+module.exports = function(fc) {
+  var type = fc.features[0].geometry.type;
+  var geometries = fc.features.map(function(f) {
+    return f.geometry;
+  });
+
+  switch (type) {
     case 'Point':
-      var multiPoint = {
+      return {
         type: 'Feature',
+        properties: {},
         geometry: {
           type: 'MultiPoint',
-          coordinates: []
+          coordinates: pluckCoods(geometries)
         }
       };
-      multiPoint.geometry.coordinates = pluckCoods(geometries);
-      return multiPoint;
-      break
     case 'LineString':
-      var multiLineString = {
+      return {
         type: 'Feature',
+        properties: {},
         geometry: {
           type: 'MultiLineString',
-          coordinates: []
+          coordinates: pluckCoods(geometries)
         }
       };
-      multiLineString.geometry.coordinates = pluckCoods(geometries)
-      return multiLineString;
-      break
     case 'Polygon':
-      var multiPolygon = {
+      return {
         type: 'Feature',
+        properties: {},
         geometry: {
           type: 'MultiPolygon',
-          coordinates: []
+          coordinates: pluckCoods(geometries)
         }
       };
-      multiPolygon.geometry.coordinates = pluckCoods(geometries)
-      return multiPolygon;
-      break
+    default:
+      return fc;
   }
-}
+};
 
 function pluckCoods(multi){
   return multi.map(function(geom){
     return geom.coordinates;
   });
 }
-},{}],117:[function(require,module,exports){
-module.exports = function(features){
-  var fc = {
-    "type": "FeatureCollection",
-    "features": features
-  };
 
-  return fc;
-}
-},{}],118:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],119:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
+/**
+ * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
+ *
+ * @module turf/featurecollection
+ * @category helper
+ * @param {Feature} features input Features
+ * @returns {FeatureCollection} a FeatureCollection of input features
+ * @example
+ * var features = [
+ *  turf.point([-75.343, 39.984], {name: 'Location A'}),
+ *  turf.point([-75.833, 39.284], {name: 'Location B'}),
+ *  turf.point([-75.534, 39.123], {name: 'Location C'})
+ * ];
+ *
+ * var fc = turf.featurecollection(features);
+ *
+ * //=fc
+ */
+module.exports = function(features){
+  return {
+    type: "FeatureCollection",
+    features: features
+  };
+};
+
+},{}],114:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],115:[function(require,module,exports){
 var extent = require('turf-extent'),
     point = require('turf-point');
 
@@ -44397,222 +43940,144 @@ module.exports = function(layer, done){
   return point([x, y]);
 };
 
-},{"turf-extent":120,"turf-point":122}],120:[function(require,module,exports){
-var flatten = require('flatten');
+},{"turf-extent":116,"turf-point":118}],116:[function(require,module,exports){
+var each = require('turf-meta').coordEach;
 
 /**
- * Calculates the extent of all features and returns a bounding box.
+ * Takes any {@link GeoJSON} object, calculates the extent of all input features, and returns a bounding box.
  *
  * @module turf/extent
- * @param {GeoJSON-Object} input - any valid GeoJSON Object
- * @return {Array<number>} extent - the bounding box of the GeoJSON given
- * as an array in WSEN order.
- * @example
- * var extent = require('turf-extent')
- * var fs = require('fs')
- * var fc = JSON.parse(fs.readFileSync('/path/to/myFeatureCollection.geojson'))
- * var bbox = extent(fc)
- * console.log(bbox) // [minX, minY, maxX, maxY]
- */
-module.exports = function(layer){
-  var extent = [Infinity, Infinity, -Infinity, -Infinity];
-
-  var features = [];
-  if (layer.type === 'FeatureCollection') features = layer.features;
-  else if (layer.type === 'Feature') features = [layer];
-  else features = [{ geometry: layer }];
-
-  for(var i = 0; i < features.length; i++){
-    var coords = features[i].geometry.coordinates;
-    switch(features[i].geometry.type){
-      case 'Point':
-        extent0(coords, extent);
-        break;
-      case 'LineString':
-      case 'MultiPoint':
-        extent1(coords, extent);
-        break;
-      case 'Polygon':
-      case 'MultiLineString':
-        extent2(coords, extent);
-        break;
-      case 'MultiPolygon':
-        extent3(coords, extent);
-        break;
-      default:
-        return new Error('Unknown Geometry Type');
-    }
-  }
-  return extent;
-};
-
-function extent0(coord, extent) {
-  if(extent[0] > coord[0]) extent[0] = coord[0];
-  if(extent[1] > coord[1]) extent[1] = coord[1];
-  if(extent[2] < coord[0]) extent[2] = coord[0];
-  if(extent[3] < coord[1]) extent[3] = coord[1];
-}
-
-function extent1(coords, extent) {
-  for(var i = 0; i < coords.length; i++){
-    var coord = coords[i];
-    if(extent[0] > coord[0]) extent[0] = coord[0];
-    if(extent[1] > coord[1]) extent[1] = coord[1];
-    if(extent[2] < coord[0]) extent[2] = coord[0];
-    if(extent[3] < coord[1]) extent[3] = coord[1];
-  }
-}
-
-function extent2(coords, extent) {
-  for(var i = 0; i < coords.length; i++){
-    for(var j = 0; j < coords[i].length; j++){
-      var coord = coords[i][j];
-      if(extent[0] > coord[0]) extent[0] = coord[0];
-      if(extent[1] > coord[1]) extent[1] = coord[1];
-      if(extent[2] < coord[0]) extent[2] = coord[0];
-      if(extent[3] < coord[1]) extent[3] = coord[1];
-    }
-  }
-}
-
-function extent3(coords, extent) {
-  for(var i = 0; i < coords.length; i++){
-    for(var j = 0; j < coords[i].length; j++){
-      for(var k = 0; k < coords[i][j].length; k++){
-        var coord = coords[i][j][k];
-        if(extent[0] > coord[0]) extent[0] = coord[0];
-        if(extent[1] > coord[1]) extent[1] = coord[1];
-        if(extent[2] < coord[0]) extent[2] = coord[0];
-        if(extent[3] < coord[1]) extent[3] = coord[1];
-      }
-    }
-  }
-}
-
-},{"flatten":121}],121:[function(require,module,exports){
-module.exports = function flatten(list, depth) {
-  depth = (typeof depth == 'number') ? depth : Infinity;
-
-  return _flatten(list, 1);
-
-  function _flatten(list, d) {
-    return list.reduce(function (acc, item) {
-      if (Array.isArray(item) && d < depth) {
-        return acc.concat(_flatten(item, d + 1));
-      }
-      else {
-        return acc.concat(item);
-      }
-    }, []);
-  }
-};
-
-},{}],122:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],123:[function(require,module,exports){
-var each = require('turf-meta').coordEach;
-var point = require('turf-point');
-
-/**
- * Takes a {@link Feature} or {@link FeatureCollection} of any type and calculates the centroid using the arithmetic mean of all vertices.
- * This lessens the effect of small islands and artifacts when calculating
- * the centroid of a set of polygons.
- *
- * @module turf/centroid
  * @category measurement
- * @param {FeatureCollection} fc a {@link Feature} or FeatureCollection of any type
- * @return {Point} a Point feature at the centroid of the input feature(s)
+ * @param {GeoJSON} input any valid GeoJSON Object
+ * @return {Array<number>} the bounding box of `input` given
+ * as an array in WSEN order (west, south, east, north)
  * @example
- * var poly = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Polygon",
- *     "coordinates": [[
- *       [105.818939,21.004714],
- *       [105.818939,21.061754],
- *       [105.890007,21.061754],
- *       [105.890007,21.004714],
- *       [105.818939,21.004714]
- *     ]]
- *   }
+ * var input = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.175329, 22.2524]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.170007, 22.267969]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.200649, 22.274641]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.186744, 22.265745]
+ *       }
+ *     }
+ *   ]
  * };
  *
- * var centroidPt = turf.centroid(poly);
+ * var bbox = turf.extent(input);
  *
+ * var bboxPolygon = turf.bboxPolygon(bbox);
+ *
+ * var resultFeatures = input.features.concat(bboxPolygon);
  * var result = {
  *   "type": "FeatureCollection",
- *   "features": [poly, centroidPt]
+ *   "features": resultFeatures
  * };
  *
  * //=result
  */
-module.exports = function(features){
-  var xSum = 0, ySum = 0, len = 0;
-  each(features, function(coord) {
-    xSum += coord[0];
-    ySum += coord[1];
-    len++;
-  }, true);
-  return point([xSum / len, ySum / len]);
+module.exports = function(layer) {
+    var extent = [Infinity, Infinity, -Infinity, -Infinity];
+    each(layer, function(coord) {
+      if (extent[0] > coord[0]) extent[0] = coord[0];
+      if (extent[1] > coord[1]) extent[1] = coord[1];
+      if (extent[2] < coord[0]) extent[2] = coord[0];
+      if (extent[3] < coord[1]) extent[3] = coord[1];
+    });
+    return extent;
 };
 
-},{"turf-meta":124,"turf-point":125}],124:[function(require,module,exports){
+},{"turf-meta":117}],117:[function(require,module,exports){
 /**
  * Lazily iterate over coordinates in any GeoJSON object, similar to
  * Array.forEach.
  *
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (value)
+ * @param {boolean=} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @example
  * var point = { type: 'Point', coordinates: [0, 0] };
  * coordEach(point, function(coords) {
  *   // coords is equal to [0, 0]
  * });
  */
-function coordEach(layer, callback) {
-  var features = [], i, j, k, g;
+function coordEach(layer, callback, excludeWrapCoord) {
+  var i, j, k, g, geometry, stopG, coords,
+    geometryMaybeCollection,
+    wrapShrink = 0,
+    isGeometryCollection,
+    isFeatureCollection = layer.type === 'FeatureCollection',
+    isFeature = layer.type === 'Feature',
+    stop = isFeatureCollection ? layer.features.length : 1;
 
-  switch (layer.type) {
-      case 'FeatureCollection':
-        features = layer.features;
-        break;
-      case 'Feature':
-        features = [layer];
-        break;
-      default:
-        features = [{ geometry: layer }];
-        break;
-  }
+  // This logic may look a little weird. The reason why it is that way
+  // is because it's trying to be fast. GeoJSON supports multiple kinds
+  // of objects at its root: FeatureCollection, Features, Geometries.
+  // This function has the responsibility of handling all of them, and that
+  // means that some of the `for` loops you see below actually just don't apply
+  // to certain inputs. For instance, if you give this just a
+  // Point geometry, then both loops are short-circuited and all we do
+  // is gradually rename the input until it's called 'geometry'.
+  //
+  // This also aims to allocate as few resources as possible: just a
+  // few numbers and booleans, rather than any temporary arrays as would
+  // be required with the normalization approach.
+  for (i = 0; i < stop; i++) {
 
-  for (i = 0; i < features.length; i++) {
-    var geometries = (features[i].geometry.type === 'GeometryCollection') ?
-        features[i].geometry.geometries :
-        [features[i].geometry];
-    for (g = 0; g < geometries.length; g++) {
-      var coords = geometries[g].coordinates;
-      switch (geometries[g].type) {
-        case 'Point':
-          callback(coords);
-          break;
-        case 'LineString':
-        case 'MultiPoint':
-          for (j = 0; j < coords.length; j++) callback(coords[j]);
-          break;
-        case 'Polygon':
-        case 'MultiLineString':
-          for (j = 0; j < coords.length; j++)
-            for (k = 0; k < coords[j].length; k++)
-              callback(coords[j][k]);
-          break;
-        case 'MultiPolygon':
-          for (j = 0; j < coords.length; j++)
-            for (k = 0; k < coords[j].length; k++)
-              for (l = 0; l < coords[j][k].length; l++)
-                callback(coords[j][k][l]);
-          break;
-        default:
-          throw new Error('Unknown Geometry Type');
+    geometryMaybeCollection = (isFeatureCollection ? layer.features[i].geometry :
+        (isFeature ? layer.geometry : layer));
+    isGeometryCollection = geometryMaybeCollection.type === 'GeometryCollection';
+    stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+    for (g = 0; g < stopG; g++) {
+
+      geometry = isGeometryCollection ?
+          geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+      coords = geometry.coordinates;
+
+      wrapShrink = (excludeWrapCoord &&
+        (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon')) ?
+        1 : 0;
+
+      if (geometry.type === 'Point') {
+        callback(coords);
+      } else if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') {
+        for (j = 0; j < coords.length; j++) callback(coords[j]);
+      } else if (geometry.type === 'Polygon' || geometry.type === 'MultiLineString') {
+        for (j = 0; j < coords.length; j++)
+          for (k = 0; k < coords[j].length - wrapShrink; k++)
+            callback(coords[j][k]);
+      } else if (geometry.type === 'MultiPolygon') {
+        for (j = 0; j < coords.length; j++)
+          for (k = 0; k < coords[j].length; k++)
+            for (l = 0; l < coords[j][k].length - wrapShrink; l++)
+              callback(coords[j][k][l]);
+      } else {
+        throw new Error('Unknown Geometry Type');
       }
     }
   }
@@ -44627,12 +44092,14 @@ module.exports.coordEach = coordEach;
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (memo, value) and returns
  * a new memo
+ * @param {boolean=} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @param {*} memo the starting value of memo: can be any type.
  */
-function coordReduce(layer, callback, memo) {
+function coordReduce(layer, callback, memo, excludeWrapCoord) {
   coordEach(layer, function(coord) {
     memo = callback(memo, coord);
-  });
+  }, excludeWrapCoord);
   return memo;
 }
 module.exports.coordReduce = coordReduce;
@@ -44683,89 +44150,63 @@ function propReduce(layer, callback, memo) {
 }
 module.exports.propReduce = propReduce;
 
-},{}],125:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],126:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],119:[function(require,module,exports){
+var each = require('turf-meta').coordEach;
+var point = require('turf-point');
+
 /**
- * Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
+ * Takes a {@link Feature} or {@link FeatureCollection} of any type and calculates the centroid using the arithmetic mean of all vertices.
+ * This lessens the effect of small islands and artifacts when calculating
+ * the centroid of a set of polygons.
  *
- * @module turf/combine
- * @category misc
- * @param {FeatureCollection} fc a FeatureCollection of any type
- * @return {FeatureCollection} a FeatureCollection of corresponding type to input
+ * @module turf/centroid
+ * @category measurement
+ * @param {GeoJSON} features a {@link Feature} or FeatureCollection of any type
+ * @return {Point} a Point feature at the centroid of the input feature(s)
  * @example
- * var fc = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [19.026432, 47.49134]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [19.074497, 47.509548]
- *       }
- *     }
- *   ]
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [105.818939,21.004714],
+ *       [105.818939,21.061754],
+ *       [105.890007,21.061754],
+ *       [105.890007,21.004714],
+ *       [105.818939,21.004714]
+ *     ]]
+ *   }
  * };
  *
- * var combined = turf.combine(fc);
+ * var centroidPt = turf.centroid(poly);
  *
- * //=combined
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [poly, centroidPt]
+ * };
+ *
+ * //=result
  */
-
-module.exports = function(fc) {
-  var type = fc.features[0].geometry.type;
-  var geometries = fc.features.map(function(f) {
-    return f.geometry;
-  });
-
-  switch (type) {
-    case 'Point':
-      return {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'MultiPoint',
-          coordinates: pluckCoods(geometries)
-        }
-      };
-    case 'LineString':
-      return {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'MultiLineString',
-          coordinates: pluckCoods(geometries)
-        }
-      };
-    case 'Polygon':
-      return {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'MultiPolygon',
-          coordinates: pluckCoods(geometries)
-        }
-      };
-    default:
-      return fc;
-  }
+module.exports = function(features){
+  var xSum = 0, ySum = 0, len = 0;
+  each(features, function(coord) {
+    xSum += coord[0];
+    ySum += coord[1];
+    len++;
+  }, true);
+  return point([xSum / len, ySum / len]);
 };
 
-function pluckCoods(multi){
-  return multi.map(function(geom){
-    return geom.coordinates;
-  });
-}
-
-},{}],127:[function(require,module,exports){
+},{"turf-meta":120,"turf-point":121}],120:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117}],121:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],122:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"dup":112}],123:[function(require,module,exports){
 // 1. run tin on points
 // 2. calculate lenth of all edges and area of all triangles
 // 3. remove triangles that fail the max length test
@@ -44789,31 +44230,76 @@ t.point = require('turf-point');
  * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
  * @param {number} maxEdge the size of an edge necessary for part of the
  * hull to become concave (in miles)
+ * @param {String} units used for maxEdge distance (miles or kilometers)
  * @returns {Feature} a {@link Polygon} feature
  * @throws {Error} if maxEdge parameter is missing
  * @example
- * var points = turf.featurecollection([
- *  turf.point([-63.601226, 44.642643]),
- *  turf.point([-63.591442, 44.651436]),
- *  turf.point([-63.580799, 44.648749]),
- *  turf.point([-63.573589, 44.641788]),
- *  turf.point([-63.587665, 44.64533]),
- *  turf.point([-63.595218, 44.64765])
- * ]);
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.601226, 44.642643]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.591442, 44.651436]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.580799, 44.648749]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.573589, 44.641788]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.587665, 44.64533]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-63.595218, 44.64765]
+ *       }
+ *     }
+ *   ]
+ * };
  *
- * var hull = turf.concave(points, 1);
+ * var hull = turf.concave(points, 1, 'miles');
  *
- * var result = turf.featurecollection(
- *  points.features.concat(hull));
+ * var resultFeatures = points.features.concat(hull);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
  *
  * //=result
  */
 
 
-module.exports = function(points, maxEdge) {
+module.exports = function(points, maxEdge, units) {
   if (typeof maxEdge !== 'number') throw new Error('maxEdge parameter is required');
+  if (typeof units !== 'string') throw new Error('units parameter is required');
 
-  var tinPolys = t.tin(points, null);
+  var tinPolys = t.tin(points);
   var filteredPolys = tinPolys.features.filter(filterTriangles);
   tinPolys.features = filteredPolys;
 
@@ -44821,21 +44307,72 @@ module.exports = function(points, maxEdge) {
     var pt1 = t.point(triangle.geometry.coordinates[0][0]);
     var pt2 = t.point(triangle.geometry.coordinates[0][1]);
     var pt3 = t.point(triangle.geometry.coordinates[0][2]);
-    var dist1 = t.distance(pt1, pt2, 'miles');
-    var dist2 = t.distance(pt2, pt3, 'miles');
-    var dist3 = t.distance(pt1, pt3, 'miles');
+    var dist1 = t.distance(pt1, pt2, units);
+    var dist2 = t.distance(pt2, pt3, units);
+    var dist3 = t.distance(pt1, pt3, units);
     return (dist1 <= maxEdge && dist2 <= maxEdge && dist3 <= maxEdge);
   }
 
   return t.merge(tinPolys);
 };
 
-},{"turf-distance":128,"turf-merge":129,"turf-point":136,"turf-tin":137}],128:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],129:[function(require,module,exports){
+},{"turf-distance":124,"turf-merge":126,"turf-point":133,"turf-tin":134}],124:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":125}],125:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],126:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
+/**
+ * Takes a {@link FeatureCollection} of {@link Polygon} features and returns a single merged
+ * polygon feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
+ * @module turf/merge
+ * @category transformation
+ * @param {FeatureCollection} fc a FeatureCollection of {@link Polygon} features
+ * @return {Feature} a {@link Polygon} or {@link MultiPolygon} feature
+ * @example
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "fill": "#0f0"
+ *       },
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [9.994812, 53.549487],
+ *           [10.046997, 53.598209],
+ *           [10.117721, 53.531737],
+ *           [9.994812, 53.549487]
+ *         ]]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {
+ *         "fill": "#00f"
+ *       },
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [10.000991, 53.50418],
+ *           [10.03807, 53.562539],
+ *           [9.926834, 53.551731],
+ *           [10.000991, 53.50418]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var merged = turf.merge(polygons);
+ *
+ * //=polygons
+ *
+ * //=merged
+ */
 module.exports = function(polygons, done){
 
   var merged = clone(polygons.features[0]),
@@ -44850,9 +44387,9 @@ module.exports = function(polygons, done){
   }
 
   return merged;
-}
+};
 
-},{"clone":130,"turf-union":131}],130:[function(require,module,exports){
+},{"clone":127,"turf-union":128}],127:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -45000,7 +44537,7 @@ clone.clonePrototype = function(parent) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":2}],131:[function(require,module,exports){
+},{"buffer":2}],128:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -45008,6 +44545,58 @@ clone.clonePrototype = function(parent) {
 
 var jsts = require('jsts');
 
+/**
+ * Takes two {@link Polygon} features and returnes a combined {@link Polygon} feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
+ *
+ * @module turf/union
+ * @category transformation
+ * @param {Polygon} poly1 an input Polygon
+ * @param {Polygon} poly2 another input Polygon
+ * @return {Feature} a combined {@link Polygon} or {@link MultiPolygon} feature
+ * @example
+ * var poly1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-82.574787, 35.594087],
+ *       [-82.574787, 35.615581],
+ *       [-82.545261, 35.615581],
+ *       [-82.545261, 35.594087],
+ *       [-82.574787, 35.594087]
+ *     ]]
+ *   }
+ * };
+ * var poly2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#00f"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-82.560024, 35.585153],
+ *       [-82.560024, 35.602602],
+ *       [-82.52964, 35.602602],
+ *       [-82.52964, 35.585153],
+ *       [-82.560024, 35.585153]
+ *     ]]
+ *   }
+ * };
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [poly1, poly2]
+ * };
+ *
+ * var union = turf.union(poly1, poly2);
+ *
+ * //=polygons
+ *
+ * //=union
+ */
 module.exports = function(poly1, poly2){
   var reader = new jsts.io.GeoJSONReader();
   var a = reader.read(JSON.stringify(poly1.geometry));
@@ -45023,336 +44612,264 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":132}],132:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"./lib/jsts":133,"dup":112,"javascript.util":135}],133:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],134:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],135:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":134,"dup":115}],136:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],137:[function(require,module,exports){
+},{"jsts":129}],129:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./lib/jsts":130,"dup":108,"javascript.util":132}],130:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],131:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],132:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":131,"dup":111}],133:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],134:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
-var nearest = require('turf-nearest');
-var point = require('turf-point');
+var featurecollection = require('turf-featurecollection');
 
 /**
  * Takes a set of points and the name of a z-value property and
  * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
- * or a TIN for short. These are often used
+ * or a TIN for short, returned as a collection of Polygons. These are often used
  * for developing elevation contour maps or stepped heat visualizations.
  *
+ * This triangulates the points, as well as adds properties called `a`, `b`,
+ * and `c` representing the value of the given `propertyName` at each of
+ * the points that represent the corners of the triangle.
+ *
  * @module turf/tin
- * @param {GeoJSONFeatureCollection} points - a GeoJSON FeatureCollection containing
- * Features with Point geometries
- * @param {string} propertyName - name of the property from which to pull z values
- * @return {GeoJSONFeatureCollection} output
+ * @category interpolation
+ * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
+ * Features with {@link Point} geometries
+ * @param {string=} propertyName - name of the property from which to pull z values.
+ * This is optional: if not given, then there will be no extra data added to the derived triangles.
+ * @return {FeatureCollection} TIN output
  * @example
- * var fs = require('fs')
- * var z = 'elevation'
- * var pts = JSON.parse(fs.readFileSync('/path/to/pts.geojson'))
- * var tinPolys = turf.tin(pts, z)
- * console.log(tinPolys)
+ * // generate some random point data
+ * var points = turf.random('points', 30, {
+ *   bbox: [50, 30, 70, 50]
+ * });
+ * //=points
+ * // add a random property to each point between 0 and 9
+ * for (var i = 0; i < points.features.length; i++) {
+ *   points.features[i].properties.z = ~~(Math.random() * 9);
+ * }
+ * var tin = turf.tin(points, 'z')
+ * for (var i = 0; i < tin.features.length; i++) {
+ *   var properties  = tin.features[i].properties;
+ *   // roughly turn the properties of each
+ *   // triangle into a fill color
+ *   // so we can visualize the result
+ *   properties.fill = '#' + properties.a +
+ *     properties.b + properties.c;
+ * }
+ * //=tin
  */
-module.exports = function(points, z){
+module.exports = function(points, z) {
   //break down points
-  var vertices = [];
-  points.features.forEach(function(p){
-    vertices.push({x:p.geometry.coordinates[0], y:p.geometry.coordinates[1]});
-  })
-
-  var triangulated = triangulate(vertices);
-  var triangles = {
-    type: 'FeatureCollection',
-    features: []
-  };
-
-  triangulated.forEach(function(triangle){
-    var coords = [[[triangle.a.x, triangle.a.y], [triangle.b.x, triangle.b.y], [triangle.c.x, triangle.c.y]]];
-    var poly = polygon(coords, {a: null, b: null, c: null});
-
-    triangles.features.push(poly);
-  });
-  if(z){
-    // add values from vertices
-    triangles.features.forEach(function(tri){
-      var coordinateNumber = 1;
-      tri.geometry.coordinates[0].forEach(function(c){
-        var closest = nearest(point(c[0], c[1]), points);
-
-        if(coordinateNumber === 1){
-          tri.properties.a = closest.properties[z];
-        }
-        else if(coordinateNumber === 2){
-          tri.properties.b = closest.properties[z];
-        }
-        else if(coordinateNumber === 3){
-          tri.properties.c = closest.properties[z];
-        }
-        coordinateNumber++;
+  return featurecollection(triangulate(points.features.map(function(p) {
+    var point = {
+      x: p.geometry.coordinates[0],
+      y: p.geometry.coordinates[1]
+    };
+    if (z) point.z = p.properties[z];
+    return point;
+  })).map(function(triangle) {
+    return polygon([[
+        [triangle.a.x, triangle.a.y],
+        [triangle.b.x, triangle.b.y],
+        [triangle.c.x, triangle.c.y],
+        [triangle.a.x, triangle.a.y]
+    ]], {
+        a: triangle.a.z,
+        b: triangle.b.z,
+        c: triangle.c.z
       });
-    });
-  }
-
-  triangles.features.forEach(function(tri){
-    tri = correctRings(tri);
-  });
-  
-  return triangles;
-}
-
-function correctRings(poly){
-  poly.geometry.coordinates.forEach(function(ring){
-    var isWrapped =  ring[0] === ring.slice(-1)[0];
-    if(!isWrapped){
-      ring.push(ring[0]);
-    }
-  })
-  return poly;
-}
+  }));
+};
 
 function Triangle(a, b, c) {
-  this.a = a
-  this.b = b
-  this.c = c
+  this.a = a;
+  this.b = b;
+  this.c = c;
 
   var A = b.x - a.x,
-      B = b.y - a.y,
-      C = c.x - a.x,
-      D = c.y - a.y,
-      E = A * (a.x + b.x) + B * (a.y + b.y),
-      F = C * (a.x + c.x) + D * (a.y + c.y),
-      G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
-      minx, miny, dx, dy
+    B = b.y - a.y,
+    C = c.x - a.x,
+    D = c.y - a.y,
+    E = A * (a.x + b.x) + B * (a.y + b.y),
+    F = C * (a.x + c.x) + D * (a.y + c.y),
+    G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
+    minx, miny, dx, dy;
 
-  /* If the points of the triangle are collinear, then just find the
-   * extremes and use the midpoint as the center of the circumcircle. */
-  if(Math.abs(G) < 0.000001) {
-    minx = Math.min(a.x, b.x, c.x)
-    miny = Math.min(a.y, b.y, c.y)
-    dx   = (Math.max(a.x, b.x, c.x) - minx) * 0.5
-    dy   = (Math.max(a.y, b.y, c.y) - miny) * 0.5
+  // If the points of the triangle are collinear, then just find the
+  // extremes and use the midpoint as the center of the circumcircle.
+  if (Math.abs(G) < 0.000001) {
+    minx = Math.min(a.x, b.x, c.x);
+    miny = Math.min(a.y, b.y, c.y);
+    dx = (Math.max(a.x, b.x, c.x) - minx) * 0.5;
+    dy = (Math.max(a.y, b.y, c.y) - miny) * 0.5;
 
-    this.x = minx + dx
-    this.y = miny + dy
-    this.r = dx * dx + dy * dy
+    this.x = minx + dx;
+    this.y = miny + dy;
+    this.r = dx * dx + dy * dy;
+  } else {
+    this.x = (D * E - B * F) / G;
+    this.y = (A * F - C * E) / G;
+    dx = this.x - a.x;
+    dy = this.y - a.y;
+    this.r = dx * dx + dy * dy;
   }
-
-  else {
-    this.x = (D*E - B*F) / G
-    this.y = (A*F - C*E) / G
-    dx = this.x - a.x
-    dy = this.y - a.y
-    this.r = dx * dx + dy * dy
-  }
-}
-
-Triangle.prototype.draw = function(ctx) {
-  ctx.beginPath()
-  ctx.moveTo(this.a.x, this.a.y)
-  ctx.lineTo(this.b.x, this.b.y)
-  ctx.lineTo(this.c.x, this.c.y)
-  ctx.closePath()
-  ctx.stroke()
 }
 
 function byX(a, b) {
-  return b.x - a.x
+  return b.x - a.x;
 }
 
 function dedup(edges) {
   var j = edges.length,
-      a, b, i, m, n
+    a, b, i, m, n;
 
-  outer: while(j) {
-    b = edges[--j]
-    a = edges[--j]
-    i = j
-    while(i) {
-      n = edges[--i]
-      m = edges[--i]
-      if((a === m && b === n) || (a === n && b === m)) {
-        edges.splice(j, 2)
-        edges.splice(i, 2)
-        j -= 2
-        continue outer
+  outer:
+  while (j) {
+    b = edges[--j];
+    a = edges[--j];
+    i = j;
+    while (i) {
+      n = edges[--i];
+      m = edges[--i];
+      if ((a === m && b === n) || (a === n && b === m)) {
+        edges.splice(j, 2);
+        edges.splice(i, 2);
+        j -= 2;
+        continue outer;
       }
     }
   }
 }
 
 function triangulate(vertices) {
-  /* Bail if there aren't enough vertices to form any triangles. */
-  if(vertices.length < 3)
-    return []
+  // Bail if there aren't enough vertices to form any triangles.
+  if (vertices.length < 3)
+    return [];
 
-  /* Ensure the vertex array is in order of descending X coordinate
-   * (which is needed to ensure a subquadratic runtime), and then find
-   * the bounding box around the points. */
-  vertices.sort(byX)
+    // Ensure the vertex array is in order of descending X coordinate
+    // (which is needed to ensure a subquadratic runtime), and then find
+    // the bounding box around the points. 
+  vertices.sort(byX);
 
-  var i    = vertices.length - 1,
-      xmin = vertices[i].x,
-      xmax = vertices[0].x,
-      ymin = vertices[i].y,
-      ymax = ymin
+  var i = vertices.length - 1,
+    xmin = vertices[i].x,
+    xmax = vertices[0].x,
+    ymin = vertices[i].y,
+    ymax = ymin;
 
-  while(i--) {
-    if(vertices[i].y < ymin) ymin = vertices[i].y
-    if(vertices[i].y > ymax) ymax = vertices[i].y
+  while (i--) {
+    if (vertices[i].y < ymin)
+      ymin = vertices[i].y;
+    if (vertices[i].y > ymax)
+      ymax = vertices[i].y;
   }
 
-  /* Find a supertriangle, which is a triangle that surrounds all the
-   * vertices. This is used like something of a sentinel value to remove
-   * cases in the main algorithm, and is removed before we return any
-   * results.
-   *
-   * Once found, put it in the "open" list. (The "open" list is for
-   * triangles who may still need to be considered; the "closed" list is
-   * for triangles which do not.) */
-  var dx     = xmax - xmin,
-      dy     = ymax - ymin,
-      dmax   = (dx > dy) ? dx : dy,
-      xmid   = (xmax + xmin) * 0.5,
-      ymid   = (ymax + ymin) * 0.5,
-      open   = [
-        new Triangle(
-          {x: xmid - 20 * dmax, y: ymid -      dmax, __sentinel: true},
-          {x: xmid            , y: ymid + 20 * dmax, __sentinel: true},
-          {x: xmid + 20 * dmax, y: ymid -      dmax, __sentinel: true}
-        )
-      ],
-      closed = [],
-      edges = [],
-      j, a, b
+  //Find a supertriangle, which is a triangle that surrounds all the
+  //vertices. This is used like something of a sentinel value to remove
+  //cases in the main algorithm, and is removed before we return any
+  // results.
+ 
+  // Once found, put it in the "open" list. (The "open" list is for
+  // triangles who may still need to be considered; the "closed" list is
+  // for triangles which do not.)
+  var dx = xmax - xmin,
+    dy = ymax - ymin,
+    dmax = (dx > dy) ? dx : dy,
+    xmid = (xmax + xmin) * 0.5,
+    ymid = (ymax + ymin) * 0.5,
+    open = [
+      new Triangle({
+        x: xmid - 20 * dmax,
+        y: ymid - dmax,
+        __sentinel: true
+      },
+      {
+        x: xmid,
+        y: ymid + 20 * dmax,
+        __sentinel: true
+      },
+      {
+        x: xmid + 20 * dmax,
+        y: ymid - dmax,
+        __sentinel: true
+      }
+    )],
+    closed = [],
+    edges = [],
+    j, a, b;
 
-  /* Incrementally add each vertex to the mesh. */
-  i = vertices.length
-  while(i--) {
-    /* For each open triangle, check to see if the current point is
-     * inside it's circumcircle. If it is, remove the triangle and add
-     * it's edges to an edge list. */
-    edges.length = 0
-    j = open.length
-    while(j--) {
-      /* If this point is to the right of this triangle's circumcircle,
-       * then this triangle should never get checked again. Remove it
-       * from the open list, add it to the closed list, and skip. */
-      dx = vertices[i].x - open[j].x
-      if(dx > 0 && dx * dx > open[j].r) {
-        closed.push(open[j])
-        open.splice(j, 1)
-        continue
+    // Incrementally add each vertex to the mesh.
+  i = vertices.length;
+  while (i--) {
+    // For each open triangle, check to see if the current point is
+    // inside it's circumcircle. If it is, remove the triangle and add
+    // it's edges to an edge list.
+    edges.length = 0;
+    j = open.length;
+    while (j--) {
+      // If this point is to the right of this triangle's circumcircle,
+      // then this triangle should never get checked again. Remove it
+      // from the open list, add it to the closed list, and skip.
+      dx = vertices[i].x - open[j].x;
+      if (dx > 0 && dx * dx > open[j].r) {
+        closed.push(open[j]);
+        open.splice(j, 1);
+        continue;
       }
 
-      /* If not, skip this triangle. */
-      dy = vertices[i].y - open[j].y
-      if(dx * dx + dy * dy > open[j].r)
-        continue
+      // If not, skip this triangle.
+      dy = vertices[i].y - open[j].y;
+      if (dx * dx + dy * dy > open[j].r)
+        continue;
 
-      /* Remove the triangle and add it's edges to the edge list. */
+      // Remove the triangle and add it's edges to the edge list.
       edges.push(
         open[j].a, open[j].b,
         open[j].b, open[j].c,
         open[j].c, open[j].a
-      )
-      open.splice(j, 1)
+      );
+      open.splice(j, 1);
     }
 
-    /* Remove any doubled edges. */
-    dedup(edges)
+    // Remove any doubled edges.
+    dedup(edges);
 
-    /* Add a new triangle for each edge. */
-    j = edges.length
-    while(j) {
-      b = edges[--j]
-      a = edges[--j]
-      open.push(new Triangle(a, b, vertices[i]))
+    // Add a new triangle for each edge.
+    j = edges.length;
+    while (j) {
+      b = edges[--j];
+      a = edges[--j];
+      open.push(new Triangle(a, b, vertices[i]));
     }
   }
 
-  /* Copy any remaining open triangles to the closed list, and then
-   * remove any triangles that share a vertex with the supertriangle. */
-  Array.prototype.push.apply(closed, open)
+  // Copy any remaining open triangles to the closed list, and then
+  // remove any triangles that share a vertex with the supertriangle.
+  Array.prototype.push.apply(closed, open);
 
-  i = closed.length
-  while(i--)
-    if(closed[i].a.__sentinel ||
-       closed[i].b.__sentinel ||
-       closed[i].c.__sentinel)
-      closed.splice(i, 1)
+  i = closed.length;
+  while (i--)
+  if (closed[i].a.__sentinel ||
+      closed[i].b.__sentinel ||
+      closed[i].c.__sentinel)
+      closed.splice(i, 1);
 
-  /* Yay, we're done! */
-  return closed
+  return closed;
 }
 
-/*if (typeof module !== 'undefined') {
-    module.exports = {
-        Triangle: Triangle,
-        triangulate: triangulate
-    }
-}*/
-
-},{"turf-nearest":138,"turf-point":139,"turf-polygon":140}],138:[function(require,module,exports){
-distance = require('turf-distance');
-
-module.exports = function(targetPoint, points){
-  var nearestPoint;
-  var count = 0;
-  var dist = Infinity;
-  points.features.forEach(function(pt){
-    if(!nearestPoint){
-      nearestPoint = pt;
-      var dist = distance(targetPoint, pt, 'miles');
-      nearestPoint.properties.distance = dist;
-    }
-    else{
-      var dist = distance(targetPoint, pt, 'miles');
-      if(dist < nearestPoint.properties.distance){
-        nearestPoint = pt;
-        nearestPoint.properties.distance = dist;
-      }
-    }
-  });
-  delete nearestPoint.properties.distance;
-  return nearestPoint;
-}
-},{"turf-distance":128}],139:[function(require,module,exports){
-/**
- * Generates a new GeoJSON Point feature, given coordinates
- * and, optionally, properties.
- *
- * @module turf/point
- * @param {number} longitude - position west to east in decimal degrees
- * @param {number} latitude - position south to north in decimal degrees
- * @param {Object} properties
- * @return {GeoJSONPoint} output
- * @example
- * var pt1 = turf.point(-75.343, 39.984)
- */
-module.exports = function(x, y, properties){
-  if(x instanceof Array) {
-  	properties = y;
-  	y = x[1];
-  	x = x[0];
-  } else if(isNaN(x) || isNaN(y)) throw new Error('Invalid coordinates')
-  return {
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [x, y]
-    },
-    properties: properties || {}
-  };
-}
-
-},{}],140:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],141:[function(require,module,exports){
+},{"turf-featurecollection":135,"turf-polygon":136}],135:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],136:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],137:[function(require,module,exports){
 var each = require('turf-meta').coordEach,
     convexHull = require('convex-hull'),
     polygon = require('turf-polygon');
@@ -45441,7 +44958,7 @@ module.exports = function(fc) {
   return polygon([ring]);
 };
 
-},{"convex-hull":142,"turf-meta":170,"turf-polygon":171}],142:[function(require,module,exports){
+},{"convex-hull":138,"turf-meta":166,"turf-polygon":167}],138:[function(require,module,exports){
 "use strict"
 
 var convexHull1d = require('./lib/ch1d')
@@ -45467,7 +44984,7 @@ function convexHull(points) {
   }
   return convexHullnd(points, d)
 }
-},{"./lib/ch1d":143,"./lib/ch2d":144,"./lib/chnd":145}],143:[function(require,module,exports){
+},{"./lib/ch1d":139,"./lib/ch2d":140,"./lib/chnd":141}],139:[function(require,module,exports){
 "use strict"
 
 module.exports = convexHull1d
@@ -45491,7 +45008,7 @@ function convexHull1d(points) {
     return [[lo]]
   }
 }
-},{}],144:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 'use strict'
 
 module.exports = convexHull2D
@@ -45514,7 +45031,7 @@ function convexHull2D(points) {
   return edges
 }
 
-},{"monotone-convex-hull-2d":163}],145:[function(require,module,exports){
+},{"monotone-convex-hull-2d":159}],141:[function(require,module,exports){
 'use strict'
 
 module.exports = convexHullnD
@@ -45575,7 +45092,7 @@ function convexHullnD(points, d) {
     return invPermute(nhull, ah)
   }
 }
-},{"affine-hull":146,"incremental-convex-hull":153}],146:[function(require,module,exports){
+},{"affine-hull":142,"incremental-convex-hull":149}],142:[function(require,module,exports){
 'use strict'
 
 module.exports = affineHull
@@ -45627,7 +45144,7 @@ function affineHull(points) {
   }
   return index
 }
-},{"robust-orientation":152}],147:[function(require,module,exports){
+},{"robust-orientation":148}],143:[function(require,module,exports){
 "use strict"
 
 module.exports = fastTwoSum
@@ -45645,7 +45162,7 @@ function fastTwoSum(a, b, result) {
 	}
 	return [ar+br, x]
 }
-},{}],148:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 "use strict"
 
 var twoProduct = require("two-product")
@@ -45696,7 +45213,7 @@ function scaleLinearExpansion(e, scale) {
   g.length = count
   return g
 }
-},{"two-product":151,"two-sum":147}],149:[function(require,module,exports){
+},{"two-product":147,"two-sum":143}],145:[function(require,module,exports){
 "use strict"
 
 module.exports = robustSubtract
@@ -45853,7 +45370,7 @@ function robustSubtract(e, f) {
   g.length = count
   return g
 }
-},{}],150:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 "use strict"
 
 module.exports = linearExpansionSum
@@ -46010,7 +45527,7 @@ function linearExpansionSum(e, f) {
   g.length = count
   return g
 }
-},{}],151:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 "use strict"
 
 module.exports = twoProduct
@@ -46044,7 +45561,7 @@ function twoProduct(a, b, result) {
 
   return [ y, x ]
 }
-},{}],152:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 "use strict"
 
 var twoProduct = require("two-product")
@@ -46235,7 +45752,7 @@ function generateOrientationProc() {
 }
 
 generateOrientationProc()
-},{"robust-scale":148,"robust-subtract":149,"robust-sum":150,"two-product":151}],153:[function(require,module,exports){
+},{"robust-scale":144,"robust-subtract":145,"robust-sum":146,"two-product":147}],149:[function(require,module,exports){
 "use strict"
 
 //High level idea:
@@ -46682,19 +46199,19 @@ function incrementalConvexHull(points, randomSearch) {
   //Extract boundary cells
   return triangles.boundary()
 }
-},{"robust-orientation":159,"simplicial-complex":162}],154:[function(require,module,exports){
+},{"robust-orientation":155,"simplicial-complex":158}],150:[function(require,module,exports){
+arguments[4][143][0].apply(exports,arguments)
+},{"dup":143}],151:[function(require,module,exports){
+arguments[4][144][0].apply(exports,arguments)
+},{"dup":144,"two-product":154,"two-sum":150}],152:[function(require,module,exports){
+arguments[4][145][0].apply(exports,arguments)
+},{"dup":145}],153:[function(require,module,exports){
+arguments[4][146][0].apply(exports,arguments)
+},{"dup":146}],154:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
 },{"dup":147}],155:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"dup":148,"two-product":158,"two-sum":154}],156:[function(require,module,exports){
-arguments[4][149][0].apply(exports,arguments)
-},{"dup":149}],157:[function(require,module,exports){
-arguments[4][150][0].apply(exports,arguments)
-},{"dup":150}],158:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"dup":151}],159:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"robust-scale":155,"robust-subtract":156,"robust-sum":157,"two-product":158}],160:[function(require,module,exports){
+},{"dup":148,"robust-scale":151,"robust-subtract":152,"robust-sum":153,"two-product":154}],156:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -46900,7 +46417,7 @@ exports.nextCombination = function(v) {
 }
 
 
-},{}],161:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 "use strict"; "use restrict";
 
 module.exports = UnionFind;
@@ -46959,7 +46476,7 @@ proto.link = function(x, y) {
     ++ranks[xr];
   }
 }
-},{}],162:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 "use strict"; "use restrict";
 
 var bits      = require("bit-twiddle")
@@ -47303,7 +46820,7 @@ function connectedComponents(cells, vertex_count) {
 }
 exports.connectedComponents = connectedComponents
 
-},{"bit-twiddle":160,"union-find":161}],163:[function(require,module,exports){
+},{"bit-twiddle":156,"union-find":157}],159:[function(require,module,exports){
 'use strict'
 
 module.exports = monotoneConvexHull2D
@@ -47385,255 +46902,31 @@ function monotoneConvexHull2D(points) {
   //Return result
   return result
 }
-},{"robust-orientation":169}],164:[function(require,module,exports){
+},{"robust-orientation":165}],160:[function(require,module,exports){
+arguments[4][143][0].apply(exports,arguments)
+},{"dup":143}],161:[function(require,module,exports){
+arguments[4][144][0].apply(exports,arguments)
+},{"dup":144,"two-product":164,"two-sum":160}],162:[function(require,module,exports){
+arguments[4][145][0].apply(exports,arguments)
+},{"dup":145}],163:[function(require,module,exports){
+arguments[4][146][0].apply(exports,arguments)
+},{"dup":146}],164:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
 },{"dup":147}],165:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"dup":148,"two-product":168,"two-sum":164}],166:[function(require,module,exports){
-arguments[4][149][0].apply(exports,arguments)
-},{"dup":149}],167:[function(require,module,exports){
-arguments[4][150][0].apply(exports,arguments)
-},{"dup":150}],168:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"dup":151}],169:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"robust-scale":165,"robust-subtract":166,"robust-sum":167,"two-product":168}],170:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],171:[function(require,module,exports){
-/**
- * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
- *
- * @module turf/polygon
- * @param {Array<Array<Number>>} rings an array of LinearRings
- * @param {Object} properties an optional properties object
- * @return {Polygon} a Polygon feature
- * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
- * or if a LinearRing of the Polygon does not have matching Positions at the
- * beginning & end.
- * @example
- * var polygon = turf.polygon([[
- *  [-2.275543, 53.464547],
- *  [-2.275543, 53.489271],
- *  [-2.215118, 53.489271],
- *  [-2.215118, 53.464547],
- *  [-2.275543, 53.464547]
- * ]], { name: 'poly1', population: 400});
- *
- * //=polygon
- */
-module.exports = function(coordinates, properties){
-
-  if (coordinates === null) throw new Error('No coordinates passed');
-
-  for (var i = 0; i < coordinates.length; i++) {
-    var ring = coordinates[i];
-    for (var j = 0; j < ring[ring.length - 1].length; j++) {
-      if (ring.length < 4) {
-        throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
-      }
-      if (ring[ring.length - 1][j] !== ring[0][j]) {
-        throw new Error('First and last Position are not equivalent.');
-      }
-    }
-  }
-
-  var polygon = {
-    "type": "Feature",
-    "geometry": {
-      "type": "Polygon",
-      "coordinates": coordinates
-    },
-    "properties": properties
-  };
-
-  if (!polygon.properties) {
-    polygon.properties = {};
-  }
-
-  return polygon;
-};
-
-},{}],172:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
- * Takes a {@link FeatureCollection} of {@link Point} features and a {@link FeatureCollection} of {@link Polygon} features and calculates the number of points that fall within the set of polygons.
- *
- * @module turf/count
- * @category aggregation
- * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
- * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
- * @param {String} countField a field to append to the attributes of the Polygon features representing Point counts
- * @return {FeatureCollection} a FeatureCollection of Polygon features with `countField` appended
- * @example
-* var polygons = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [-112.072391,46.586591],
- *           [-112.072391,46.61761],
- *           [-112.028102,46.61761],
- *           [-112.028102,46.586591],
- *           [-112.072391,46.586591]
- *         ]]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [-112.023983,46.570426],
- *           [-112.023983,46.615016],
- *           [-111.966133,46.615016],
- *           [-111.966133,46.570426],
- *           [-112.023983,46.570426]
- *         ]]
- *       }
- *     }
- *   ]
- * };
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [-112.0372, 46.608058]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 600
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [-112.045955, 46.596264]
- *       }
- *     }
- *   ]
- * };
- *
- * var counted = turf.count(polygons, points, 'pt_count');
- *
- * var resultFeatures = points.features.concat(counted.features);
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": resultFeatures
- * };
- *
- * //=result
- */
-
-module.exports = function(polyFC, ptFC, outField, done){
-  for (var i = 0; i < polyFC.features.length; i++) {
-    var poly = polyFC.features[i];
-    if(!poly.properties) poly.properties = {};
-    var values = 0;
-    for (var j = 0; j < ptFC.features.length; j++) {
-      var pt = ptFC.features[j];
-      if (inside(pt, poly)) {
-        values++;
-      }
-    }
-    poly.properties[outField] = values;
-  }
-
-  return polyFC;
-};
-
-},{"turf-inside":173}],173:[function(require,module,exports){
+},{"dup":148,"robust-scale":161,"robust-subtract":162,"robust-sum":163,"two-product":164}],166:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117}],167:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],168:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],174:[function(require,module,exports){
-//http://en.wikipedia.org/wiki/Haversine_formula
-//http://www.movable-type.co.uk/scripts/latlong.html
-var point = require('turf-point');
-
-/**
- * Takes a {@link Point} feature and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
- *
- * @module turf/destination
- * @category measurement
- * @param {Point} start a Point feature at the starting point
- * @param {Number} distance distance from the starting point
- * @param {Number} bearing ranging from -180 to 180
- * @param {String} units miles, kilometers, degrees, or radians
- * @returns {Point} a Point feature at the destination
- * @example
- * var point = {
- *   "type": "Feature",
- *   "properties": {
- *     "marker-color": "#0f0"
- *   },
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.343, 39.984]
- *   }
- * };
- * var distance = 50;
- * var bearing = 90;
- * var units = 'miles';
- *
- * var destination = turf.destination(point, distance, bearing, units);
- * destination.properties['marker-color'] = '#f00';
- *
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": [point, destination]
- * };
- *
- * //=result
- */
-module.exports = function (point1, distance, bearing, units) {
-    var coordinates1 = point1.geometry.coordinates;
-    var longitude1 = toRad(coordinates1[0]);
-    var latitude1 = toRad(coordinates1[1]);
-    var bearing_rad = toRad(bearing);
-
-    var R = 0;
-    switch (units) {
-    case 'miles':
-        R = 3960;
-        break
-    case 'kilometers':
-        R = 6373;
-        break
-    case 'degrees':
-        R = 57.2957795;
-        break
-    case 'radians':
-        R = 1;
-        break
-    }
-
-    var latitude2 = Math.asin(Math.sin(latitude1) * Math.cos(distance / R) +
-        Math.cos(latitude1) * Math.sin(distance / R) * Math.cos(bearing_rad));
-    var longitude2 = longitude1 + Math.atan2(Math.sin(bearing_rad) * Math.sin(distance / R) * Math.cos(latitude1),
-        Math.cos(distance / R) - Math.sin(latitude1) * Math.sin(latitude2));
-
-    return point([toDeg(longitude2), toDeg(latitude2)]);
-};
-
-function toRad(degree) {
-    return degree * Math.PI / 180;
-}
-
-function toDeg(rad) {
-    return rad * 180 / Math.PI;
-}
-
-},{"turf-point":175}],175:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],176:[function(require,module,exports){
+},{"dup":74,"turf-inside":169}],169:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],170:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"dup":92,"turf-point":171}],171:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],172:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -47748,7 +47041,7 @@ var inside = require('turf-inside');
  * //=result
  */
 
-module.exports = function(polyFC, ptFC, inField, outField, done){
+module.exports = function(polyFC, ptFC, inField, outField){
   polyFC.features.forEach(function(poly){
     if(!poly.properties){
       poly.properties = {};
@@ -47765,172 +47058,15 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":177,"turf-inside":178}],177:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],178:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],179:[function(require,module,exports){
-var invariant = require('turf-invariant');
-//http://en.wikipedia.org/wiki/Haversine_formula
-//http://www.movable-type.co.uk/scripts/latlong.html
-
-/**
- * Takes two {@link Point} features and calculates
- * the distance between them in degress, radians,
- * miles, or kilometers. This uses the
- * [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula)
- * to account for global curvature.
- *
- * @module turf/distance
- * @category measurement
- * @param {Feature} from origin point
- * @param {Feature} to destination point
- * @param {String} [units=kilometers] can be degrees, radians, miles, or kilometers
- * @return {Number} distance between the two points
- * @example
- * var point1 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.343, 39.984]
- *   }
- * };
- * var point2 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.534, 39.123]
- *   }
- * };
- * var units = "miles";
- *
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [point1, point2]
- * };
- *
- * //=points
- *
- * var distance = turf.distance(point1, point2, units);
- *
- * //=distance
- */
-module.exports = function(point1, point2, units){
-  invariant.featureOf(point1, 'Point', 'distance');
-  invariant.featureOf(point2, 'Point', 'distance');
-  var coordinates1 = point1.geometry.coordinates;
-  var coordinates2 = point2.geometry.coordinates;
-
-  var dLat = toRad(coordinates2[1] - coordinates1[1]);
-  var dLon = toRad(coordinates2[0] - coordinates1[0]);
-  var lat1 = toRad(coordinates1[1]);
-  var lat2 = toRad(coordinates2[1]);
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  var R;
-  switch(units){
-    case 'miles':
-      R = 3960;
-      break;
-    case 'kilometers':
-      R = 6373;
-      break;
-    case 'degrees':
-      R = 57.2957795;
-      break;
-    case 'radians':
-      R = 1;
-      break;
-    case undefined:
-      R = 6373;
-      break;
-    default:
-      throw new Error('unknown option given to "units"');
-  }
-
-  var distance = R * c;
-  return distance;
-};
-
-function toRad(degree) {
-  return degree * Math.PI / 180;
-}
-
-},{"turf-invariant":180}],180:[function(require,module,exports){
-var isArray = require('is-array');
-
-module.exports.geojsonType = geojsonType;
-module.exports.collectionOf = collectionOf;
-module.exports.featureOf = featureOf;
-
-/**
- * Enforce expectations about types of GeoJSON objects for Turf.
- *
- * @alias geojsonType
- * @param {GeoJSON} value any GeoJSON object
- * @param {string} type expected GeoJSON type
- * @param {String} name name of calling function
- * @throws Error if value is not the expected type.
- */
-function geojsonType(value, type, name) {
-    if (!type || !name) throw new Error('type and name required');
-
-    if (!value || value.type !== type) {
-        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.type);
-    }
-}
-
-/**
- * Enforce expectations about types of {@link Feature} inputs for Turf.
- * Internally this uses {@link geojsonType} to judge geometry types.
- *
- * @alias featureOf
- * @param {Feature} feature a feature with an expected geometry type
- * @param {string} types expected GeoJSON type
- * @param {String} name name of calling function
- * @throws Error if value is not the expected type.
- */
-function featureOf(value, type, name) {
-    if (!name) throw new Error('.featureOf() requires a name');
-    if (!value || value.type !== 'Feature' || !value.geometry) {
-        throw new Error('Invalid input to ' + name + ', Feature with geometry required');
-    }
-    if (!value.geometry || value.geometry.type !== type) {
-        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.geometry.type);
-    }
-}
-
-/**
- * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
- * Internally this uses {@link geojsonType} to judge geometry types.
- *
- * @alias collectionOf
- * @param {FeatureCollection} featurecollection a featurecollection for which features will be judged
- * @param {string} type expected GeoJSON type
- * @param {String} name name of calling function
- * @throws Error if value is not the expected type.
- */
-function collectionOf(value, type, name) {
-    if (!name) throw new Error('.collectionOf() requires a name');
-    if (!value || value.type !== 'FeatureCollection') {
-        throw new Error('Invalid input to ' + name + ', FeatureCollection required');
-    }
-    for (var i = 0; i < value.features.length; i++) {
-        var feature = value.features[i];
-        if (!feature || feature.type !== 'Feature' || !feature.geometry) {
-            throw new Error('Invalid input to ' + name + ', Feature with geometry required');
-        }
-        if (!feature.geometry || feature.geometry.type !== type) {
-            throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
-        }
-    }
-}
-
-},{"is-array":71}],181:[function(require,module,exports){
+},{"simple-statistics":173,"turf-inside":174}],173:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],174:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],175:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":176}],176:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],177:[function(require,module,exports){
 var extent = require('turf-extent');
 var bboxPolygon = require('turf-bbox-polygon');
 
@@ -47987,54 +47123,21 @@ var bboxPolygon = require('turf-bbox-polygon');
  * //=result
  */
 
-module.exports = function(features, done){
+module.exports = function(features){
   var bbox = extent(features);
   var poly = bboxPolygon(bbox);
   return poly;
 }
 
-},{"turf-bbox-polygon":182,"turf-extent":184}],182:[function(require,module,exports){
-var polygon = require('turf-polygon');
-
-module.exports = function(bbox){
-  var lowLeft = [bbox[0], bbox[1]];
-  var topLeft = [bbox[0], bbox[3]];
-  var topRight = [bbox[2], bbox[3]];
-  var lowRight = [bbox[2], bbox[1]];
-
-  var poly = polygon([[
-    lowLeft,
-    lowRight,
-    topRight,
-    topLeft,
-    lowLeft
-  ]]);
-  return poly;
-}
-
-},{"turf-polygon":183}],183:[function(require,module,exports){
-module.exports = function(coordinates, properties){
-  if(coordinates === null) return new Error('No coordinates passed')
-  var polygon = { 
-    "type": "Feature",
-    "geometry": {
-      "type": "Polygon",
-      "coordinates": coordinates
-    },
-    "properties": properties
-  }
-
-  if(!polygon.properties){
-    polygon.properties = {}
-  }
-  
-  return polygon
-}
-},{}],184:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"flatten":185}],185:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],186:[function(require,module,exports){
+},{"turf-bbox-polygon":178,"turf-extent":180}],178:[function(require,module,exports){
+arguments[4][101][0].apply(exports,arguments)
+},{"dup":101,"turf-polygon":179}],179:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],180:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"turf-meta":181}],181:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117}],182:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 
@@ -48094,7 +47197,7 @@ var jsts = require('jsts');
  * //=erased
  */
 
-module.exports = function(p1, p2, done){
+module.exports = function(p1, p2){
   var poly1 = JSON.parse(JSON.stringify(p1));
   var poly2 = JSON.parse(JSON.stringify(p2));
   if(poly1.type !== 'Feature') {
@@ -48132,15 +47235,15 @@ module.exports = function(p1, p2, done){
   }
 };
 
-},{"jsts":187}],187:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"./lib/jsts":188,"dup":112,"javascript.util":190}],188:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],189:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],190:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":189,"dup":115}],191:[function(require,module,exports){
+},{"jsts":183}],183:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./lib/jsts":184,"dup":108,"javascript.util":186}],184:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],185:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],186:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":185,"dup":111}],187:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var each = require('turf-meta').coordEach;
 var point = require('turf-point');
@@ -48186,111 +47289,19 @@ module.exports = function(layer) {
   return featureCollection(points);
 };
 
-},{"turf-featurecollection":192,"turf-meta":193,"turf-point":194}],192:[function(require,module,exports){
+},{"turf-featurecollection":188,"turf-meta":189,"turf-point":190}],188:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],189:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117}],190:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],191:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"turf-meta":192}],192:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
 },{"dup":117}],193:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],194:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],195:[function(require,module,exports){
-var each = require('turf-meta').coordEach;
-
-/**
- * Takes any {@link GeoJSON} object, calculates the extent of all input features, and returns a bounding box.
- *
- * @module turf/extent
- * @category measurement
- * @param {GeoJSON} input any valid GeoJSON Object
- * @return {Array<number>} the bounding box of `input` given
- * as an array in WSEN order (west, south, east, north)
- * @example
- * var input = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [114.175329, 22.2524]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [114.170007, 22.267969]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [114.200649, 22.274641]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [114.186744, 22.265745]
- *       }
- *     }
- *   ]
- * };
- *
- * var bbox = turf.extent(input);
- *
- * var bboxPolygon = turf.bboxPolygon(bbox);
- *
- * var resultFeatures = input.features.concat(bboxPolygon);
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": resultFeatures
- * };
- *
- * //=result
- */
-module.exports = function(layer) {
-    var extent = [Infinity, Infinity, -Infinity, -Infinity];
-    each(layer, function(coord) {
-      if (extent[0] > coord[0]) extent[0] = coord[0];
-      if (extent[1] > coord[1]) extent[1] = coord[1];
-      if (extent[2] < coord[0]) extent[2] = coord[0];
-      if (extent[3] < coord[1]) extent[3] = coord[1];
-    });
-    return extent;
-};
-
-},{"turf-meta":196}],196:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],197:[function(require,module,exports){
-/**
- * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
- *
- * @module turf/featurecollection
- * @category helper
- * @param {Feature} features input Features
- * @returns {FeatureCollection} a FeatureCollection of input features
- * @example
- * var features = [
- *  turf.point([-75.343, 39.984], {name: 'Location A'}),
- *  turf.point([-75.833, 39.284], {name: 'Location B'}),
- *  turf.point([-75.534, 39.123], {name: 'Location C'})
- * ];
- *
- * var fc = turf.featurecollection(features);
- *
- * //=fc
- */
-module.exports = function(features){
-  return {
-    type: "FeatureCollection",
-    features: features
-  };
-};
-
-},{}],198:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],194:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -48383,9 +47394,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":199}],199:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],200:[function(require,module,exports){
+},{"turf-featurecollection":195}],195:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],196:[function(require,module,exports){
 /**
  * Takes a {@link GeoJSON} object of any type and flips all of its coordinates
  * from `[x, y]` to `[y, x]`.
@@ -48473,7 +47484,7 @@ function flip3(coords) {
       for(var k = 0; k < coords[i][j].length; k++) coords[i][j][k].reverse();
 }
 
-},{}],201:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 var point = require('turf-point');
 
 /**
@@ -48512,9 +47523,9 @@ module.exports = function(extents, depth) {
   return fc;
 }
 
-},{"turf-point":202}],202:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],203:[function(require,module,exports){
+},{"turf-point":198}],198:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],199:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -48627,22 +47638,24 @@ function hexgrid(bbox, radius) {
   return fc;
 }
 
-},{"turf-polygon":204}],204:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],205:[function(require,module,exports){
+},{"turf-polygon":200}],200:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],201:[function(require,module,exports){
+var invariant = require('turf-invariant');
+
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
 /**
- * Takes a {@link Point} feature and a {@link Polygon} feature and determines if the Point resides inside the Polygon. The Polygon can
- * be convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}
- * and accounts for holes.
+ * Takes a {@link Point} feature and a {@link Polygon} or {@link MultiPolygon}
+ * feature and determines if the Point resides inside the Polygon. The Polygon can
+ * be convex or concave. The function accounts for holes.
  *
  * @module turf/inside
  * @category joins
  * @param {Point} point a Point feature
- * @param {Polygon} polygon a Polygon feature
+ * @param {Polygon|MultiPolygon} polygon a Polygon or MultiPolygon feature
  * @return {Boolean} `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
  * @example
  * var pt1 = {
@@ -48694,10 +47707,11 @@ arguments[4][106][0].apply(exports,arguments)
  * //=isInside2
  */
 module.exports = function(point, polygon) {
+  invariant.featureOf(point, 'Point', 'inside');
   var polys = polygon.geometry.coordinates;
   var pt = [point.geometry.coordinates[0], point.geometry.coordinates[1]];
   // normalize to multipolygon
-  if(polygon.geometry.type === 'Polygon') polys = [polys];
+  if (polygon.geometry.type === 'Polygon') polys = [polys];
 
   var insidePoly = false;
   var i = 0;
@@ -48718,7 +47732,7 @@ module.exports = function(point, polygon) {
     i++;
   }
   return insidePoly;
-}
+};
 
 // pt is [x,y] and ring is [[x,y], [x,y],..]
 function inRing (pt, ring) {
@@ -48726,19 +47740,18 @@ function inRing (pt, ring) {
   for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
     var xi = ring[i][0], yi = ring[i][1];
     var xj = ring[j][0], yj = ring[j][1];
-    
-    var intersect = ((yi > pt[1]) != (yj > pt[1]))
-        && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
+    var intersect = ((yi > pt[1]) != (yj > pt[1])) &&
+        (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
     if (intersect) isInside = !isInside;
   }
   return isInside;
 }
 
-
-},{}],206:[function(require,module,exports){
+},{"turf-invariant":202}],202:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],203:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
-var featurecollection = require('turf-featurecollection');
 
 /**
  * Takes two {@link Polygon} features and finds their intersection.
@@ -48747,28 +47760,48 @@ var featurecollection = require('turf-featurecollection');
  * @category transformation
  * @param {Polygon} poly1 the first Polygon
  * @param {Polygon} poly2 the second Polygon
- * @return {Polygon} a Polygon feature representing the area where `poly1` and `poly2` overlap
+ * @return {Polygon|undefined|MultiLineString} if `poly1` and `poly2` overlap, returns a Polygon feature representing the area they overlap; if `poly1` and `poly2` do not overlap, returns `undefined`; if `poly1` and `poly2` share a border, a MultiLineString of the locations where their borders are shared
  * @example
- * var poly1 = turf.polygon([[
- *  [-122.801742, 45.48565],
- *  [-122.801742, 45.60491],
- *  [-122.584762, 45.60491],
- *  [-122.584762, 45.48565],
- *  [-122.801742, 45.48565]
- * ]]);
- * poly1.properties.fill = '#0f0';
- * var poly2 = turf.polygon([[
- *  [-122.520217, 45.535693],
- *  [-122.64038, 45.553967],
- *  [-122.720031, 45.526554],
- *  [-122.669906, 45.507309],
- *  [-122.723464, 45.446643],
- *  [-122.532577, 45.408574],
- *  [-122.487258, 45.477466],
- *  [-122.520217, 45.535693]
- * ]]);
- * poly2.properties.fill = '#00f';
- * var polygons = turf.featurecollection([poly1, poly2]);
+ * var poly1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-122.801742, 45.48565],
+ *       [-122.801742, 45.60491],
+ *       [-122.584762, 45.60491],
+ *       [-122.584762, 45.48565],
+ *       [-122.801742, 45.48565]
+ *     ]]
+ *   }
+ * }
+ * var poly2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "fill": "#00f"
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-122.520217, 45.535693],
+ *       [-122.64038, 45.553967],
+ *       [-122.720031, 45.526554],
+ *       [-122.669906, 45.507309],
+ *       [-122.723464, 45.446643],
+ *       [-122.532577, 45.408574],
+ *       [-122.487258, 45.477466],
+ *       [-122.520217, 45.535693]
+ *     ]]
+ *   }
+ * }
+ *
+ * var polygons = {
+ *   "type": "FeatureCollection",
+ *   "features": [poly1, poly2]
+ * };
  *
  * var intersection = turf.intersect(poly1, poly2);
  *
@@ -48777,11 +47810,16 @@ var featurecollection = require('turf-featurecollection');
  * //=intersection
  */
 module.exports = function(poly1, poly2){
-  var reader = new jsts.io.GeoJSONReader(),
-    a = reader.read(JSON.stringify(poly1)),
-    b = reader.read(JSON.stringify(poly2)),
-    intersection = a.intersection(b),
-    parser = new jsts.io.GeoJSONParser();
+  var geom1, geom2;
+  if(poly1.type === 'Feature') geom1 = poly1.geometry;
+  else geom1 = poly1;
+  if(poly2.type === 'Feature') geom2 = poly2.geometry;
+  else geom2 = poly2;
+  var reader = new jsts.io.GeoJSONReader();
+  var a = reader.read(JSON.stringify(geom1));
+  var b = reader.read(JSON.stringify(geom2));
+  var intersection = a.intersection(b);
+  var parser = new jsts.io.GeoJSONParser();
 
   intersection = parser.write(intersection);
   if(intersection.type === 'GeometryCollection' && intersection.geometries.length === 0) {
@@ -48795,17 +47833,15 @@ module.exports = function(poly1, poly2){
   }
 };
 
-},{"jsts":207,"turf-featurecollection":211}],207:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"./lib/jsts":208,"dup":112,"javascript.util":210}],208:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],209:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],210:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":209,"dup":115}],211:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],212:[function(require,module,exports){
+},{"jsts":204}],204:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./lib/jsts":205,"dup":108,"javascript.util":207}],205:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],206:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],207:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":206,"dup":111}],208:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -49320,7 +48356,7 @@ Conrec.prototype.contour = function(d, ilb, iub, jlb, jub, x, y, nc, z) {
 }
 
 
-},{}],213:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -49500,43 +48536,73 @@ function unique(a) {
   }, []);
 }
 
-},{"./conrec.js":212,"turf-extent":214,"turf-featurecollection":216,"turf-grid":217,"turf-inside":219,"turf-linestring":220,"turf-planepoint":221,"turf-point":222,"turf-polygon":223,"turf-size":224,"turf-square":225,"turf-tin":230}],214:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"flatten":215}],215:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],216:[function(require,module,exports){
+},{"./conrec.js":208,"turf-extent":210,"turf-featurecollection":212,"turf-grid":213,"turf-inside":214,"turf-linestring":215,"turf-planepoint":216,"turf-point":217,"turf-polygon":218,"turf-size":219,"turf-square":220,"turf-tin":224}],210:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"turf-meta":211}],211:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],217:[function(require,module,exports){
-var point = require('turf-point');
-
-module.exports = function(extents, depth) {
-  var xmin = extents[0];
-  var ymin = extents[1];
-  var xmax = extents[2];
-  var ymax = extents[3];
-  var interval = (xmax - xmin) / depth;
-  var coords = [];
-  var fc = {
-    type: 'FeatureCollection',
-    features: []
-  };
-
-  for (var x=0; x<=depth; x++){
-    for (var y=0;y<=depth; y++){
-      fc.features.push(point((x * interval) + xmin, (y * interval) + ymin));
-    }
-  }
-  return fc;
-}
-
-},{"turf-point":218}],218:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],219:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],220:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],221:[function(require,module,exports){
-module.exports = function(point, triangle, done){
+},{"dup":117}],212:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],213:[function(require,module,exports){
+arguments[4][197][0].apply(exports,arguments)
+},{"dup":197,"turf-point":217}],214:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],215:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],216:[function(require,module,exports){
+/**
+ * Takes a triangular plane as a {@link Polygon} feature
+ * and a {@link Point} feature within that triangle and returns the z-value
+ * at that point. The Polygon needs to have properties `a`, `b`, and `c`
+ * that define the values at its three corners.
+ *
+ * @module turf/planepoint
+ * @category interpolation
+ * @param {Point} interpolatedPoint the Point for which a z-value will be calculated
+ * @param {Polygon} triangle a Polygon feature with three vertices
+ * @return {number} the z-value for `interpolatedPoint`
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.3221, 39.529]
+ *   }
+ * };
+ * var point = turf.point([-75.3221, 39.529]);
+ * // triangle is a polygon with "a", "b",
+ * // and "c" values representing
+ * // the values of the coordinates in order.
+ * var triangle = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "a": 11,
+ *     "b": 122,
+ *     "c": 44
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-75.1221, 39.57],
+ *       [-75.58, 39.18],
+ *       [-75.97, 39.86],
+ *       [-75.1221, 39.57]
+ *     ]]
+ *   }
+ * };
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [triangle, point]
+ * };
+ *
+ * var zValue = turf.planepoint(point, triangle);
+ *
+ * //=features
+ *
+ * //=zValue
+ */
+module.exports = function(point, triangle){
   var x = point.geometry.coordinates[0],
       y = point.geometry.coordinates[1],
       x1 = triangle.geometry.coordinates[0][0][0],
@@ -49549,19 +48615,43 @@ module.exports = function(point, triangle, done){
       y3 = triangle.geometry.coordinates[0][2][1],
       z3 = triangle.properties.c;
 
-  var z = (z3 * (x-x1) * (y-y2) + z1 * (x-x2) * (y-y3) + z2 * (x-x3) * (y-y1)
-      - z2 * (x-x1) * (y-y3) - z3 * (x-x2) * (y-y1) - z1 * (x-x3) * (y-y2)) /
+  var z = (z3 * (x-x1) * (y-y2) + z1 * (x-x2) * (y-y3) + z2 * (x-x3) * (y-y1) -
+      z2 * (x-x1) * (y-y3) - z3 * (x-x2) * (y-y1) - z1 * (x-x3) * (y-y2)) /
       ((x-x1) * (y-y2) + (x-x2) * (y-y3) +(x-x3) * (y-y1) -
        (x-x1) * (y-y3) - (x-x2) * (y-y1) - (x-x3) * (y-y2));
 
   return z;
-}
+};
 
-},{}],222:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],223:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],224:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],218:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],219:[function(require,module,exports){
+/**
+ * Takes a bounding box and returns a new bounding box with a size expanded or contracted
+ * by a factor of X.
+ *
+ * @module turf/size
+ * @category measurement
+ * @param {Array<number>} bbox a bounding box
+ * @param {number} factor the ratio of the new bbox to the input bbox
+ * @return {Array<number>} the resized bbox
+ * @example
+ * var bbox = [0, 0, 10, 10]
+ *
+ * var resized = turf.size(bbox, 2);
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     turf.bboxPolygon(bbox),
+ *     turf.bboxPolygon(resized)
+ *   ]
+ * };
+ *
+ * //=features
+ */
 module.exports = function(bbox, factor){
   var currentXDistance = (bbox[2] - bbox[0]);
   var currentYDistance = (bbox[3] - bbox[1]);
@@ -49578,17 +48668,40 @@ module.exports = function(bbox, factor){
   var sized = [lowX, lowY, highX, highY];
   return sized;
 }
-},{}],225:[function(require,module,exports){
+
+},{}],220:[function(require,module,exports){
 var midpoint = require('turf-midpoint');
 var point = require('turf-point');
 var distance = require('turf-distance');
 
+/**
+ * Takes a bounding box and calculates the minimum square bounding box that would contain the input.
+ *
+ * @module turf/square
+ * @category measurement
+ * @param {Array<number>} bbox a bounding box
+ * @return {Array<number>} a square surrounding `bbox`
+ * @example
+ * var bbox = [-20,-20,-15,0];
+ *
+ * var squared = turf.square(bbox);
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     turf.bboxPolygon(bbox),
+ *     turf.bboxPolygon(squared)
+ *   ]
+ * };
+ *
+ * //=features
+ */
 module.exports = function(bbox){
   var squareBbox = [0,0,0,0];
-  var lowLeft = point(bbox[0], bbox[1]);
-  var topLeft = point(bbox[0], bbox[3]);
-  var topRight = point(bbox[2], bbox[3]);
-  var lowRight = point(bbox[2], bbox[1]);
+  var lowLeft = point([bbox[0], bbox[1]]);
+  var topLeft = point([bbox[0], bbox[3]]);
+  var topRight = point([bbox[2], bbox[3]]);
+  var lowRight = point([bbox[2], bbox[1]]);
 
   var horizontalDistance = distance(lowLeft, lowRight, 'miles');
   var verticalDistance = distance(lowLeft, topLeft, 'miles');
@@ -49611,53 +48724,55 @@ module.exports = function(bbox){
 }
 
 
-},{"turf-distance":226,"turf-midpoint":227,"turf-point":229}],226:[function(require,module,exports){
-//http://en.wikipedia.org/wiki/Haversine_formula
-//http://www.movable-type.co.uk/scripts/latlong.html
-
-module.exports = function(point1, point2, units){
-  var coordinates1 = point1.geometry.coordinates
-  var coordinates2 = point2.geometry.coordinates
-
-  var dLat = toRad(coordinates2[1] - coordinates1[1])
-  var dLon = toRad(coordinates2[0] - coordinates1[0])
-  var lat1 = toRad(coordinates1[1])
-  var lat2 = toRad(coordinates2[1])
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2)
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-
-  var R = 0
-  switch(units){
-    case 'miles':
-      R = 3960
-      break
-    case 'kilometers':
-      R = 6373
-      break
-    case 'degrees':
-      R = 57.2957795
-      break
-    case 'radians':
-      R = 1
-      break
-  }
-  var distance = R * c
-  return distance
-}
-
-function toRad(degree){
-  return degree * Math.PI / 180
-}
-
-},{}],227:[function(require,module,exports){
+},{"turf-distance":221,"turf-midpoint":223,"turf-point":217}],221:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":222}],222:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],223:[function(require,module,exports){
 // http://cs.selu.edu/~rbyrd/math/midpoint/
 // ((x1+x2)/2), ((y1+y2)/2)
-var point = require('turf-point')
+var point = require('turf-point');
 
+/**
+ * Takes two {@link Point} features and returns a Point midway between the two.
+ *
+ * @module turf/midpoint
+ * @category measurement
+ * @param {Point} pt1 first point
+ * @param {Point} pt2 second point
+ * @return {Point} a point between the two
+ * @example
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [144.834823, -37.771257]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [145.14244, -37.830937]
+ *   }
+ * };
+ *
+ * var midpointed = turf.midpoint(pt1, pt2);
+ * midpointed.properties['marker-color'] = '#f00';
+ *
+ *
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, midpointed]
+ * };
+ *
+ * //=result
+ */
 module.exports = function(point1, point2) {
-  if(point1 === null || point2 === null || point1 && point2 === null){
-    return new Error('Less than two points passed.')
+  if (point1 === null || point2 === null){
+    throw new Error('Less than two points passed.');
   }
 
   var x1 = point1.geometry.coordinates[0];
@@ -49670,34 +48785,12 @@ module.exports = function(point1, point2) {
   var y3 = y1 + y2;
   var midY = y3/2;
 
-  var midpoint = point(midX, midY);
+  return point([midX, midY]);
+};
 
-  return midpoint
-}
-},{"turf-point":228}],228:[function(require,module,exports){
-module.exports = function(x, y, properties){
-  if(isNaN(x) || isNaN(y)) throw new Error('Invalid coordinates')
-  return {
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [x, y]
-    },
-    properties: properties || {}
-  }
-}
-
-},{}],229:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],230:[function(require,module,exports){
-arguments[4][137][0].apply(exports,arguments)
-},{"dup":137,"turf-nearest":231,"turf-point":233,"turf-polygon":223}],231:[function(require,module,exports){
-arguments[4][138][0].apply(exports,arguments)
-},{"dup":138,"turf-distance":232}],232:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],233:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],234:[function(require,module,exports){
+},{"turf-point":217}],224:[function(require,module,exports){
+arguments[4][134][0].apply(exports,arguments)
+},{"dup":134,"turf-featurecollection":212,"turf-polygon":218}],225:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -50213,7 +49306,7 @@ arguments[4][139][0].apply(exports,arguments)
     }
   }
 
-},{}],235:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -50250,7 +49343,7 @@ var Conrec = require('./conrec');
  * var isolined = turf.isolines(points, 'z', 15, breaks);
  * //=isolined
  */
-module.exports = function(points, z, resolution, breaks, done){
+module.exports = function(points, z, resolution, breaks){
   var tinResult = tin(points, z);
   var extentBBox = extent(points);
   var squareBBox = square(extentBBox);
@@ -50314,43 +49407,37 @@ module.exports = function(points, z, resolution, breaks, done){
 
 
 
-},{"./conrec":234,"turf-extent":236,"turf-featurecollection":238,"turf-grid":239,"turf-inside":241,"turf-linestring":242,"turf-planepoint":243,"turf-square":244,"turf-tin":249}],236:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"flatten":237}],237:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],238:[function(require,module,exports){
+},{"./conrec":225,"turf-extent":227,"turf-featurecollection":229,"turf-grid":230,"turf-inside":232,"turf-linestring":233,"turf-planepoint":234,"turf-square":235,"turf-tin":240}],227:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"turf-meta":228}],228:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],239:[function(require,module,exports){
-arguments[4][217][0].apply(exports,arguments)
-},{"dup":217,"turf-point":240}],240:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],241:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],242:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],243:[function(require,module,exports){
-arguments[4][221][0].apply(exports,arguments)
-},{"dup":221}],244:[function(require,module,exports){
-arguments[4][225][0].apply(exports,arguments)
-},{"dup":225,"turf-distance":245,"turf-midpoint":246,"turf-point":248}],245:[function(require,module,exports){
-arguments[4][226][0].apply(exports,arguments)
-},{"dup":226}],246:[function(require,module,exports){
-arguments[4][227][0].apply(exports,arguments)
-},{"dup":227,"turf-point":247}],247:[function(require,module,exports){
-arguments[4][228][0].apply(exports,arguments)
-},{"dup":228}],248:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],249:[function(require,module,exports){
-arguments[4][137][0].apply(exports,arguments)
-},{"dup":137,"turf-nearest":250,"turf-point":252,"turf-polygon":253}],250:[function(require,module,exports){
-arguments[4][138][0].apply(exports,arguments)
-},{"dup":138,"turf-distance":251}],251:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],252:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],253:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],254:[function(require,module,exports){
+},{"dup":117}],229:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],230:[function(require,module,exports){
+arguments[4][197][0].apply(exports,arguments)
+},{"dup":197,"turf-point":231}],231:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],232:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],233:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],234:[function(require,module,exports){
+arguments[4][216][0].apply(exports,arguments)
+},{"dup":216}],235:[function(require,module,exports){
+arguments[4][220][0].apply(exports,arguments)
+},{"dup":220,"turf-distance":236,"turf-midpoint":238,"turf-point":239}],236:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":237}],237:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],238:[function(require,module,exports){
+arguments[4][223][0].apply(exports,arguments)
+},{"dup":223,"turf-point":239}],239:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],240:[function(require,module,exports){
+arguments[4][134][0].apply(exports,arguments)
+},{"dup":134,"turf-featurecollection":229,"turf-polygon":241}],241:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],242:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -50433,9 +49520,9 @@ module.exports = function(fc, field, num){
   return breaks;
 };
 
-},{"simple-statistics":255}],255:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],256:[function(require,module,exports){
+},{"simple-statistics":243}],243:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],244:[function(require,module,exports){
 /**
  * Takes a {@link Polygon} feature and returns a {@link FeatureCollection} of {@link Point} features at all self-intersections.
  *
@@ -50545,13 +49632,13 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
   }
 }
 
-},{"turf-featurecollection":257,"turf-point":258,"turf-polygon":259}],257:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],258:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],259:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],260:[function(require,module,exports){
+},{"turf-featurecollection":245,"turf-point":246,"turf-polygon":247}],245:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],246:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],247:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],248:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 
@@ -50600,344 +49687,218 @@ module.exports = function (line, units) {
   return travelled;
 }
 
-},{"turf-distance":261,"turf-point":262}],261:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],262:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],263:[function(require,module,exports){
+},{"turf-distance":249,"turf-point":251}],249:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":250}],250:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],251:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],252:[function(require,module,exports){
+var distance = require('turf-distance');
+var point = require('turf-point');
+var linestring = require('turf-linestring');
+var bearing = require('turf-bearing');
+var destination = require('turf-destination');
+
 /**
- * Creates a {@link LineString} {@link Feature} based on a
- * coordinate array. Properties can be added optionally.
+ * Slices a LineString at start and stop Points
  *
- * @module turf/linestring
- * @category helper
- * @param {Array<Array<Number>>} coordinates an array of Positions
- * @param {Object} properties an Object of key-value pairs to add as properties
- * @return {LineString} a LineString feature
- * @throws {Error} if no coordinates are passed
+ * @module turf/line-slice
+ * @category misc
+ * @param {Point} Point to start the slice
+ * @param {Point} Point to stop the slice
+ * @param {LineString} Line to slice
+ * @return {LineString} Sliced LineString
  * @example
- * var linestring1 = turf.linestring([
- *	[-21.964416, 64.148203],
- *	[-21.956176, 64.141316],
- *	[-21.93901, 64.135924],
- *	[-21.927337, 64.136673]
- * ]);
- * var linestring2 = turf.linestring([
- *	[-21.929054, 64.127985],
- *	[-21.912918, 64.134726],
- *	[-21.916007, 64.141016],
- * 	[-21.930084, 64.14446]
- * ], {name: 'line 1', distance: 145});
+ * var line = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "LineString",
+ *     "coordinates": [
+ *       [-77.031669, 38.878605],
+ *       [-77.029609, 38.881946],
+ *       [-77.020339, 38.884084],
+ *       [-77.025661, 38.885821],
+ *       [-77.021884, 38.889563],
+ *       [-77.019824, 38.892368]
+ *     ]
+ *   }
+ * };
+ * var start = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-77.029609, 38.881946]
+ *   }
+ * };
+ * var stop = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-77.021884, 38.889563]
+ *   }
+ * };
+ * 
+ * var sliced = turf.lineSlice(start, stop, line);
  *
- * //=linestring1
+ * //=line
  *
- * //=linestring2
+ * //=sliced
  */
-module.exports = function(coordinates, properties){
-  if (!coordinates) {
-      throw new Error('No coordinates passed');
+
+module.exports = function (startPt, stopPt, line) {  
+  var coords;
+  if(line.type === 'Feature') coords = line.geometry.coordinates;
+  else if(line.type === 'LineString') coords = line.geometry.coordinates;
+  else throw new Error('input must be a LineString Feature or Geometry');
+
+  var startVertex = pointOnLine(startPt, coords);
+  var stopVertex = pointOnLine(stopPt, coords);
+  var ends;
+  if(startVertex.properties.index <= stopVertex.properties.index) {
+    ends = [startVertex, stopVertex];
+  } else {
+    ends = [stopVertex, startVertex];
   }
-  return {
-    "type": "Feature",
-    "geometry": {
-      "type": "LineString",
-      "coordinates": coordinates
-    },
-    "properties": properties || {}
+  var clipLine = linestring([ends[0].geometry.coordinates], {});
+  for(var i = ends[0].properties.index+1; i < ends[1].properties.index+1; i++) {
+    clipLine.geometry.coordinates.push(coords[i]);
+  }
+  clipLine.geometry.coordinates.push(ends[1].geometry.coordinates);
+  return clipLine;
+}
+
+function pointOnLine (pt, coords) {
+  var units = 'miles'
+  var closestPt = point([Infinity, Infinity], {dist: Infinity});
+  for(var i = 0; i < coords.length - 1; i++) {
+    var start = point(coords[i])
+    var stop = point(coords[i+1])
+    //start
+    start.properties.dist = distance(pt, start, units);
+    //stop
+    stop.properties.dist = distance(pt, stop, units);
+    //perpendicular
+    var direction = bearing(start, stop)
+    var perpendicularPt = destination(pt, 1000 , direction + 90, units) // 1000 = gross
+    var intersect = lineIntersects(
+      pt.geometry.coordinates[0],
+      pt.geometry.coordinates[1],
+      perpendicularPt.geometry.coordinates[0],
+      perpendicularPt.geometry.coordinates[1],
+      start.geometry.coordinates[0],
+      start.geometry.coordinates[1],
+      stop.geometry.coordinates[0],
+      stop.geometry.coordinates[1]
+      );
+    if(!intersect) {
+      perpendicularPt = destination(pt, 1000 , direction - 90, units) // 1000 = gross
+      intersect = lineIntersects(
+        pt.geometry.coordinates[0],
+        pt.geometry.coordinates[1],
+        perpendicularPt.geometry.coordinates[0],
+        perpendicularPt.geometry.coordinates[1],
+        start.geometry.coordinates[0],
+        start.geometry.coordinates[1],
+        stop.geometry.coordinates[0],
+        stop.geometry.coordinates[1]
+        );
+    }
+    perpendicularPt.properties.dist = Infinity;
+    var intersectPt;
+    if(intersect) {
+      var intersectPt = point(intersect);
+      intersectPt.properties.dist = distance(pt, intersectPt, units);
+    }
+    
+    if(start.properties.dist < closestPt.properties.dist) {
+      closestPt = start;
+      closestPt.properties.index = i;
+    }
+    if(stop.properties.dist < closestPt.properties.dist) {
+     closestPt = stop;
+     closestPt.properties.index = i;
+    }
+    if(intersectPt && intersectPt.properties.dist < closestPt.properties.dist){ 
+      closestPt = intersectPt;
+      closestPt.properties.index = i;
+    }
+  }
+  
+  return closestPt;
+}
+
+// modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
+function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
+  // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
+  var denominator, a, b, numerator1, numerator2, result = {
+    x: null,
+    y: null,
+    onLine1: false,
+    onLine2: false
   };
-};
-
-},{}],264:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
- * Calculates the maximum value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
- *
- * @module turf/max
- * @category aggregation
- * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
- * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
- * @param {string} inField the field in input data to analyze
- * @param {string} outField the field in which to store results
- * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
- * with properties listed as `outField` values
- * @example
- * var polygons = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [101.551437, 3.150114],
- *           [101.551437, 3.250208],
- *           [101.742324, 3.250208],
- *           [101.742324, 3.150114],
- *           [101.551437, 3.150114]
- *         ]]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [101.659927, 3.011612],
- *           [101.659927, 3.143944],
- *           [101.913986, 3.143944],
- *           [101.913986, 3.011612],
- *           [101.659927, 3.011612]
- *         ]]
- *       }
- *     }
- *   ]
- * };
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [101.56105, 3.213874]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 600
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [101.709365, 3.211817]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 100
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [101.645507, 3.169311]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [101.708679, 3.071266]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 300
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [101.826782, 3.081551]
- *       }
- *     }
- *   ]
- * };
- *
- * var aggregated = turf.max(
- *   polygons, points, 'population', 'max');
- *
- * var resultFeatures = points.features.concat(
- *   aggregated.features);
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": resultFeatures
- * };
- *
- * //=result
- */
-module.exports = function(polyFC, ptFC, inField, outField){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    });
-    poly.properties[outField] = max(values);
-  });
-
-  return polyFC;
-}
-
-function max(x) {
-    var value;
-    for (var i = 0; i < x.length; i++) {
-        // On the first iteration of this loop, max is
-        // undefined and is thus made the maximum element in the array
-        if (x[i] > value || value === undefined) value = x[i];
-    }
-    return value;
-}
-
-},{"turf-inside":265}],265:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],266:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
- * Calculates the median value of a field for a set of {@link Point} features within a set of {@link Polygon} features.
- *
- * @module turf/median
- * @category aggregation
- * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
- * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
- * @param {string} inField the field in input data to analyze
- * @param {string} outField the field in which to store results
- * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
- * with properties listed as `outField` values
- * @example
- * var polygons = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [18.400039, -33.970697],
- *           [18.400039, -33.818518],
- *           [18.665771, -33.818518],
- *           [18.665771, -33.970697],
- *           [18.400039, -33.970697]
- *         ]]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {},
- *       "geometry": {
- *         "type": "Polygon",
- *         "coordinates": [[
- *           [18.538742, -34.050383],
- *           [18.538742, -33.98721],
- *           [18.703536, -33.98721],
- *           [18.703536, -34.050383],
- *           [18.538742, -34.050383]
- *         ]]
- *       }
- *     }
- *   ]
- * };
- * var points = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [18.514022, -33.860152]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 600
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [18.48999, -33.926269]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 100
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [18.583374, -33.905755]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 200
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [18.591613, -34.024778]
- *       }
- *     }, {
- *       "type": "Feature",
- *       "properties": {
- *         "population": 300
- *       },
- *       "geometry": {
- *         "type": "Point",
- *         "coordinates": [18.653411, -34.017949]
- *       }
- *     }
- *   ]
- * };
- *
- * var medians = turf.median(
- *  polygons, points, 'population', 'median');
- *
- * var resultFeatures = points.features.concat(
- *   medians.features);
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": resultFeatures
- * };
- *
- * //=result
- */
-module.exports = function(polyFC, ptFC, inField, outField){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    });
-    poly.properties[outField] = median(values);
-  });
-
-  return polyFC;
-};
-
-function median(x) {
-    // The median of an empty list is null
-    if (x.length === 0) return null;
-
-    // Sorting the array makes it easy to find the center, but
-    // use `.slice()` to ensure the original array `x` is not modified
-    var sorted = x.slice().sort(function (a, b) { return a - b; });
-
-    // If the length of the list is odd, it's the central number
-    if (sorted.length % 2 === 1) {
-        return sorted[(sorted.length - 1) / 2];
-    // Otherwise, the median is the average of the two numbers
-    // at the center of the list
+  denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
+  if (denominator == 0) {
+    if(result.x != null && result.y != null) {
+      return result;
     } else {
-        var a = sorted[(sorted.length / 2) - 1];
-        var b = sorted[(sorted.length / 2)];
-        return (a + b) / 2;
+      return false;
     }
+  }
+  a = line1StartY - line2StartY;
+  b = line1StartX - line2StartX;
+  numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
+  numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
+  a = numerator1 / denominator;
+  b = numerator2 / denominator;
+
+  // if we cast these lines infinitely in both directions, they intersect here:
+  result.x = line1StartX + (a * (line1EndX - line1StartX));
+  result.y = line1StartY + (a * (line1EndY - line1StartY));
+
+  // if line1 is a segment and line2 is infinite, they intersect if:
+  if (a > 0 && a < 1) {
+    result.onLine1 = true;
+  }
+  // if line2 is a segment and line1 is infinite, they intersect if:
+  if (b > 0 && b < 1) {
+    result.onLine2 = true;
+  }
+  // if line1 and line2 are segments, they intersect if both of the above are true
+  if(result.onLine1 && result.onLine2){
+    return [result.x, result.y];
+  }
+  else {
+    return false;
+  }
 }
 
-},{"turf-inside":267}],267:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],268:[function(require,module,exports){
+},{"turf-bearing":253,"turf-destination":254,"turf-distance":255,"turf-linestring":257,"turf-point":258}],253:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"dup":91}],254:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"dup":92,"turf-point":258}],255:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":256}],256:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],257:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],258:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],259:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],260:[function(require,module,exports){
+arguments[4][79][0].apply(exports,arguments)
+},{"dup":79,"turf-inside":261}],261:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],262:[function(require,module,exports){
+arguments[4][81][0].apply(exports,arguments)
+},{"dup":81,"turf-inside":263}],263:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],264:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -50990,7 +49951,7 @@ var union = require('turf-union');
  *
  * //=merged
  */
-module.exports = function(polygons, done){
+module.exports = function(polygons){
 
   var merged = clone(polygons.features[0]),
     features = polygons.features;
@@ -51006,221 +49967,27 @@ module.exports = function(polygons, done){
   return merged;
 };
 
-},{"clone":269,"turf-union":270}],269:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"buffer":2,"dup":130}],270:[function(require,module,exports){
-arguments[4][131][0].apply(exports,arguments)
-},{"dup":131,"jsts":271}],271:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"./lib/jsts":272,"dup":112,"javascript.util":274}],272:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],273:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],274:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":273,"dup":115}],275:[function(require,module,exports){
-// http://cs.selu.edu/~rbyrd/math/midpoint/
-// ((x1+x2)/2), ((y1+y2)/2)
-var point = require('turf-point');
-
-/**
- * Takes two {@link Point} features and returns a Point midway between the two.
- *
- * @module turf/midpoint
- * @category measurement
- * @param {Point} pt1 first point
- * @param {Point} pt2 second point
- * @return {Point} a point between the two
- * @example
- * var pt1 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [144.834823, -37.771257]
- *   }
- * };
- * var pt2 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [145.14244, -37.830937]
- *   }
- * };
- *
- * var midpointed = turf.midpoint(pt1, pt2);
- * midpointed.properties['marker-color'] = '#f00';
- *
- *
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": [pt1, pt2, midpointed]
- * };
- *
- * //=result
- */
-module.exports = function(point1, point2) {
-  if (point1 === null || point2 === null){
-    throw new Error('Less than two points passed.');
-  }
-
-  var x1 = point1.geometry.coordinates[0];
-  var x2 = point2.geometry.coordinates[0];
-  var y1 = point1.geometry.coordinates[1];
-  var y2 = point2.geometry.coordinates[1];
-
-  var x3 = x1 + x2;
-  var midX = x3/2;
-  var y3 = y1 + y2;
-  var midY = y3/2;
-
-  return point([midX, midY]);
-};
-
-},{"turf-point":276}],276:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],277:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
-* Calculates the minimum value of a field for {@link Point} features within a set of {@link Polygon} features.
-*
-* @module turf/min
-* @category aggregation
-* @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
-* @param {FeatureCollection} points a FeatureCollection of {@link Point} features
-* @param {string} inField the field in input data to analyze
-* @param {string} outField the field in which to store results
-* @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
-* with properties listed as `outField` values
-* @example
-* var polygons = {
-*   "type": "FeatureCollection",
-*   "features": [
-*     {
-*       "type": "Feature",
-*       "properties": {},
-*       "geometry": {
-*         "type": "Polygon",
-*         "coordinates": [[
-*           [72.809658, 18.961818],
-*           [72.809658, 18.974805],
-*           [72.827167, 18.974805],
-*           [72.827167, 18.961818],
-*           [72.809658, 18.961818]
-*         ]]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {},
-*       "geometry": {
-*         "type": "Polygon",
-*         "coordinates": [[
-*           [72.820987, 18.947043],
-*           [72.820987, 18.95922],
-*           [72.841243, 18.95922],
-*           [72.841243, 18.947043],
-*           [72.820987, 18.947043]
-*         ]]
-*       }
-*     }
-*   ]
-* };
-* var points = {
-*   "type": "FeatureCollection",
-*   "features": [
-*     {
-*       "type": "Feature",
-*       "properties": {
-*         "population": 200
-*       },
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [72.814464, 18.971396]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {
-*         "population": 600
-*       },
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [72.820043, 18.969772]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {
-*         "population": 100
-*       },
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [72.817296, 18.964253]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {
-*         "population": 200
-*       },
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [72.83575, 18.954837]
-*       }
-*     }, {
-*       "type": "Feature",
-*       "properties": {
-*         "population": 300
-*       },
-*       "geometry": {
-*         "type": "Point",
-*         "coordinates": [72.828197, 18.95094]
-*       }
-*     }
-*   ]
-* };
-*
-* var minimums = turf.min(
-*   polygons, points, 'population', 'min');
-*
-* var resultFeatures = points.features.concat(
-*   minimums.features);
-* var result = {
-*   "type": "FeatureCollection",
-*   "features": resultFeatures
-* };
-*
-* //=result
-*/
-module.exports = function(polyFC, ptFC, inField, outField){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    });
-    poly.properties[outField] = min(values);
-  });
-
-  return polyFC;
-};
-
-function min(x) {
-    var value;
-    for (var i = 0; i < x.length; i++) {
-        // On the first iteration of this loop, min is
-        // undefined and is thus made the minimum element in the array
-        if (x[i] < value || value === undefined) value = x[i];
-    }
-    return value;
-}
-
-},{"turf-inside":278}],278:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],279:[function(require,module,exports){
+},{"clone":265,"turf-union":266}],265:[function(require,module,exports){
+arguments[4][127][0].apply(exports,arguments)
+},{"buffer":2,"dup":127}],266:[function(require,module,exports){
+arguments[4][128][0].apply(exports,arguments)
+},{"dup":128,"jsts":267}],267:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./lib/jsts":268,"dup":108,"javascript.util":270}],268:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],269:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],270:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":269,"dup":111}],271:[function(require,module,exports){
+arguments[4][223][0].apply(exports,arguments)
+},{"dup":223,"turf-point":272}],272:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],273:[function(require,module,exports){
+arguments[4][83][0].apply(exports,arguments)
+},{"dup":83,"turf-inside":274}],274:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],275:[function(require,module,exports){
 var distance = require('turf-distance');
 
 /**
@@ -51303,84 +50070,190 @@ module.exports = function(targetPoint, points){
   return nearestPoint;
 }
 
-},{"turf-distance":280}],280:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],281:[function(require,module,exports){
+},{"turf-distance":276}],276:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":277}],277:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],278:[function(require,module,exports){
+arguments[4][216][0].apply(exports,arguments)
+},{"dup":216}],279:[function(require,module,exports){
+var distance = require('turf-distance');
+var point = require('turf-point');
+var linestring = require('turf-linestring');
+var bearing = require('turf-bearing');
+var destination = require('turf-destination');
+
 /**
- * Takes a triangular plane as a {@link Polygon} feature
- * and a {@link Point} feature within that triangle and returns the z-value
- * at that point. The Polygon needs to have properties `a`, `b`, and `c`
- * that define the values at its three corners.
+ * Takes a Point and a LineString and calculates the closest Point on the LineString
  *
- * @module turf/planepoint
- * @category interpolation
- * @param {Point} interpolatedPoint the Point for which a z-value will be calculated
- * @param {Polygon} triangle a Polygon feature with three vertices
- * @return {number} the z-value for `interpolatedPoint`
+ * @module turf/point-on-line
+ * @category misc
+ * @param {LineString} Line to snap to
+ * @param {Point} Point to snap from
+ * @return {Point} Closest Point on the Line
  * @example
- * var point = {
+ * var line = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "LineString",
+ *     "coordinates": [
+ *       [-77.031669, 38.878605],
+ *       [-77.029609, 38.881946],
+ *       [-77.020339, 38.884084],
+ *       [-77.025661, 38.885821],
+ *       [-77.021884, 38.889563],
+ *       [-77.019824, 38.892368]
+ *     ]
+ *   }
+ * };
+ * var pt = {
  *   "type": "Feature",
  *   "properties": {},
  *   "geometry": {
  *     "type": "Point",
- *     "coordinates": [-75.3221, 39.529]
+ *     "coordinates": [-77.037076, 38.884017]
  *   }
  * };
- * var point = turf.point([-75.3221, 39.529]);
- * // triangle is a polygon with "a", "b",
- * // and "c" values representing
- * // the values of the coordinates in order.
- * var triangle = {
- *   "type": "Feature",
- *   "properties": {
- *     "a": 11,
- *     "b": 122,
- *     "c": 44
- *   },
- *   "geometry": {
- *     "type": "Polygon",
- *     "coordinates": [[
- *       [-75.1221, 39.57],
- *       [-75.58, 39.18],
- *       [-75.97, 39.86],
- *       [-75.1221, 39.57]
- *     ]]
- *   }
- * };
+ * 
+ * var snapped = turf.pointOnLine(line, pt);
+ * snapped.properties['marker-color'] = '#00f'
  *
- * var features = {
+ * var result = {
  *   "type": "FeatureCollection",
- *   "features": [triangle, point]
+ *   "features": [line, pt, snapped]
  * };
  *
- * var zValue = turf.planepoint(point, triangle);
- *
- * //=features
- *
- * //=zValue
+ * //=result
  */
-module.exports = function(point, triangle){
-  var x = point.geometry.coordinates[0],
-      y = point.geometry.coordinates[1],
-      x1 = triangle.geometry.coordinates[0][0][0],
-      y1 = triangle.geometry.coordinates[0][0][1],
-      z1 = triangle.properties.a,
-      x2 = triangle.geometry.coordinates[0][1][0],
-      y2 = triangle.geometry.coordinates[0][1][1],
-      z2 = triangle.properties.b,
-      x3 = triangle.geometry.coordinates[0][2][0],
-      y3 = triangle.geometry.coordinates[0][2][1],
-      z3 = triangle.properties.c;
 
-  var z = (z3 * (x-x1) * (y-y2) + z1 * (x-x2) * (y-y3) + z2 * (x-x3) * (y-y1) -
-      z2 * (x-x1) * (y-y3) - z3 * (x-x2) * (y-y1) - z1 * (x-x3) * (y-y2)) /
-      ((x-x1) * (y-y2) + (x-x2) * (y-y3) +(x-x3) * (y-y1) -
-       (x-x1) * (y-y3) - (x-x2) * (y-y1) - (x-x3) * (y-y2));
+module.exports = function (line, pt) {
+  var coords;
+  if(line.type === 'Feature') coords = line.geometry.coordinates;
+  else if(line.type === 'LineString') coords = line.geometry.coordinates;
+  else throw new Error('input must be a LineString Feature or Geometry');
 
-  return z;
+  return pointOnLine(pt, coords);
 };
 
-},{}],282:[function(require,module,exports){
+function pointOnLine (pt, coords) {
+  var units = 'miles'
+  var closestPt = point([Infinity, Infinity], {dist: Infinity});
+  for(var i = 0; i < coords.length - 1; i++) {
+    var start = point(coords[i])
+    var stop = point(coords[i+1])
+    //start
+    start.properties.dist = distance(pt, start, units);
+    //stop
+    stop.properties.dist = distance(pt, stop, units);
+    //perpendicular
+    var direction = bearing(start, stop)
+    var perpendicularPt = destination(pt, 1000 , direction + 90, units) // 1000 = gross
+    var intersect = lineIntersects(
+      pt.geometry.coordinates[0],
+      pt.geometry.coordinates[1],
+      perpendicularPt.geometry.coordinates[0],
+      perpendicularPt.geometry.coordinates[1],
+      start.geometry.coordinates[0],
+      start.geometry.coordinates[1],
+      stop.geometry.coordinates[0],
+      stop.geometry.coordinates[1]
+      );
+    if(!intersect) {
+      perpendicularPt = destination(pt, 1000 , direction - 90, units) // 1000 = gross
+      intersect = lineIntersects(
+        pt.geometry.coordinates[0],
+        pt.geometry.coordinates[1],
+        perpendicularPt.geometry.coordinates[0],
+        perpendicularPt.geometry.coordinates[1],
+        start.geometry.coordinates[0],
+        start.geometry.coordinates[1],
+        stop.geometry.coordinates[0],
+        stop.geometry.coordinates[1]
+        );
+    }
+    perpendicularPt.properties.dist = Infinity;
+    var intersectPt;
+    if(intersect) {
+      var intersectPt = point(intersect);
+      intersectPt.properties.dist = distance(pt, intersectPt, units);
+    }
+
+    if(start.properties.dist < closestPt.properties.dist) {
+      closestPt = start;
+      closestPt.properties.index = i;
+    }
+    if(stop.properties.dist < closestPt.properties.dist) {
+     closestPt = stop;
+     closestPt.properties.index = i;
+    }
+    if(intersectPt && intersectPt.properties.dist < closestPt.properties.dist){ 
+      closestPt = intersectPt;
+      closestPt.properties.index = i;
+    }
+  }
+
+  return closestPt;
+}
+
+// modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
+function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
+  // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
+  var denominator, a, b, numerator1, numerator2, result = {
+    x: null,
+    y: null,
+    onLine1: false,
+    onLine2: false
+  };
+  denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
+  if (denominator === 0) {
+    if(result.x !== null && result.y !== null) {
+      return result;
+    } else {
+      return false;
+    }
+  }
+  a = line1StartY - line2StartY;
+  b = line1StartX - line2StartX;
+  numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
+  numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
+  a = numerator1 / denominator;
+  b = numerator2 / denominator;
+
+  // if we cast these lines infinitely in both directions, they intersect here:
+  result.x = line1StartX + (a * (line1EndX - line1StartX));
+  result.y = line1StartY + (a * (line1EndY - line1StartY));
+
+  // if line1 is a segment and line2 is infinite, they intersect if:
+  if (a > 0 && a < 1) {
+    result.onLine1 = true;
+  }
+  // if line2 is a segment and line1 is infinite, they intersect if:
+  if (b > 0 && b < 1) {
+    result.onLine2 = true;
+  }
+  // if line1 and line2 are segments, they intersect if both of the above are true
+  if(result.onLine1 && result.onLine2){
+    return [result.x, result.y];
+  }
+  else {
+    return false;
+  }
+}
+
+},{"turf-bearing":280,"turf-destination":281,"turf-distance":282,"turf-linestring":284,"turf-point":285}],280:[function(require,module,exports){
+arguments[4][91][0].apply(exports,arguments)
+},{"dup":91}],281:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"dup":92,"turf-point":285}],282:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":283}],283:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],284:[function(require,module,exports){
+arguments[4][105][0].apply(exports,arguments)
+},{"dup":105}],285:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],286:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var centroid = require('turf-center');
 var distance = require('turf-distance');
@@ -51395,7 +50268,7 @@ var explode = require('turf-explode');
  * * Given a {@link LineString}, the point will be along the string
  * * Given a {@link Point}, the point will the same as the input
  *
- * @module turf/pointOnSurface
+ * @module turf/point-on-surface
  * @category measurement
  * @param {GeoJSON} input any GeoJSON object
  * @returns {Feature} a point on the surface of `input`
@@ -51407,9 +50280,13 @@ var explode = require('turf-explode');
  *
  * var pointOnPolygon = turf.pointOnSurface(polygon);
  *
- * var fc = turf.featurecollection(polygon.features.concat(pointOnPolygon));
+* var resultFeatures = polygon.features.concat(pointOnPolygon);
+* var result = {
+*   "type": "FeatureCollection",
+*   "features": resultFeatures
+* };
  *
- * //=pointOnPolygon
+ * //=result
  */
 module.exports = function(fc) {
   // normalize
@@ -51527,233 +50404,33 @@ function pointOnSegment (x, y, x1, y1, x2, y2) {
   }
 }
 
-},{"turf-center":283,"turf-distance":286,"turf-explode":287,"turf-featurecollection":291,"turf-inside":292}],283:[function(require,module,exports){
-var extent = require('turf-extent');
-
-module.exports = function(layer, done){
-  var ext = extent(layer);
-  var x = (ext[0] + ext[2])/2;
-  var y = (ext[1] + ext[3])/2;
-  var center = {
-    "type": "Feature",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [x, y]
-    }
-  };
-  return center;
-}
-},{"turf-extent":284}],284:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"flatten":285}],285:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],286:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],287:[function(require,module,exports){
-var flatten = require('flatten');
-var featureCollection = require('turf-featurecollection');
-var point = require('turf-point');
-
-module.exports = function(fc){
-  if(fc.type === 'FeatureCollection'){
-    for(var i in fc.features){
-      var coordinates ;
-      switch(fc.features[i].geometry.type){
-        case 'Point':
-          coordinates = [fc.features[i].geometry.coordinates];
-          break
-        case 'LineString':
-          coordinates = fc.features[i].geometry.coordinates;
-          break
-        case 'Polygon':
-          coordinates = fc.features[i].geometry.coordinates;
-          coordinates = flatCoords(coordinates);
-          break
-        case 'MultiPoint':
-          coordinates = fc.features[i].geometry.coordinates;
-          break
-        case 'MultiLineString':
-          coordinates = fc.features[i].geometry.coordinates;
-          coordinates = flatCoords(coordinates);
-          break
-        case 'MultiPolygon':
-          coordinates = fc.features[i].geometry.coordinates;
-          coordinates = flatCoords(coordinates);
-          break
-      }
-      if(!fc.features[i].geometry && fc.features[i].properties){
-        return new Error('Unknown Geometry Type');
-      }
-    }
-      
-    var exploded = featureCollection([]);
-
-    coordinates.forEach(function(coords){
-      exploded.features.push(point(coords[0], coords[1]));
-    })
-
-    return exploded;
-  }
-  else{
-    var coordinates ;
-    var geometry;
-    if(fc.type === 'Feature'){
-      geometry = fc.geometry;
-    }
-    else{
-      geometry = fc;
-    }
-    switch(geometry.type){
-      case 'Point':
-        coordinates = [geometry.coordinates];
-        break
-      case 'LineString':
-        coordinates = geometry.coordinates;
-        break
-      case 'Polygon':
-        coordinates = geometry.coordinates;
-        coordinates = flatCoords(coordinates);
-        break
-      case 'MultiPoint':
-        coordinates = geometry.coordinates;
-        break
-      case 'MultiLineString':
-        coordinates = geometry.coordinates;
-        coordinates = flatCoords(coordinates);
-        break
-      case 'MultiPolygon':
-        coordinates = geometry.coordinates;
-        coordinates = flatCoords(coordinates);
-        break
-    }
-    if(!geometry){
-      return new Error('No Geometry Found');
-    }
-
-    var exploded = featureCollection([]);
-
-    coordinates.forEach(function(coords){
-      exploded.features.push(point(coords[0], coords[1]));
-    })
-
-    return exploded;
-  }
-}
-
-function flatCoords(coords){
-  var newCoords = [];
-  coords = flatten(coords);
-  coords.forEach(function(c, i){
-    if(i % 2 == 0) // if is even
-      newCoords.push([c, coords[i+1]]);
-  })
-  return newCoords;
-}
-},{"flatten":288,"turf-featurecollection":289,"turf-point":290}],288:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],289:[function(require,module,exports){
-module.exports = function(features){
-  var fc = {
-    "type": "FeatureCollection",
-    "features": features
-  }
-
-  return fc
-}
-},{}],290:[function(require,module,exports){
-arguments[4][228][0].apply(exports,arguments)
-},{"dup":228}],291:[function(require,module,exports){
+},{"turf-center":287,"turf-distance":291,"turf-explode":293,"turf-featurecollection":296,"turf-inside":297}],287:[function(require,module,exports){
+arguments[4][115][0].apply(exports,arguments)
+},{"dup":115,"turf-extent":288,"turf-point":290}],288:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"dup":116,"turf-meta":289}],289:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],292:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],293:[function(require,module,exports){
-/**
- * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
- *
- * @module turf/point
- * @category helper
- * @param {number} longitude position west to east in decimal degrees
- * @param {number} latitude position south to north in decimal degrees
- * @param {Object} properties an Object that is used as the {@link Feature}'s
- * properties
- * @return {Point} a Point feature
- * @example
- * var pt1 = turf.point([-75.343, 39.984]);
- *
- * //=pt1
- */
-var isArray = Array.isArray || function(arg) {
-  return Object.prototype.toString.call(arg) === '[object Array]';
-};
-module.exports = function(coordinates, properties) {
-  if (!isArray(coordinates)) throw new Error('Coordinates must be an array');
-  if (coordinates.length < 2) throw new Error('Coordinates must be at least 2 numbers long');
-  return {
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: coordinates
-    },
-    properties: properties || {}
-  };
-};
-
-},{}],294:[function(require,module,exports){
-/**
- * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
- *
- * @module turf/polygon
- * @category helper
- * @param {Array<Array<Number>>} rings an array of LinearRings
- * @param {Object} properties an optional properties object
- * @return {Polygon} a Polygon feature
- * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
- * or if a LinearRing of the Polygon does not have matching Positions at the
- * beginning & end.
- * @example
- * var polygon = turf.polygon([[
- *  [-2.275543, 53.464547],
- *  [-2.275543, 53.489271],
- *  [-2.215118, 53.489271],
- *  [-2.215118, 53.464547],
- *  [-2.275543, 53.464547]
- * ]], { name: 'poly1', population: 400});
- *
- * //=polygon
- */
-module.exports = function(coordinates, properties){
-
-  if (coordinates === null) throw new Error('No coordinates passed');
-
-  for (var i = 0; i < coordinates.length; i++) {
-    var ring = coordinates[i];
-    for (var j = 0; j < ring[ring.length - 1].length; j++) {
-      if (ring.length < 4) {
-        throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
-      }
-      if (ring[ring.length - 1][j] !== ring[0][j]) {
-        throw new Error('First and last Position are not equivalent.');
-      }
-    }
-  }
-
-  var polygon = {
-    "type": "Feature",
-    "geometry": {
-      "type": "Polygon",
-      "coordinates": coordinates
-    },
-    "properties": properties
-  };
-
-  if (!polygon.properties) {
-    polygon.properties = {};
-  }
-
-  return polygon;
-};
-
-},{}],295:[function(require,module,exports){
+},{"dup":117}],290:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],291:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":292}],292:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],293:[function(require,module,exports){
+arguments[4][187][0].apply(exports,arguments)
+},{"dup":187,"turf-featurecollection":296,"turf-meta":294,"turf-point":295}],294:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117}],295:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],296:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],297:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],298:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],299:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],300:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -51835,9 +50512,9 @@ module.exports = function(fc, field, percentiles){
   return quantiles;
 };
 
-},{"simple-statistics":296}],296:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],297:[function(require,module,exports){
+},{"simple-statistics":301}],301:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],302:[function(require,module,exports){
 var random = require('geojson-random');
 
 /**
@@ -51891,7 +50568,7 @@ module.exports = function(type, count, options) {
     }
 };
 
-},{"geojson-random":298}],298:[function(require,module,exports){
+},{"geojson-random":303}],303:[function(require,module,exports){
 module.exports = function() {
     throw new Error('call .point() or .polygon() instead');
 };
@@ -51962,12 +50639,9 @@ function point(coordinates) {
 }
 
 function coordInBBBOX(bbox) {
-    var lonSpan = bbox[2] - bbox[0],
-        latSpan = bbox[3] - bbox[1],
-        randInSpan = Math.random() * (lonSpan * latSpan);
     return [
-        (bbox[2] === bbox[0]) ? bbox[2] : randInSpan % (lonSpan) + bbox[0],
-        (bbox[3] === bbox[1]) ? bbox[1] : randInSpan / (latSpan) + bbox[1]];
+        (Math.random() * (bbox[2] - bbox[0])) + bbox[0],
+        (Math.random() * (bbox[3] - bbox[1])) + bbox[1]];
 }
 
 function pointInBBBOX() {
@@ -51999,7 +50673,7 @@ function collection(f) {
     };
 }
 
-},{}],299:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
 var featurecollection = require('turf-featurecollection');
 var reclass = require('./index.js');
 
@@ -52096,9 +50770,9 @@ module.exports = function(fc, inField, outField, translations, done){
   return reclassed;
 };
 
-},{"./index.js":299,"turf-featurecollection":300}],300:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],301:[function(require,module,exports){
+},{"./index.js":304,"turf-featurecollection":305}],305:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],306:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -52199,9 +50873,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":302}],302:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],303:[function(require,module,exports){
+},{"turf-featurecollection":307}],307:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],308:[function(require,module,exports){
 // http://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
 var featureCollection = require('turf-featurecollection');
 
@@ -52238,9 +50912,9 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(min);
 }
 
-},{"turf-featurecollection":304}],304:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],305:[function(require,module,exports){
+},{"turf-featurecollection":309}],309:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],310:[function(require,module,exports){
 var simplify = require('simplify-js');
 
 /**
@@ -52333,7 +51007,7 @@ function simpleFeature (geom, properties) {
   };
 }
 
-},{"simplify-js":306}],306:[function(require,module,exports){
+},{"simplify-js":311}],311:[function(require,module,exports){
 /*
  (c) 2013, Vladimir Agafonkin
  Simplify.js, a high-performance JS polyline simplification library
@@ -52466,204 +51140,23 @@ else window.simplify = simplify;
 
 })();
 
-},{}],307:[function(require,module,exports){
-/**
- * Takes a bounding box and returns a new bounding box with a size expanded or contracted
- * by a factor of X.
- *
- * @module turf/size
- * @category measurement
- * @param {Array<number>} bbox a bounding box
- * @param {number} factor the ratio of the new bbox to the input bbox
- * @return {Array<number>} the resized bbox
- * @example
- * var bbox = [0, 0, 10, 10]
- *
- * var resized = turf.size(bbox, 2);
- *
- * var features = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     turf.bboxPolygon(bbox),
- *     turf.bboxPolygon(resized)
- *   ]
- * };
- *
- * //=features
- */
-module.exports = function(bbox, factor){
-  var currentXDistance = (bbox[2] - bbox[0]);
-  var currentYDistance = (bbox[3] - bbox[1]);
-  var newXDistance = currentXDistance * factor;
-  var newYDistance = currentYDistance * factor;
-  var xChange = newXDistance - currentXDistance;
-  var yChange = newYDistance - currentYDistance;
-
-  var lowX = bbox[0] - (xChange / 2);
-  var lowY = bbox[1] - (yChange / 2);
-  var highX = (xChange / 2) + bbox[2];
-  var highY = (yChange / 2) + bbox[3];
-
-  var sized = [lowX, lowY, highX, highY];
-  return sized;
-}
-
-},{}],308:[function(require,module,exports){
-var midpoint = require('turf-midpoint');
-var point = require('turf-point');
-var distance = require('turf-distance');
-
-/**
- * Takes a bounding box and calculates the minimum square bounding box that would contain the input.
- *
- * @module turf/square
- * @category measurement
- * @param {Array<number>} bbox a bounding box
- * @return {Array<number>} a square surrounding `bbox`
- * @example
- * var bbox = [-20,-20,-15,0];
- *
- * var squared = turf.square(bbox);
- *
- * var features = turf.featurecollection([
- *   turf.bboxPolygon(bbox),
- *   turf.bboxPolygon(squared)]);
- *
- * //=features
- */
-module.exports = function(bbox){
-  var squareBbox = [0,0,0,0];
-  var lowLeft = point([bbox[0], bbox[1]]);
-  var topLeft = point([bbox[0], bbox[3]]);
-  var topRight = point([bbox[2], bbox[3]]);
-  var lowRight = point([bbox[2], bbox[1]]);
-
-  var horizontalDistance = distance(lowLeft, lowRight, 'miles');
-  var verticalDistance = distance(lowLeft, topLeft, 'miles');
-  if(horizontalDistance >= verticalDistance){
-    squareBbox[0] = bbox[0];
-    squareBbox[2] = bbox[2];
-    var verticalMidpoint = midpoint(lowLeft, topLeft);
-    squareBbox[1] = verticalMidpoint.geometry.coordinates[1] - ((bbox[2] - bbox[0]) / 2);
-    squareBbox[3] = verticalMidpoint.geometry.coordinates[1] + ((bbox[2] - bbox[0]) / 2);
-    return squareBbox;
-  }
-  else {
-    squareBbox[1] = bbox[1];
-    squareBbox[3] = bbox[3];
-    var horzontalMidpoint = midpoint(lowLeft, lowRight);
-    squareBbox[0] = horzontalMidpoint.geometry.coordinates[0] - ((bbox[3] - bbox[1]) / 2);
-    squareBbox[2] = horzontalMidpoint.geometry.coordinates[0] + ((bbox[3] - bbox[1]) / 2);
-    return squareBbox;
-  }
-}
-
-
-},{"turf-distance":309,"turf-midpoint":310,"turf-point":312}],309:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"dup":98}],310:[function(require,module,exports){
-// http://cs.selu.edu/~rbyrd/math/midpoint/
-// ((x1+x2)/2), ((y1+y2)/2)
-var point = require('turf-point');
-
-module.exports = function(point1, point2) {
-  if(point1 === null || point2 === null || point1 && point2 === null){
-    return new Error('Less than two points passed.');
-  }
-
-  var x1 = point1.geometry.coordinates[0];
-  var x2 = point2.geometry.coordinates[0];
-  var y1 = point1.geometry.coordinates[1];
-  var y2 = point2.geometry.coordinates[1];
-
-  var x3 = x1 + x2;
-  var midX = x3/2;
-  var y3 = y1 + y2;
-  var midY = y3/2;
-
-  var midpoint = point(midX, midY);
-
-  return midpoint;
-}
-},{"turf-point":311}],311:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"dup":139}],312:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],313:[function(require,module,exports){
-var inside = require('turf-inside');
-
-/**
- * Calculates the sum of a field for {@link Point} features within a set of {@link Polygon} features.
- *
- * @module turf/sum
- * @category aggregation
- * @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
- * @param {FeatureCollection} points a FeatureCollection of {@link Point} features
- * @param {String} inField the field in input data to analyze
- * @param {String} outField the field in which to store results
- * @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
- * with properties listed as `outField`
- * @example
- * var polygons = turf.featurecollection([
- *   turf.polygon([[
- *     [-87.990188, 43.026486],
- *     [-87.990188, 43.062115],
- *     [-87.913284, 43.062115],
- *     [-87.913284, 43.026486],
- *     [-87.990188, 43.026486]
- *   ]]),
- *   turf.polygon([[
- *     [-87.973709, 42.962452],
- *     [-87.973709, 43.014689],
- *     [-87.904014, 43.014689],
- *     [-87.904014, 42.962452],
- *     [-87.973709, 42.962452]
- *   ]])
- * ]);
- * var points = turf.featurecollection([
- *   turf.point([-87.974052, 43.049321], {population: 200}),
- *   turf.point([-87.957229, 43.037277], {population: 600}),
- *   turf.point([-87.931137, 43.048568], {population: 100}),
- *   turf.point([-87.963409, 42.99611], {population: 200}),
- *   turf.point([-87.94178, 42.974762], {population: 300})
- * ]);
- *
- * var aggregated = turf.sum(
- *   polygons, points, 'population', 'sum');
- *
- * var result = turf.featurecollection(
- *   points.features.concat(aggregated.features));
- *
- * //=result
- */
-module.exports = function(polyFC, ptFC, inField, outField){
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    });
-    poly.properties[outField] = sum(values);
-  });
-
-  return polyFC;
-};
-
-function sum(x) {
-    var value = 0;
-    for (var i = 0; i < x.length; i++) {
-        value += x[i];
-    }
-    return value;
-}
-
-},{"turf-inside":314}],314:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],315:[function(require,module,exports){
+},{}],312:[function(require,module,exports){
+arguments[4][219][0].apply(exports,arguments)
+},{"dup":219}],313:[function(require,module,exports){
+arguments[4][220][0].apply(exports,arguments)
+},{"dup":220,"turf-distance":314,"turf-midpoint":316,"turf-point":317}],314:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-invariant":315}],315:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94}],316:[function(require,module,exports){
+arguments[4][223][0].apply(exports,arguments)
+},{"dup":223,"turf-point":317}],317:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],318:[function(require,module,exports){
+arguments[4][85][0].apply(exports,arguments)
+},{"dup":85,"turf-inside":319}],319:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],320:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -52721,388 +51214,31 @@ module.exports = function(points, polygons, field, outField){
   return points;
 };
 
-},{"turf-inside":316}],316:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],317:[function(require,module,exports){
-//http://en.wikipedia.org/wiki/Delaunay_triangulation
-//https://github.com/ironwallaby/delaunay
-var polygon = require('turf-polygon');
-var featurecollection = require('turf-featurecollection');
-
-/**
- * Takes a set of points and the name of a z-value property and
- * creates a [Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
- * or a TIN for short, returned as a collection of Polygons. These are often used
- * for developing elevation contour maps or stepped heat visualizations.
- *
- * This triangulates the points, as well as adds properties called `a`, `b`,
- * and `c` representing the value of the given `propertyName` at each of
- * the points that represent the corners of the triangle.
- *
- * @module turf/tin
- * @category interpolation
- * @param {FeatureCollection} points - a GeoJSON FeatureCollection containing
- * Features with {@link Point} geometries
- * @param {string=} propertyName - name of the property from which to pull z values.
- * This is optional: if not given, then there will be no extra data added to the derived triangles.
- * @return {FeatureCollection} TIN output
- * @example
- * // generate some random point data
- * var points = turf.random('points', 30, {
- *   bbox: [50, 30, 70, 50]
- * });
- * //=points
- * // add a random property to each point between 0 and 9
- * for (var i = 0; i < points.features.length; i++) {
- *   points.features[i].properties.z = ~~(Math.random() * 9);
- * }
- * var tin = turf.tin(points, 'z')
- * for (var i = 0; i < tin.features.length; i++) {
- *   var properties  = tin.features[i].properties;
- *   // roughly turn the properties of each
- *   // triangle into a fill color
- *   // so we can visualize the result
- *   properties.fill = '#' + properties.a +
- *     properties.b + properties.c;
- * }
- * //=tin
- */
-module.exports = function(points, z) {
-  //break down points
-  return featurecollection(triangulate(points.features.map(function(p) {
-    var point = {
-      x: p.geometry.coordinates[0],
-      y: p.geometry.coordinates[1]
-    };
-    if (z) point.z = p.properties[z];
-    return point;
-  })).map(function(triangle) {
-    return polygon([[
-        [triangle.a.x, triangle.a.y],
-        [triangle.b.x, triangle.b.y],
-        [triangle.c.x, triangle.c.y],
-        [triangle.a.x, triangle.a.y]
-    ]], {
-        a: triangle.a.z,
-        b: triangle.b.z,
-        c: triangle.c.z
-      });
-  }));
-};
-
-function Triangle(a, b, c) {
-  this.a = a;
-  this.b = b;
-  this.c = c;
-
-  var A = b.x - a.x,
-    B = b.y - a.y,
-    C = c.x - a.x,
-    D = c.y - a.y,
-    E = A * (a.x + b.x) + B * (a.y + b.y),
-    F = C * (a.x + c.x) + D * (a.y + c.y),
-    G = 2 * (A * (c.y - b.y) - B * (c.x - b.x)),
-    minx, miny, dx, dy;
-
-  // If the points of the triangle are collinear, then just find the
-  // extremes and use the midpoint as the center of the circumcircle.
-  if (Math.abs(G) < 0.000001) {
-    minx = Math.min(a.x, b.x, c.x);
-    miny = Math.min(a.y, b.y, c.y);
-    dx = (Math.max(a.x, b.x, c.x) - minx) * 0.5;
-    dy = (Math.max(a.y, b.y, c.y) - miny) * 0.5;
-
-    this.x = minx + dx;
-    this.y = miny + dy;
-    this.r = dx * dx + dy * dy;
-  } else {
-    this.x = (D * E - B * F) / G;
-    this.y = (A * F - C * E) / G;
-    dx = this.x - a.x;
-    dy = this.y - a.y;
-    this.r = dx * dx + dy * dy;
-  }
-}
-
-function byX(a, b) {
-  return b.x - a.x;
-}
-
-function dedup(edges) {
-  var j = edges.length,
-    a, b, i, m, n;
-
-  outer:
-  while (j) {
-    b = edges[--j];
-    a = edges[--j];
-    i = j;
-    while (i) {
-      n = edges[--i];
-      m = edges[--i];
-      if ((a === m && b === n) || (a === n && b === m)) {
-        edges.splice(j, 2);
-        edges.splice(i, 2);
-        j -= 2;
-        continue outer;
-      }
-    }
-  }
-}
-
-function triangulate(vertices) {
-  // Bail if there aren't enough vertices to form any triangles.
-  if (vertices.length < 3)
-    return [];
-
-    // Ensure the vertex array is in order of descending X coordinate
-    // (which is needed to ensure a subquadratic runtime), and then find
-    // the bounding box around the points. 
-  vertices.sort(byX);
-
-  var i = vertices.length - 1,
-    xmin = vertices[i].x,
-    xmax = vertices[0].x,
-    ymin = vertices[i].y,
-    ymax = ymin;
-
-  while (i--) {
-    if (vertices[i].y < ymin)
-      ymin = vertices[i].y;
-    if (vertices[i].y > ymax)
-      ymax = vertices[i].y;
-  }
-
-  //Find a supertriangle, which is a triangle that surrounds all the
-  //vertices. This is used like something of a sentinel value to remove
-  //cases in the main algorithm, and is removed before we return any
-  // results.
- 
-  // Once found, put it in the "open" list. (The "open" list is for
-  // triangles who may still need to be considered; the "closed" list is
-  // for triangles which do not.)
-  var dx = xmax - xmin,
-    dy = ymax - ymin,
-    dmax = (dx > dy) ? dx : dy,
-    xmid = (xmax + xmin) * 0.5,
-    ymid = (ymax + ymin) * 0.5,
-    open = [
-      new Triangle({
-        x: xmid - 20 * dmax,
-        y: ymid - dmax,
-        __sentinel: true
-      },
-      {
-        x: xmid,
-        y: ymid + 20 * dmax,
-        __sentinel: true
-      },
-      {
-        x: xmid + 20 * dmax,
-        y: ymid - dmax,
-        __sentinel: true
-      }
-    )],
-    closed = [],
-    edges = [],
-    j, a, b;
-
-    // Incrementally add each vertex to the mesh.
-  i = vertices.length;
-  while (i--) {
-    // For each open triangle, check to see if the current point is
-    // inside it's circumcircle. If it is, remove the triangle and add
-    // it's edges to an edge list.
-    edges.length = 0;
-    j = open.length;
-    while (j--) {
-      // If this point is to the right of this triangle's circumcircle,
-      // then this triangle should never get checked again. Remove it
-      // from the open list, add it to the closed list, and skip.
-      dx = vertices[i].x - open[j].x;
-      if (dx > 0 && dx * dx > open[j].r) {
-        closed.push(open[j]);
-        open.splice(j, 1);
-        continue;
-      }
-
-      // If not, skip this triangle.
-      dy = vertices[i].y - open[j].y;
-      if (dx * dx + dy * dy > open[j].r)
-        continue;
-
-      // Remove the triangle and add it's edges to the edge list.
-      edges.push(
-        open[j].a, open[j].b,
-        open[j].b, open[j].c,
-        open[j].c, open[j].a
-      );
-      open.splice(j, 1);
-    }
-
-    // Remove any doubled edges.
-    dedup(edges);
-
-    // Add a new triangle for each edge.
-    j = edges.length;
-    while (j) {
-      b = edges[--j];
-      a = edges[--j];
-      open.push(new Triangle(a, b, vertices[i]));
-    }
-  }
-
-  // Copy any remaining open triangles to the closed list, and then
-  // remove any triangles that share a vertex with the supertriangle.
-  Array.prototype.push.apply(closed, open);
-
-  i = closed.length;
-  while (i--)
-  if (closed[i].a.__sentinel ||
-      closed[i].b.__sentinel ||
-      closed[i].c.__sentinel)
-      closed.splice(i, 1);
-
-  return closed;
-}
-
-},{"turf-featurecollection":318,"turf-polygon":319}],318:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],319:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],320:[function(require,module,exports){
-// look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
-//must be array of polygons
-
-// depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
-
-var jsts = require('jsts');
-
-/**
- * Takes two {@link Polygon} features and returnes a combined {@link Polygon} feature. If the input Polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.
- *
- * @module turf/union
- * @category transformation
- * @param {Polygon} poly1 an input Polygon
- * @param {Polygon} poly2 another input Polygon
- * @return {Feature} a combined {@link Polygon} or {@link MultiPolygon} feature
- * @example
- * var poly1 = turf.polygon([[
- *  [-82.574787, 35.594087],
- *  [-82.574787, 35.615581],
- *  [-82.545261, 35.615581],
- *  [-82.545261, 35.594087],
- *  [-82.574787, 35.594087]
- * ]]);
- * poly1.properties.fill = '#0f0';
- * var poly2 = turf.polygon([[
- *  [-82.560024, 35.585153],
- *  [-82.560024, 35.602602],
- *  [-82.52964, 35.602602],
- *  [-82.52964, 35.585153],
- *  [-82.560024, 35.585153]
- * ]]);
- * poly2.properties.fill = '#00f';
- * var polyFC = turf.featurecollection([poly1, poly2]);
- *
- * var union = turf.union(poly1, poly2);
- *
- * //=polyFC
- *
- * //=union
- */
-module.exports = function(poly1, poly2){
-  var reader = new jsts.io.GeoJSONReader();
-  var a = reader.read(JSON.stringify(poly1.geometry));
-  var b = reader.read(JSON.stringify(poly2.geometry));
-  var union = a.union(b);
-  var parser = new jsts.io.GeoJSONParser();
-
-  union = parser.write(union);
-  return {
-    type: 'Feature',
-    geometry: union,
-    properties: poly1.properties
-  };
-}
-
-},{"jsts":321}],321:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"./lib/jsts":322,"dup":112,"javascript.util":324}],322:[function(require,module,exports){
+},{"turf-inside":321}],321:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],322:[function(require,module,exports){
+arguments[4][134][0].apply(exports,arguments)
+},{"dup":134,"turf-featurecollection":323,"turf-polygon":324}],323:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],323:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114}],324:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":323,"dup":115}],325:[function(require,module,exports){
-var ss = require('simple-statistics');
-var inside = require('turf-inside');
-
-/**
-* Calculates the variance value of a field for {@link Point} features within a set of {@link Polygon} features.
-*
-* @module turf/variance
-* @category aggregation
-* @param {FeatureCollection} polygons a FeatureCollection of {@link Polygon} features
-* @param {FeatureCollection} points a FeatureCollection of {@link Point} features
-* @param {string} inField the field in input data to analyze
-* @param {string} outField the field in which to store results
-* @return {FeatureCollection} a FeatureCollection of {@link Polygon} features
-* with properties listed as `outField`
-* @example
-* var polygons = turf.featurecollection([
-*   turf.polygon([[
-*     [-97.414398, 37.684092],
-*     [-97.414398, 37.731353],
-*     [-97.332344, 37.731353],
-*     [-97.332344, 37.684092],
-*     [-97.414398, 37.684092]
-*   ]]),
-*   turf.polygon([[
-*     [-97.333717, 37.606072],
-*     [-97.333717, 37.675397],
-*     [-97.237586, 37.675397],
-*     [-97.237586, 37.606072],
-*     [-97.333717, 37.606072]
-*   ]])
-* ]);
-* var points = turf.featurecollection([
-*   turf.point([-97.401351, 37.719676], {population: 200}),
-*   turf.point([-97.355346, 37.706639], {population: 600}),
-*   turf.point([-97.387962, 37.70012], {population: 100}),
-*   turf.point([-97.301788, 37.66507], {population: 200}),
-*   turf.point([-97.265052, 37.643325], {population: 300})]);
-*
-* var aggregated = turf.variance(
-*   polygons, points, 'population', 'variance');
-*
-* var result = turf.featurecollection(
-*   points.features.concat(aggregated.features));
-*
-* //=result
-*/
-module.exports = function (polyFC, ptFC, inField, outField) {
-  polyFC.features.forEach(function(poly){
-    if(!poly.properties){
-      poly.properties = {};
-    }
-    var values = [];
-    ptFC.features.forEach(function(pt){
-      if (inside(pt, poly)) {
-        values.push(pt.properties[inField]);
-      }
-    });
-    poly.properties[outField] = ss.variance(values);
-  });
-
-  return polyFC;
-};
-
-},{"simple-statistics":326,"turf-inside":327}],326:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],327:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],328:[function(require,module,exports){
+},{"dup":113}],324:[function(require,module,exports){
+arguments[4][102][0].apply(exports,arguments)
+},{"dup":102}],325:[function(require,module,exports){
+arguments[4][128][0].apply(exports,arguments)
+},{"dup":128,"jsts":326}],326:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments)
+},{"./lib/jsts":327,"dup":108,"javascript.util":329}],327:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],328:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"dup":110}],329:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":328,"dup":111}],330:[function(require,module,exports){
+arguments[4][87][0].apply(exports,arguments)
+},{"dup":87,"simple-statistics":331,"turf-inside":332}],331:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],332:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],333:[function(require,module,exports){
 var inside = require('turf-inside');
 var featureCollection = require('turf-featurecollection');
 
@@ -53116,24 +51252,68 @@ var featureCollection = require('turf-featurecollection');
  * @return {FeatureCollection} a collection of all points that land
  * within at least one polygon
  * @example
- * var searchWithin = turf.featurecollection([
- *   turf.polygon([[
- *     [-46.653,-23.543],
- *     [-46.634,-23.5346],
- *     [-46.613,-23.543],
- *     [-46.614,-23.559],
- *     [-46.631,-23.567],
- *     [-46.653,-23.560],
- *     [-46.653,-23.543]
- *   ]])
- * ]);
- * var points = turf.featurecollection([
- *   turf.point([-46.6318, -23.5523]),
- *   turf.point([-46.6246, -23.5325]),
- *   turf.point([-46.6062, -23.5513]),
- *   turf.point([-46.663, -23.554]),
- *   turf.point([-46.643, -23.557])
- * ]);
+ * var searchWithin = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Polygon",
+ *         "coordinates": [[
+ *           [-46.653,-23.543],
+ *           [-46.634,-23.5346],
+ *           [-46.613,-23.543],
+ *           [-46.614,-23.559],
+ *           [-46.631,-23.567],
+ *           [-46.653,-23.560],
+ *           [-46.653,-23.543]
+ *         ]]
+ *       }
+ *     }
+ *   ]
+ * };
+ * var points = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-46.6318, -23.5523]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-46.6246, -23.5325]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-46.6062, -23.5513]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-46.663, -23.554]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-46.643, -23.557]
+ *       }
+ *     }
+ *   ]
+ * };
  *
  * var ptsWithin = turf.within(points, searchWithin);
  *
@@ -53156,11 +51336,11 @@ module.exports = function(ptFC, polyFC){
   return pointsWithin;
 };
 
-},{"turf-featurecollection":329,"turf-inside":330}],329:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],330:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],331:[function(require,module,exports){
+},{"turf-featurecollection":334,"turf-inside":335}],334:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],335:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],336:[function(require,module,exports){
 module.exports={
     "functions": [
         {
@@ -53429,7 +51609,7 @@ module.exports={
                 {
                     "name": "unit",
                     "type": "String",
-                    "description": "<p>'miles' or 'kilometers'</p>",
+                    "description": "<p>'miles', 'feet', 'kilometers', 'meters', or 'degrees'</p>",
                     "default": "",
                     "optional": "",
                     "nullable": ""
@@ -53473,8 +51653,8 @@ module.exports={
             "description": "Takes a  Feature or {@link FeatureCollection} of any type and calculates the centroid using the arithmetic mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating\nthe centroid of a set of polygons.",
             "parameters": [
                 {
-                    "name": "fc",
-                    "type": "FeatureCollection",
+                    "name": "features",
+                    "type": "GeoJSON",
                     "description": "<p>a {@link Feature} or FeatureCollection of any type</p>",
                     "default": "",
                     "optional": "",
@@ -53533,10 +51713,18 @@ module.exports={
                     "default": "",
                     "optional": "",
                     "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used for maxEdge distance (miles or kilometers)</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
                 }
             ],
             "examples": [
-                "var points = turf.featurecollection([\n turf.point([-63.601226, 44.642643]),\n turf.point([-63.591442, 44.651436]),\n turf.point([-63.580799, 44.648749]),\n turf.point([-63.573589, 44.641788]),\n turf.point([-63.587665, 44.64533]),\n turf.point([-63.595218, 44.64765])\n]);\n\nvar hull = turf.concave(points, 1);\n\nvar result = turf.featurecollection(\n points.features.concat(hull));\n\n//=result"
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.601226, 44.642643]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.591442, 44.651436]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.580799, 44.648749]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.573589, 44.641788]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.587665, 44.64533]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.595218, 44.64765]\n      }\n    }\n  ]\n};\n\nvar hull = turf.concave(points, 1, 'miles');\n\nvar resultFeatures = points.features.concat(hull);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Feature",
@@ -53989,7 +52177,7 @@ module.exports={
             "name": "turf/inside",
             "access": "",
             "virtual": false,
-            "description": "Takes a  Point feature and a {@link Polygon} feature and determines if the Point resides inside the Polygon. The Polygon can\nbe convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}\nand accounts for holes.",
+            "description": "Takes a  Point feature and a {@link Polygon} or {@link MultiPolygon}\nfeature and determines if the Point resides inside the Polygon. The Polygon can\nbe convex or concave. The function accounts for holes.",
             "parameters": [
                 {
                     "name": "point",
@@ -54001,8 +52189,11 @@ module.exports={
                 },
                 {
                     "name": "polygon",
-                    "type": "Polygon",
-                    "description": "<p>a Polygon feature</p>",
+                    "type": [
+                        "Polygon",
+                        "MultiPolygon"
+                    ],
+                    "description": "<p>a Polygon or MultiPolygon feature</p>",
                     "default": "",
                     "optional": "",
                     "nullable": ""
@@ -54040,11 +52231,15 @@ module.exports={
                 }
             ],
             "examples": [
-                "var poly1 = turf.polygon([[\n [-122.801742, 45.48565],\n [-122.801742, 45.60491],\n [-122.584762, 45.60491],\n [-122.584762, 45.48565],\n [-122.801742, 45.48565]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-122.520217, 45.535693],\n [-122.64038, 45.553967],\n [-122.720031, 45.526554],\n [-122.669906, 45.507309],\n [-122.723464, 45.446643],\n [-122.532577, 45.408574],\n [-122.487258, 45.477466],\n [-122.520217, 45.535693]\n]]);\npoly2.properties.fill = '#00f';\nvar polygons = turf.featurecollection([poly1, poly2]);\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//=polygons\n\n//=intersection"
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-122.801742, 45.48565],\n      [-122.801742, 45.60491],\n      [-122.584762, 45.60491],\n      [-122.584762, 45.48565],\n      [-122.801742, 45.48565]\n    ]]\n  }\n}\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-122.520217, 45.535693],\n      [-122.64038, 45.553967],\n      [-122.720031, 45.526554],\n      [-122.669906, 45.507309],\n      [-122.723464, 45.446643],\n      [-122.532577, 45.408574],\n      [-122.487258, 45.477466],\n      [-122.520217, 45.535693]\n    ]]\n  }\n}\n\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//=polygons\n\n//=intersection"
             ],
             "returns": {
-                "type": "Polygon",
-                "description": "<p>a Polygon feature representing the area where <code>poly1</code> and <code>poly2</code> overlap</p>"
+                "type": [
+                    "Polygon",
+                    "undefined",
+                    "MultiLineString"
+                ],
+                "description": "<p>if <code>poly1</code> and <code>poly2</code> overlap, returns a Polygon feature representing the area they overlap; if <code>poly1</code> and <code>poly2</code> do not overlap, returns <code>undefined</code>; if <code>poly1</code> and <code>poly2</code> share a border, a MultiLineString of the locations where their borders are shared</p>"
             }
         },
         {
@@ -54232,6 +52427,45 @@ module.exports={
             "returns": {
                 "type": "Number",
                 "description": "<p>length of the LineString</p>"
+            }
+        },
+        {
+            "name": "turf/line-slice",
+            "access": "",
+            "virtual": false,
+            "description": "Slices a LineString at start and stop Points",
+            "parameters": [
+                {
+                    "name": "Point",
+                    "type": "Point",
+                    "description": "<p>to start the slice</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "Point",
+                    "type": "Point",
+                    "description": "<p>to stop the slice</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "Line",
+                    "type": "LineString",
+                    "description": "<p>to slice</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\nvar start = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.029609, 38.881946]\n  }\n};\nvar stop = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.021884, 38.889563]\n  }\n};\n\nvar sliced = turf.lineSlice(start, stop, line);\n\n//=line\n\n//=sliced"
+            ],
+            "returns": {
+                "type": "LineString",
+                "description": "<p>Sliced LineString</p>"
             }
         },
         {
@@ -54523,7 +52757,38 @@ module.exports={
             }
         },
         {
-            "name": "turf/pointOnSurface",
+            "name": "turf/point-on-line",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a Point and a LineString and calculates the closest Point on the LineString",
+            "parameters": [
+                {
+                    "name": "Line",
+                    "type": "LineString",
+                    "description": "<p>to snap to</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "Point",
+                    "type": "Point",
+                    "description": "<p>to snap from</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\nvar pt = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.037076, 38.884017]\n  }\n};\n\nvar snapped = turf.pointOnLine(line, pt);\nsnapped.properties['marker-color'] = '#00f'\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, pt, snapped]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Point",
+                "description": "<p>Closest Point on the Line</p>"
+            }
+        },
+        {
+            "name": "turf/point-on-surface",
             "access": "",
             "virtual": false,
             "description": "Finds a  Point guaranteed to be on the surface of\n{@link GeoJSON} object.\n\nGiven a {@link Polygon}, the point will be in the area of the polygon\nGiven a {@link LineString}, the point will be along the string\nGiven a {@link Point}, the point will the same as the input\n",
@@ -54538,7 +52803,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "// create a random polygon\nvar polygon = turf.random('polygon');\n\n//=polygon\n\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\nvar fc = turf.featurecollection(polygon.features.concat(pointOnPolygon));\n\n//=pointOnPolygon"
+                "// create a random polygon\nvar polygon = turf.random('polygon');\n\n//=polygon\n\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\nvar resultFeatures = polygon.features.concat(pointOnPolygon);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "Feature",
@@ -54920,7 +53185,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var bbox = [-20,-20,-15,0];\n\nvar squared = turf.square(bbox);\n\nvar features = turf.featurecollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(squared)]);\n\n//=features"
+                "var bbox = [-20,-20,-15,0];\n\nvar squared = turf.square(bbox);\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    turf.bboxPolygon(bbox),\n    turf.bboxPolygon(squared)\n  ]\n};\n\n//=features"
             ],
             "returns": {
                 "type": "Array.<number>",
@@ -54967,7 +53232,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [-87.990188, 43.026486],\n    [-87.990188, 43.062115],\n    [-87.913284, 43.062115],\n    [-87.913284, 43.026486],\n    [-87.990188, 43.026486]\n  ]]),\n  turf.polygon([[\n    [-87.973709, 42.962452],\n    [-87.973709, 43.014689],\n    [-87.904014, 43.014689],\n    [-87.904014, 42.962452],\n    [-87.973709, 42.962452]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([-87.974052, 43.049321], {population: 200}),\n  turf.point([-87.957229, 43.037277], {population: 600}),\n  turf.point([-87.931137, 43.048568], {population: 100}),\n  turf.point([-87.963409, 42.99611], {population: 200}),\n  turf.point([-87.94178, 42.974762], {population: 300})\n]);\n\nvar aggregated = turf.sum(\n  polygons, points, 'population', 'sum');\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-87.990188, 43.026486],\n          [-87.990188, 43.062115],\n          [-87.913284, 43.062115],\n          [-87.913284, 43.026486],\n          [-87.990188, 43.026486]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-87.973709, 42.962452],\n          [-87.973709, 43.014689],\n          [-87.904014, 43.014689],\n          [-87.904014, 42.962452],\n          [-87.973709, 42.962452]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.974052, 43.049321]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.957229, 43.037277]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.931137, 43.048568]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.963409, 42.99611]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.94178, 42.974762]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.sum(\n  polygons, points, 'population', 'sum');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -55076,7 +53341,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var poly1 = turf.polygon([[\n [-82.574787, 35.594087],\n [-82.574787, 35.615581],\n [-82.545261, 35.615581],\n [-82.545261, 35.594087],\n [-82.574787, 35.594087]\n]]);\npoly1.properties.fill = '#0f0';\nvar poly2 = turf.polygon([[\n [-82.560024, 35.585153],\n [-82.560024, 35.602602],\n [-82.52964, 35.602602],\n [-82.52964, 35.585153],\n [-82.560024, 35.585153]\n]]);\npoly2.properties.fill = '#00f';\nvar polyFC = turf.featurecollection([poly1, poly2]);\n\nvar union = turf.union(poly1, poly2);\n\n//=polyFC\n\n//=union"
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-82.574787, 35.594087],\n      [-82.574787, 35.615581],\n      [-82.545261, 35.615581],\n      [-82.545261, 35.594087],\n      [-82.574787, 35.594087]\n    ]]\n  }\n};\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-82.560024, 35.585153],\n      [-82.560024, 35.602602],\n      [-82.52964, 35.602602],\n      [-82.52964, 35.585153],\n      [-82.560024, 35.585153]\n    ]]\n  }\n};\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\nvar union = turf.union(poly1, poly2);\n\n//=polygons\n\n//=union"
             ],
             "returns": {
                 "type": "Feature",
@@ -55123,7 +53388,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var polygons = turf.featurecollection([\n  turf.polygon([[\n    [-97.414398, 37.684092],\n    [-97.414398, 37.731353],\n    [-97.332344, 37.731353],\n    [-97.332344, 37.684092],\n    [-97.414398, 37.684092]\n  ]]),\n  turf.polygon([[\n    [-97.333717, 37.606072],\n    [-97.333717, 37.675397],\n    [-97.237586, 37.675397],\n    [-97.237586, 37.606072],\n    [-97.333717, 37.606072]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([-97.401351, 37.719676], {population: 200}),\n  turf.point([-97.355346, 37.706639], {population: 600}),\n  turf.point([-97.387962, 37.70012], {population: 100}),\n  turf.point([-97.301788, 37.66507], {population: 200}),\n  turf.point([-97.265052, 37.643325], {population: 300})]);\n\nvar aggregated = turf.variance(\n  polygons, points, 'population', 'variance');\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.414398, 37.684092],\n          [-97.414398, 37.731353],\n          [-97.332344, 37.731353],\n          [-97.332344, 37.684092],\n          [-97.414398, 37.684092]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.333717, 37.606072],\n          [-97.333717, 37.675397],\n          [-97.237586, 37.675397],\n          [-97.237586, 37.606072],\n          [-97.333717, 37.606072]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.401351, 37.719676]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.355346, 37.706639]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.387962, 37.70012]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.301788, 37.66507]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.265052, 37.643325]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.variance(\n  polygons, points, 'population', 'variance');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -55154,7 +53419,7 @@ module.exports={
                 }
             ],
             "examples": [
-                "var searchWithin = turf.featurecollection([\n  turf.polygon([[\n    [-46.653,-23.543],\n    [-46.634,-23.5346],\n    [-46.613,-23.543],\n    [-46.614,-23.559],\n    [-46.631,-23.567],\n    [-46.653,-23.560],\n    [-46.653,-23.543]\n  ]])\n]);\nvar points = turf.featurecollection([\n  turf.point([-46.6318, -23.5523]),\n  turf.point([-46.6246, -23.5325]),\n  turf.point([-46.6062, -23.5513]),\n  turf.point([-46.663, -23.554]),\n  turf.point([-46.643, -23.557])\n]);\n\nvar ptsWithin = turf.within(points, searchWithin);\n\n//=points\n\n//=searchWithin\n\n//=ptsWithin"
+                "var searchWithin = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-46.653,-23.543],\n          [-46.634,-23.5346],\n          [-46.613,-23.543],\n          [-46.614,-23.559],\n          [-46.631,-23.567],\n          [-46.653,-23.560],\n          [-46.653,-23.543]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6318, -23.5523]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6246, -23.5325]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6062, -23.5513]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.663, -23.554]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.643, -23.557]\n      }\n    }\n  ]\n};\n\nvar ptsWithin = turf.within(points, searchWithin);\n\n//=points\n\n//=searchWithin\n\n//=ptsWithin"
             ],
             "returns": {
                 "type": "FeatureCollection",
@@ -55164,7 +53429,7 @@ module.exports={
     ]
 }
 
-},{}],332:[function(require,module,exports){
+},{}],337:[function(require,module,exports){
 var turf = require('turf'),
     docs = require('./docs.json'),
     Rpl = require('rpl-www');
@@ -55185,4 +53450,4 @@ function fToTip(f) {
     return [f.name.replace('/', '.'), f.description];
 }
 
-},{"./docs.json":331,"rpl-www":12,"turf":70}]},{},[332]);
+},{"./docs.json":336,"rpl-www":12,"turf":70}]},{},[337]);
