@@ -9,7 +9,7 @@ sending it to jsdoc.
 
 * We use the [turf-jsdoc](https://github.com/turfjs/turf-jsdoc) template to style
   our docs.
-* This project provides [geojson.js](https://github.com/Turfjs/turf-www/blob/master/geojson.js), a set of [typedef tags](http://usejsdoc.org/tags-typedef.html)
+* This project provides [geojson.js](https://github.com/Turfjs/turf-www/blob/master/typedefs/geojson.js), a set of [typedef tags](http://usejsdoc.org/tags-typedef.html)
   that let all modules use shorthand like `{Point}` for [GeoJSON Point](http://geojson.org/geojson-spec.html#point)
   geometries and so on - each uppercase value of the `type` property of a GeoJSON
   type should be included.
