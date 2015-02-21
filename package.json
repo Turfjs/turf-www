@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "chokidar": "^0.12.6",
-    "lodash": "^2.4.1",
     "npm": "^2.1.18"
   }
 }
