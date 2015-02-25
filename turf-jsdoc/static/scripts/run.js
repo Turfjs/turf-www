@@ -47,7 +47,7 @@ Buffer.TYPED_ARRAY_SUPPORT = (function () {
     var buf = new ArrayBuffer(0)
     var arr = new Uint8Array(buf)
     arr.foo = function () { return 42 }
-    return 42 === arr.foo() && // typed array instances can be augmented
+    return arr.foo() === 42 && // typed array instances can be augmented
         typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
         new Uint8Array(1).subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
   } catch (e) {
@@ -75,60 +75,67 @@ function Buffer (subject, encoding, noZero) {
 
   // Find the length
   var length
-  if (type === 'number')
-    length = subject > 0 ? subject >>> 0 : 0
-  else if (type === 'string') {
+  if (type === 'number') {
+    length = +subject
+  } else if (type === 'string') {
     length = Buffer.byteLength(subject, encoding)
   } else if (type === 'object' && subject !== null) { // assume object is array-like
     if (subject.type === 'Buffer' && isArray(subject.data))
       subject = subject.data
-    length = +subject.length > 0 ? Math.floor(+subject.length) : 0
-  } else
+    length = +subject.length
+  } else {
     throw new TypeError('must start with number, buffer, array or string')
+  }
 
   if (length > kMaxLength)
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
       'size: 0x' + kMaxLength.toString(16) + ' bytes')
 
-  var buf
+  if (length < 0)
+    length = 0
+  else
+    length >>>= 0 // Coerce to uint32.
+
+  var self = this
   if (Buffer.TYPED_ARRAY_SUPPORT) {
     // Preferred: Return an augmented `Uint8Array` instance for best performance
-    buf = Buffer._augment(new Uint8Array(length))
+    /*eslint-disable consistent-this */
+    self = Buffer._augment(new Uint8Array(length))
+    /*eslint-enable consistent-this */
   } else {
     // Fallback: Return THIS instance of Buffer (created by `new`)
-    buf = this
-    buf.length = length
-    buf._isBuffer = true
+    self.length = length
+    self._isBuffer = true
   }
 
   var i
   if (Buffer.TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
     // Speed optimization -- use set if we're copying from a typed array
-    buf._set(subject)
+    self._set(subject)
   } else if (isArrayish(subject)) {
     // Treat array-ish objects as a byte array
     if (Buffer.isBuffer(subject)) {
       for (i = 0; i < length; i++)
-        buf[i] = subject.readUInt8(i)
+        self[i] = subject.readUInt8(i)
     } else {
       for (i = 0; i < length; i++)
-        buf[i] = ((subject[i] % 256) + 256) % 256
+        self[i] = ((subject[i] % 256) + 256) % 256
     }
   } else if (type === 'string') {
-    buf.write(subject, 0, encoding)
+    self.write(subject, 0, encoding)
   } else if (type === 'number' && !Buffer.TYPED_ARRAY_SUPPORT && !noZero) {
     for (i = 0; i < length; i++) {
-      buf[i] = 0
+      self[i] = 0
     }
   }
 
   if (length > 0 && length <= Buffer.poolSize)
-    buf.parent = rootParent
+    self.parent = rootParent
 
-  return buf
+  return self
 }
 
-function SlowBuffer(subject, encoding, noZero) {
+function SlowBuffer (subject, encoding, noZero) {
   if (!(this instanceof SlowBuffer))
     return new SlowBuffer(subject, encoding, noZero)
 
@@ -144,6 +151,8 @@ Buffer.isBuffer = function (b) {
 Buffer.compare = function (a, b) {
   if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b))
     throw new TypeError('Arguments must be Buffers')
+
+  if (a === b) return 0
 
   var x = a.length
   var y = b.length
@@ -285,6 +294,7 @@ Buffer.prototype.toString = function (encoding, start, end) {
 
 Buffer.prototype.equals = function (b) {
   if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
   return Buffer.compare(this, b) === 0
 }
 
@@ -301,6 +311,7 @@ Buffer.prototype.inspect = function () {
 
 Buffer.prototype.compare = function (b) {
   if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return 0
   return Buffer.compare(this, b)
 }
 
@@ -363,7 +374,7 @@ function base64Write (buf, string, offset, length) {
 }
 
 function utf16leWrite (buf, string, offset, length) {
-  var charsWritten = blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length, 2)
+  var charsWritten = blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
   return charsWritten
 }
 
@@ -385,7 +396,7 @@ Buffer.prototype.write = function (string, offset, length, encoding) {
   offset = Number(offset) || 0
 
   if (length < 0 || offset < 0 || offset > this.length)
-    throw new RangeError('attempt to write outside buffer bounds');
+    throw new RangeError('attempt to write outside buffer bounds')
 
   var remaining = this.length - offset
   if (!length) {
@@ -508,7 +519,7 @@ Buffer.prototype.slice = function (start, end) {
   end = end === undefined ? len : ~~end
 
   if (start < 0) {
-    start += len;
+    start += len
     if (start < 0)
       start = 0
   } else if (start > len) {
@@ -577,7 +588,7 @@ Buffer.prototype.readUIntBE = function (offset, byteLength, noAssert) {
   var val = this[offset + --byteLength]
   var mul = 1
   while (byteLength > 0 && (mul *= 0x100))
-    val += this[offset + --byteLength] * mul;
+    val += this[offset + --byteLength] * mul
 
   return val
 }
@@ -985,7 +996,7 @@ Buffer.prototype.writeDoubleBE = function (value, offset, noAssert) {
 
 // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
 Buffer.prototype.copy = function (target, target_start, start, end) {
-  var source = this
+  var self = this // source
 
   if (!start) start = 0
   if (!end && end !== 0) end = this.length
@@ -995,12 +1006,12 @@ Buffer.prototype.copy = function (target, target_start, start, end) {
 
   // Copy 0 bytes; we're done
   if (end === start) return 0
-  if (target.length === 0 || source.length === 0) return 0
+  if (target.length === 0 || self.length === 0) return 0
 
   // Fatal error conditions
   if (target_start < 0)
     throw new RangeError('targetStart out of bounds')
-  if (start < 0 || start >= source.length) throw new RangeError('sourceStart out of bounds')
+  if (start < 0 || start >= self.length) throw new RangeError('sourceStart out of bounds')
   if (end < 0) throw new RangeError('sourceEnd out of bounds')
 
   // Are we oob?
@@ -1174,61 +1185,50 @@ function toHex (n) {
   return n.toString(16)
 }
 
-function utf8ToBytes(string, units) {
-  var codePoint, length = string.length
-  var leadSurrogate = null
+function utf8ToBytes (string, units) {
   units = units || Infinity
+  var codePoint
+  var length = string.length
+  var leadSurrogate = null
   var bytes = []
   var i = 0
 
-  for (; i<length; i++) {
+  for (; i < length; i++) {
     codePoint = string.charCodeAt(i)
 
     // is surrogate component
     if (codePoint > 0xD7FF && codePoint < 0xE000) {
-
       // last char was a lead
       if (leadSurrogate) {
-
         // 2 leads in a row
         if (codePoint < 0xDC00) {
           if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
           leadSurrogate = codePoint
           continue
-        }
-
-        // valid surrogate pair
-        else {
+        } else {
+          // valid surrogate pair
           codePoint = leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00 | 0x10000
           leadSurrogate = null
         }
-      }
+      } else {
+        // no lead yet
 
-      // no lead yet
-      else {
-
-        // unexpected trail
         if (codePoint > 0xDBFF) {
+          // unexpected trail
           if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
           continue
-        }
-
-        // unpaired lead
-        else if (i + 1 === length) {
+        } else if (i + 1 === length) {
+          // unpaired lead
           if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
           continue
-        }
-
-        // valid lead
-        else {
+        } else {
+          // valid lead
           leadSurrogate = codePoint
           continue
         }
       }
-    }
-
-    // valid bmp char, but last char was a lead
-    else if (leadSurrogate) {
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
       if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
       leadSurrogate = null
     }
@@ -1237,32 +1237,28 @@ function utf8ToBytes(string, units) {
     if (codePoint < 0x80) {
       if ((units -= 1) < 0) break
       bytes.push(codePoint)
-    }
-    else if (codePoint < 0x800) {
+    } else if (codePoint < 0x800) {
       if ((units -= 2) < 0) break
       bytes.push(
         codePoint >> 0x6 | 0xC0,
         codePoint & 0x3F | 0x80
-      );
-    }
-    else if (codePoint < 0x10000) {
+      )
+    } else if (codePoint < 0x10000) {
       if ((units -= 3) < 0) break
       bytes.push(
         codePoint >> 0xC | 0xE0,
         codePoint >> 0x6 & 0x3F | 0x80,
         codePoint & 0x3F | 0x80
-      );
-    }
-    else if (codePoint < 0x200000) {
+      )
+    } else if (codePoint < 0x200000) {
       if ((units -= 4) < 0) break
       bytes.push(
         codePoint >> 0x12 | 0xF0,
         codePoint >> 0xC & 0x3F | 0x80,
         codePoint >> 0x6 & 0x3F | 0x80,
         codePoint & 0x3F | 0x80
-      );
-    }
-    else {
+      )
+    } else {
       throw new Error('Invalid code point')
     }
   }
@@ -1283,7 +1279,6 @@ function utf16leToBytes (str, units) {
   var c, hi, lo
   var byteArray = []
   for (var i = 0; i < str.length; i++) {
-
     if ((units -= 2) < 0) break
 
     c = str.charCodeAt(i)
@@ -1300,8 +1295,7 @@ function base64ToBytes (str) {
   return base64.toByteArray(base64clean(str))
 }
 
-function blitBuffer (src, dst, offset, length, unitSize) {
-  if (unitSize) length -= length % unitSize;
+function blitBuffer (src, dst, offset, length) {
   for (var i = 0; i < length; i++) {
     if ((i + offset >= dst.length) || (i >= src.length))
       break
@@ -2796,13 +2790,18 @@ var _slicedToArray = function (arr, i) {
   }
 };
 
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
 /* global L */
 require("codemirror/mode/javascript/javascript");
 require("mapbox.js");
 
 var debounce = require("debounce"),
     CodeMirror = require("codemirror"),
-    Terrarium = require("terrarium"),
+    Terrarium = require("terrarium").Browser,
     geojsonhint = require("geojsonhint").hint;
 
 var pairs = function (o) {
@@ -2823,148 +2822,191 @@ function ce(_, c, inner) {
  * DOM element (probably a div) with some content, which it will
  * replace with an editable CodeMirror with live annotations.
  */
-var Rpl = function Rpl(element, options) {
-  this.element = element;
-  this.options = options || {};
-  this.options.tips = this.options.tips || [];
-  this.options.mapid = this.options.mapid || "tmcw.map-7s15q36b";
-  this.options.accessToken = this.options.accessToken || "pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ";
-  this.widgets = [];
-  this.errors = [];
-  this.delayedClear = null;
-  this.terrarium = null;
-  this.inlineStyle = document.body.appendChild(document.createElement("style"));
-  this.editor = this.setupEditor(this.element);
-  this.editor.on("change", debounce(this.onchange.bind(this), 1000));
-  this.onchange();
-};
-
-Rpl.prototype["export"] = function (type) {
-  return Terrarium.instrument(this.editor.getValue(), 0, type).source;
-};
-
-Rpl.prototype.onchange = function () {
-  clearTimeout(this.delayedClear);
-  this.joinWidgets({});
-  if (this.terrarium) {
-    this.terrarium.destroy();
+var Rpl = (function () {
+  function Rpl(element, options) {
+    this.element = element;
+    this.options = options || {};
+    this.options.tips = this.options.tips || [];
+    this.options.mapid = this.options.mapid || "tmcw.map-7s15q36b";
+    this.options.accessToken = this.options.accessToken || "pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ";
+    this.widgets = [];
+    this.errors = [];
+    this.delayedClear = null;
+    this.terrarium = null;
+    this.inlineStyle = document.body.appendChild(document.createElement("style"));
+    this.editor = this.setupEditor(this.element);
+    this.editor.on("change", debounce(this.onchange.bind(this), 200));
+    this.onchange();
   }
-  this.terrarium = new Terrarium.Browser(this.options);
-  this.terrarium.on("data", this.ondata.bind(this)).on("err", this.onerr.bind(this)).run(this.editor.getValue());
-  this.addMarks();
-};
 
-Rpl.prototype.addMarks = function () {
-  var _this = this;
-  if (!this.options.tips.length) return;
-  var cssContent = {};
-  this.editor.eachLine(function (lineHandle) {
-    _this.options.tips.forEach(function (tip) {
-      var ch = lineHandle.text.indexOf(tip[0]);
-      if (ch !== -1) {
-        var line = _this.editor.getLineNumber(lineHandle);
-        var classHash = "c-" + window.btoa(tip[1]).replace(/(=|\/|\+)/g, "");
-        cssContent[classHash] = tip[1];
-        _this.editor.markText({ line: line, ch: ch }, { line: line, ch: ch + tip[0].length }, {
-          className: "has-tip " + classHash
+  _prototypeProperties(Rpl, null, {
+    onchange: {
+      value: function onchange() {
+        clearTimeout(this.delayedClear);
+        this.joinWidgets({});
+        if (this.terrarium) {
+          this.terrarium.destroy();
+        }
+        this.terrarium = new Terrarium(this.options);
+        this.terrarium.on("data", this.ondata.bind(this)).on("err", this.onerr.bind(this)).run(this.editor.getValue());
+        this.addMarks();
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    addMarks: {
+      value: function addMarks() {
+        var _this = this;
+        if (!this.options.tips.length) return;
+        var cssContent = {};
+        this.editor.eachLine(function (lineHandle) {
+          _this.options.tips.forEach(function (tip) {
+            var ch = lineHandle.text.indexOf(tip[0]);
+            if (ch !== -1) {
+              var line = _this.editor.getLineNumber(lineHandle);
+              var classHash = "c-" + window.btoa(tip[1]).replace(/(=|\/|\+)/g, "");
+              cssContent[classHash] = tip[1];
+              _this.editor.markText({ line: line, ch: ch }, { line: line, ch: ch + tip[0].length }, {
+                className: "has-tip " + classHash
+              });
+            }
+          });
         });
-      }
-    });
+        var cssString = "";
+        for (var k in cssContent) {
+          cssString += "." + k + ":hover:after{content:" + JSON.stringify(cssContent[k]) + ";}";
+        }
+        this.inlineStyle.innerHTML = cssString;
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    onerr: {
+      value: function onerr(err) {
+        this.clearErrors();
+        if (err.message) {
+          var elem = ce("div", "rpl-error", err.toString());
+          this.errors.push(this.editor.addLineWidget(err.lineNumber || 0, elem, { coverGutter: false, noHScroll: true }));
+        }
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    ondata: {
+      value: function ondata(d) {
+        clearTimeout(this.delayedClear);
+        this.joinWidgets(d);
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    clearErrors: {
+      value: function clearErrors() {
+        this.errors.forEach(this.editor.removeLineWidget);
+        this.errors = [];
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    clearWidgets: {
+      value: function clearWidgets() {
+        this.widgets.forEach(this.editor.removeLineWidget);
+        this.widgets = [];
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    joinWidgets: {
+      value: function joinWidgets(newData) {
+        var _this2 = this;
+        this.clearWidgets();
+        this.clearErrors();
+        this.widgets = pairs(newData || {}).map(function (p) {
+          var _p = _slicedToArray(p, 2);
+
+          var id = _p[0];
+          var val = _p[1];
+          var line = val[val.length - 1].line - 1;
+          var el = _this2.makeWidget(val);
+          var widget = _this2.editor.addLineWidget(line, el, { coverGutter: false, noHScroll: true });
+          if (el.onadd) el.onadd();
+          return widget;
+        });
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    setupEditor: {
+      value: function setupEditor(element) {
+        return CodeMirror(function (elt) {
+          element.parentNode.replaceChild(elt, element);
+        }, { value: element.textContent || element.innerText }, {
+          indentUnit: 2, mode: "text/javascript",
+          viewportMargin: Infinity
+        });
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    makeWidget: {
+      value: function makeWidget(values) {
+        var value = values[values.length - 1],
+            msg = ce("div", "rpl-data"),
+            n = msg.appendChild(ce("div", "data-name", value.name)),
+            name = n.appendChild(ce("span", "data-var"));
+        try {
+          this.fillWidget(msg, value.val);
+          return msg;
+        } catch (e) {
+          console.error(e);
+        }
+        return msg;
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    },
+    fillWidget: {
+      value: function fillWidget(container, value) {
+        L.mapbox.accessToken = this.options.accessToken;
+        if (value && !geojsonhint(JSON.stringify(value)).length) {
+          var element = container.appendChild(ce("div", "map-viewer")),
+              featureLayer = L.mapbox.featureLayer(value),
+              map = L.mapbox.map(element, this.options.mapid, {
+            zoomControl: false, maxZoom: 15, scrollWheelZoom: false
+          }).addLayer(featureLayer);
+          featureLayer.eachLayer(function (layer) {
+            if (Object.keys(layer.feature.properties).length) {
+              layer.bindPopup("<pre>" + JSON.stringify(layer.feature.properties, null, 2) + "</pre>");
+            }
+          });
+          container.onadd = function () {
+            map.fitBounds(featureLayer.getBounds());
+            map.invalidateSize();
+          };
+        }
+        var pre = container.appendChild(ce("pre", typeof value === "object" ? "json-viewer" : "json-viewer big", JSON.stringify(value, null, 2)));
+      },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    }
   });
-  var cssString = "";
-  for (var k in cssContent) {
-    cssString += "." + k + ":hover:after{content:" + JSON.stringify(cssContent[k]) + ";}";
-  }
-  this.inlineStyle.innerHTML = cssString;
-};
 
-Rpl.prototype.onerr = function (err) {
-  this.clearErrors();
-  if (err.message) {
-    var elem = ce("div", "rpl-error", err.toString());
-    this.errors.push(this.editor.addLineWidget(err.lineNumber || 0, elem, { coverGutter: false, noHScroll: true }));
-  }
-};
-
-Rpl.prototype.ondata = function (d) {
-  clearTimeout(this.delayedClear);
-  this.joinWidgets(d);
-};
-
-Rpl.prototype.clearErrors = function () {
-  this.errors.forEach(this.editor.removeLineWidget);
-  this.errors = [];
-};
-
-Rpl.prototype.clearWidgets = function () {
-  this.widgets.forEach(this.editor.removeLineWidget);
-  this.widgets = [];
-};
-
-Rpl.prototype.joinWidgets = function (newData) {
-  var _this2 = this;
-  this.clearWidgets();
-  this.clearErrors();
-  this.widgets = pairs(newData || {}).map(function (p) {
-    var _p = _slicedToArray(p, 2);
-
-    var id = _p[0];
-    var val = _p[1];
-    var line = val[val.length - 1].line - 1;
-    var el = _this2.makeWidget(val);
-    var widget = _this2.editor.addLineWidget(line, el, { coverGutter: false, noHScroll: true });
-    if (el.onadd) el.onadd();
-    return widget;
-  });
-};
-
-Rpl.prototype.setupEditor = function (element) {
-  return CodeMirror(function (elt) {
-    element.parentNode.replaceChild(elt, element);
-  }, { value: element.textContent || element.innerText }, {
-    indentUnit: 2, mode: "text/javascript",
-    viewportMargin: Infinity
-  });
-};
-
-Rpl.prototype.makeWidget = function (values) {
-  var value = values[values.length - 1],
-      msg = ce("div", "rpl-data"),
-      n = msg.appendChild(ce("div", "data-name", value.name)),
-      name = n.appendChild(ce("span", "data-var"));
-  try {
-    this.fillWidget(msg, value.val);
-    return msg;
-  } catch (e) {
-    console.error(e);
-  }
-  return msg;
-};
-
-Rpl.prototype.fillWidget = function (container, value) {
-  L.mapbox.accessToken = this.options.accessToken;
-  if (value && !geojsonhint(JSON.stringify(value)).length) {
-    var element = container.appendChild(ce("div", "map-viewer")),
-        featureLayer = L.mapbox.featureLayer(value),
-        map = L.mapbox.map(element, this.options.mapid, {
-      zoomControl: false, maxZoom: 15, scrollWheelZoom: false
-    }).addLayer(featureLayer);
-    featureLayer.eachLayer(function (layer) {
-      if (Object.keys(layer.feature.properties).length) {
-        layer.bindPopup("<pre>" + JSON.stringify(layer.feature.properties, null, 2) + "</pre>");
-      }
-    });
-    container.onadd = function () {
-      map.fitBounds(featureLayer.getBounds());
-      map.invalidateSize();
-    };
-  }
-  var pre = container.appendChild(ce("pre", typeof value === "object" ? "json-viewer" : "json-viewer big", JSON.stringify(value, null, 2)));
-};
+  return Rpl;
+})();
 
 module.exports = Rpl;
 
-},{"codemirror":13,"codemirror/mode/javascript/javascript":14,"debounce":15,"geojsonhint":17,"mapbox.js":32,"terrarium":67}],13:[function(require,module,exports){
+},{"codemirror":13,"codemirror/mode/javascript/javascript":14,"debounce":15,"geojsonhint":17,"mapbox.js":32,"terrarium":68}],13:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -3077,8 +3119,14 @@ module.exports = Rpl;
     for (var opt in optionHandlers) if (optionHandlers.hasOwnProperty(opt))
       optionHandlers[opt](this, options[opt], Init);
     maybeUpdateLineNumberWidth(this);
+    if (options.finishInit) options.finishInit(this);
     for (var i = 0; i < initHooks.length; ++i) initHooks[i](this);
     endOperation(this);
+    // Suppress optimizelegibility in Webkit, since it breaks text
+    // measuring on line wrapping boundaries.
+    if (webkit && options.lineWrapping &&
+        getComputedStyle(display.lineDiv).textRendering == "optimizelegibility")
+      display.lineDiv.style.textRendering = "auto";
   }
 
   // DISPLAY CONSTRUCTOR
@@ -3611,7 +3659,17 @@ module.exports = Rpl;
     this.oldDisplayWidth = displayWidth(cm);
     this.force = force;
     this.dims = getDimensions(cm);
+    this.events = [];
   }
+
+  DisplayUpdate.prototype.signal = function(emitter, type) {
+    if (hasHandler(emitter, type))
+      this.events.push(arguments);
+  };
+  DisplayUpdate.prototype.finish = function() {
+    for (var i = 0; i < this.events.length; i++)
+      signal.apply(null, this.events[i]);
+  };
 
   function maybeClipScrollbars(cm) {
     var display = cm.display;
@@ -3686,7 +3744,7 @@ module.exports = Rpl;
     // width and height.
     removeChildren(display.cursorDiv);
     removeChildren(display.selectionDiv);
-    display.heightForcer.style.top = display.gutters.style.height = 0;
+    display.gutters.style.height = 0;
 
     if (different) {
       display.lastWrapHeight = update.wrapperHeight;
@@ -3723,9 +3781,9 @@ module.exports = Rpl;
       updateScrollbars(cm, barMeasure);
     }
 
-    signalLater(cm, "update", cm);
+    update.signal(cm, "update", cm);
     if (cm.display.viewFrom != cm.display.reportedViewFrom || cm.display.viewTo != cm.display.reportedViewTo) {
-      signalLater(cm, "viewportChange", cm, cm.display.viewFrom, cm.display.viewTo);
+      update.signal(cm, "viewportChange", cm, cm.display.viewFrom, cm.display.viewTo);
       cm.display.reportedViewFrom = cm.display.viewFrom; cm.display.reportedViewTo = cm.display.viewTo;
     }
   }
@@ -3739,14 +3797,15 @@ module.exports = Rpl;
       updateSelection(cm);
       setDocumentHeight(cm, barMeasure);
       updateScrollbars(cm, barMeasure);
+      update.finish();
     }
   }
 
   function setDocumentHeight(cm, measure) {
     cm.display.sizer.style.minHeight = measure.docHeight + "px";
-    var plusGap = measure.docHeight + scrollGap(cm);
-    cm.display.heightForcer.style.top = plusGap + "px";
-    cm.display.gutters.style.height = Math.max(plusGap, measure.clientHeight) + "px";
+    var total = measure.docHeight + cm.display.barHeight;
+    cm.display.heightForcer.style.top = total + "px";
+    cm.display.gutters.style.height = Math.max(total + scrollGap(cm), measure.clientHeight) + "px";
   }
 
   // Read the actual heights of the rendered lines, and update their
@@ -4814,7 +4873,8 @@ module.exports = Rpl;
 
   // Converts a {top, bottom, left, right} box from line-local
   // coordinates into another coordinate system. Context may be one of
-  // "line", "div" (display.lineDiv), "local"/null (editor), or "page".
+  // "line", "div" (display.lineDiv), "local"/null (editor), "window",
+  // or "page".
   function intoCoordSystem(cm, lineObj, rect, context) {
     if (lineObj.widgets) for (var i = 0; i < lineObj.widgets.length; ++i) if (lineObj.widgets[i].above) {
       var size = widgetHeight(lineObj.widgets[i]);
@@ -5198,6 +5258,8 @@ module.exports = Rpl;
     // Fire change events, and delayed event handlers
     if (op.changeObjs)
       signal(cm, "changes", cm, op.changeObjs);
+    if (op.update)
+      op.update.finish();
   }
 
   // Run the given function in an operation
@@ -5572,8 +5634,10 @@ module.exports = Rpl;
   }
 
   function focusInput(cm) {
-    if (cm.options.readOnly != "nocursor" && (!mobile || activeElt() != cm.display.input))
-      cm.display.input.focus();
+    if (cm.options.readOnly != "nocursor" && (!mobile || activeElt() != cm.display.input)) {
+      try { cm.display.input.focus(); }
+      catch (e) {} // IE8 will throw if the textarea is display: none or not in DOM
+    }
   }
 
   function ensureFocus(cm) {
@@ -5726,7 +5790,9 @@ module.exports = Rpl;
   // Return true when the given mouse event happened in a widget
   function eventInWidget(display, e) {
     for (var n = e_target(e); n != display.wrapper; n = n.parentNode) {
-      if (!n || n.getAttribute("cm-ignore-events") == "true" || n.parentNode == display.sizer && n != display.mover) return true;
+      if (!n || (n.nodeType == 1 && n.getAttribute("cm-ignore-events") == "true") ||
+          (n.parentNode == display.sizer && n != display.mover))
+        return true;
     }
   }
 
@@ -6755,7 +6821,9 @@ module.exports = Rpl;
 
     var lendiff = change.text.length - (to.line - from.line) - 1;
     // Remember that these lines changed, for updating the display
-    if (from.line == to.line && change.text.length == 1 && !isWholeLineUpdate(cm.doc, change))
+    if (change.full)
+      regChange(cm);
+    else if (from.line == to.line && change.text.length == 1 && !isWholeLineUpdate(cm.doc, change))
       regLineChange(cm, from.line, "text");
     else
       regChange(cm, from.line, to.line + 1, lendiff);
@@ -8078,7 +8146,7 @@ module.exports = Rpl;
   // FROMTEXTAREA
 
   CodeMirror.fromTextArea = function(textarea, options) {
-    if (!options) options = {};
+    options = options ? copyObj(options) : {};
     options.value = textarea.value;
     if (!options.tabindex && textarea.tabindex)
       options.tabindex = textarea.tabindex;
@@ -8109,23 +8177,26 @@ module.exports = Rpl;
       }
     }
 
+    options.finishInit = function(cm) {
+      cm.save = save;
+      cm.getTextArea = function() { return textarea; };
+      cm.toTextArea = function() {
+        cm.toTextArea = isNaN; // Prevent this from being ran twice
+        save();
+        textarea.parentNode.removeChild(cm.getWrapperElement());
+        textarea.style.display = "";
+        if (textarea.form) {
+          off(textarea.form, "submit", save);
+          if (typeof textarea.form.submit == "function")
+            textarea.form.submit = realSubmit;
+        }
+      };
+    };
+
     textarea.style.display = "none";
     var cm = CodeMirror(function(node) {
       textarea.parentNode.insertBefore(node, textarea.nextSibling);
     }, options);
-    cm.save = save;
-    cm.getTextArea = function() { return textarea; };
-    cm.toTextArea = function() {
-      cm.toTextArea = isNaN; // Prevent this from being ran twice
-      save();
-      textarea.parentNode.removeChild(cm.getWrapperElement());
-      textarea.style.display = "";
-      if (textarea.form) {
-        off(textarea.form, "submit", save);
-        if (typeof textarea.form.submit == "function")
-          textarea.form.submit = realSubmit;
-      }
-    };
     return cm;
   };
 
@@ -8537,6 +8608,7 @@ module.exports = Rpl;
   // spans partially within the change. Returns an array of span
   // arrays with one element for each line in (after) the change.
   function stretchSpansOverChange(doc, change) {
+    if (change.full) return null;
     var oldFirst = isLine(doc, change.from.line) && getLine(doc, change.from.line).markedSpans;
     var oldLast = isLine(doc, change.to.line) && getLine(doc, change.to.line).markedSpans;
     if (!oldFirst && !oldLast) return null;
@@ -8846,7 +8918,9 @@ module.exports = Rpl;
     if (!contains(document.body, widget.node)) {
       var parentStyle = "position: relative;";
       if (widget.coverGutter)
-        parentStyle += "margin-left: -" + widget.cm.getGutterElement().offsetWidth + "px;";
+        parentStyle += "margin-left: -" + widget.cm.display.gutters.offsetWidth + "px;";
+      if (widget.noHScroll)
+        parentStyle += "width: " + widget.cm.display.wrapper.clientWidth + "px;";
       removeChildrenAndAdd(widget.cm.display.measure, elt("div", [widget.node], null, parentStyle));
     }
     return widget.height = widget.node.offsetHeight;
@@ -9133,6 +9207,7 @@ module.exports = Rpl;
   function defaultSpecialCharPlaceholder(ch) {
     var token = elt("span", "\u2022", "cm-invalidchar");
     token.title = "\\u" + ch.charCodeAt(0).toString(16);
+    token.setAttribute("aria-label", token.title);
     return token;
   }
 
@@ -9166,6 +9241,7 @@ module.exports = Rpl;
         if (m[0] == "\t") {
           var tabSize = builder.cm.options.tabSize, tabWidth = tabSize - builder.col % tabSize;
           var txt = content.appendChild(elt("span", spaceStr(tabWidth), "cm-tab"));
+          txt.setAttribute("role", "presentation");
           builder.col += tabWidth;
         } else {
           var txt = builder.cm.options.specialCharPlaceholder(m[0]);
@@ -9309,17 +9385,24 @@ module.exports = Rpl;
       updateLine(line, text, spans, estimateHeight);
       signalLater(line, "change", line, change);
     }
+    function linesFor(start, end) {
+      for (var i = start, result = []; i < end; ++i)
+        result.push(new Line(text[i], spansFor(i), estimateHeight));
+      return result;
+    }
 
     var from = change.from, to = change.to, text = change.text;
     var firstLine = getLine(doc, from.line), lastLine = getLine(doc, to.line);
     var lastText = lst(text), lastSpans = spansFor(text.length - 1), nlines = to.line - from.line;
 
     // Adjust the line structure
-    if (isWholeLineUpdate(doc, change)) {
+    if (change.full) {
+      doc.insert(0, linesFor(0, text.length));
+      doc.remove(text.length, doc.size - text.length);
+    } else if (isWholeLineUpdate(doc, change)) {
       // This is a whole-line replace. Treated specially to make
       // sure line objects move the way they are supposed to.
-      for (var i = 0, added = []; i < text.length - 1; ++i)
-        added.push(new Line(text[i], spansFor(i), estimateHeight));
+      var added = linesFor(0, text.length - 1);
       update(lastLine, lastLine.text, lastSpans);
       if (nlines) doc.remove(from.line, nlines);
       if (added.length) doc.insert(from.line, added);
@@ -9327,8 +9410,7 @@ module.exports = Rpl;
       if (text.length == 1) {
         update(firstLine, firstLine.text.slice(0, from.ch) + lastText + firstLine.text.slice(to.ch), lastSpans);
       } else {
-        for (var added = [], i = 1; i < text.length - 1; ++i)
-          added.push(new Line(text[i], spansFor(i), estimateHeight));
+        var added = linesFor(1, text.length - 1);
         added.push(new Line(lastText + firstLine.text.slice(to.ch), lastSpans, estimateHeight));
         update(firstLine, firstLine.text.slice(0, from.ch) + text[0], spansFor(0));
         doc.insert(from.line + 1, added);
@@ -9339,8 +9421,7 @@ module.exports = Rpl;
     } else {
       update(firstLine, firstLine.text.slice(0, from.ch) + text[0], spansFor(0));
       update(lastLine, lastText + lastLine.text.slice(to.ch), lastSpans);
-      for (var i = 1, added = []; i < text.length - 1; ++i)
-        added.push(new Line(text[i], spansFor(i), estimateHeight));
+      var added = linesFor(1, text.length - 1);
       if (nlines > 1) doc.remove(from.line + 1, nlines - 1);
       doc.insert(from.line + 1, added);
     }
@@ -9551,7 +9632,7 @@ module.exports = Rpl;
     setValue: docMethodOp(function(code) {
       var top = Pos(this.first, 0), last = this.first + this.size - 1;
       makeChange(this, {from: top, to: Pos(last, getLine(this, last).text.length),
-                        text: splitLines(code), origin: "setValue"}, true);
+                        text: splitLines(code), origin: "setValue", full: true}, true);
       setSelection(this, simpleSelection(top));
     }),
     replaceRange: function(code, from, to, origin) {
@@ -10431,13 +10512,11 @@ module.exports = Rpl;
       if (array[i] == elt) return i;
     return -1;
   }
-  if ([].indexOf) indexOf = function(array, elt) { return array.indexOf(elt); };
   function map(array, f) {
     var out = [];
     for (var i = 0; i < array.length; i++) out[i] = f(array[i], i);
     return out;
   }
-  if ([].map) map = function(array, f) { return array.map(f); };
 
   function createObj(base, props) {
     var inst;
@@ -10527,12 +10606,14 @@ module.exports = Rpl;
     return removeChildren(parent).appendChild(e);
   }
 
-  function contains(parent, child) {
+  var contains = CodeMirror.contains = function(parent, child) {
     if (parent.contains)
       return parent.contains(child);
-    while (child = child.parentNode)
+    while (child = child.parentNode) {
+      if (child.nodeType == 11) child = child.host;
       if (child == parent) return true;
-  }
+    }
+  };
 
   function activeElt() { return document.activeElement; }
   // Older versions of IE throws unspecified error when touching
@@ -10990,7 +11071,7 @@ module.exports = Rpl;
 
   // THE END
 
-  CodeMirror.version = "4.10.0";
+  CodeMirror.version = "4.13.0";
 
   return CodeMirror;
 });
@@ -11116,7 +11197,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       } else if (state.lastType == "operator" || state.lastType == "keyword c" ||
                state.lastType == "sof" || /^[\[{}\(,;:]$/.test(state.lastType)) {
         readRegexp(stream);
-        stream.eatWhile(/[gimy]/); // 'y' is "sticky" option in Mozilla
+        stream.match(/^\b(([gimyu])(?![gimyu]*\2))+\b/);
         return ret("regexp", "string-2");
       } else {
         stream.eatWhile(isOperatorChar);
@@ -11598,6 +11679,12 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (type == "if") return cont(expression, comprehension);
   }
 
+  function isContinuedStatement(state, textAfter) {
+    return state.lastType == "operator" || state.lastType == "," ||
+      isOperatorChar.test(textAfter.charAt(0)) ||
+      /[,.]/.test(textAfter.charAt(0));
+  }
+
   // Interface
 
   return {
@@ -11649,7 +11736,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       else if (type == "form" && firstChar == "{") return lexical.indented;
       else if (type == "form") return lexical.indented + indentUnit;
       else if (type == "stat")
-        return lexical.indented + (state.lastType == "operator" || state.lastType == "," ? statementIndent || indentUnit : 0);
+        return lexical.indented + (isContinuedStatement(state, textAfter) ? statementIndent || indentUnit : 0);
       else if (lexical.info == "switch" && !closing && parserConfig.doubleIndentSwitch != false)
         return lexical.indented + (/^(?:case|default)\b/.test(textAfter) ? indentUnit : 2 * indentUnit);
       else if (lexical.align) return lexical.column + (closing ? 0 : 1);
@@ -25025,7 +25112,7 @@ module.exports={
   },
   "name": "mapbox.js",
   "description": "mapbox javascript api",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "homepage": "http://mapbox.com/",
   "repository": {
     "type": "git",
@@ -25043,14 +25130,14 @@ module.exports={
   },
   "devDependencies": {
     "leaflet-hash": "0.2.1",
-    "leaflet-fullscreen": "0.0.0",
+    "leaflet-fullscreen": "0.0.4",
     "uglify-js": "2.4.8",
     "mocha": "1.17.1",
     "expect.js": "0.3.1",
     "sinon": "1.10.2",
     "mocha-phantomjs": "3.1.6",
     "happen": "0.1.3",
-    "browserify": "3.23.1",
+    "browserify": "^6.3.2",
     "jshint": "2.4.4",
     "clean-css": "~2.0.7",
     "minimist": "0.0.5",
@@ -25060,18 +25147,18 @@ module.exports={
   "engines": {
     "node": "*"
   },
-  "gitHead": "5bcac5da8b8d3a2f2eb4928e0252009f5365420c",
+  "gitHead": "3127a3218db85030914cdc25a23a73c768807b5b",
   "bugs": {
     "url": "https://github.com/mapbox/mapbox.js/issues"
   },
-  "_id": "mapbox.js@2.1.4",
-  "_shasum": "4c3f70fe7625bc2f457a9f5814917fb8134cb7ad",
-  "_from": "mapbox.js@>=2.1.4 <3.0.0",
-  "_npmVersion": "2.1.3",
-  "_nodeVersion": "0.10.32",
+  "_id": "mapbox.js@2.1.5",
+  "_shasum": "065a7c4e5a7ff949a01842fa24d6dfb69b6c50c4",
+  "_from": "mapbox.js@^2.1.4",
+  "_npmVersion": "2.1.6",
+  "_nodeVersion": "0.10.33",
   "_npmUser": {
-    "name": "tristen",
-    "email": "tristen.brown@gmail.com"
+    "name": "camilleanne",
+    "email": "camille@mapbox.com"
   },
   "maintainers": [
     {
@@ -25109,14 +25196,106 @@ module.exports={
     {
       "name": "mapbox",
       "email": "accounts@mapbox.com"
+    },
+    {
+      "name": "edenh",
+      "email": "eden@mapbox.com"
+    },
+    {
+      "name": "sgillies",
+      "email": "sean@mapbox.com"
+    },
+    {
+      "name": "lbud",
+      "email": "lauren@mapbox.com"
+    },
+    {
+      "name": "bsudekum",
+      "email": "bobby@mapbox.com"
+    },
+    {
+      "name": "dnomadb",
+      "email": "damon@mapbox.com"
+    },
+    {
+      "name": "ian29",
+      "email": "ian.villeda@gmail.com"
+    },
+    {
+      "name": "dvncan",
+      "email": "duncan@mapbox.com"
+    },
+    {
+      "name": "nickidlugash",
+      "email": "nicki@mapbox.com"
+    },
+    {
+      "name": "samanbb",
+      "email": "saman@mapbox.com"
+    },
+    {
+      "name": "ajashton",
+      "email": "aj.ashton@gmail.com"
+    },
+    {
+      "name": "lxbarth",
+      "email": "alex@developmentseed.org"
+    },
+    {
+      "name": "mikemorris",
+      "email": "michael.patrick.morris@gmail.com"
+    },
+    {
+      "name": "ianshward",
+      "email": "ian@mapbox.com"
+    },
+    {
+      "name": "ingalls",
+      "email": "nicholas.ingalls@gmail.com"
+    },
+    {
+      "name": "miccolis",
+      "email": "jeff@miccolis.net"
+    },
+    {
+      "name": "gretacb",
+      "email": "carol@mapbox.com"
+    },
+    {
+      "name": "aaronlidman",
+      "email": "aaronlidman@gmail.com"
+    },
+    {
+      "name": "morganherlocker",
+      "email": "morgan.herlocker@gmail.com"
+    },
+    {
+      "name": "camilleanne",
+      "email": "camille@mapbox.com"
+    },
+    {
+      "name": "rclark",
+      "email": "ryan.clark.j@gmail.com"
+    },
+    {
+      "name": "springmeyer",
+      "email": "dane@mapbox.com"
+    },
+    {
+      "name": "kkaefer",
+      "email": "kkaefer@gmail.com"
+    },
+    {
+      "name": "dthompson",
+      "email": "dthompson@gmail.com"
     }
   ],
   "dist": {
-    "shasum": "4c3f70fe7625bc2f457a9f5814917fb8134cb7ad",
-    "tarball": "http://registry.npmjs.org/mapbox.js/-/mapbox.js-2.1.4.tgz"
+    "shasum": "065a7c4e5a7ff949a01842fa24d6dfb69b6c50c4",
+    "tarball": "http://registry.npmjs.org/mapbox.js/-/mapbox.js-2.1.5.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.1.4.tgz",
+  "_resolved": "https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.1.5.tgz",
   "readme": "ERROR: No README data found!"
 }
 
@@ -25247,7 +25426,7 @@ module.exports.featureLayer = function(_, options) {
     return new FeatureLayer(_, options);
 };
 
-},{"./marker":39,"./request":40,"./simplestyle":42,"./url":44,"./util":45,"sanitize-caja":22}],27:[function(require,module,exports){
+},{"./marker":40,"./request":41,"./simplestyle":43,"./url":45,"./util":46,"sanitize-caja":22}],27:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -25346,7 +25525,7 @@ module.exports = function(url, options) {
     return geocoder;
 };
 
-},{"./request":40,"./url":44,"./util":45}],28:[function(require,module,exports){
+},{"./request":41,"./url":45,"./util":46}],28:[function(require,module,exports){
 'use strict';
 
 var geocoder = require('./geocoder'),
@@ -25538,7 +25717,7 @@ module.exports.geocoderControl = function(_, options) {
     return new GeocoderControl(_, options);
 };
 
-},{"./geocoder":27,"./util":45}],29:[function(require,module,exports){
+},{"./geocoder":27,"./util":46}],29:[function(require,module,exports){
 'use strict';
 
 function utfDecode(c) {
@@ -25756,7 +25935,7 @@ module.exports.gridControl = function(_, options) {
     return new GridControl(_, options);
 };
 
-},{"./util":45,"mustache":21,"sanitize-caja":22}],31:[function(require,module,exports){
+},{"./util":46,"mustache":21,"sanitize-caja":22}],31:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -25981,7 +26160,7 @@ module.exports.gridLayer = function(_, options) {
     return new GridLayer(_, options);
 };
 
-},{"./grid":29,"./load_tilejson":36,"./request":40,"./util":45}],32:[function(require,module,exports){
+},{"./grid":29,"./load_tilejson":36,"./request":41,"./util":46}],32:[function(require,module,exports){
 require('./leaflet');
 require('./mapbox');
 
@@ -26199,7 +26378,7 @@ module.exports = {
     }
 };
 
-},{"./request":40,"./url":44,"./util":45}],37:[function(require,module,exports){
+},{"./request":41,"./url":45,"./util":46}],37:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -26209,7 +26388,8 @@ var util = require('./util'),
     gridControl = require('./grid_control').gridControl,
     infoControl = require('./info_control').infoControl,
     shareControl = require('./share_control').shareControl,
-    legendControl = require('./legend_control').legendControl;
+    legendControl = require('./legend_control').legendControl,
+    mapboxLogoControl = require('./mapbox_logo').mapboxLogoControl;
 
 function withAccessToken(options, accessToken) {
     if (!accessToken || options.accessToken)
@@ -26279,6 +26459,9 @@ var LMap = L.Map.extend({
             this.addControl(this.shareControl);
         }
 
+        this._mapboxLogoControl = mapboxLogoControl(this.options.mapboxLogoControl);
+        this.addControl(this._mapboxLogoControl);
+
         this._loadTileJSON(_);
     },
 
@@ -26325,6 +26508,8 @@ var LMap = L.Map.extend({
         if (this.shareControl) {
             this.shareControl._setTileJSON(json);
         }
+
+        this._mapboxLogoControl._setTileJSON(json);
 
         if (!this._loaded && json.center) {
             var zoom = this.getZoom() !== undefined ? this.getZoom() : json.center[2],
@@ -26380,7 +26565,7 @@ module.exports.map = function(element, _, options) {
     return new LMap(element, _, options);
 };
 
-},{"./feature_layer":26,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./load_tilejson":36,"./share_control":41,"./tile_layer":43,"./util":45}],38:[function(require,module,exports){
+},{"./feature_layer":26,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./load_tilejson":36,"./mapbox_logo":39,"./share_control":42,"./tile_layer":44,"./util":46}],38:[function(require,module,exports){
 'use strict';
 
 var geocoderControl = require('./geocoder_control'),
@@ -26432,7 +26617,41 @@ window.L.Icon.Default.imagePath =
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
     require('../package.json').version + '/images';
 
-},{"../package.json":24,"./config":25,"./feature_layer":26,"./geocoder":27,"./geocoder_control":28,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./map":37,"./marker":39,"./share_control":41,"./simplestyle":42,"./tile_layer":43,"mustache":21,"sanitize-caja":22}],39:[function(require,module,exports){
+},{"../package.json":24,"./config":25,"./feature_layer":26,"./geocoder":27,"./geocoder_control":28,"./grid_control":30,"./grid_layer":31,"./info_control":33,"./legend_control":35,"./map":37,"./marker":40,"./share_control":42,"./simplestyle":43,"./tile_layer":44,"mustache":21,"sanitize-caja":22}],39:[function(require,module,exports){
+'use strict';
+
+var MapboxLogoControl = L.Control.extend({
+
+    options: {
+        position: 'bottomleft',
+    },
+
+    initialize: function(options) {
+        L.setOptions(this, options);
+    },
+
+    onAdd: function(map) {
+        this._container = L.DomUtil.create('div', 'mapbox-logo');
+        return this._container;
+    },
+
+    _setTileJSON: function(json) {
+        // Check if account referenced by the accessToken
+        // is asscociated with the Mapbox Logo
+        // as determined by mapbox-maps.
+        if (json.mapbox_logo) {
+            L.DomUtil.addClass(this._container, 'mapbox-logo-true');
+        }
+    }
+});
+
+module.exports.MapboxLogoControl = MapboxLogoControl;
+
+module.exports.mapboxLogoControl = function(options) {
+    return new MapboxLogoControl(options);
+};
+
+},{}],40:[function(require,module,exports){
 'use strict';
 
 var url = require('./url'),
@@ -26499,7 +26718,7 @@ module.exports = {
     createPopup: createPopup
 };
 
-},{"./url":44,"./util":45,"sanitize-caja":22}],40:[function(require,module,exports){
+},{"./url":45,"./util":46,"sanitize-caja":22}],41:[function(require,module,exports){
 'use strict';
 
 var corslite = require('corslite'),
@@ -26531,7 +26750,7 @@ module.exports = function(url, callback) {
     }
 };
 
-},{"./config":25,"./util":45,"corslite":19}],41:[function(require,module,exports){
+},{"./config":25,"./util":46,"corslite":19}],42:[function(require,module,exports){
 'use strict';
 
 var urlhelper = require('./url');
@@ -26634,7 +26853,7 @@ module.exports.shareControl = function(_, options) {
     return new ShareControl(_, options);
 };
 
-},{"./load_tilejson":36,"./url":44}],42:[function(require,module,exports){
+},{"./load_tilejson":36,"./url":45}],43:[function(require,module,exports){
 'use strict';
 
 // an implementation of the simplestyle spec for polygon and linestring features
@@ -26681,7 +26900,7 @@ module.exports = {
     defaults: defaults
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -26777,7 +26996,7 @@ module.exports.tileLayer = function(_, options) {
     return new TileLayer(_, options);
 };
 
-},{"./load_tilejson":36,"./util":45}],44:[function(require,module,exports){
+},{"./load_tilejson":36,"./util":46}],45:[function(require,module,exports){
 'use strict';
 
 var config = require('./config'),
@@ -26821,7 +27040,7 @@ module.exports.tileJSON = function(urlOrMapID, accessToken) {
     return url;
 };
 
-},{"../package.json":24,"./config":25}],45:[function(require,module,exports){
+},{"../package.json":24,"./config":25}],46:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26868,388 +27087,9 @@ function contains(item, list) {
     return false;
 }
 
-},{}],46:[function(require,module,exports){
-module.exports = display;
-
-var MAPID = 'tmcw.l12c66f2';
-
-/**
- * A fancy formatting function that creates maps for browser-exported
- * turf instead of console.logging.
- */
-function display() {
-  return {
-    "type": "Program",
-    "body": [
-        {
-            "type": "FunctionDeclaration",
-            "id": {
-                "type": "Identifier",
-                "name": "_display"
-            },
-            "params": [
-                {
-                    "type": "Identifier",
-                    "name": "value"
-                }
-            ],
-            "defaults": [],
-            "body": {
-                "type": "BlockStatement",
-                "body": [
-                    {
-                        "type": "IfStatement",
-                        "test": {
-                            "type": "LogicalExpression",
-                            "operator": "||",
-                            "left": {
-                                "type": "LogicalExpression",
-                                "operator": "||",
-                                "left": {
-                                    "type": "BinaryExpression",
-                                    "operator": "!==",
-                                    "left": {
-                                        "type": "UnaryExpression",
-                                        "operator": "typeof",
-                                        "argument": {
-                                            "type": "Identifier",
-                                            "name": "value"
-                                        },
-                                        "prefix": true
-                                    },
-                                    "right": {
-                                        "type": "Literal",
-                                        "value": "object",
-                                        "raw": "'object'"
-                                    }
-                                },
-                                "right": {
-                                    "type": "UnaryExpression",
-                                    "operator": "!",
-                                    "argument": {
-                                        "type": "MemberExpression",
-                                        "computed": false,
-                                        "object": {
-                                            "type": "Identifier",
-                                            "name": "value"
-                                        },
-                                        "property": {
-                                            "type": "Identifier",
-                                            "name": "type"
-                                        }
-                                    },
-                                    "prefix": true
-                                }
-                            },
-                            "right": {
-                                "type": "BinaryExpression",
-                                "operator": "===",
-                                "left": {
-                                    "type": "UnaryExpression",
-                                    "operator": "typeof",
-                                    "argument": {
-                                        "type": "Identifier",
-                                        "name": "L"
-                                    },
-                                    "prefix": true
-                                },
-                                "right": {
-                                    "type": "Literal",
-                                    "value": "undefined",
-                                    "raw": "'undefined'"
-                                }
-                            }
-                        },
-                        "consequent": {
-                            "type": "BlockStatement",
-                            "body": [
-                                {
-                                    "type": "ReturnStatement",
-                                    "argument": {
-                                        "type": "CallExpression",
-                                        "callee": {
-                                            "type": "MemberExpression",
-                                            "computed": false,
-                                            "object": {
-                                                "type": "Identifier",
-                                                "name": "console"
-                                            },
-                                            "property": {
-                                                "type": "Identifier",
-                                                "name": "log"
-                                            }
-                                        },
-                                        "arguments": [
-                                            {
-                                                "type": "Identifier",
-                                                "name": "value"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        "alternate": null
-                    },
-                    {
-                        "type": "VariableDeclaration",
-                        "declarations": [
-                            {
-                                "type": "VariableDeclarator",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "container"
-                                },
-                                "init": {
-                                    "type": "CallExpression",
-                                    "callee": {
-                                        "type": "MemberExpression",
-                                        "computed": false,
-                                        "object": {
-                                            "type": "MemberExpression",
-                                            "computed": false,
-                                            "object": {
-                                                "type": "Identifier",
-                                                "name": "document"
-                                            },
-                                            "property": {
-                                                "type": "Identifier",
-                                                "name": "body"
-                                            }
-                                        },
-                                        "property": {
-                                            "type": "Identifier",
-                                            "name": "appendChild"
-                                        }
-                                    },
-                                    "arguments": [
-                                        {
-                                            "type": "CallExpression",
-                                            "callee": {
-                                                "type": "MemberExpression",
-                                                "computed": false,
-                                                "object": {
-                                                    "type": "Identifier",
-                                                    "name": "document"
-                                                },
-                                                "property": {
-                                                    "type": "Identifier",
-                                                    "name": "createElement"
-                                                }
-                                            },
-                                            "arguments": [
-                                                {
-                                                    "type": "Literal",
-                                                    "value": "div",
-                                                    "raw": "'div'"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        "kind": "var"
-                    },
-                    {
-                        "type": "ExpressionStatement",
-                        "expression": {
-                            "type": "AssignmentExpression",
-                            "operator": "=",
-                            "left": {
-                                "type": "MemberExpression",
-                                "computed": false,
-                                "object": {
-                                    "type": "Identifier",
-                                    "name": "container"
-                                },
-                                "property": {
-                                    "type": "Identifier",
-                                    "name": "className"
-                                }
-                            },
-                            "right": {
-                                "type": "Literal",
-                                "value": "map",
-                                "raw": "'map'"
-                            }
-                        }
-                    },
-                    {
-                        "type": "VariableDeclaration",
-                        "declarations": [
-                            {
-                                "type": "VariableDeclarator",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "map"
-                                },
-                                "init": {
-                                    "type": "CallExpression",
-                                    "callee": {
-                                        "type": "MemberExpression",
-                                        "computed": false,
-                                        "object": {
-                                            "type": "MemberExpression",
-                                            "computed": false,
-                                            "object": {
-                                                "type": "Identifier",
-                                                "name": "L"
-                                            },
-                                            "property": {
-                                                "type": "Identifier",
-                                                "name": "mapbox"
-                                            }
-                                        },
-                                        "property": {
-                                            "type": "Identifier",
-                                            "name": "map"
-                                        }
-                                    },
-                                    "arguments": [
-                                        {
-                                            "type": "Identifier",
-                                            "name": "container"
-                                        },
-                                        {
-                                            "type": "Literal",
-                                            "value": "tmcw.l12c66f2",
-                                            "raw": "'tmcw.l12c66f2'"
-                                        },
-                                        {
-                                            "type": "ObjectExpression",
-                                            "properties": [
-                                                {
-                                                    "type": "Property",
-                                                    "key": {
-                                                        "type": "Identifier",
-                                                        "name": "maxZoom"
-                                                    },
-                                                    "value": {
-                                                        "type": "Literal",
-                                                        "value": 15,
-                                                        "raw": "15"
-                                                    },
-                                                    "kind": "init",
-                                                    "method": false,
-                                                    "shorthand": false
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        "kind": "var"
-                    },
-                    {
-                        "type": "VariableDeclaration",
-                        "declarations": [
-                            {
-                                "type": "VariableDeclarator",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "features"
-                                },
-                                "init": {
-                                    "type": "CallExpression",
-                                    "callee": {
-                                        "type": "MemberExpression",
-                                        "computed": false,
-                                        "object": {
-                                            "type": "CallExpression",
-                                            "callee": {
-                                                "type": "MemberExpression",
-                                                "computed": false,
-                                                "object": {
-                                                    "type": "MemberExpression",
-                                                    "computed": false,
-                                                    "object": {
-                                                        "type": "Identifier",
-                                                        "name": "L"
-                                                    },
-                                                    "property": {
-                                                        "type": "Identifier",
-                                                        "name": "mapbox"
-                                                    }
-                                                },
-                                                "property": {
-                                                    "type": "Identifier",
-                                                    "name": "featureLayer"
-                                                }
-                                            },
-                                            "arguments": [
-                                                {
-                                                    "type": "Identifier",
-                                                    "name": "value"
-                                                }
-                                            ]
-                                        },
-                                        "property": {
-                                            "type": "Identifier",
-                                            "name": "addTo"
-                                        }
-                                    },
-                                    "arguments": [
-                                        {
-                                            "type": "Identifier",
-                                            "name": "map"
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        "kind": "var"
-                    },
-                    {
-                        "type": "ExpressionStatement",
-                        "expression": {
-                            "type": "CallExpression",
-                            "callee": {
-                                "type": "MemberExpression",
-                                "computed": false,
-                                "object": {
-                                    "type": "Identifier",
-                                    "name": "map"
-                                },
-                                "property": {
-                                    "type": "Identifier",
-                                    "name": "fitBounds"
-                                }
-                            },
-                            "arguments": [
-                                {
-                                    "type": "CallExpression",
-                                    "callee": {
-                                        "type": "MemberExpression",
-                                        "computed": false,
-                                        "object": {
-                                            "type": "Identifier",
-                                            "name": "features"
-                                        },
-                                        "property": {
-                                            "type": "Identifier",
-                                            "name": "getBounds"
-                                        }
-                                    },
-                                    "arguments": []
-                                }
-                            ]
-                        }
-                    }
-                ]
-            },
-            "rest": null,
-            "generator": false,
-            "expression": false
-        }
-    ]
-}  }
-
 },{}],47:[function(require,module,exports){
 var esprima = require('esprima'),
   escodegen = require('escodegen'),
-  display = require('./display.js'),
   traverse = require('traverse');
 
 /**
@@ -27265,10 +27105,7 @@ var esprima = require('esprima'),
 function instrument(str, tick, type) {
   var TODO = [], parsed;
   try {
-    parsed = esprima.parse(str, {
-      attachComment: true,
-      loc: true
-    });
+    parsed = esprima.parse(str, {attachComment:true,loc:true});
   } catch(e) {
     // make esprima's errors zero-based
     e.lineNumber--;
@@ -27277,7 +27114,8 @@ function instrument(str, tick, type) {
   var transformed = escodegen.generate(
     wrapInRun(
       transform(
-        parsed, type, tick, TODO), type, tick));
+        parsed, type, tick, TODO), type, tick),
+        {format:{compact:true}});
   return {
     source: transformed,
     TODO: TODO
@@ -27377,10 +27215,6 @@ function isInstrumentComment(comment) {
   return comment.value.indexOf('=') === 0;
 }
 
-/**
- * Given a comment node in an AST, return an instrumentation function
- * that emits its changes to the page.
- */
 function instrumentCall(comment, type, tick) {
   var value = comment.value.replace(/^=/, '');
   var parsedComment = esprima.parse('a(' + value + ')').body[0].expression.arguments;
@@ -27391,84 +27225,47 @@ function instrumentCall(comment, type, tick) {
       "value": r ? v : { type: "Literal", value: v }
     };
   }
-
-  // live-code instrumentation
-  if (type === 'browser' || type === 'node') {
-    return {
-      "type": "ExpressionStatement",
-      "expression": {
-        "type": "CallExpression",
-        "callee": {
-          "type": "Identifier",
-          "name": type === 'node' ? 'process.send' : "window.top.INSTRUMENT"
-        },
-        "arguments": [{
-          "type": "ObjectExpression",
-          "properties": [
-            prop('type', 'instrument'),
-            prop('lineNumber', comment.loc.start.line),
-            prop('name', value),
-            prop('value', parsedComment[0], true)
-          ]
-        }]
-      }
-    };
-  } else if (type === 'node-export') {
-    return {
-      "type": "ExpressionStatement",
-      "expression": {
-        "type": "CallExpression",
-        "callee": {
-          "type": "Identifier",
-          "name": 'console.log'
-        },
-        "arguments": [parsedComment[0]]
-      }
-    };
-  } else if (type === 'browser-export') {
-    return {
-      "type": "ExpressionStatement",
-      "expression": {
-        "type": "CallExpression",
-        "callee": {
-          "type": "Identifier",
-          "name": 'console.log'
-        },
-        "arguments": [parsedComment[0]]
-      }
-    };
-  } else if (type === 'browser-export-fancy') {
-    return {
-      "type": "ExpressionStatement",
-      "expression": {
-        "type": "CallExpression",
-        "callee": {
-          "type": "Identifier",
-          "name": '_display'
-        },
-        "arguments": [parsedComment[0]]
-      }
-    };
-  }
+  return {
+    "type": "ExpressionStatement",
+    "expression": {
+      "type": "CallExpression",
+      "callee": {
+        "type": "Identifier",
+        "name": type === 'node' ? 'process.send' : "window.top.INSTRUMENT"
+      },
+      "arguments": [{
+        "type": "ObjectExpression",
+        "properties": [
+          prop('type', 'instrument'),
+          prop('lineNumber', comment.loc.start.line),
+          prop('name', value),
+          prop('value', parsedComment[0], true)
+        ]
+      }]
+    }
+  };
 }
-
-function pairs(o) { return Object.keys(o).map(function(k) { return [k, o[k]]; }); }
-function values(o) { return pairs(o).map(function(k) { return k[1]; }); }
 
 function transform(code, type, tick, TODO) {
   function pp(l, k, v) { if (!l[k]) l[k] = []; l[k].push(v); }
+  function pairs(o) {
+    return Object.keys(o).map(function(k) { return [k, o[k]]; });
+  }
   // walks through the source tree, though we're only going to touch
   // things with 'body', which means function bodies and the main
   // source.
   traverse(code).forEach(function(node) {
-    var comment, id, coveredComments = {}, insertions = {};
-    function instrumentComments(node, i) {
-      var j;
+    var j, i, comment, id;
+    if (this.key !== 'body') return;
+    var coveredComments = {};
+    var nextValue = node;
+    var insertions = {};
+    for (i = 0; i < node.length; i++) {
       // a comment can be both leading & trailing, so we keep this
       // coveredComments object to avoid double-logging it.
-      if (node.leadingComments) {
-        for (j = 0; j < node.leadingComments.length; j++) {
-          comment = node.leadingComments[j];
+      if (node[i].leadingComments) {
+        for (j = 0; j < node[i].leadingComments.length; j++) {
+          comment = node[i].leadingComments[j];
           id = comment.range.join('-');
           if (!coveredComments[id] && isInstrumentComment(comment)) {
             pp(insertions, i, instrumentCall(comment, type, tick));
@@ -27477,9 +27274,9 @@ function transform(code, type, tick, TODO) {
           }
         }
       }
-      if (node.trailingComments) {
-        for (j = 0; j < node.trailingComments.length; j++) {
-          comment = node.trailingComments[j];
+      if (node[i].trailingComments) {
+        for (j = 0; j < node[i].trailingComments.length; j++) {
+          comment = node[i].trailingComments[j];
           id = comment.range.join('-');
           if (!coveredComments[id] && isInstrumentComment(comment)) {
             pp(insertions, i + 1, instrumentCall(comment, type, tick));
@@ -27489,35 +27286,17 @@ function transform(code, type, tick, TODO) {
         }
       }
     }
-
-    if (this.key === 'body') {
-      var nextValue = traverse.clone(node);
-      for (var k = 0; k < node.length; k++) {
-        instrumentComments(node[k], k);
-      }
-      // inserting things in places is hard with arrays, since when you
-      // push something into i, it changes the positions of other stuff.
-      // we avoid this problem by
-      // 1: doing batch insertions with splice
-      // 2: iterating backwards
-      insertions = pairs(insertions);
-      insertions.sort(function(a, b) { return b[0] - a[0]; });
-      for (var m = 0; m < insertions.length; m++) {
-        nextValue.splice.apply(nextValue, [+insertions[m][0], 0].concat(insertions[m][1]));
-      }
-      this.update(nextValue);
-    } else if (node && node.type === 'Program' && node.body.length === 0) {
-      // a bare program consisting only of comments falls into this ditch:
-      // instead of having a body, it just has comments, so we need to
-      // look for them here.
-      instrumentComments(node, 0);
-      insertions = pairs(insertions);
-      insertions.sort(function(a, b) { return b[0] - a[0]; });
-      if (insertions.length) {
-        node.body = insertions.map(function(i) { return i[1][0]; });
-        this.update(node);
-      }
+    // inserting things in places is hard with arrays, since when you
+    // push something into i, it changes the positions of other stuff.
+    // we avoid this problem by
+    // 1: doing batch insertions with splice
+    // 2: iterating backwards
+    insertions = pairs(insertions);
+    insertions.sort(function(a, b) { return b[0] - a[0]; });
+    for (var k = 0; k < insertions.length; k++) {
+      nextValue.splice.apply(nextValue, [+insertions[k][0], 0].concat(insertions[k][1]));
     }
+    this.update(nextValue);
   });
   return code;
 }
@@ -27529,60 +27308,48 @@ function transform(code, type, tick, TODO) {
  * @return {Object} AST
  */
 function wrapInRun(code, type, tick) {
-  if (type === 'node') {
-    return code;
-  } else if (type === 'node-export') {
-    return code;
-  } else if (type === 'browser-export') {
-    return code;
-  } else if (type === 'browser-export-fancy') {
-    return {
-      "type": "Program",
-      "body": [display(), code]
-    };
-  } else if (type === 'browser') {
-    return {
-      "type": "Program",
-      "body": [setErrorHandler(), {
-        "type": "ExpressionStatement",
-        "expression": {
-          "type": "AssignmentExpression",
-          "operator": "=",
-          "left": {
-            "type": "MemberExpression",
-            "computed": false,
-            "object": {
-              "type": "Identifier",
-              "name": "window"
-            },
-            "property": {
-              "type": "Identifier",
-              "name": "run"
-            }
+  return type === 'node' ? code : {
+    "type": "Program",
+    "body": [setErrorHandler(), {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "AssignmentExpression",
+        "operator": "=",
+        "left": {
+          "type": "MemberExpression",
+          "computed": false,
+          "object": {
+            "type": "Identifier",
+            "name": "window"
           },
-          "right": {
-            "type": "FunctionExpression",
-            "params": [],
-            "defaults": [],
-            "body": {
-              "type": "BlockStatement",
-              "body": code.body
-            },
-            "generator": false,
-            "expression": false
+          "property": {
+            "type": "Identifier",
+            "name": "run"
           }
+        },
+        "right": {
+          "type": "FunctionExpression",
+          "params": [],
+          "defaults": [],
+          "body": {
+            "type": "BlockStatement",
+            "body": code.body
+          },
+          "generator": false,
+          "expression": false
         }
-      }]
-    };
-  }
+      }
+    }]
+  };
 }
 
 module.exports = instrument;
 
-},{"./display.js":46,"escodegen":48,"esprima":65,"traverse":66}],48:[function(require,module,exports){
+},{"escodegen":48,"esprima":66,"traverse":67}],48:[function(require,module,exports){
 (function (global){
 /*
   Copyright (C) 2012-2014 Yusuke Suzuki <utatane.tea@gmail.com>
+  Copyright (C) 2015 Ingvar Stepanyan <me@rreverser.com>
   Copyright (C) 2014 Ivan Nikulin <ifaaan@gmail.com>
   Copyright (C) 2012-2013 Michael Ficarra <escodegen.copyright@michael.ficarra.me>
   Copyright (C) 2012-2013 Mathias Bynens <mathias@qiwi.be>
@@ -27642,79 +27409,15 @@ module.exports = instrument;
         extra,
         parse,
         sourceMap,
+        sourceCode,
+        preserveBlankLines,
         FORMAT_MINIFY,
         FORMAT_DEFAULTS;
 
     estraverse = require('estraverse');
     esutils = require('esutils');
 
-    Syntax = {
-        AssignmentExpression: 'AssignmentExpression',
-        ArrayExpression: 'ArrayExpression',
-        ArrayPattern: 'ArrayPattern',
-        ArrowFunctionExpression: 'ArrowFunctionExpression',
-        BlockStatement: 'BlockStatement',
-        BinaryExpression: 'BinaryExpression',
-        BreakStatement: 'BreakStatement',
-        CallExpression: 'CallExpression',
-        CatchClause: 'CatchClause',
-        ClassBody: 'ClassBody',
-        ClassDeclaration: 'ClassDeclaration',
-        ClassExpression: 'ClassExpression',
-        ComprehensionBlock: 'ComprehensionBlock',
-        ComprehensionExpression: 'ComprehensionExpression',
-        ConditionalExpression: 'ConditionalExpression',
-        ContinueStatement: 'ContinueStatement',
-        DirectiveStatement: 'DirectiveStatement',
-        DoWhileStatement: 'DoWhileStatement',
-        DebuggerStatement: 'DebuggerStatement',
-        EmptyStatement: 'EmptyStatement',
-        ExportBatchSpecifier: 'ExportBatchSpecifier',
-        ExportDeclaration: 'ExportDeclaration',
-        ExportSpecifier: 'ExportSpecifier',
-        ExpressionStatement: 'ExpressionStatement',
-        ForStatement: 'ForStatement',
-        ForInStatement: 'ForInStatement',
-        ForOfStatement: 'ForOfStatement',
-        FunctionDeclaration: 'FunctionDeclaration',
-        FunctionExpression: 'FunctionExpression',
-        GeneratorExpression: 'GeneratorExpression',
-        Identifier: 'Identifier',
-        IfStatement: 'IfStatement',
-        ImportDeclaration: 'ImportDeclaration',
-        ImportDefaultSpecifier: 'ImportDefaultSpecifier',
-        ImportNamespaceSpecifier: 'ImportNamespaceSpecifier',
-        ImportSpecifier: 'ImportSpecifier',
-        Literal: 'Literal',
-        LabeledStatement: 'LabeledStatement',
-        LogicalExpression: 'LogicalExpression',
-        MemberExpression: 'MemberExpression',
-        MethodDefinition: 'MethodDefinition',
-        ModuleSpecifier: 'ModuleSpecifier',
-        NewExpression: 'NewExpression',
-        ObjectExpression: 'ObjectExpression',
-        ObjectPattern: 'ObjectPattern',
-        Program: 'Program',
-        Property: 'Property',
-        ReturnStatement: 'ReturnStatement',
-        SequenceExpression: 'SequenceExpression',
-        SpreadElement: 'SpreadElement',
-        SwitchStatement: 'SwitchStatement',
-        SwitchCase: 'SwitchCase',
-        TaggedTemplateExpression: 'TaggedTemplateExpression',
-        TemplateElement: 'TemplateElement',
-        TemplateLiteral: 'TemplateLiteral',
-        ThisExpression: 'ThisExpression',
-        ThrowStatement: 'ThrowStatement',
-        TryStatement: 'TryStatement',
-        UnaryExpression: 'UnaryExpression',
-        UpdateExpression: 'UpdateExpression',
-        VariableDeclaration: 'VariableDeclaration',
-        VariableDeclarator: 'VariableDeclarator',
-        WhileStatement: 'WhileStatement',
-        WithStatement: 'WithStatement',
-        YieldExpression: 'YieldExpression'
-    };
+    Syntax = estraverse.Syntax;
 
     // Generation is done by generateExpression.
     function isExpression(node) {
@@ -27729,6 +27432,7 @@ module.exports = instrument;
     Precedence = {
         Sequence: 0,
         Yield: 1,
+        Await: 1,
         Assignment: 1,
         Conditional: 2,
         ArrowFunction: 2,
@@ -27834,7 +27538,8 @@ module.exports = instrument;
                 compact: false,
                 parentheses: true,
                 semicolons: true,
-                safeConcatenation: false
+                safeConcatenation: false,
+                preserveBlankLines: false
             },
             moz: {
                 comprehensionExpressionStartsWithAssignment: false,
@@ -27845,7 +27550,8 @@ module.exports = instrument;
             sourceMapWithCode: false,
             directive: false,
             raw: true,
-            verbatim: null
+            verbatim: null,
+            sourceCode: null
         };
     }
 
@@ -28294,7 +28000,11 @@ module.exports = instrument;
                 return '//' + comment.value;
             } else {
                 // Always use LineTerminator
-                return '//' + comment.value + '\n';
+                var result = '//' + comment.value;
+                if (!preserveBlankLines) {
+                    result += '\n';
+                }
+                return result;
             }
         }
         if (extra.format.indent.adjustMultilineComment && /[\n\r]/.test(comment.value)) {
@@ -28304,61 +28014,130 @@ module.exports = instrument;
     }
 
     function addComments(stmt, result) {
-        var i, len, comment, save, tailingToStatement, specialBase, fragment;
+        var i, len, comment, save, tailingToStatement, specialBase, fragment,
+            extRange, range, prevRange, prefix, infix, suffix, count;
 
         if (stmt.leadingComments && stmt.leadingComments.length > 0) {
             save = result;
 
-            comment = stmt.leadingComments[0];
-            result = [];
-            if (safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) {
-                result.push('\n');
-            }
-            result.push(generateComment(comment));
-            if (!endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
-                result.push('\n');
-            }
+            if (preserveBlankLines) {
+                comment = stmt.leadingComments[0];
+                result = [];
 
-            for (i = 1, len = stmt.leadingComments.length; i < len; ++i) {
-                comment = stmt.leadingComments[i];
-                fragment = [generateComment(comment)];
-                if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                    fragment.push('\n');
+                extRange = comment.extendedRange;
+                range = comment.range;
+
+                prefix = sourceCode.substring(extRange[0], range[0]);
+                count = (prefix.match(/\n/g) || []).length;
+                if (count > 0) {
+                    result.push(stringRepeat('\n', count));
+                    result.push(addIndent(generateComment(comment)));
+                } else {
+                    result.push(prefix);
+                    result.push(generateComment(comment));
                 }
-                result.push(addIndent(fragment));
+
+                prevRange = range;
+
+                for (i = 1, len = stmt.leadingComments.length; i < len; i++) {
+                    comment = stmt.leadingComments[i];
+                    range = comment.range;
+
+                    infix = sourceCode.substring(prevRange[1], range[0]);
+                    count = (infix.match(/\n/g) || []).length;
+                    result.push(stringRepeat('\n', count));
+                    result.push(addIndent(generateComment(comment)));
+
+                    prevRange = range;
+                }
+
+                suffix = sourceCode.substring(range[1], extRange[1]);
+                count = (suffix.match(/\n/g) || []).length;
+                result.push(stringRepeat('\n', count));
+            } else {
+                comment = stmt.leadingComments[0];
+                result = [];
+                if (safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) {
+                    result.push('\n');
+                }
+                result.push(generateComment(comment));
+                if (!endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                    result.push('\n');
+                }
+
+                for (i = 1, len = stmt.leadingComments.length; i < len; ++i) {
+                    comment = stmt.leadingComments[i];
+                    fragment = [generateComment(comment)];
+                    if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
+                        fragment.push('\n');
+                    }
+                    result.push(addIndent(fragment));
+                }
             }
 
             result.push(addIndent(save));
         }
 
         if (stmt.trailingComments) {
-            tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
-            specialBase = stringRepeat(' ', calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
-            for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
-                comment = stmt.trailingComments[i];
-                if (tailingToStatement) {
-                    // We assume target like following script
-                    //
-                    // var t = 20;  /**
-                    //               * This is comment of t
-                    //               */
-                    if (i === 0) {
-                        // first case
-                        result = [result, indent];
-                    } else {
-                        result = [result, specialBase];
-                    }
-                    result.push(generateComment(comment, specialBase));
+
+            if (preserveBlankLines) {
+                comment = stmt.trailingComments[0];
+                extRange = comment.extendedRange;
+                range = comment.range;
+
+                prefix = sourceCode.substring(extRange[0], range[0]);
+                count = (prefix.match(/\n/g) || []).length;
+
+                if (count > 0) {
+                    result.push(stringRepeat('\n', count));
+                    result.push(addIndent(generateComment(comment)));
                 } else {
-                    result = [result, addIndent(generateComment(comment))];
+                    result.push(prefix);
+                    result.push(generateComment(comment));
                 }
-                if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
-                    result = [result, '\n'];
+            } else {
+                tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
+                specialBase = stringRepeat(' ', calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
+                for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
+                    comment = stmt.trailingComments[i];
+                    if (tailingToStatement) {
+                        // We assume target like following script
+                        //
+                        // var t = 20;  /**
+                        //               * This is comment of t
+                        //               */
+                        if (i === 0) {
+                            // first case
+                            result = [result, indent];
+                        } else {
+                            result = [result, specialBase];
+                        }
+                        result.push(generateComment(comment, specialBase));
+                    } else {
+                        result = [result, addIndent(generateComment(comment))];
+                    }
+                    if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                        result = [result, '\n'];
+                    }
                 }
             }
         }
 
         return result;
+    }
+
+    function generateBlankLines(start, end, result) {
+        var j, newlineCount = 0;
+
+        for (j = start; j < end; j++) {
+            if (sourceCode[j] === '\n') {
+                newlineCount++;
+            }
+        }
+
+        for (j = 1; j < newlineCount; j++) {
+            result.push(newline);
+        }
     }
 
     function parenthesize(text, current, should) {
@@ -28436,6 +28215,25 @@ module.exports = instrument;
         return toSourceNodeWhenNeeded(node.name, node);
     }
 
+    function generateAsyncPrefix(node, spaceRequired) {
+        return node.async ? 'async' + (spaceRequired ? noEmptySpace() : space) : '';
+    }
+
+    function generateStarSuffix(node) {
+        var isGenerator = node.generator && !extra.moz.starlessGenerator;
+        return isGenerator ? '*' + space : '';
+    }
+
+    function generateMethodPrefix(prop) {
+        var func = prop.value;
+        if (func.async) {
+            return generateAsyncPrefix(func, !prop.computed);
+        } else {
+            // avoid space before method name
+            return generateStarSuffix(func) ? '*' : '';
+        }
+    }
+
     CodeGenerator.prototype.generatePattern = function (node, precedence, flags) {
         if (node.type === Syntax.Identifier) {
             return generateIdentifier(node);
@@ -28452,9 +28250,10 @@ module.exports = instrument;
                 !node.rest && (!node.defaults || node.defaults.length === 0) &&
                 node.params.length === 1 && node.params[0].type === Syntax.Identifier) {
             // arg => { } case
-            result = [generateIdentifier(node.params[0])];
+            result = [generateAsyncPrefix(node, true), generateIdentifier(node.params[0])];
         } else {
-            result = ['('];
+            result = node.type === Syntax.ArrowFunctionExpression ? [generateAsyncPrefix(node, false)] : [];
+            result.push('(');
             if (node.defaults) {
                 hasDefault = true;
             }
@@ -28573,22 +28372,81 @@ module.exports = instrument;
     CodeGenerator.Statement = {
 
         BlockStatement: function (stmt, flags) {
-            var result = ['{', newline], that = this;
+            var range, content, result = ['{', newline], that = this;
 
             withIndent(function () {
+                // handle functions without any code
+                if (stmt.body.length === 0 && preserveBlankLines) {
+                    range = stmt.range;
+                    if (range[1] - range[0] > 2) {
+                        content = sourceCode.substring(range[0] + 1, range[1] - 1);
+                        if (content[0] === '\n') {
+                            result = ['{'];
+                        }
+                        result.push(content);
+                    }
+                }
+
                 var i, iz, fragment, bodyFlags;
                 bodyFlags = S_TFFF;
                 if (flags & F_FUNC_BODY) {
                     bodyFlags |= F_DIRECTIVE_CTX;
                 }
+
                 for (i = 0, iz = stmt.body.length; i < iz; ++i) {
+                    if (preserveBlankLines) {
+                        // handle spaces before the first line
+                        if (i === 0) {
+                            if (stmt.body[0].leadingComments) {
+                                range = stmt.body[0].leadingComments[0].extendedRange;
+                                content = sourceCode.substring(range[0], range[1]);
+                                if (content[0] === '\n') {
+                                    result = ['{'];
+                                }
+                            }
+                            if (!stmt.body[0].leadingComments) {
+                                generateBlankLines(stmt.range[0], stmt.body[0].range[0], result);
+                            }
+                        }
+
+                        // handle spaces between lines
+                        if (i > 0) {
+                            if (!stmt.body[i - 1].trailingComments  && !stmt.body[i].leadingComments) {
+                                generateBlankLines(stmt.body[i - 1].range[1], stmt.body[i].range[0], result);
+                            }
+                        }
+                    }
+
                     if (i === iz - 1) {
                         bodyFlags |= F_SEMICOLON_OPT;
                     }
-                    fragment = addIndent(that.generateStatement(stmt.body[i], bodyFlags));
+
+                    if (stmt.body[i].leadingComments && preserveBlankLines) {
+                        fragment = that.generateStatement(stmt.body[i], bodyFlags);
+                    } else {
+                        fragment = addIndent(that.generateStatement(stmt.body[i], bodyFlags));
+                    }
+
                     result.push(fragment);
                     if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                        result.push(newline);
+                        if (preserveBlankLines && i < iz - 1) {
+                            // don't add a new line if there are leading coments
+                            // in the next statement
+                            if (!stmt.body[i + 1].leadingComments) {
+                                result.push(newline);
+                            }
+                        } else {
+                            result.push(newline);
+                        }
+                    }
+
+                    if (preserveBlankLines) {
+                        // handle spaces after the last line
+                        if (i === iz - 1) {
+                            if (!stmt.body[i].trailingComments) {
+                                generateBlankLines(stmt.body[i].range[1], stmt.range[1], result);
+                            }
+                        }
                     }
                 }
             });
@@ -28759,13 +28617,55 @@ module.exports = instrument;
         ExpressionStatement: function (stmt, flags) {
             var result, fragment;
 
+            function isClassPrefixed(fragment) {
+                var code;
+                if (fragment.slice(0, 5) !== 'class') {
+                    return false;
+                }
+                code = fragment.charCodeAt(5);
+                return code === 0x7B  /* '{' */ || esutils.code.isWhiteSpace(code) || esutils.code.isLineTerminator(code);
+            }
+
+            function isFunctionPrefixed(fragment) {
+                var code;
+                if (fragment.slice(0, 8) !== 'function') {
+                    return false;
+                }
+                code = fragment.charCodeAt(8);
+                return code === 0x28 /* '(' */ || esutils.code.isWhiteSpace(code) || code === 0x2A  /* '*' */ || esutils.code.isLineTerminator(code);
+            }
+
+            function isAsyncPrefixed(fragment) {
+                var code, i, iz;
+                if (fragment.slice(0, 5) !== 'async') {
+                    return false;
+                }
+                if (!esutils.code.isWhiteSpace(fragment.charCodeAt(5))) {
+                    return false;
+                }
+                for (i = 6, iz = fragment.length; i < iz; ++i) {
+                    if (!esutils.code.isWhiteSpace(fragment.charCodeAt(i))) {
+                        break;
+                    }
+                }
+                if (i === iz) {
+                    return false;
+                }
+                if (fragment.slice(i, i + 8) !== 'function') {
+                    return false;
+                }
+                code = fragment.charCodeAt(i + 8);
+                return code === 0x28 /* '(' */ || esutils.code.isWhiteSpace(code) || code === 0x2A  /* '*' */ || esutils.code.isLineTerminator(code);
+            }
+
             result = [this.generateExpression(stmt.expression, Precedence.Sequence, E_TTT)];
             // 12.4 '{', 'function', 'class' is not allowed in this position.
             // wrap expression with parentheses
             fragment = toSourceNodeWhenNeeded(result).toString();
-            if (fragment.charAt(0) === '{' ||  // ObjectExpression
-                    (fragment.slice(0, 5) === 'class' && ' {'.indexOf(fragment.charAt(5)) >= 0) ||  // class
-                    (fragment.slice(0, 8) === 'function' && '* ('.indexOf(fragment.charAt(8)) >= 0) ||  // function or generator
+            if (fragment.charCodeAt(0) === 0x7B  /* '{' */ ||  // ObjectExpression
+                    isClassPrefixed(fragment) ||
+                    isFunctionPrefixed(fragment) ||
+                    isAsyncPrefixed(fragment) ||
                     (directive && (flags & F_DIRECTIVE_CTX) && stmt.expression.type === Syntax.Literal && typeof stmt.expression.value === 'string')) {
                 result = ['(', result, ')' + this.semicolon(flags)];
             } else {
@@ -29123,20 +29023,52 @@ module.exports = instrument;
                 if (!safeConcatenation && i === iz - 1) {
                     bodyFlags |= F_SEMICOLON_OPT;
                 }
+
+                if (preserveBlankLines) {
+                    // handle spaces before the first line
+                    if (i === 0) {
+                        if (!stmt.body[0].leadingComments) {
+                            generateBlankLines(stmt.range[0], stmt.body[i].range[0], result);
+                        }
+                    }
+
+                    // handle spaces between lines
+                    if (i > 0) {
+                        if (!stmt.body[i - 1].trailingComments && !stmt.body[i].leadingComments) {
+                            generateBlankLines(stmt.body[i - 1].range[1], stmt.body[i].range[0], result);
+                        }
+                    }
+                }
+
                 fragment = addIndent(this.generateStatement(stmt.body[i], bodyFlags));
                 result.push(fragment);
                 if (i + 1 < iz && !endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
-                    result.push(newline);
+                    if (preserveBlankLines) {
+                        if (!stmt.body[i + 1].leadingComments) {
+                            result.push(newline);
+                        }
+                    } else {
+                        result.push(newline);
+                    }
+                }
+
+                if (preserveBlankLines) {
+                    // handle spaces after the last line
+                    if (i === iz - 1) {
+                        if (!stmt.body[i].trailingComments) {
+                            generateBlankLines(stmt.body[i].range[1], stmt.range[1], result);
+                        }
+                    }
                 }
             }
             return result;
         },
 
         FunctionDeclaration: function (stmt, flags) {
-            var isGenerator = stmt.generator && !extra.moz.starlessGenerator;
             return [
-                (isGenerator ? 'function*' : 'function'),
-                (isGenerator ? space : noEmptySpace()),
+                generateAsyncPrefix(stmt, true),
+                'function',
+                generateStarSuffix(stmt) || noEmptySpace(),
                 generateIdentifier(stmt.id),
                 this.generateFunctionBody(stmt)
             ];
@@ -29393,6 +29325,14 @@ module.exports = instrument;
             return parenthesize(result, Precedence.Yield, precedence);
         },
 
+        AwaitExpression: function (expr, precedence, flags) {
+            var result = join(
+                expr.delegate ? 'await*' : 'await',
+                this.generateExpression(expr.argument, Precedence.Await, E_TTT)
+            );
+            return parenthesize(result, Precedence.Await, precedence);
+        },
+
         UpdateExpression: function (expr, precedence, flags) {
             if (expr.prefix) {
                 return parenthesize(
@@ -29415,14 +29355,18 @@ module.exports = instrument;
         },
 
         FunctionExpression: function (expr, precedence, flags) {
-            var result, isGenerator;
-            isGenerator = expr.generator && !extra.moz.starlessGenerator;
-            result = isGenerator ? 'function*' : 'function';
-
+            var result = [
+                generateAsyncPrefix(expr, true),
+                'function'
+            ];
             if (expr.id) {
-                return [result, (isGenerator) ? space : noEmptySpace(), generateIdentifier(expr.id), this.generateFunctionBody(expr)];
+                result.push(generateStarSuffix(expr) || noEmptySpace());
+                result.push(generateIdentifier(expr.id));
+            } else {
+                result.push(generateStarSuffix(expr) || space);
             }
-            return [result + space, this.generateFunctionBody(expr)];
+            result.push(this.generateFunctionBody(expr));
+            return result;
         },
 
         ExportBatchSpecifier: function (expr, precedence, flags) {
@@ -29489,29 +29433,22 @@ module.exports = instrument;
             } else {
                 result = [];
             }
-
             if (expr.kind === 'get' || expr.kind === 'set') {
-                result = join(result, [
+                fragment = [
                     join(expr.kind, this.generatePropertyKey(expr.key, expr.computed)),
                     this.generateFunctionBody(expr.value)
-                ]);
+                ];
             } else {
                 fragment = [
+                    generateMethodPrefix(expr),
                     this.generatePropertyKey(expr.key, expr.computed),
                     this.generateFunctionBody(expr.value)
                 ];
-                if (expr.value.generator) {
-                    result.push('*');
-                    result.push(fragment);
-                } else {
-                    result = join(result, fragment);
-                }
             }
-            return result;
+            return join(result, fragment);
         },
 
         Property: function (expr, precedence, flags) {
-            var result;
             if (expr.kind === 'get' || expr.kind === 'set') {
                 return [
                     expr.kind, noEmptySpace(),
@@ -29525,13 +29462,11 @@ module.exports = instrument;
             }
 
             if (expr.method) {
-                result = [];
-                if (expr.value.generator) {
-                    result.push('*');
-                }
-                result.push(this.generatePropertyKey(expr.key, expr.computed));
-                result.push(this.generateFunctionBody(expr.value));
-                return result;
+                return [
+                    generateMethodPrefix(expr),
+                    this.generatePropertyKey(expr.key, expr.computed),
+                    this.generateFunctionBody(expr.value)
+                ];
             }
 
             return [
@@ -29906,6 +29841,8 @@ module.exports = instrument;
         directive = options.directive;
         parse = json ? null : options.parse;
         sourceMap = options.sourceMap;
+        sourceCode = options.sourceCode;
+        preserveBlankLines = options.format.preserveBlankLines && sourceCode !== null;
         extra = options;
 
         if (sourceMap) {
@@ -29970,7 +29907,7 @@ module.exports = instrument;
 /* vim: set sw=4 ts=4 et tw=80 : */
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./package.json":64,"estraverse":49,"esutils":53,"source-map":54}],49:[function(require,module,exports){
+},{"./package.json":65,"estraverse":49,"esutils":53,"source-map":54}],49:[function(require,module,exports){
 /*
   Copyright (C) 2012-2013 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
@@ -31248,7 +31185,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":59,"./source-map/source-map-generator":60,"./source-map/source-node":61}],55:[function(require,module,exports){
+},{"./source-map/source-map-consumer":60,"./source-map/source-map-generator":61,"./source-map/source-node":62}],55:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -31347,7 +31284,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":62,"amdefine":63}],56:[function(require,module,exports){
+},{"./util":63,"amdefine":64}],56:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -31491,7 +31428,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":57,"amdefine":63}],57:[function(require,module,exports){
+},{"./base64":57,"amdefine":64}],57:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -31535,7 +31472,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":63}],58:[function(require,module,exports){
+},{"amdefine":64}],58:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -31617,7 +31554,95 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":63}],59:[function(require,module,exports){
+},{"amdefine":64}],59:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2014 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+if (typeof define !== 'function') {
+    var define = require('amdefine')(module, require);
+}
+define(function (require, exports, module) {
+
+  var util = require('./util');
+
+  /**
+   * Determine whether mappingB is after mappingA with respect to generated
+   * position.
+   */
+  function generatedPositionAfter(mappingA, mappingB) {
+    // Optimized for most common case
+    var lineA = mappingA.generatedLine;
+    var lineB = mappingB.generatedLine;
+    var columnA = mappingA.generatedColumn;
+    var columnB = mappingB.generatedColumn;
+    return lineB > lineA || lineB == lineA && columnB >= columnA ||
+           util.compareByGeneratedPositions(mappingA, mappingB) <= 0;
+  }
+
+  /**
+   * A data structure to provide a sorted view of accumulated mappings in a
+   * performance conscious manner. It trades a neglibable overhead in general
+   * case for a large speedup in case of mappings being added in order.
+   */
+  function MappingList() {
+    this._array = [];
+    this._sorted = true;
+    // Serves as infimum
+    this._last = {generatedLine: -1, generatedColumn: 0};
+  }
+
+  /**
+   * Iterate through internal items. This method takes the same arguments that
+   * `Array.prototype.forEach` takes.
+   *
+   * NOTE: The order of the mappings is NOT guaranteed.
+   */
+  MappingList.prototype.unsortedForEach =
+    function MappingList_forEach(aCallback, aThisArg) {
+      this._array.forEach(aCallback, aThisArg);
+    };
+
+  /**
+   * Add the given source mapping.
+   *
+   * @param Object aMapping
+   */
+  MappingList.prototype.add = function MappingList_add(aMapping) {
+    var mapping;
+    if (generatedPositionAfter(this._last, aMapping)) {
+      this._last = aMapping;
+      this._array.push(aMapping);
+    } else {
+      this._sorted = false;
+      this._array.push(aMapping);
+    }
+  };
+
+  /**
+   * Returns the flat, sorted array of mappings. The mappings are sorted by
+   * generated position.
+   *
+   * WARNING: This method returns internal data without copying, for
+   * performance. The return value must NOT be mutated, and should be treated as
+   * an immutable borrow. If you want to take ownership, you must make your own
+   * copy.
+   */
+  MappingList.prototype.toArray = function MappingList_toArray() {
+    if (!this._sorted) {
+      this._array.sort(util.compareByGeneratedPositions);
+      this._sorted = true;
+    }
+    return this._array;
+  };
+
+  exports.MappingList = MappingList;
+
+});
+
+},{"./util":63,"amdefine":64}],60:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -31722,9 +31747,8 @@ define(function (require, exports, module) {
                                                               smc.sourceRoot);
       smc.file = aSourceMap._file;
 
-      smc.__generatedMappings = aSourceMap._mappings.slice()
-        .sort(util.compareByGeneratedPositions);
-      smc.__originalMappings = aSourceMap._mappings.slice()
+      smc.__generatedMappings = aSourceMap._mappings.toArray().slice();
+      smc.__originalMappings = aSourceMap._mappings.toArray().slice()
         .sort(util.compareByOriginalPositions);
 
       return smc;
@@ -32195,7 +32219,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":55,"./base64-vlq":56,"./binary-search":58,"./util":62,"amdefine":63}],60:[function(require,module,exports){
+},{"./array-set":55,"./base64-vlq":56,"./binary-search":58,"./util":63,"amdefine":64}],61:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -32210,6 +32234,7 @@ define(function (require, exports, module) {
   var base64VLQ = require('./base64-vlq');
   var util = require('./util');
   var ArraySet = require('./array-set').ArraySet;
+  var MappingList = require('./mapping-list').MappingList;
 
   /**
    * An instance of the SourceMapGenerator represents a source map which is
@@ -32225,9 +32250,10 @@ define(function (require, exports, module) {
     }
     this._file = util.getArg(aArgs, 'file', null);
     this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
+    this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
     this._sources = new ArraySet();
     this._names = new ArraySet();
-    this._mappings = [];
+    this._mappings = new MappingList();
     this._sourcesContents = null;
   }
 
@@ -32297,7 +32323,9 @@ define(function (require, exports, module) {
       var source = util.getArg(aArgs, 'source', null);
       var name = util.getArg(aArgs, 'name', null);
 
-      this._validateMapping(generated, original, source, name);
+      if (!this._skipValidation) {
+        this._validateMapping(generated, original, source, name);
+      }
 
       if (source != null && !this._sources.has(source)) {
         this._sources.add(source);
@@ -32307,7 +32335,7 @@ define(function (require, exports, module) {
         this._names.add(name);
       }
 
-      this._mappings.push({
+      this._mappings.add({
         generatedLine: generated.line,
         generatedColumn: generated.column,
         originalLine: original != null && original.line,
@@ -32384,7 +32412,7 @@ define(function (require, exports, module) {
       var newNames = new ArraySet();
 
       // Find mappings for the "sourceFile"
-      this._mappings.forEach(function (mapping) {
+      this._mappings.unsortedForEach(function (mapping) {
         if (mapping.source === sourceFile && mapping.originalLine != null) {
           // Check if it can be mapped by the source map, then update the mapping.
           var original = aSourceMapConsumer.originalPositionFor({
@@ -32490,15 +32518,10 @@ define(function (require, exports, module) {
       var result = '';
       var mapping;
 
-      // The mappings must be guaranteed to be in sorted order before we start
-      // serializing them or else the generated line numbers (which are defined
-      // via the ';' separators) will be all messed up. Note: it might be more
-      // performant to maintain the sorting as we insert them, rather than as we
-      // serialize them, but the big O is the same either way.
-      this._mappings.sort(util.compareByGeneratedPositions);
+      var mappings = this._mappings.toArray();
 
-      for (var i = 0, len = this._mappings.length; i < len; i++) {
-        mapping = this._mappings[i];
+      for (var i = 0, len = mappings.length; i < len; i++) {
+        mapping = mappings[i];
 
         if (mapping.generatedLine !== previousGeneratedLine) {
           previousGeneratedColumn = 0;
@@ -32509,7 +32532,7 @@ define(function (require, exports, module) {
         }
         else {
           if (i > 0) {
-            if (!util.compareByGeneratedPositions(mapping, this._mappings[i - 1])) {
+            if (!util.compareByGeneratedPositions(mapping, mappings[i - 1])) {
               continue;
             }
             result += ',';
@@ -32598,7 +32621,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":55,"./base64-vlq":56,"./util":62,"amdefine":63}],61:[function(require,module,exports){
+},{"./array-set":55,"./base64-vlq":56,"./mapping-list":59,"./util":63,"amdefine":64}],62:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -32617,8 +32640,8 @@ define(function (require, exports, module) {
   // operating systems these days (capturing the result).
   var REGEX_NEWLINE = /(\r?\n)/;
 
-  // Matches a Windows-style newline, or any character.
-  var REGEX_CHARACTER = /\r\n|[\s\S]/g;
+  // Newline character code for charCodeAt() comparisons
+  var NEWLINE_CODE = 10;
 
   // Private symbol for identifying `SourceNode`s when multiple versions of
   // the source-map library are loaded. This MUST NOT CHANGE across
@@ -32976,12 +32999,12 @@ define(function (require, exports, module) {
         lastOriginalSource = null;
         sourceMappingActive = false;
       }
-      chunk.match(REGEX_CHARACTER).forEach(function (ch, idx, array) {
-        if (REGEX_NEWLINE.test(ch)) {
+      for (var idx = 0, length = chunk.length; idx < length; idx++) {
+        if (chunk.charCodeAt(idx) === NEWLINE_CODE) {
           generated.line++;
           generated.column = 0;
           // Mappings end at eol
-          if (idx + 1 === array.length) {
+          if (idx + 1 === length) {
             lastOriginalSource = null;
             sourceMappingActive = false;
           } else if (sourceMappingActive) {
@@ -32999,9 +33022,9 @@ define(function (require, exports, module) {
             });
           }
         } else {
-          generated.column += ch.length;
+          generated.column++;
         }
-      });
+      }
     });
     this.walkSourceContents(function (sourceFile, sourceContent) {
       map.setSourceContent(sourceFile, sourceContent);
@@ -33014,7 +33037,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":60,"./util":62,"amdefine":63}],62:[function(require,module,exports){
+},{"./source-map-generator":61,"./util":63,"amdefine":64}],63:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -33335,7 +33358,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":63}],63:[function(require,module,exports){
+},{"amdefine":64}],64:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 0.1.0 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
@@ -33638,7 +33661,7 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/rpl-www/node_modules/terrarium/node_modules/escodegen/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":9,"path":8}],64:[function(require,module,exports){
+},{"_process":9,"path":8}],65:[function(require,module,exports){
 module.exports={
   "name": "escodegen",
   "description": "ECMAScript code generator",
@@ -33654,10 +33677,9 @@ module.exports={
     "README.md",
     "bin",
     "escodegen.js",
-    "gulpfile.js",
     "package.json"
   ],
-  "version": "1.4.3",
+  "version": "1.6.1",
   "engines": {
     "node": ">=0.10.0"
   },
@@ -33672,25 +33694,26 @@ module.exports={
     "url": "http://github.com/estools/escodegen.git"
   },
   "dependencies": {
-    "estraverse": "^1.9.0",
+    "estraverse": "^1.9.1",
     "esutils": "^1.1.6",
     "esprima": "^1.2.2",
-    "optionator": "^0.4.0",
+    "optionator": "^0.5.0",
     "source-map": "~0.1.40"
   },
   "optionalDependencies": {
     "source-map": "~0.1.40"
   },
   "devDependencies": {
-    "esprima-moz": "*",
-    "semver": "^4.1.0",
+    "acorn-6to5": "^0.11.1-25",
     "bluebird": "^2.3.11",
-    "chai": "^1.10.0",
-    "gulp-mocha": "^2.0.0",
-    "gulp-eslint": "^0.2.0",
-    "gulp": "^3.8.10",
     "bower-registry-client": "^0.2.1",
-    "commonjs-everywhere": "^0.9.7"
+    "chai": "^1.10.0",
+    "commonjs-everywhere": "^0.9.7",
+    "esprima-moz": "*",
+    "gulp": "^3.8.10",
+    "gulp-eslint": "^0.2.0",
+    "gulp-mocha": "^2.0.0",
+    "semver": "^4.1.0"
   },
   "licenses": [
     {
@@ -33706,28 +33729,28 @@ module.exports={
     "build-min": "cjsify -ma path: tools/entry-point.js > escodegen.browser.min.js",
     "build": "cjsify -a path: tools/entry-point.js > escodegen.browser.js"
   },
-  "gitHead": "ee238d803cb10af46c7ce5a1aef9b57cf006c317",
+  "gitHead": "1ca664f68dcf220b76c9dc562b2337c5e0b4227d",
   "bugs": {
     "url": "https://github.com/estools/escodegen/issues"
   },
-  "_id": "escodegen@1.4.3",
-  "_shasum": "2b2422bf18c95e2542effaabc0c998712d490291",
-  "_from": "escodegen@*",
+  "_id": "escodegen@1.6.1",
+  "_shasum": "367de17d8510540d12bc6dcb8b3f918391265815",
+  "_from": "escodegen@^1.4.3",
   "_npmVersion": "2.0.0-alpha-5",
   "_npmUser": {
     "name": "constellation",
     "email": "utatane.tea@gmail.com"
   },
   "dist": {
-    "shasum": "2b2422bf18c95e2542effaabc0c998712d490291",
-    "tarball": "http://registry.npmjs.org/escodegen/-/escodegen-1.4.3.tgz"
+    "shasum": "367de17d8510540d12bc6dcb8b3f918391265815",
+    "tarball": "http://registry.npmjs.org/escodegen/-/escodegen-1.6.1.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/escodegen/-/escodegen-1.4.3.tgz",
+  "_resolved": "https://registry.npmjs.org/escodegen/-/escodegen-1.6.1.tgz",
   "readme": "ERROR: No README data found!"
 }
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
@@ -34990,7 +35013,7 @@ parseStatement: true, parseSourceElement: true */
             }
             return collectRegex();
         }
-        if (prevToken.type === 'Keyword') {
+        if (prevToken.type === 'Keyword' && prevToken.value !== 'this') {
             return collectRegex();
         }
         return scanPunctuator();
@@ -35675,7 +35698,8 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function consumeSemicolon() {
-        var line;
+        var line, oldIndex = index, oldLineNumber = lineNumber,
+            oldLineStart = lineStart, oldLookahead = lookahead;
 
         // Catch the very common case first: immediately a semicolon (U+003B).
         if (source.charCodeAt(index) === 0x3B || match(';')) {
@@ -35686,6 +35710,10 @@ parseStatement: true, parseSourceElement: true */
         line = lineNumber;
         skipComment();
         if (lineNumber !== line) {
+            index = oldIndex;
+            lineNumber = oldLineNumber;
+            lineStart = oldLineStart;
+            lookahead = oldLookahead;
             return;
         }
 
@@ -35996,14 +36024,11 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function parseLeftHandSideExpressionAllowCall() {
-        var previousAllowIn, expr, args, property, startToken;
+        var expr, args, property, startToken, previousAllowIn = state.allowIn;
 
         startToken = lookahead;
-
-        previousAllowIn = state.allowIn;
         state.allowIn = true;
         expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
-        state.allowIn = previousAllowIn;
 
         for (;;) {
             if (match('.')) {
@@ -36020,18 +36045,18 @@ parseStatement: true, parseSourceElement: true */
             }
             delegate.markEnd(expr, startToken);
         }
+        state.allowIn = previousAllowIn;
 
         return expr;
     }
 
     function parseLeftHandSideExpression() {
-        var previousAllowIn, expr, property, startToken;
+        var expr, property, startToken;
+        assert(state.allowIn, 'callee of new expression always allow in keyword.');
 
         startToken = lookahead;
 
-        previousAllowIn = state.allowIn;
         expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
-        state.allowIn = previousAllowIn;
 
         while (match('.') || match('[')) {
             if (match('[')) {
@@ -36043,7 +36068,6 @@ parseStatement: true, parseSourceElement: true */
             }
             delegate.markEnd(expr, startToken);
         }
-
         return expr;
     }
 
@@ -36546,7 +36570,7 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function parseForStatement() {
-        var init, test, update, left, right, body, oldInIteration;
+        var init, test, update, left, right, body, oldInIteration, previousAllowIn = state.allowIn;
 
         init = test = update = null;
 
@@ -36560,7 +36584,7 @@ parseStatement: true, parseSourceElement: true */
             if (matchKeyword('var') || matchKeyword('let')) {
                 state.allowIn = false;
                 init = parseForVariableDeclaration();
-                state.allowIn = true;
+                state.allowIn = previousAllowIn;
 
                 if (init.declarations.length === 1 && matchKeyword('in')) {
                     lex();
@@ -36571,7 +36595,7 @@ parseStatement: true, parseSourceElement: true */
             } else {
                 state.allowIn = false;
                 init = parseExpression();
-                state.allowIn = true;
+                state.allowIn = previousAllowIn;
 
                 if (matchKeyword('in')) {
                     // LeftHandSideExpression
@@ -37454,7 +37478,7 @@ parseStatement: true, parseSourceElement: true */
     }
 
     // Sync with *.json manifests.
-    exports.version = '1.2.2';
+    exports.version = '1.2.4';
 
     exports.tokenize = tokenize;
 
@@ -37485,7 +37509,7 @@ parseStatement: true, parseSourceElement: true */
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var traverse = module.exports = function (obj) {
     return new Traverse(obj);
 };
@@ -37801,12 +37825,11 @@ var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
     return key in obj;
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports.Browser = require('./terrarium_browser.js');
 module.exports.Node = require('./terrarium_node.js');
-module.exports.instrument = require('./instrument.js');
 
-},{"./instrument.js":47,"./terrarium_browser.js":68,"./terrarium_node.js":69}],68:[function(require,module,exports){
+},{"./terrarium_browser.js":69,"./terrarium_node.js":70}],69:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -37913,7 +37936,7 @@ Terrarium.prototype.setInstrument = function(thisTick, instrumented) {
 
 module.exports = Terrarium;
 
-},{"./instrument":47,"events":6,"util":11}],69:[function(require,module,exports){
+},{"./instrument":47,"events":6,"util":11}],70:[function(require,module,exports){
 var instrument = require('./instrument');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -37987,7 +38010,7 @@ Terrarium.prototype.destroy = function() {
 
 module.exports = Terrarium;
 
-},{"./instrument":47,"child_process":1,"events":6,"fs":1,"util":11}],70:[function(require,module,exports){
+},{"./instrument":47,"child_process":1,"events":6,"fs":1,"util":11}],71:[function(require,module,exports){
 /**
  * Turf is a modular GIS engine written in JavaScript. It performs geospatial
  * processing tasks with GeoJSON data and can be run on a server or in a browser.
@@ -37997,7 +38020,6 @@ module.exports = Terrarium;
  */
 module.exports = {
   isolines: require('turf-isolines'),
-  isobands: require('turf-isobands'),
   merge: require('turf-merge'),
   convex: require('turf-convex'),
   within: require('turf-within'),
@@ -38033,7 +38055,6 @@ module.exports = {
   bboxPolygon: require('turf-bbox-polygon'),
   featurecollection: require('turf-featurecollection'),
   filter: require('turf-filter'),
-  grid: require('turf-grid'),
   inside: require('turf-inside'),
   intersect: require('turf-intersect'),
   linestring: require('turf-linestring'),
@@ -38048,17 +38069,20 @@ module.exports = {
   union: require('turf-union'),
   bearing: require('turf-bearing'),
   destination: require('turf-destination'),
-  hex: require('turf-hex'),
   kinks: require('turf-kinks'),
   pointOnSurface: require('turf-point-on-surface'),
   area: require('turf-area'),
   along: require('turf-along'),
   lineDistance: require('turf-line-distance'),
   lineSlice: require('turf-line-slice'),
-  pointOnLine: require('turf-point-on-line')
+  pointOnLine: require('turf-point-on-line'),
+  pointGrid: require('turf-point-grid'),
+  squareGrid: require('turf-square-grid'),
+  triangleGrid: require('turf-triangle-grid'),
+  hexGrid: require('turf-hex-grid')
 };
 
-},{"turf-aggregate":71,"turf-along":90,"turf-area":96,"turf-average":99,"turf-bbox-polygon":101,"turf-bearing":103,"turf-bezier":104,"turf-buffer":107,"turf-center":115,"turf-centroid":119,"turf-combine":122,"turf-concave":123,"turf-convex":137,"turf-count":168,"turf-destination":170,"turf-deviation":172,"turf-distance":175,"turf-envelope":177,"turf-erase":182,"turf-explode":187,"turf-extent":191,"turf-featurecollection":193,"turf-filter":194,"turf-flip":196,"turf-grid":197,"turf-hex":199,"turf-inside":201,"turf-intersect":203,"turf-isobands":209,"turf-isolines":226,"turf-jenks":242,"turf-kinks":244,"turf-line-distance":248,"turf-line-slice":252,"turf-linestring":259,"turf-max":260,"turf-median":262,"turf-merge":264,"turf-midpoint":271,"turf-min":273,"turf-nearest":275,"turf-planepoint":278,"turf-point":298,"turf-point-on-line":279,"turf-point-on-surface":286,"turf-polygon":299,"turf-quantile":300,"turf-random":302,"turf-reclass":304,"turf-remove":306,"turf-sample":308,"turf-simplify":310,"turf-size":312,"turf-square":313,"turf-sum":318,"turf-tag":320,"turf-tin":322,"turf-union":325,"turf-variance":330,"turf-within":333}],71:[function(require,module,exports){
+},{"turf-aggregate":72,"turf-along":91,"turf-area":97,"turf-average":100,"turf-bbox-polygon":102,"turf-bearing":104,"turf-bezier":105,"turf-buffer":108,"turf-center":116,"turf-centroid":120,"turf-combine":123,"turf-concave":124,"turf-convex":138,"turf-count":169,"turf-destination":171,"turf-deviation":173,"turf-distance":176,"turf-envelope":178,"turf-erase":183,"turf-explode":188,"turf-extent":192,"turf-featurecollection":194,"turf-filter":195,"turf-flip":197,"turf-hex-grid":198,"turf-inside":204,"turf-intersect":206,"turf-isolines":212,"turf-jenks":228,"turf-kinks":230,"turf-line-distance":233,"turf-line-slice":237,"turf-linestring":244,"turf-max":245,"turf-median":247,"turf-merge":249,"turf-midpoint":256,"turf-min":258,"turf-nearest":260,"turf-planepoint":263,"turf-point":288,"turf-point-grid":264,"turf-point-on-line":269,"turf-point-on-surface":276,"turf-polygon":289,"turf-quantile":290,"turf-random":292,"turf-reclass":294,"turf-remove":296,"turf-sample":298,"turf-simplify":300,"turf-size":302,"turf-square":309,"turf-square-grid":303,"turf-sum":314,"turf-tag":316,"turf-tin":318,"turf-triangle-grid":321,"turf-union":327,"turf-variance":332,"turf-within":335}],72:[function(require,module,exports){
 var average = require('turf-average');
 var sum = require('turf-sum');
 var median = require('turf-median');
@@ -38257,7 +38281,7 @@ function isAggregationOperation(operation) {
     operation === 'count';
 }
 
-},{"turf-average":72,"turf-count":74,"turf-deviation":76,"turf-max":79,"turf-median":81,"turf-min":83,"turf-sum":85,"turf-variance":87}],72:[function(require,module,exports){
+},{"turf-average":73,"turf-count":75,"turf-deviation":77,"turf-max":80,"turf-median":82,"turf-min":84,"turf-sum":86,"turf-variance":88}],73:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -38388,7 +38412,7 @@ function average(values) {
   return sum / values.length;
 }
 
-},{"turf-inside":73}],73:[function(require,module,exports){
+},{"turf-inside":74}],74:[function(require,module,exports){
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -38494,7 +38518,7 @@ function inRing (pt, ring) {
 }
 
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -38592,9 +38616,9 @@ module.exports = function(polyFC, ptFC, outField, done){
   return polyFC;
 };
 
-},{"turf-inside":75}],75:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],76:[function(require,module,exports){
+},{"turf-inside":76}],76:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],77:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -38726,7 +38750,7 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
   return polyFC;
 }
 
-},{"simple-statistics":77,"turf-inside":78}],77:[function(require,module,exports){
+},{"simple-statistics":78,"turf-inside":79}],78:[function(require,module,exports){
 /* global module */
 // # simple-statistics
 //
@@ -40248,9 +40272,9 @@ module.exports = function(polyFC, ptFC, inField, outField, done){
 
 })(this);
 
-},{}],78:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],79:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],80:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -40388,9 +40412,9 @@ function max(x) {
     return value;
 }
 
-},{"turf-inside":80}],80:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],81:[function(require,module,exports){
+},{"turf-inside":81}],81:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],82:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -40538,9 +40562,9 @@ function median(x) {
     }
 }
 
-},{"turf-inside":82}],82:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],83:[function(require,module,exports){
+},{"turf-inside":83}],83:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],84:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -40678,9 +40702,9 @@ function min(x) {
     return value;
 }
 
-},{"turf-inside":84}],84:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],85:[function(require,module,exports){
+},{"turf-inside":85}],85:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],86:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -40816,9 +40840,9 @@ function sum(x) {
     return value;
 }
 
-},{"turf-inside":86}],86:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],87:[function(require,module,exports){
+},{"turf-inside":87}],87:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],88:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -40947,11 +40971,11 @@ module.exports = function (polyFC, ptFC, inField, outField) {
   return polyFC;
 };
 
-},{"simple-statistics":88,"turf-inside":89}],88:[function(require,module,exports){
-arguments[4][77][0].apply(exports,arguments)
-},{"dup":77}],89:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],90:[function(require,module,exports){
+},{"simple-statistics":89,"turf-inside":90}],89:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],90:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],91:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 var bearing = require('turf-bearing');
@@ -41017,7 +41041,7 @@ module.exports = function (line, dist, units) {
   return point(coords[coords.length - 1]);
 }
 
-},{"turf-bearing":91,"turf-destination":92,"turf-distance":93,"turf-point":95}],91:[function(require,module,exports){
+},{"turf-bearing":92,"turf-destination":93,"turf-distance":94,"turf-point":96}],92:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 
@@ -41088,7 +41112,7 @@ function toDeg(radian) {
     return radian * 180 / Math.PI;
 }
 
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
 var point = require('turf-point');
@@ -41166,7 +41190,7 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-},{"turf-point":95}],93:[function(require,module,exports){
+},{"turf-point":96}],94:[function(require,module,exports){
 var invariant = require('turf-invariant');
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
@@ -41257,7 +41281,7 @@ function toRad(degree) {
   return degree * Math.PI / 180;
 }
 
-},{"turf-invariant":94}],94:[function(require,module,exports){
+},{"turf-invariant":95}],95:[function(require,module,exports){
 module.exports.geojsonType = geojsonType;
 module.exports.collectionOf = collectionOf;
 module.exports.featureOf = featureOf;
@@ -41325,7 +41349,7 @@ function collectionOf(value, type, name) {
     }
 }
 
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 /**
  * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
  *
@@ -41357,7 +41381,7 @@ module.exports = function(coordinates, properties) {
   };
 };
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 var geometryArea = require('geojson-area').geometry;
 
 /**
@@ -41421,7 +41445,7 @@ module.exports = function(_) {
     }
 };
 
-},{"geojson-area":97}],97:[function(require,module,exports){
+},{"geojson-area":98}],98:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.geometry = geometry;
@@ -41497,16 +41521,16 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":98}],98:[function(require,module,exports){
+},{"wgs84":99}],99:[function(require,module,exports){
 module.exports.RADIUS = 6378137;
 module.exports.FLATTENING = 1/298.257223563;
 module.exports.POLAR_RADIUS = 6356752.3142;
 
-},{}],99:[function(require,module,exports){
-arguments[4][72][0].apply(exports,arguments)
-},{"dup":72,"turf-inside":100}],100:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],101:[function(require,module,exports){
+},{"dup":73,"turf-inside":101}],101:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],102:[function(require,module,exports){
 var polygon = require('turf-polygon');
 
 /**
@@ -41540,7 +41564,7 @@ module.exports = function(bbox){
   return poly;
 }
 
-},{"turf-polygon":102}],102:[function(require,module,exports){
+},{"turf-polygon":103}],103:[function(require,module,exports){
 /**
  * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
  *
@@ -41595,9 +41619,9 @@ module.exports = function(coordinates, properties){
   return polygon;
 };
 
-},{}],103:[function(require,module,exports){
-arguments[4][91][0].apply(exports,arguments)
-},{"dup":91}],104:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"dup":92}],105:[function(require,module,exports){
 var linestring = require('turf-linestring');
 var Spline = require('./spline.js');
 
@@ -41666,7 +41690,7 @@ module.exports = function(line, resolution, sharpness){
   return lineOut;
 };
 
-},{"./spline.js":106,"turf-linestring":105}],105:[function(require,module,exports){
+},{"./spline.js":107,"turf-linestring":106}],106:[function(require,module,exports){
 /**
  * Creates a {@link LineString} {@link Feature} based on a
  * coordinate array. Properties can be added optionally.
@@ -41709,7 +41733,7 @@ module.exports = function(coordinates, properties){
   };
 };
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
  /**
    * BezierSpline
    * http://leszekr.github.com/
@@ -41848,7 +41872,7 @@ var Spline = function(options){
 
   module.exports = Spline;
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 // http://stackoverflow.com/questions/839899/how-do-i-calculate-a-point-on-a-circles-circumference
 // radians = degrees * (pi/180)
 // https://github.com/bjornharrtell/jsts/blob/master/examples/buffer.html
@@ -41890,66 +41914,64 @@ var jsts = require('jsts');
 * //=result
 */
 
-module.exports = function(feature, radius, units){
+module.exports = function(feature, radius, units) {
   var buffered;
 
-  switch(units){
+  switch (units) {
     case 'miles':
       radius = radius / 69.047;
-      break
+    break;
     case 'feet':
       radius = radius / 364568.0;
-      break
+    break;
     case 'kilometers':
       radius = radius / 111.12;
-      break
+    break;
     case 'meters':
       radius = radius / 111120.0;
-      break
+    break;
     case 'degrees':
-      break
+    break;
   }
 
-  if(feature.type === 'FeatureCollection'){
+  if (feature.type === 'FeatureCollection') {
     var multi = combine(feature);
     multi.properties = {};
     buffered = bufferOp(multi, radius);
     return buffered;
-  }
-  else{
+  } else {
     buffered = bufferOp(feature, radius);
     return buffered;
   }
-}
+};
 
-var bufferOp = function(feature, radius){
+var bufferOp = function(feature, radius) {
   var reader = new jsts.io.GeoJSONReader();
   var geom = reader.read(JSON.stringify(feature.geometry));
   var buffered = geom.buffer(radius);
   var parser = new jsts.io.GeoJSONParser();
   buffered = parser.write(buffered);
 
-  if(buffered.type === 'MultiPolygon'){
+  if (buffered.type === 'MultiPolygon') {
     buffered = {
       type: 'Feature',
       geometry: buffered,
       properties: {}
     };
     buffered = featurecollection([buffered]);
-  }
-  else{
+  } else {
     buffered = featurecollection([polygon(buffered.coordinates)]);
   }
 
   return buffered;
-}
+};
 
-},{"jsts":108,"turf-combine":112,"turf-featurecollection":113,"turf-polygon":114}],108:[function(require,module,exports){
+},{"jsts":109,"turf-combine":113,"turf-featurecollection":114,"turf-polygon":115}],109:[function(require,module,exports){
 require('javascript.util');
 var jsts = require('./lib/jsts');
 module.exports = jsts
 
-},{"./lib/jsts":109,"javascript.util":111}],109:[function(require,module,exports){
+},{"./lib/jsts":110,"javascript.util":112}],110:[function(require,module,exports){
 /* The JSTS Topology Suite is a collection of JavaScript classes that
 implement the fundamental operations required to validate a given
 geo-spatial data set to a known topological specification.
@@ -43659,7 +43681,7 @@ return true;if(this.isBoundaryPoint(li,bdyNodes[1]))
 return true;return false;}else{for(var i=bdyNodes.iterator();i.hasNext();){var node=i.next();var pt=node.getCoordinate();if(li.isIntersection(pt))
 return true;}
 return false;}};})();
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function (global){
 /*
   javascript.util is a port of selected parts of java.util to JavaScript which
@@ -43705,10 +43727,10 @@ L.prototype.iterator=L.prototype.f;function N(a){this.l=a}f("$jscomp.scope.Itera
 r,global.javascript.util.Set=x,global.javascript.util.SortedMap=A,global.javascript.util.SortedSet=B,global.javascript.util.Stack=C,global.javascript.util.TreeMap=H,global.javascript.util.TreeSet=L);}).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 require('./dist/javascript.util-node.min.js');
 
-},{"./dist/javascript.util-node.min.js":110}],112:[function(require,module,exports){
+},{"./dist/javascript.util-node.min.js":111}],113:[function(require,module,exports){
 /**
  * Combines a {@link FeatureCollection} of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.
  *
@@ -43788,7 +43810,7 @@ function pluckCoods(multi){
   });
 }
 
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /**
  * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
  *
@@ -43814,9 +43836,9 @@ module.exports = function(features){
   };
 };
 
-},{}],114:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],115:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],116:[function(require,module,exports){
 var extent = require('turf-extent'),
     point = require('turf-point');
 
@@ -43933,14 +43955,14 @@ var extent = require('turf-extent'),
  * //=result
  */
 
-module.exports = function(layer, done){
+module.exports = function(layer) {
   var ext = extent(layer);
   var x = (ext[0] + ext[2])/2;
   var y = (ext[1] + ext[3])/2;
   return point([x, y]);
 };
 
-},{"turf-extent":116,"turf-point":118}],116:[function(require,module,exports){
+},{"turf-extent":117,"turf-point":119}],117:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 
 /**
@@ -44010,7 +44032,7 @@ module.exports = function(layer) {
     return extent;
 };
 
-},{"turf-meta":117}],117:[function(require,module,exports){
+},{"turf-meta":118}],118:[function(require,module,exports){
 /**
  * Lazily iterate over coordinates in any GeoJSON object, similar to
  * Array.forEach.
@@ -44150,9 +44172,9 @@ function propReduce(layer, callback, memo) {
 }
 module.exports.propReduce = propReduce;
 
-},{}],118:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],119:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],120:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 var point = require('turf-point');
 
@@ -44200,13 +44222,13 @@ module.exports = function(features){
   return point([xSum / len, ySum / len]);
 };
 
-},{"turf-meta":120,"turf-point":121}],120:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],121:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],122:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments)
-},{"dup":112}],123:[function(require,module,exports){
+},{"turf-meta":121,"turf-point":122}],121:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],122:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],123:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments)
+},{"dup":113}],124:[function(require,module,exports){
 // 1. run tin on points
 // 2. calculate lenth of all edges and area of all triangles
 // 3. remove triangles that fail the max length test
@@ -44316,11 +44338,11 @@ module.exports = function(points, maxEdge, units) {
   return t.merge(tinPolys);
 };
 
-},{"turf-distance":124,"turf-merge":126,"turf-point":133,"turf-tin":134}],124:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":125}],125:[function(require,module,exports){
+},{"turf-distance":125,"turf-merge":127,"turf-point":134,"turf-tin":135}],125:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],126:[function(require,module,exports){
+},{"dup":94,"turf-invariant":126}],126:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],127:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -44389,7 +44411,7 @@ module.exports = function(polygons, done){
   return merged;
 };
 
-},{"clone":127,"turf-union":128}],127:[function(require,module,exports){
+},{"clone":128,"turf-union":129}],128:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -44537,7 +44559,7 @@ clone.clonePrototype = function(parent) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":2}],128:[function(require,module,exports){
+},{"buffer":2}],129:[function(require,module,exports){
 // look here for help http://svn.osgeo.org/grass/grass/branches/releasebranch_6_4/vector/v.overlay/main.c
 //must be array of polygons
 
@@ -44612,17 +44634,17 @@ module.exports = function(poly1, poly2){
   };
 }
 
-},{"jsts":129}],129:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"./lib/jsts":130,"dup":108,"javascript.util":132}],130:[function(require,module,exports){
+},{"jsts":130}],130:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],131:[function(require,module,exports){
+},{"./lib/jsts":131,"dup":109,"javascript.util":133}],131:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
 },{"dup":110}],132:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":131,"dup":111}],133:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],134:[function(require,module,exports){
+},{"dup":111}],133:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":132,"dup":112}],134:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],135:[function(require,module,exports){
 //http://en.wikipedia.org/wiki/Delaunay_triangulation
 //https://github.com/ironwallaby/delaunay
 var polygon = require('turf-polygon');
@@ -44865,11 +44887,11 @@ function triangulate(vertices) {
   return closed;
 }
 
-},{"turf-featurecollection":135,"turf-polygon":136}],135:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],136:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],137:[function(require,module,exports){
+},{"turf-featurecollection":136,"turf-polygon":137}],136:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],137:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],138:[function(require,module,exports){
 var each = require('turf-meta').coordEach,
     convexHull = require('convex-hull'),
     polygon = require('turf-polygon');
@@ -44958,7 +44980,7 @@ module.exports = function(fc) {
   return polygon([ring]);
 };
 
-},{"convex-hull":138,"turf-meta":166,"turf-polygon":167}],138:[function(require,module,exports){
+},{"convex-hull":139,"turf-meta":167,"turf-polygon":168}],139:[function(require,module,exports){
 "use strict"
 
 var convexHull1d = require('./lib/ch1d')
@@ -44984,7 +45006,7 @@ function convexHull(points) {
   }
   return convexHullnd(points, d)
 }
-},{"./lib/ch1d":139,"./lib/ch2d":140,"./lib/chnd":141}],139:[function(require,module,exports){
+},{"./lib/ch1d":140,"./lib/ch2d":141,"./lib/chnd":142}],140:[function(require,module,exports){
 "use strict"
 
 module.exports = convexHull1d
@@ -45008,7 +45030,7 @@ function convexHull1d(points) {
     return [[lo]]
   }
 }
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 'use strict'
 
 module.exports = convexHull2D
@@ -45031,7 +45053,7 @@ function convexHull2D(points) {
   return edges
 }
 
-},{"monotone-convex-hull-2d":159}],141:[function(require,module,exports){
+},{"monotone-convex-hull-2d":160}],142:[function(require,module,exports){
 'use strict'
 
 module.exports = convexHullnD
@@ -45092,7 +45114,7 @@ function convexHullnD(points, d) {
     return invPermute(nhull, ah)
   }
 }
-},{"affine-hull":142,"incremental-convex-hull":149}],142:[function(require,module,exports){
+},{"affine-hull":143,"incremental-convex-hull":150}],143:[function(require,module,exports){
 'use strict'
 
 module.exports = affineHull
@@ -45144,7 +45166,7 @@ function affineHull(points) {
   }
   return index
 }
-},{"robust-orientation":148}],143:[function(require,module,exports){
+},{"robust-orientation":149}],144:[function(require,module,exports){
 "use strict"
 
 module.exports = fastTwoSum
@@ -45162,7 +45184,7 @@ function fastTwoSum(a, b, result) {
 	}
 	return [ar+br, x]
 }
-},{}],144:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 "use strict"
 
 var twoProduct = require("two-product")
@@ -45213,7 +45235,7 @@ function scaleLinearExpansion(e, scale) {
   g.length = count
   return g
 }
-},{"two-product":147,"two-sum":143}],145:[function(require,module,exports){
+},{"two-product":148,"two-sum":144}],146:[function(require,module,exports){
 "use strict"
 
 module.exports = robustSubtract
@@ -45370,7 +45392,7 @@ function robustSubtract(e, f) {
   g.length = count
   return g
 }
-},{}],146:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 "use strict"
 
 module.exports = linearExpansionSum
@@ -45527,7 +45549,7 @@ function linearExpansionSum(e, f) {
   g.length = count
   return g
 }
-},{}],147:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 "use strict"
 
 module.exports = twoProduct
@@ -45561,7 +45583,7 @@ function twoProduct(a, b, result) {
 
   return [ y, x ]
 }
-},{}],148:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 "use strict"
 
 var twoProduct = require("two-product")
@@ -45752,7 +45774,7 @@ function generateOrientationProc() {
 }
 
 generateOrientationProc()
-},{"robust-scale":144,"robust-subtract":145,"robust-sum":146,"two-product":147}],149:[function(require,module,exports){
+},{"robust-scale":145,"robust-subtract":146,"robust-sum":147,"two-product":148}],150:[function(require,module,exports){
 "use strict"
 
 //High level idea:
@@ -46199,19 +46221,19 @@ function incrementalConvexHull(points, randomSearch) {
   //Extract boundary cells
   return triangles.boundary()
 }
-},{"robust-orientation":155,"simplicial-complex":158}],150:[function(require,module,exports){
-arguments[4][143][0].apply(exports,arguments)
-},{"dup":143}],151:[function(require,module,exports){
+},{"robust-orientation":156,"simplicial-complex":159}],151:[function(require,module,exports){
 arguments[4][144][0].apply(exports,arguments)
-},{"dup":144,"two-product":154,"two-sum":150}],152:[function(require,module,exports){
+},{"dup":144}],152:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"dup":145}],153:[function(require,module,exports){
+},{"dup":145,"two-product":155,"two-sum":151}],153:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
 },{"dup":146}],154:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
 },{"dup":147}],155:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"dup":148,"robust-scale":151,"robust-subtract":152,"robust-sum":153,"two-product":154}],156:[function(require,module,exports){
+},{"dup":148}],156:[function(require,module,exports){
+arguments[4][149][0].apply(exports,arguments)
+},{"dup":149,"robust-scale":152,"robust-subtract":153,"robust-sum":154,"two-product":155}],157:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -46417,7 +46439,7 @@ exports.nextCombination = function(v) {
 }
 
 
-},{}],157:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 "use strict"; "use restrict";
 
 module.exports = UnionFind;
@@ -46476,7 +46498,7 @@ proto.link = function(x, y) {
     ++ranks[xr];
   }
 }
-},{}],158:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 "use strict"; "use restrict";
 
 var bits      = require("bit-twiddle")
@@ -46820,7 +46842,7 @@ function connectedComponents(cells, vertex_count) {
 }
 exports.connectedComponents = connectedComponents
 
-},{"bit-twiddle":156,"union-find":157}],159:[function(require,module,exports){
+},{"bit-twiddle":157,"union-find":158}],160:[function(require,module,exports){
 'use strict'
 
 module.exports = monotoneConvexHull2D
@@ -46902,31 +46924,31 @@ function monotoneConvexHull2D(points) {
   //Return result
   return result
 }
-},{"robust-orientation":165}],160:[function(require,module,exports){
-arguments[4][143][0].apply(exports,arguments)
-},{"dup":143}],161:[function(require,module,exports){
+},{"robust-orientation":166}],161:[function(require,module,exports){
 arguments[4][144][0].apply(exports,arguments)
-},{"dup":144,"two-product":164,"two-sum":160}],162:[function(require,module,exports){
+},{"dup":144}],162:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"dup":145}],163:[function(require,module,exports){
+},{"dup":145,"two-product":165,"two-sum":161}],163:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
 },{"dup":146}],164:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
 },{"dup":147}],165:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"dup":148,"robust-scale":161,"robust-subtract":162,"robust-sum":163,"two-product":164}],166:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],167:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],168:[function(require,module,exports){
+},{"dup":148}],166:[function(require,module,exports){
+arguments[4][149][0].apply(exports,arguments)
+},{"dup":149,"robust-scale":162,"robust-subtract":163,"robust-sum":164,"two-product":165}],167:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],168:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],169:[function(require,module,exports){
+arguments[4][75][0].apply(exports,arguments)
+},{"dup":75,"turf-inside":170}],170:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74,"turf-inside":169}],169:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],170:[function(require,module,exports){
-arguments[4][92][0].apply(exports,arguments)
-},{"dup":92,"turf-point":171}],171:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],172:[function(require,module,exports){
+},{"dup":74}],171:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"dup":93,"turf-point":172}],172:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],173:[function(require,module,exports){
 var ss = require('simple-statistics');
 var inside = require('turf-inside');
 
@@ -47058,15 +47080,15 @@ module.exports = function(polyFC, ptFC, inField, outField){
   return polyFC;
 }
 
-},{"simple-statistics":173,"turf-inside":174}],173:[function(require,module,exports){
-arguments[4][77][0].apply(exports,arguments)
-},{"dup":77}],174:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],175:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":176}],176:[function(require,module,exports){
+},{"simple-statistics":174,"turf-inside":175}],174:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],175:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],176:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],177:[function(require,module,exports){
+},{"dup":94,"turf-invariant":177}],177:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],178:[function(require,module,exports){
 var extent = require('turf-extent');
 var bboxPolygon = require('turf-bbox-polygon');
 
@@ -47129,15 +47151,15 @@ module.exports = function(features){
   return poly;
 }
 
-},{"turf-bbox-polygon":178,"turf-extent":180}],178:[function(require,module,exports){
-arguments[4][101][0].apply(exports,arguments)
-},{"dup":101,"turf-polygon":179}],179:[function(require,module,exports){
+},{"turf-bbox-polygon":179,"turf-extent":181}],179:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],180:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"dup":116,"turf-meta":181}],181:[function(require,module,exports){
+},{"dup":102,"turf-polygon":180}],180:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],181:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],182:[function(require,module,exports){
+},{"dup":117,"turf-meta":182}],182:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],183:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 
@@ -47235,15 +47257,15 @@ module.exports = function(p1, p2){
   }
 };
 
-},{"jsts":183}],183:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"./lib/jsts":184,"dup":108,"javascript.util":186}],184:[function(require,module,exports){
+},{"jsts":184}],184:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],185:[function(require,module,exports){
+},{"./lib/jsts":185,"dup":109,"javascript.util":187}],185:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
 },{"dup":110}],186:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":185,"dup":111}],187:[function(require,module,exports){
+},{"dup":111}],187:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":186,"dup":112}],188:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var each = require('turf-meta').coordEach;
 var point = require('turf-point');
@@ -47289,19 +47311,19 @@ module.exports = function(layer) {
   return featureCollection(points);
 };
 
-},{"turf-featurecollection":188,"turf-meta":189,"turf-point":190}],188:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],189:[function(require,module,exports){
+},{"turf-featurecollection":189,"turf-meta":190,"turf-point":191}],189:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],190:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],191:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],192:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],190:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],191:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"dup":116,"turf-meta":192}],192:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],193:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],194:[function(require,module,exports){
+},{"dup":117,"turf-meta":193}],193:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],194:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],195:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -47394,9 +47416,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":195}],195:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],196:[function(require,module,exports){
+},{"turf-featurecollection":196}],196:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],197:[function(require,module,exports){
 /**
  * Takes a {@link GeoJSON} object of any type and flips all of its coordinates
  * from `[x, y]` to `[y, x]`.
@@ -47484,69 +47506,32 @@ function flip3(coords) {
       for(var k = 0; k < coords[i][j].length; k++) coords[i][j][k].reverse();
 }
 
-},{}],197:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 var point = require('turf-point');
-
-/**
- * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
- *
- * @module turf/grid
- * @category interpolation
- * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
- * @param {Number} depth how many cells to output
- * @return {FeatureCollection} grid as FeatureCollection with {@link Point} features
- * @example
- * var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
- * var depth = 10;
- *
- * var grid = turf.grid(extent, depth);
- *
- * //=grid
- */
-module.exports = function(extents, depth) {
-  var xmin = extents[0];
-  var ymin = extents[1];
-  var xmax = extents[2];
-  var ymax = extents[3];
-  var interval = (xmax - xmin) / depth;
-  var coords = [];
-  var fc = {
-    type: 'FeatureCollection',
-    features: []
-  };
-
-  for (var x=0; x<=depth; x++){
-    for (var y=0;y<=depth; y++){
-      fc.features.push(point([(x * interval) + xmin, (y * interval) + ymin]));
-    }
-  }
-  return fc;
-}
-
-},{"turf-point":198}],198:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],199:[function(require,module,exports){
 var polygon = require('turf-polygon');
+var distance = require('turf-distance');
+var featurecollection = require('turf-featurecollection');
 
 /**
  * Takes a bounding box and a cell size in degrees and returns a {@link FeatureCollection} of flat-topped
  * hexagons ({@link Polygon} features) aligned in an "odd-q" vertical grid as
  * described in [Hexagonal Grids](http://www.redblobgames.com/grids/hexagons/)
  *
- * @module turf/hex
+ * @module turf/hex-grid
  * @category interpolation
  * @param {Array<number>} bbox bounding box in [minX, minY, maxX, maxY] order
- * @param {Number} size size of cells in degrees
- * @return {FeatureCollection} a FeatureCollection of hexagonal {@link Polygon} features in a grid
+ * @param {Number} cellWidth width of cell in specified units
+ * @param {String} units used in calculating cellWidth ('miles' or 'kilometers')
+ * @return {FeatureCollection} units used in calculating cellWidth ('miles' or 'kilometers')
  * @example
- * var bbox = [7.2669410, 43.695307, 7.2862529, 43.706476];
- * var size = 0.001;
+ * var bbox = [-96,31,-84,40];
+ * var cellWidth = 50;
+ * var units = 'miles';
  *
- * var hexgrid = turf.hex(bbox, size);
+ * var hexgrid = turf.hexGrid(bbox, cellWidth, units);
  *
  * //=hexgrid
  */
-module.exports = hexgrid;
 
 //Precompute cosines and sines of angles used in hexagon creation
 // for performance gain
@@ -47558,39 +47543,18 @@ for (var i = 0; i < 6; i++) {
   sines.push(Math.sin(angle));
 }
 
-//Center should be [x, y]
-function hexagon(center, radius) {
-  var vertices = [];
-
-  for (var i = 0; i < 6; i++) {
-    var x = center[0] + radius * cosines[i];
-    var y = center[1] + radius * sines[i];
-
-    vertices.push([x,y]);
-  }
-
-  //first and last vertex must be the same
-  vertices.push(vertices[0]);
-
-  return polygon([vertices]);
-}
-
-function hexgrid(bbox, radius) {
-  var xmin = bbox[0];
-  var ymin = bbox[1];
-  var xmax = bbox[2];
-  var ymax = bbox[3];
-
-  var fc = {
-    type: 'FeatureCollection',
-    features: []
-  };
+module.exports = function hexgrid(bbox, cell, units) {
+  var xFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[2], bbox[1]]), units));
+  var cellWidth = xFraction * (bbox[2] - bbox[0]);
+  var yFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[0], bbox[3]]), units));
+  var cellHeight = yFraction * (bbox[3] - bbox[1]);
+  var radius = cellWidth / 2;
 
   var hex_width = radius * 2;
   var hex_height = Math.sqrt(3)/2 * hex_width;
 
-  var box_width = xmax - xmin;
-  var box_height = ymax - ymin;
+  var box_width = bbox[2] - bbox[0];
+  var box_height = bbox[3] - bbox[1];
 
   var x_interval = 3/4 * hex_width;
   var y_interval = hex_height;
@@ -47612,6 +47576,7 @@ function hexgrid(bbox, radius) {
     y_adjust -= hex_height/4;
   }
 
+  var fc = featurecollection([]);
   for (var x = 0; x < x_count; x++) {
     for (var y = 0; y <= y_count; y++) {
 
@@ -47624,23 +47589,42 @@ function hexgrid(bbox, radius) {
         continue;
       }
 
-      var center_x = x * x_interval + xmin - x_adjust;
-      var center_y = y * y_interval + ymin + y_adjust;
+      var center_x = x * x_interval + bbox[0] - x_adjust;
+      var center_y = y * y_interval + bbox[1] + y_adjust;
 
       if (isOdd) {
         center_y -= hex_height/2;
       }
-
       fc.features.push(hexagon([center_x, center_y], radius));
     }
   }
 
   return fc;
-}
+};
 
-},{"turf-polygon":200}],200:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],201:[function(require,module,exports){
+//Center should be [x, y]
+function hexagon(center, radius) {
+  var vertices = [];
+  for (var i = 0; i < 6; i++) {
+    var x = center[0] + radius * cosines[i];
+    var y = center[1] + radius * sines[i];
+    vertices.push([x,y]);
+  }
+  //first and last vertex must be the same
+  vertices.push(vertices[0]);
+  return polygon([vertices]);
+}
+},{"turf-distance":199,"turf-featurecollection":201,"turf-point":202,"turf-polygon":203}],199:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94,"turf-invariant":200}],200:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],201:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],202:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],203:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],204:[function(require,module,exports){
 var invariant = require('turf-invariant');
 
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
@@ -47747,9 +47731,9 @@ function inRing (pt, ring) {
   return isInside;
 }
 
-},{"turf-invariant":202}],202:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],203:[function(require,module,exports){
+},{"turf-invariant":205}],205:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],206:[function(require,module,exports){
 // depend on jsts for now https://github.com/bjornharrtell/jsts/blob/master/examples/overlay.html
 var jsts = require('jsts');
 
@@ -47833,964 +47817,15 @@ module.exports = function(poly1, poly2){
   }
 };
 
-},{"jsts":204}],204:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"./lib/jsts":205,"dup":108,"javascript.util":207}],205:[function(require,module,exports){
+},{"jsts":207}],207:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],206:[function(require,module,exports){
+},{"./lib/jsts":208,"dup":109,"javascript.util":210}],208:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"dup":110}],207:[function(require,module,exports){
+},{"dup":110}],209:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":206,"dup":111}],208:[function(require,module,exports){
-/**
- * Copyright (c) 2010, Jason Davies.
- *
- * All rights reserved.  This code is based on Bradley White's Java version,
- * which is in turn based on Nicholas Yue's C++ version, which in turn is based
- * on Paul D. Bourke's original Fortran version.  See below for the respective
- * copyright notices.
- *
- * See http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/ for the original
- * paper by Paul D. Bourke.
- *
- * The vector conversion code is based on http://apptree.net/conrec.htm by
- * Graham Cox.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
- * Copyright (c) 1996-1997 Nicholas Yue
- *
- * This software is copyrighted by Nicholas Yue. This code is based on Paul D.
- * Bourke's CONREC.F routine.
- *
- * The authors hereby grant permission to use, copy, and distribute this
- * software and its documentation for any purpose, provided that existing
- * copyright notices are retained in all copies and that this notice is
- * included verbatim in any distributions. Additionally, the authors grant
- * permission to modify this software and its documentation for any purpose,
- * provided that such modifications are not distributed without the explicit
- * consent of the authors and that existing copyright notices are retained in
- * all copies. Some of the algorithms implemented by this software are
- * patented, observe all applicable patent law.
- *
- * IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY FOR
- * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
- * OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY DERIVATIVES THEREOF,
- * EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE IS
- * PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE NO
- * OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
- * MODIFICATIONS.
- */
-module.exports = Conrec;
-
-var EPSILON = 1e-10;
-
-function pointsEqual(a, b) {
-  var x = a.x - b.x, y = a.y - b.y;
-  return x * x + y * y < EPSILON;
-}
-
-function reverseList(list) {
-  var pp = list.head;
-
-  while (pp) {
-    // swap prev/next pointers
-    var temp = pp.next;
-    pp.next = pp.prev;
-    pp.prev = temp;
-
-    // continue through the list
-    pp = temp;
-  }
-
-  // swap head/tail pointers
-  var temp = list.head;
-  list.head = list.tail;
-  list.tail = temp;
-}
-
-function ContourBuilder(level) {
-  this.level = level;
-  this.s = null;
-  this.count = 0;
-}
-ContourBuilder.prototype.remove_seq = function(list) {
-  // if list is the first item, static ptr s is updated
-  if (list.prev) {
-    list.prev.next = list.next;
-  } else {
-    this.s = list.next;
-  }
-
-  if (list.next) {
-    list.next.prev = list.prev;
-  }
-  --this.count;
-}
-ContourBuilder.prototype.addSegment = function(a, b) {
-  var ss = this.s;
-  var ma = null;
-  var mb = null;
-  var prependA = false;
-  var prependB = false;
-
-  while (ss) {
-    if (ma == null) {
-      // no match for a yet
-      if (pointsEqual(a, ss.head.p)) {
-        ma = ss;
-        prependA = true;
-      } else if (pointsEqual(a, ss.tail.p)) {
-        ma = ss;
-      }
-    }
-    if (mb == null) {
-      // no match for b yet
-      if (pointsEqual(b, ss.head.p)) {
-        mb = ss;
-        prependB = true;
-      } else if (pointsEqual(b, ss.tail.p)) {
-        mb = ss;
-      }
-    }
-    // if we matched both no need to continue searching
-    if (mb != null && ma != null) {
-      break;
-    } else {
-      ss = ss.next;
-    }
-  }
-
-  // c is the case selector based on which of ma and/or mb are set
-  var c = ((ma != null) ? 1 : 0) | ((mb != null) ? 2 : 0);
-
-  switch(c) {
-    case 0:   // both unmatched, add as new sequence
-      var aa = {p: a, prev: null};
-      var bb = {p: b, next: null};
-      aa.next = bb;
-      bb.prev = aa;
-
-      // create sequence element and push onto head of main list. The order
-      // of items in this list is unimportant
-      ma = {head: aa, tail: bb, next: this.s, prev: null, closed: false};
-      if (this.s) {
-        this.s.prev = ma;
-      }
-      this.s = ma;
-
-      ++this.count;    // not essential - tracks number of unmerged sequences
-    break;
-
-    case 1:   // a matched, b did not - thus b extends sequence ma
-      var pp = {p: b};
-
-      if (prependA) {
-        pp.next = ma.head;
-        pp.prev = null;
-        ma.head.prev = pp;
-        ma.head = pp;
-      } else {
-        pp.next = null;
-        pp.prev = ma.tail;
-        ma.tail.next = pp;
-        ma.tail = pp;
-      }
-    break;
-
-    case 2:   // b matched, a did not - thus a extends sequence mb
-      var pp = {p: a};
-
-      if (prependB) {
-        pp.next = mb.head;
-        pp.prev = null;
-        mb.head.prev = pp;
-        mb.head = pp;
-      } else {
-        pp.next = null;
-        pp.prev = mb.tail;
-        mb.tail.next = pp;
-        mb.tail = pp;
-      }
-    break;
-
-    case 3:   // both matched, can merge sequences
-      // if the sequences are the same, do nothing, as we are simply closing this path (could set a flag)
-
-      if (ma === mb) {
-        var pp = {p: ma.tail.p, next: ma.head, prev: null};
-        ma.head.prev = pp;
-        ma.head = pp;
-        ma.closed = true;
-        break;
-      }
-
-      // there are 4 ways the sequence pair can be joined. The current setting of prependA and
-      // prependB will tell us which type of join is needed. For head/head and tail/tail joins
-      // one sequence needs to be reversed
-      switch((prependA ? 1 : 0) | (prependB ? 2 : 0)) {
-        case 0:   // tail-tail
-          // reverse ma and append to mb
-          reverseList(ma);
-          // fall through to head/tail case
-        case 1:   // head-tail
-          // ma is appended to mb and ma discarded
-          mb.tail.next = ma.head;
-          ma.head.prev = mb.tail;
-          mb.tail = ma.tail;
-
-          //discard ma sequence record
-          this.remove_seq(ma);
-        break;
-
-        case 3:   // head-head
-          // reverse ma and append mb to it
-          reverseList(ma);
-          // fall through to tail/head case
-        case 2:   // tail-head
-          // mb is appended to ma and mb is discarded
-          ma.tail.next = mb.head;
-          mb.head.prev = ma.tail;
-          ma.tail = mb.tail;
-
-          //discard mb sequence record
-          this.remove_seq(mb);
-      break;
-    }
-  }
-}
-
-/**
- * Implements CONREC.
- *
- * @param {function} drawContour function for drawing contour.  Defaults to a
- *                               custom "contour builder", which populates the
- *                               contours property.
- */
-function Conrec(drawContour) {
-  if (!drawContour) {
-    var c = this;
-    c.contours = {};
-    /**
-     * drawContour - interface for implementing the user supplied method to
-     * render the countours.
-     *
-     * Draws a line between the start and end coordinates.
-     *
-     * @param startX    - start coordinate for X
-     * @param startY    - start coordinate for Y
-     * @param endX      - end coordinate for X
-     * @param endY      - end coordinate for Y
-     * @param contourLevel - Contour level for line.
-     */
-    this.drawContour = function(startX, startY, endX, endY, contourLevel, k) {
-      var cb = c.contours[k];
-      if (!cb) {
-        cb = c.contours[k] = new ContourBuilder(contourLevel);
-      }
-      cb.addSegment({x: startX, y: startY}, {x: endX, y: endY});
-    }
-    this.contourList = function() {
-      var l = [];
-      var a = c.contours;
-      for (var k in a) {
-        var s = a[k].s;
-        var level = a[k].level;
-        while (s) {
-          var h = s.head;
-          var l2 = [];
-          l2.level = level;
-          l2.k = k;
-          while (h && h.p) {
-            l2.push(h.p);
-            h = h.next;
-          }
-          l.push(l2);
-          s = s.next;
-        }
-      }
-      l.sort(function(a, b) { return a.k - b.k });
-      return l;
-    }
-  } else {
-    this.drawContour = drawContour;
-  }
-  this.h  = new Array(5);
-  this.sh = new Array(5);
-  this.xh = new Array(5);
-  this.yh = new Array(5);
-}
-
-/**
- * contour is a contouring subroutine for rectangularily spaced data
- *
- * It emits calls to a line drawing subroutine supplied by the user which
- * draws a contour map corresponding to real*4data on a randomly spaced
- * rectangular grid. The coordinates emitted are in the same units given in
- * the x() and y() arrays.
- *
- * Any number of contour levels may be specified but they must be in order of
- * increasing value.
- *
- *
- * @param {number[][]} d - matrix of data to contour
- * @param {number} ilb,iub,jlb,jub - index bounds of data matrix
- *
- *             The following two, one dimensional arrays (x and y) contain
- *             the horizontal and vertical coordinates of each sample points.
- * @param {number[]} x  - data matrix column coordinates
- * @param {number[]} y  - data matrix row coordinates
- * @param {number} nc   - number of contour levels
- * @param {number[]} z  - contour levels in increasing order.
- */
-Conrec.prototype.contour = function(d, ilb, iub, jlb, jub, x, y, nc, z) {
-  var h = this.h, sh = this.sh, xh = this.xh, yh = this.yh;
-  var drawContour = this.drawContour;
-  this.contours = {};
-
-  /** private */
-  var xsect = function(p1, p2){
-    return (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1]);
-  }
-
-  var ysect = function(p1, p2){
-    return (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1]);
-  }
-  var m1;
-  var m2;
-  var m3;
-  var case_value;
-  var dmin;
-  var dmax;
-  var x1 = 0.0;
-  var x2 = 0.0;
-  var y1 = 0.0;
-  var y2 = 0.0;
-
-  // The indexing of im and jm should be noted as it has to start from zero
-  // unlike the fortran counter part
-  var im = [0, 1, 1, 0];
-  var jm = [0, 0, 1, 1];
-
-  // Note that castab is arranged differently from the FORTRAN code because
-  // Fortran and C/C++ arrays are transposed of each other, in this case
-  // it is more tricky as castab is in 3 dimensions
-  var castab = [
-    [
-      [0, 0, 8], [0, 2, 5], [7, 6, 9]
-    ],
-    [
-      [0, 3, 4], [1, 3, 1], [4, 3, 0]
-    ],
-    [
-      [9, 6, 7], [5, 2, 0], [8, 0, 0]
-    ]
-  ];
-
-  for (var j=(jub-1);j>=jlb;j--) {
-    for (var i=ilb;i<=iub-1;i++) {
-      var temp1, temp2;
-      temp1 = Math.min(d[i][j],d[i][j+1]);
-      temp2 = Math.min(d[i+1][j],d[i+1][j+1]);
-      dmin  = Math.min(temp1,temp2);
-      temp1 = Math.max(d[i][j],d[i][j+1]);
-      temp2 = Math.max(d[i+1][j],d[i+1][j+1]);
-      dmax  = Math.max(temp1,temp2);
-
-      if (dmax>=z[0]&&dmin<=z[nc-1]) {
-        for (var k=0;k<nc;k++) {
-          if (z[k]>=dmin&&z[k]<=dmax) {
-            for (var m=4;m>=0;m--) {
-              if (m>0) {
-                // The indexing of im and jm should be noted as it has to
-                // start from zero
-                h[m] = d[i+im[m-1]][j+jm[m-1]]-z[k];
-                xh[m] = x[i+im[m-1]];
-                yh[m] = y[j+jm[m-1]];
-              } else {
-                h[0] = 0.25*(h[1]+h[2]+h[3]+h[4]);
-                xh[0]=0.5*(x[i]+x[i+1]);
-                yh[0]=0.5*(y[j]+y[j+1]);
-              }
-              if (h[m]>EPSILON) {
-                sh[m] = 1;
-              } else if (h[m]<-EPSILON) {
-                sh[m] = -1;
-              } else
-                sh[m] = 0;
-            }
-            //
-            // Note: at this stage the relative heights of the corners and the
-            // centre are in the h array, and the corresponding coordinates are
-            // in the xh and yh arrays. The centre of the box is indexed by 0
-            // and the 4 corners by 1 to 4 as shown below.
-            // Each triangle is then indexed by the parameter m, and the 3
-            // vertices of each triangle are indexed by parameters m1,m2,and
-            // m3.
-            // It is assumed that the centre of the box is always vertex 2
-            // though this isimportant only when all 3 vertices lie exactly on
-            // the same contour level, in which case only the side of the box
-            // is drawn.
-            //
-            //
-            //      vertex 4 +-------------------+ vertex 3
-            //               | \               / |
-            //               |   \    m-3    /   |
-            //               |     \       /     |
-            //               |       \   /       |
-            //               |  m=2    X   m=2   |       the centre is vertex 0
-            //               |       /   \       |
-            //               |     /       \     |
-            //               |   /    m=1    \   |
-            //               | /               \ |
-            //      vertex 1 +-------------------+ vertex 2
-            //
-            //
-            //
-            //               Scan each triangle in the box
-            //
-            for (m=1;m<=4;m++) {
-              m1 = m;
-              m2 = 0;
-              if (m!=4) {
-                  m3 = m+1;
-              } else {
-                  m3 = 1;
-              }
-              case_value = castab[sh[m1]+1][sh[m2]+1][sh[m3]+1];
-              if (case_value!=0) {
-                switch (case_value) {
-                  case 1: // Line between vertices 1 and 2
-                    x1=xh[m1];
-                    y1=yh[m1];
-                    x2=xh[m2];
-                    y2=yh[m2];
-                    break;
-                  case 2: // Line between vertices 2 and 3
-                    x1=xh[m2];
-                    y1=yh[m2];
-                    x2=xh[m3];
-                    y2=yh[m3];
-                    break;
-                  case 3: // Line between vertices 3 and 1
-                    x1=xh[m3];
-                    y1=yh[m3];
-                    x2=xh[m1];
-                    y2=yh[m1];
-                    break;
-                  case 4: // Line between vertex 1 and side 2-3
-                    x1=xh[m1];
-                    y1=yh[m1];
-                    x2=xsect(m2,m3);
-                    y2=ysect(m2,m3);
-                    break;
-                  case 5: // Line between vertex 2 and side 3-1
-                    x1=xh[m2];
-                    y1=yh[m2];
-                    x2=xsect(m3,m1);
-                    y2=ysect(m3,m1);
-                    break;
-                  case 6: //  Line between vertex 3 and side 1-2
-                    x1=xh[m3];
-                    y1=yh[m3];
-                    x2=xsect(m1,m2);
-                    y2=ysect(m1,m2);
-                    break;
-                  case 7: // Line between sides 1-2 and 2-3
-                    x1=xsect(m1,m2);
-                    y1=ysect(m1,m2);
-                    x2=xsect(m2,m3);
-                    y2=ysect(m2,m3);
-                    break;
-                  case 8: // Line between sides 2-3 and 3-1
-                    x1=xsect(m2,m3);
-                    y1=ysect(m2,m3);
-                    x2=xsect(m3,m1);
-                    y2=ysect(m3,m1);
-                    break;
-                  case 9: // Line between sides 3-1 and 1-2
-                    x1=xsect(m3,m1);
-                    y1=ysect(m3,m1);
-                    x2=xsect(m1,m2);
-                    y2=ysect(m1,m2);
-                    break;
-                  default:
-                    break;
-                }
-                // Put your processing code here and comment out the printf
-                //printf("%f %f %f %f %f\n",x1,y1,x2,y2,z[k]);
-                drawContour(x1,y1,x2,y2,z[k],k);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-
-},{}],209:[function(require,module,exports){
-//https://github.com/jasondavies/conrec.js
-//http://stackoverflow.com/questions/263305/drawing-a-topographical-map
-var tin = require('turf-tin');
-var inside = require('turf-inside');
-var grid = require('turf-grid');
-var extent = require('turf-extent');
-var planepoint = require('turf-planepoint');
-var featurecollection = require('turf-featurecollection');
-var linestring = require('turf-linestring');
-var polygon = require('turf-polygon');
-var point = require('turf-point');
-var square = require('turf-square');
-var size = require('turf-size');
-var Conrec = require('./conrec.js');
-
-/**
- * Takes a {@link FeatureCollection} of {@link Point} features with z-values and an array of
- * value breaks and generates filled contour isobands.
- *
- * @module turf/isobands
- * @category interpolation
- * @param {FeatureCollection} points a FeeatureCollection of {@link Point} features
- * @param {string} z the property name in `points` from which z-values will be pulled
- * @param {number} resolution resolution of the underlying grid
- * @param {Array<number>} breaks where to draw contours
- * @returns {FeatureCollection} a FeatureCollection of {@link Polygon} features representing isobands
- * @example
- * // create random points with random
- * // z-values in their properties
- * var points = turf.random('point', 100, {
- *   bbox: [0, 30, 20, 50]
- * });
- * for (var i = 0; i < points.features.length; i++) {
- *   points.features[i].properties.z = Math.random() * 10;
- * }
- * var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
- * var isolined = turf.isobands(points, 'z', 15, breaks);
- * //=isolined
- */
-module.exports = function(points, z, resolution, breaks){
-  var addEdgesResult = addEdges(points, z, resolution);
-
-  var tinResult = tin(points, z);
-  var extentBBox = extent(points);
-  var squareBBox = square(extentBBox);
-  var gridResult = grid(squareBBox, resolution);
-  var data = [];
-
-  gridResult.features.forEach(function(pt){
-    tinResult.features.forEach(function(triangle){
-      if (inside(pt, triangle)) {
-        pt.properties = {};
-        pt.properties[z] = planepoint(pt, triangle);
-      }
-    });
-    if(!pt.properties){
-      pt.properties = {};
-      pt.properties[z] = -100;
-    }
-  });
-
-  var depth = Math.sqrt(gridResult.features.length);
-  for (var x=0; x<depth; x++){
-    var xGroup = gridResult.features.slice(x * depth, (x + 1) * depth);
-    var xFlat = [];
-    xGroup.forEach(function(verticalPoint){
-      if(verticalPoint.properties){
-        xFlat.push(verticalPoint.properties[z]);
-      } else{
-        xFlat.push(0);
-      }
-    });
-    data.push(xFlat);
-  }
-  var interval = (squareBBox[2] - squareBBox[0]) / depth;
-  var xCoordinates = [];
-  var yCoordinates = [];
-  for (var x=0; x<depth; x++){
-    xCoordinates.push(x * interval + squareBBox[0]);
-    yCoordinates.push(x * interval + squareBBox[1]);
-  }
-
-  //change zero breaks to .01 to deal with bug in conrec algorithm
-  breaks = breaks.map(function(num) {
-    if(num === 0){
-      return 0.01;
-    }
-    else{
-      return num;
-    }
-  });
-  //deduplicate breaks
-  breaks = unique(breaks);
-
-  var c = new Conrec();
-  c.contour(data, 0, resolution, 0, resolution, xCoordinates, yCoordinates, breaks.length, breaks);
-  var contourList = c.contourList();
-
-  var fc = featurecollection([]);
-  contourList.forEach(function(c){
-    if(c.length > 2){
-      var polyCoordinates = [];
-      c.forEach(function(coord){
-        polyCoordinates.push([coord.x, coord.y]);
-      });
-      polyCoordinates.push([c[0].x, c[0].y]);
-      var poly = polygon([polyCoordinates]);
-      poly.properties = {};
-      poly.properties[z] = c.level;
-      fc.features.push(poly);
-    }
-  });
-
-  return fc;
-};
-
-function addEdges(points, z, resolution){
-  var extentBBox = extent(points),
-    sizeResult;
-
-  var squareBBox = square(extentBBox);
-  var sizeBBox = size(squareBBox, 0.35);
-
-  var edgeDistance = sizeBBox[2] - sizeBBox[0];
-  var extendDistance = edgeDistance / resolution;
-
-  var xmin = sizeBBox[0];
-  var ymin = sizeBBox[1];
-  var xmax = sizeBBox[2];
-  var ymax = sizeBBox[3];
-
-  //left
-  var left = [[xmin, ymin],[xmin, ymax]];
-  for(var i = 0; i<=resolution; i++){
-    var pt = point([xmin, ymin + (extendDistance * i)]);
-    pt.properties = {};
-    pt.properties[z] = -100;
-    points.features.push(pt);
-  }
-
-  var i, pt;
-
-  //bottom
-  var bottom = [[xmin, ymin],[xmax, ymin]];
-  for(i = 0; i<=resolution; i++){
-    pt = point([xmin + (extendDistance * i), ymin]);
-    pt.properties = {};
-    pt.properties[z] = -100;
-    points.features.push(pt);
-  }
-
-  //right
-  var right = [[xmax, ymin],[xmax, ymax]];
-  for(i = 0; i<=resolution; i++){
-    pt = point([xmax, ymin + (extendDistance * i)]);
-    pt.properties = {};
-    pt.properties[z] = -100;
-    points.features.push(pt);
-  }
-
-  //top
-  var top = [[xmin, ymax],[xmax, ymax]];
-  for(i = 0; i<=resolution; i++){
-    pt = point([xmin + (extendDistance * i), ymax]);
-    pt.properties = {};
-    pt.properties[z] = -100;
-    points.features.push(pt);
-  }
-
-  return points;
-}
-
-function unique(a) {
-  return a.reduce(function(p, c) {
-      if (p.indexOf(c) < 0) p.push(c);
-      return p;
-  }, []);
-}
-
-},{"./conrec.js":208,"turf-extent":210,"turf-featurecollection":212,"turf-grid":213,"turf-inside":214,"turf-linestring":215,"turf-planepoint":216,"turf-point":217,"turf-polygon":218,"turf-size":219,"turf-square":220,"turf-tin":224}],210:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"dup":116,"turf-meta":211}],211:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],212:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],213:[function(require,module,exports){
-arguments[4][197][0].apply(exports,arguments)
-},{"dup":197,"turf-point":217}],214:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],215:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"dup":105}],216:[function(require,module,exports){
-/**
- * Takes a triangular plane as a {@link Polygon} feature
- * and a {@link Point} feature within that triangle and returns the z-value
- * at that point. The Polygon needs to have properties `a`, `b`, and `c`
- * that define the values at its three corners.
- *
- * @module turf/planepoint
- * @category interpolation
- * @param {Point} interpolatedPoint the Point for which a z-value will be calculated
- * @param {Polygon} triangle a Polygon feature with three vertices
- * @return {number} the z-value for `interpolatedPoint`
- * @example
- * var point = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [-75.3221, 39.529]
- *   }
- * };
- * var point = turf.point([-75.3221, 39.529]);
- * // triangle is a polygon with "a", "b",
- * // and "c" values representing
- * // the values of the coordinates in order.
- * var triangle = {
- *   "type": "Feature",
- *   "properties": {
- *     "a": 11,
- *     "b": 122,
- *     "c": 44
- *   },
- *   "geometry": {
- *     "type": "Polygon",
- *     "coordinates": [[
- *       [-75.1221, 39.57],
- *       [-75.58, 39.18],
- *       [-75.97, 39.86],
- *       [-75.1221, 39.57]
- *     ]]
- *   }
- * };
- *
- * var features = {
- *   "type": "FeatureCollection",
- *   "features": [triangle, point]
- * };
- *
- * var zValue = turf.planepoint(point, triangle);
- *
- * //=features
- *
- * //=zValue
- */
-module.exports = function(point, triangle){
-  var x = point.geometry.coordinates[0],
-      y = point.geometry.coordinates[1],
-      x1 = triangle.geometry.coordinates[0][0][0],
-      y1 = triangle.geometry.coordinates[0][0][1],
-      z1 = triangle.properties.a,
-      x2 = triangle.geometry.coordinates[0][1][0],
-      y2 = triangle.geometry.coordinates[0][1][1],
-      z2 = triangle.properties.b,
-      x3 = triangle.geometry.coordinates[0][2][0],
-      y3 = triangle.geometry.coordinates[0][2][1],
-      z3 = triangle.properties.c;
-
-  var z = (z3 * (x-x1) * (y-y2) + z1 * (x-x2) * (y-y3) + z2 * (x-x3) * (y-y1) -
-      z2 * (x-x1) * (y-y3) - z3 * (x-x2) * (y-y1) - z1 * (x-x3) * (y-y2)) /
-      ((x-x1) * (y-y2) + (x-x2) * (y-y3) +(x-x3) * (y-y1) -
-       (x-x1) * (y-y3) - (x-x2) * (y-y1) - (x-x3) * (y-y2));
-
-  return z;
-};
-
-},{}],217:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],218:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],219:[function(require,module,exports){
-/**
- * Takes a bounding box and returns a new bounding box with a size expanded or contracted
- * by a factor of X.
- *
- * @module turf/size
- * @category measurement
- * @param {Array<number>} bbox a bounding box
- * @param {number} factor the ratio of the new bbox to the input bbox
- * @return {Array<number>} the resized bbox
- * @example
- * var bbox = [0, 0, 10, 10]
- *
- * var resized = turf.size(bbox, 2);
- *
- * var features = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     turf.bboxPolygon(bbox),
- *     turf.bboxPolygon(resized)
- *   ]
- * };
- *
- * //=features
- */
-module.exports = function(bbox, factor){
-  var currentXDistance = (bbox[2] - bbox[0]);
-  var currentYDistance = (bbox[3] - bbox[1]);
-  var newXDistance = currentXDistance * factor;
-  var newYDistance = currentYDistance * factor;
-  var xChange = newXDistance - currentXDistance;
-  var yChange = newYDistance - currentYDistance;
-
-  var lowX = bbox[0] - (xChange / 2);
-  var lowY = bbox[1] - (yChange / 2);
-  var highX = (xChange / 2) + bbox[2];
-  var highY = (yChange / 2) + bbox[3];
-
-  var sized = [lowX, lowY, highX, highY];
-  return sized;
-}
-
-},{}],220:[function(require,module,exports){
-var midpoint = require('turf-midpoint');
-var point = require('turf-point');
-var distance = require('turf-distance');
-
-/**
- * Takes a bounding box and calculates the minimum square bounding box that would contain the input.
- *
- * @module turf/square
- * @category measurement
- * @param {Array<number>} bbox a bounding box
- * @return {Array<number>} a square surrounding `bbox`
- * @example
- * var bbox = [-20,-20,-15,0];
- *
- * var squared = turf.square(bbox);
- *
- * var features = {
- *   "type": "FeatureCollection",
- *   "features": [
- *     turf.bboxPolygon(bbox),
- *     turf.bboxPolygon(squared)
- *   ]
- * };
- *
- * //=features
- */
-module.exports = function(bbox){
-  var squareBbox = [0,0,0,0];
-  var lowLeft = point([bbox[0], bbox[1]]);
-  var topLeft = point([bbox[0], bbox[3]]);
-  var topRight = point([bbox[2], bbox[3]]);
-  var lowRight = point([bbox[2], bbox[1]]);
-
-  var horizontalDistance = distance(lowLeft, lowRight, 'miles');
-  var verticalDistance = distance(lowLeft, topLeft, 'miles');
-  if(horizontalDistance >= verticalDistance){
-    squareBbox[0] = bbox[0];
-    squareBbox[2] = bbox[2];
-    var verticalMidpoint = midpoint(lowLeft, topLeft);
-    squareBbox[1] = verticalMidpoint.geometry.coordinates[1] - ((bbox[2] - bbox[0]) / 2);
-    squareBbox[3] = verticalMidpoint.geometry.coordinates[1] + ((bbox[2] - bbox[0]) / 2);
-    return squareBbox;
-  }
-  else {
-    squareBbox[1] = bbox[1];
-    squareBbox[3] = bbox[3];
-    var horzontalMidpoint = midpoint(lowLeft, lowRight);
-    squareBbox[0] = horzontalMidpoint.geometry.coordinates[0] - ((bbox[3] - bbox[1]) / 2);
-    squareBbox[2] = horzontalMidpoint.geometry.coordinates[0] + ((bbox[3] - bbox[1]) / 2);
-    return squareBbox;
-  }
-}
-
-
-},{"turf-distance":221,"turf-midpoint":223,"turf-point":217}],221:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":222}],222:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],223:[function(require,module,exports){
-// http://cs.selu.edu/~rbyrd/math/midpoint/
-// ((x1+x2)/2), ((y1+y2)/2)
-var point = require('turf-point');
-
-/**
- * Takes two {@link Point} features and returns a Point midway between the two.
- *
- * @module turf/midpoint
- * @category measurement
- * @param {Point} pt1 first point
- * @param {Point} pt2 second point
- * @return {Point} a point between the two
- * @example
- * var pt1 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [144.834823, -37.771257]
- *   }
- * };
- * var pt2 = {
- *   "type": "Feature",
- *   "properties": {},
- *   "geometry": {
- *     "type": "Point",
- *     "coordinates": [145.14244, -37.830937]
- *   }
- * };
- *
- * var midpointed = turf.midpoint(pt1, pt2);
- * midpointed.properties['marker-color'] = '#f00';
- *
- *
- * var result = {
- *   "type": "FeatureCollection",
- *   "features": [pt1, pt2, midpointed]
- * };
- *
- * //=result
- */
-module.exports = function(point1, point2) {
-  if (point1 === null || point2 === null){
-    throw new Error('Less than two points passed.');
-  }
-
-  var x1 = point1.geometry.coordinates[0];
-  var x2 = point2.geometry.coordinates[0];
-  var y1 = point1.geometry.coordinates[1];
-  var y2 = point2.geometry.coordinates[1];
-
-  var x3 = x1 + x2;
-  var midX = x3/2;
-  var y3 = y1 + y2;
-  var midY = y3/2;
-
-  return point([midX, midY]);
-};
-
-},{"turf-point":217}],224:[function(require,module,exports){
-arguments[4][134][0].apply(exports,arguments)
-},{"dup":134,"turf-featurecollection":212,"turf-polygon":218}],225:[function(require,module,exports){
+},{"dup":111}],210:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":209,"dup":112}],211:[function(require,module,exports){
 /**
  * Copyright (c) 2010, Jason Davies.
  *
@@ -49306,7 +48341,7 @@ arguments[4][134][0].apply(exports,arguments)
     }
   }
 
-},{}],226:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 //https://github.com/jasondavies/conrec.js
 //http://stackoverflow.com/questions/263305/drawing-a-topographical-map
 var tin = require('turf-tin');
@@ -49407,37 +48442,258 @@ module.exports = function(points, z, resolution, breaks){
 
 
 
-},{"./conrec":225,"turf-extent":227,"turf-featurecollection":229,"turf-grid":230,"turf-inside":232,"turf-linestring":233,"turf-planepoint":234,"turf-square":235,"turf-tin":240}],227:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"dup":116,"turf-meta":228}],228:[function(require,module,exports){
+},{"./conrec":211,"turf-extent":213,"turf-featurecollection":215,"turf-grid":216,"turf-inside":218,"turf-linestring":219,"turf-planepoint":220,"turf-square":221,"turf-tin":226}],213:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],229:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],230:[function(require,module,exports){
-arguments[4][197][0].apply(exports,arguments)
-},{"dup":197,"turf-point":231}],231:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],232:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],233:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"dup":105}],234:[function(require,module,exports){
-arguments[4][216][0].apply(exports,arguments)
-},{"dup":216}],235:[function(require,module,exports){
-arguments[4][220][0].apply(exports,arguments)
-},{"dup":220,"turf-distance":236,"turf-midpoint":238,"turf-point":239}],236:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":237}],237:[function(require,module,exports){
+},{"dup":117,"turf-meta":214}],214:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],215:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],216:[function(require,module,exports){
+var point = require('turf-point');
+
+/**
+ * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
+ *
+ * @module turf/grid
+ * @category interpolation
+ * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
+ * @param {Number} depth how many cells to output
+ * @return {FeatureCollection} grid as FeatureCollection with {@link Point} features
+ * @example
+ * var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
+ * var depth = 10;
+ *
+ * var grid = turf.grid(extent, depth);
+ *
+ * //=grid
+ */
+module.exports = function(extents, depth) {
+  var xmin = extents[0];
+  var ymin = extents[1];
+  var xmax = extents[2];
+  var ymax = extents[3];
+  var interval = (xmax - xmin) / depth;
+  var coords = [];
+  var fc = {
+    type: 'FeatureCollection',
+    features: []
+  };
+
+  for (var x=0; x<=depth; x++){
+    for (var y=0;y<=depth; y++){
+      fc.features.push(point([(x * interval) + xmin, (y * interval) + ymin]));
+    }
+  }
+  return fc;
+}
+
+},{"turf-point":217}],217:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],218:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],219:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],220:[function(require,module,exports){
+/**
+ * Takes a triangular plane as a {@link Polygon} feature
+ * and a {@link Point} feature within that triangle and returns the z-value
+ * at that point. The Polygon needs to have properties `a`, `b`, and `c`
+ * that define the values at its three corners.
+ *
+ * @module turf/planepoint
+ * @category interpolation
+ * @param {Point} interpolatedPoint the Point for which a z-value will be calculated
+ * @param {Polygon} triangle a Polygon feature with three vertices
+ * @return {number} the z-value for `interpolatedPoint`
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-75.3221, 39.529]
+ *   }
+ * };
+ * var point = turf.point([-75.3221, 39.529]);
+ * // triangle is a polygon with "a", "b",
+ * // and "c" values representing
+ * // the values of the coordinates in order.
+ * var triangle = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "a": 11,
+ *     "b": 122,
+ *     "c": 44
+ *   },
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-75.1221, 39.57],
+ *       [-75.58, 39.18],
+ *       [-75.97, 39.86],
+ *       [-75.1221, 39.57]
+ *     ]]
+ *   }
+ * };
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [triangle, point]
+ * };
+ *
+ * var zValue = turf.planepoint(point, triangle);
+ *
+ * //=features
+ *
+ * //=zValue
+ */
+module.exports = function(point, triangle){
+  var x = point.geometry.coordinates[0],
+      y = point.geometry.coordinates[1],
+      x1 = triangle.geometry.coordinates[0][0][0],
+      y1 = triangle.geometry.coordinates[0][0][1],
+      z1 = triangle.properties.a,
+      x2 = triangle.geometry.coordinates[0][1][0],
+      y2 = triangle.geometry.coordinates[0][1][1],
+      z2 = triangle.properties.b,
+      x3 = triangle.geometry.coordinates[0][2][0],
+      y3 = triangle.geometry.coordinates[0][2][1],
+      z3 = triangle.properties.c;
+
+  var z = (z3 * (x-x1) * (y-y2) + z1 * (x-x2) * (y-y3) + z2 * (x-x3) * (y-y1) -
+      z2 * (x-x1) * (y-y3) - z3 * (x-x2) * (y-y1) - z1 * (x-x3) * (y-y2)) /
+      ((x-x1) * (y-y2) + (x-x2) * (y-y3) +(x-x3) * (y-y1) -
+       (x-x1) * (y-y3) - (x-x2) * (y-y1) - (x-x3) * (y-y2));
+
+  return z;
+};
+
+},{}],221:[function(require,module,exports){
+var midpoint = require('turf-midpoint');
+var point = require('turf-point');
+var distance = require('turf-distance');
+
+/**
+ * Takes a bounding box and calculates the minimum square bounding box that would contain the input.
+ *
+ * @module turf/square
+ * @category measurement
+ * @param {Array<number>} bbox a bounding box
+ * @return {Array<number>} a square surrounding `bbox`
+ * @example
+ * var bbox = [-20,-20,-15,0];
+ *
+ * var squared = turf.square(bbox);
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     turf.bboxPolygon(bbox),
+ *     turf.bboxPolygon(squared)
+ *   ]
+ * };
+ *
+ * //=features
+ */
+module.exports = function(bbox){
+  var squareBbox = [0,0,0,0];
+  var lowLeft = point([bbox[0], bbox[1]]);
+  var topLeft = point([bbox[0], bbox[3]]);
+  var topRight = point([bbox[2], bbox[3]]);
+  var lowRight = point([bbox[2], bbox[1]]);
+
+  var horizontalDistance = distance(lowLeft, lowRight, 'miles');
+  var verticalDistance = distance(lowLeft, topLeft, 'miles');
+  if(horizontalDistance >= verticalDistance){
+    squareBbox[0] = bbox[0];
+    squareBbox[2] = bbox[2];
+    var verticalMidpoint = midpoint(lowLeft, topLeft);
+    squareBbox[1] = verticalMidpoint.geometry.coordinates[1] - ((bbox[2] - bbox[0]) / 2);
+    squareBbox[3] = verticalMidpoint.geometry.coordinates[1] + ((bbox[2] - bbox[0]) / 2);
+    return squareBbox;
+  }
+  else {
+    squareBbox[1] = bbox[1];
+    squareBbox[3] = bbox[3];
+    var horzontalMidpoint = midpoint(lowLeft, lowRight);
+    squareBbox[0] = horzontalMidpoint.geometry.coordinates[0] - ((bbox[3] - bbox[1]) / 2);
+    squareBbox[2] = horzontalMidpoint.geometry.coordinates[0] + ((bbox[3] - bbox[1]) / 2);
+    return squareBbox;
+  }
+}
+
+
+},{"turf-distance":222,"turf-midpoint":224,"turf-point":225}],222:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],238:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223,"turf-point":239}],239:[function(require,module,exports){
+},{"dup":94,"turf-invariant":223}],223:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],240:[function(require,module,exports){
-arguments[4][134][0].apply(exports,arguments)
-},{"dup":134,"turf-featurecollection":229,"turf-polygon":241}],241:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],242:[function(require,module,exports){
+},{"dup":95}],224:[function(require,module,exports){
+// http://cs.selu.edu/~rbyrd/math/midpoint/
+// ((x1+x2)/2), ((y1+y2)/2)
+var point = require('turf-point');
+
+/**
+ * Takes two {@link Point} features and returns a Point midway between the two.
+ *
+ * @module turf/midpoint
+ * @category measurement
+ * @param {Point} pt1 first point
+ * @param {Point} pt2 second point
+ * @return {Point} a point between the two
+ * @example
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [144.834823, -37.771257]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [145.14244, -37.830937]
+ *   }
+ * };
+ *
+ * var midpointed = turf.midpoint(pt1, pt2);
+ * midpointed.properties['marker-color'] = '#f00';
+ *
+ *
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, midpointed]
+ * };
+ *
+ * //=result
+ */
+module.exports = function(point1, point2) {
+  if (point1 === null || point2 === null){
+    throw new Error('Less than two points passed.');
+  }
+
+  var x1 = point1.geometry.coordinates[0];
+  var x2 = point2.geometry.coordinates[0];
+  var y1 = point1.geometry.coordinates[1];
+  var y2 = point2.geometry.coordinates[1];
+
+  var x3 = x1 + x2;
+  var midX = x3/2;
+  var y3 = y1 + y2;
+  var midY = y3/2;
+
+  return point([midX, midY]);
+};
+
+},{"turf-point":225}],225:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],226:[function(require,module,exports){
+arguments[4][135][0].apply(exports,arguments)
+},{"dup":135,"turf-featurecollection":215,"turf-polygon":227}],227:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],228:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -49520,9 +48776,9 @@ module.exports = function(fc, field, num){
   return breaks;
 };
 
-},{"simple-statistics":243}],243:[function(require,module,exports){
-arguments[4][77][0].apply(exports,arguments)
-},{"dup":77}],244:[function(require,module,exports){
+},{"simple-statistics":229}],229:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],230:[function(require,module,exports){
 /**
  * Takes a {@link Polygon} feature and returns a {@link FeatureCollection} of {@link Point} features at all self-intersections.
  *
@@ -49545,7 +48801,7 @@ arguments[4][77][0].apply(exports,arguments)
  *     ]]
  *   }
  * };
- * 
+ *
  * var kinks = turf.kinks(poly);
  *
  * var resultFeatures = kinks.intersections.features.concat(poly);
@@ -49557,48 +48813,50 @@ arguments[4][77][0].apply(exports,arguments)
  * //=result
  */
 
-var polygon = require('turf-polygon');
 var point = require('turf-point');
 var fc = require('turf-featurecollection');
 
 module.exports = function(polyIn) {
   var poly;
-  var results = {intersections: fc([]), fixed: null};
+  var results = {
+    intersections: fc([]),
+    fixed: null
+  };
   if (polyIn.type === 'Feature') {
     poly = polyIn.geometry;
   } else {
     poly = polyIn;
   }
-  var intersectionHash = {};
-  poly.coordinates.forEach(function(ring1){
-    poly.coordinates.forEach(function(ring2){
-      for(var i = 0; i < ring1.length-1; i++) {
-        for(var k = 0; k < ring2.length-1; k++) {
-          var intersection = lineIntersects(ring1[i][0],ring1[i][1],ring1[i+1][0],ring1[i+1][1],
-            ring2[k][0],ring2[k][1],ring2[k+1][0],ring2[k+1][1]);
-          if(intersection) {
+  poly.coordinates.forEach(function(ring1) {
+    poly.coordinates.forEach(function(ring2) {
+      for (var i = 0; i < ring1.length - 1; i++) {
+        for (var k = 0; k < ring2.length - 1; k++) {
+          var intersection = lineIntersects(ring1[i][0], ring1[i][1], ring1[i + 1][0], ring1[i + 1][1],
+            ring2[k][0], ring2[k][1], ring2[k + 1][0], ring2[k + 1][1]);
+          if (intersection) {
             results.intersections.features.push(point([intersection[0], intersection[1]]));
           }
         }
       }
-    })
-  })
+    });
+  });
   return results;
-}
+};
 
 
 // modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
 function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
   // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
-  var denominator, a, b, numerator1, numerator2, result = {
-    x: null,
-    y: null,
-    onLine1: false,
-    onLine2: false
-  };
+  var denominator, a, b, numerator1, numerator2,
+    result = {
+      x: null,
+      y: null,
+      onLine1: false,
+      onLine2: false
+    };
   denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
-  if (denominator == 0) {
-    if(result.x != null && result.y != null) {
+  if (denominator === 0) {
+    if (result.x !== null && result.y !== null) {
       return result;
     } else {
       return false;
@@ -49624,21 +48882,18 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
     result.onLine2 = true;
   }
   // if line1 and line2 are segments, they intersect if both of the above are true
-  if(result.onLine1 && result.onLine2){
+  if (result.onLine1 && result.onLine2) {
     return [result.x, result.y];
-  }
-  else {
+  } else {
     return false;
   }
 }
 
-},{"turf-featurecollection":245,"turf-point":246,"turf-polygon":247}],245:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],246:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],247:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],248:[function(require,module,exports){
+},{"turf-featurecollection":231,"turf-point":232}],231:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],232:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],233:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 
@@ -49687,13 +48942,13 @@ module.exports = function (line, units) {
   return travelled;
 }
 
-},{"turf-distance":249,"turf-point":251}],249:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":250}],250:[function(require,module,exports){
+},{"turf-distance":234,"turf-point":236}],234:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],251:[function(require,module,exports){
+},{"dup":94,"turf-invariant":235}],235:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],252:[function(require,module,exports){
+},{"dup":95}],236:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],237:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 var linestring = require('turf-linestring');
@@ -49749,41 +49004,47 @@ var destination = require('turf-destination');
  * //=sliced
  */
 
-module.exports = function (startPt, stopPt, line) {  
+module.exports = function(startPt, stopPt, line) {
   var coords;
-  if(line.type === 'Feature') coords = line.geometry.coordinates;
-  else if(line.type === 'LineString') coords = line.geometry.coordinates;
-  else throw new Error('input must be a LineString Feature or Geometry');
+  if (line.type === 'Feature') {
+    coords = line.geometry.coordinates;
+  } else if (line.type === 'LineString') {
+    coords = line.geometry.coordinates;
+  } else {
+    throw new Error('input must be a LineString Feature or Geometry');
+  }
 
   var startVertex = pointOnLine(startPt, coords);
   var stopVertex = pointOnLine(stopPt, coords);
   var ends;
-  if(startVertex.properties.index <= stopVertex.properties.index) {
+  if (startVertex.properties.index <= stopVertex.properties.index) {
     ends = [startVertex, stopVertex];
   } else {
     ends = [stopVertex, startVertex];
   }
   var clipLine = linestring([ends[0].geometry.coordinates], {});
-  for(var i = ends[0].properties.index+1; i < ends[1].properties.index+1; i++) {
+  for (var i = ends[0].properties.index + 1; i < ends[1].properties.index + 1; i++) {
     clipLine.geometry.coordinates.push(coords[i]);
   }
   clipLine.geometry.coordinates.push(ends[1].geometry.coordinates);
   return clipLine;
-}
+};
 
-function pointOnLine (pt, coords) {
-  var units = 'miles'
-  var closestPt = point([Infinity, Infinity], {dist: Infinity});
-  for(var i = 0; i < coords.length - 1; i++) {
-    var start = point(coords[i])
-    var stop = point(coords[i+1])
+function pointOnLine(pt, coords) {
+  var units = 'miles';
+  var closestPt = point([Infinity, Infinity], {
+    dist: Infinity
+  });
+  for (var i = 0; i < coords.length - 1; i++) {
+    var start = point(coords[i]);
+    var stop = point(coords[i + 1]);
     //start
     start.properties.dist = distance(pt, start, units);
     //stop
     stop.properties.dist = distance(pt, stop, units);
     //perpendicular
-    var direction = bearing(start, stop)
-    var perpendicularPt = destination(pt, 1000 , direction + 90, units) // 1000 = gross
+    var direction = bearing(start, stop);
+    var perpendicularPt = destination(pt, 1000, direction + 90, units); // 1000 = gross
     var intersect = lineIntersects(
       pt.geometry.coordinates[0],
       pt.geometry.coordinates[1],
@@ -49793,9 +49054,9 @@ function pointOnLine (pt, coords) {
       start.geometry.coordinates[1],
       stop.geometry.coordinates[0],
       stop.geometry.coordinates[1]
-      );
-    if(!intersect) {
-      perpendicularPt = destination(pt, 1000 , direction - 90, units) // 1000 = gross
+    );
+    if (!intersect) {
+      perpendicularPt = destination(pt, 1000, direction - 90, units); // 1000 = gross
       intersect = lineIntersects(
         pt.geometry.coordinates[0],
         pt.geometry.coordinates[1],
@@ -49805,44 +49066,45 @@ function pointOnLine (pt, coords) {
         start.geometry.coordinates[1],
         stop.geometry.coordinates[0],
         stop.geometry.coordinates[1]
-        );
+      );
     }
     perpendicularPt.properties.dist = Infinity;
     var intersectPt;
-    if(intersect) {
+    if (intersect) {
       var intersectPt = point(intersect);
       intersectPt.properties.dist = distance(pt, intersectPt, units);
     }
-    
-    if(start.properties.dist < closestPt.properties.dist) {
+
+    if (start.properties.dist < closestPt.properties.dist) {
       closestPt = start;
       closestPt.properties.index = i;
     }
-    if(stop.properties.dist < closestPt.properties.dist) {
-     closestPt = stop;
-     closestPt.properties.index = i;
+    if (stop.properties.dist < closestPt.properties.dist) {
+      closestPt = stop;
+      closestPt.properties.index = i;
     }
-    if(intersectPt && intersectPt.properties.dist < closestPt.properties.dist){ 
+    if (intersectPt && intersectPt.properties.dist < closestPt.properties.dist) {
       closestPt = intersectPt;
       closestPt.properties.index = i;
     }
   }
-  
+
   return closestPt;
 }
 
 // modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
 function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
   // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
-  var denominator, a, b, numerator1, numerator2, result = {
-    x: null,
-    y: null,
-    onLine1: false,
-    onLine2: false
-  };
+  var denominator, a, b, numerator1, numerator2,
+    result = {
+      x: null,
+      y: null,
+      onLine1: false,
+      onLine2: false
+    };
   denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
-  if (denominator == 0) {
-    if(result.x != null && result.y != null) {
+  if (denominator === 0) {
+    if (result.x !== null && result.y !== null) {
       return result;
     } else {
       return false;
@@ -49868,37 +49130,77 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
     result.onLine2 = true;
   }
   // if line1 and line2 are segments, they intersect if both of the above are true
-  if(result.onLine1 && result.onLine2){
+  if (result.onLine1 && result.onLine2) {
     return [result.x, result.y];
-  }
-  else {
+  } else {
     return false;
   }
 }
 
-},{"turf-bearing":253,"turf-destination":254,"turf-distance":255,"turf-linestring":257,"turf-point":258}],253:[function(require,module,exports){
-arguments[4][91][0].apply(exports,arguments)
-},{"dup":91}],254:[function(require,module,exports){
+},{"turf-bearing":238,"turf-destination":239,"turf-distance":240,"turf-linestring":242,"turf-point":243}],238:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"dup":92,"turf-point":258}],255:[function(require,module,exports){
+},{"dup":92}],239:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":256}],256:[function(require,module,exports){
+},{"dup":93,"turf-point":243}],240:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],257:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"dup":105}],258:[function(require,module,exports){
+},{"dup":94,"turf-invariant":241}],241:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],259:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"dup":105}],260:[function(require,module,exports){
-arguments[4][79][0].apply(exports,arguments)
-},{"dup":79,"turf-inside":261}],261:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],262:[function(require,module,exports){
-arguments[4][81][0].apply(exports,arguments)
-},{"dup":81,"turf-inside":263}],263:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],264:[function(require,module,exports){
+},{"dup":95}],242:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],243:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],244:[function(require,module,exports){
+/**
+ * Creates a {@link LineString} {@link Feature} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @module turf/linestring
+ * @category helper
+ * @param {Array<Array<Number>>} coordinates an array of Positions
+ * @param {Object=} properties an Object of key-value pairs to add as properties
+ * @returns {LineString} a LineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var linestring1 = turf.linestring([
+ *	[-21.964416, 64.148203],
+ *	[-21.956176, 64.141316],
+ *	[-21.93901, 64.135924],
+ *	[-21.927337, 64.136673]
+ * ]);
+ * var linestring2 = turf.linestring([
+ *	[-21.929054, 64.127985],
+ *	[-21.912918, 64.134726],
+ *	[-21.916007, 64.141016],
+ * 	[-21.930084, 64.14446]
+ * ], {name: 'line 1', distance: 145});
+ *
+ * //=linestring1
+ *
+ * //=linestring2
+ */
+module.exports = function(coordinates, properties){
+  if (!coordinates) {
+      throw new Error('No coordinates passed');
+  }
+  return {
+    "type": "Feature",
+    "geometry": {
+      "type": "LineString",
+      "coordinates": coordinates
+    },
+    "properties": properties || {}
+  };
+};
+
+},{}],245:[function(require,module,exports){
+arguments[4][80][0].apply(exports,arguments)
+},{"dup":80,"turf-inside":246}],246:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],247:[function(require,module,exports){
+arguments[4][82][0].apply(exports,arguments)
+},{"dup":82,"turf-inside":248}],248:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],249:[function(require,module,exports){
 var clone = require('clone');
 var union = require('turf-union');
 
@@ -49967,27 +49269,27 @@ module.exports = function(polygons){
   return merged;
 };
 
-},{"clone":265,"turf-union":266}],265:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"buffer":2,"dup":127}],266:[function(require,module,exports){
+},{"clone":250,"turf-union":251}],250:[function(require,module,exports){
 arguments[4][128][0].apply(exports,arguments)
-},{"dup":128,"jsts":267}],267:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"./lib/jsts":268,"dup":108,"javascript.util":270}],268:[function(require,module,exports){
+},{"buffer":2,"dup":128}],251:[function(require,module,exports){
+arguments[4][129][0].apply(exports,arguments)
+},{"dup":129,"jsts":252}],252:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],269:[function(require,module,exports){
+},{"./lib/jsts":253,"dup":109,"javascript.util":255}],253:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"dup":110}],270:[function(require,module,exports){
+},{"dup":110}],254:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":269,"dup":111}],271:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223,"turf-point":272}],272:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],273:[function(require,module,exports){
-arguments[4][83][0].apply(exports,arguments)
-},{"dup":83,"turf-inside":274}],274:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],275:[function(require,module,exports){
+},{"dup":111}],255:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":254,"dup":112}],256:[function(require,module,exports){
+arguments[4][224][0].apply(exports,arguments)
+},{"dup":224,"turf-point":257}],257:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],258:[function(require,module,exports){
+arguments[4][84][0].apply(exports,arguments)
+},{"dup":84,"turf-inside":259}],259:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],260:[function(require,module,exports){
 var distance = require('turf-distance');
 
 /**
@@ -50070,13 +49372,63 @@ module.exports = function(targetPoint, points){
   return nearestPoint;
 }
 
-},{"turf-distance":276}],276:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":277}],277:[function(require,module,exports){
+},{"turf-distance":261}],261:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],278:[function(require,module,exports){
-arguments[4][216][0].apply(exports,arguments)
-},{"dup":216}],279:[function(require,module,exports){
+},{"dup":94,"turf-invariant":262}],262:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],263:[function(require,module,exports){
+arguments[4][220][0].apply(exports,arguments)
+},{"dup":220}],264:[function(require,module,exports){
+var point = require('turf-point');
+var featurecollection = require('turf-featurecollection');
+var distance = require('turf-distance');
+/**
+ * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
+ *
+ * @module turf/point-grid
+ * @category interpolation
+ * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
+ * @param {Number} cellWidth the distance across each cell
+ * @param {String} units used in calculating cellWidth ('miles' or 'kilometers')
+ * @return {FeatureCollection} grid as FeatureCollection with {@link Point} features
+ * @example
+ * var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
+ * var cellWidth = 3;
+ * var units = 'miles';
+ *
+ * var grid = turf.pointGrid(extent, cellWidth, units);
+ *
+ * //=grid
+ */
+module.exports = function (bbox, cell, units) {
+  var fc = featurecollection([]);
+  var xFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[2], bbox[1]]), units));
+  var cellWidth = xFraction * (bbox[2] - bbox[0]);
+  var yFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[0], bbox[3]]), units));
+  var cellHeight = yFraction * (bbox[3] - bbox[1]);
+
+  var currentX = bbox[0];
+  while (currentX <= bbox[2]) {
+    var currentY = bbox[1];
+    while (currentY <= bbox[3]) {
+      fc.features.push(point([currentX, currentY]));
+
+      currentY += cellHeight;
+    }
+    currentX += cellWidth;
+  }
+  
+  return fc;
+}
+},{"turf-distance":265,"turf-featurecollection":267,"turf-point":268}],265:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94,"turf-invariant":266}],266:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],267:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],268:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],269:[function(require,module,exports){
 var distance = require('turf-distance');
 var point = require('turf-point');
 var linestring = require('turf-linestring');
@@ -50127,28 +49479,34 @@ var destination = require('turf-destination');
  * //=result
  */
 
-module.exports = function (line, pt) {
+module.exports = function(line, pt) {
   var coords;
-  if(line.type === 'Feature') coords = line.geometry.coordinates;
-  else if(line.type === 'LineString') coords = line.geometry.coordinates;
-  else throw new Error('input must be a LineString Feature or Geometry');
+  if (line.type === 'Feature') {
+    coords = line.geometry.coordinates;
+  } else if (line.type === 'LineString') {
+    coords = line.geometry.coordinates;
+  } else {
+    throw new Error('input must be a LineString Feature or Geometry');
+  }
 
   return pointOnLine(pt, coords);
 };
 
-function pointOnLine (pt, coords) {
-  var units = 'miles'
-  var closestPt = point([Infinity, Infinity], {dist: Infinity});
-  for(var i = 0; i < coords.length - 1; i++) {
-    var start = point(coords[i])
-    var stop = point(coords[i+1])
+function pointOnLine(pt, coords) {
+  var units = 'miles';
+  var closestPt = point([Infinity, Infinity], {
+    dist: Infinity
+  });
+  for (var i = 0; i < coords.length - 1; i++) {
+    var start = point(coords[i]);
+    var stop = point(coords[i + 1]);
     //start
     start.properties.dist = distance(pt, start, units);
     //stop
     stop.properties.dist = distance(pt, stop, units);
     //perpendicular
-    var direction = bearing(start, stop)
-    var perpendicularPt = destination(pt, 1000 , direction + 90, units) // 1000 = gross
+    var direction = bearing(start, stop);
+    var perpendicularPt = destination(pt, 1000, direction + 90, units); // 1000 = gross
     var intersect = lineIntersects(
       pt.geometry.coordinates[0],
       pt.geometry.coordinates[1],
@@ -50158,9 +49516,9 @@ function pointOnLine (pt, coords) {
       start.geometry.coordinates[1],
       stop.geometry.coordinates[0],
       stop.geometry.coordinates[1]
-      );
-    if(!intersect) {
-      perpendicularPt = destination(pt, 1000 , direction - 90, units) // 1000 = gross
+    );
+    if (!intersect) {
+      perpendicularPt = destination(pt, 1000, direction - 90, units); // 1000 = gross
       intersect = lineIntersects(
         pt.geometry.coordinates[0],
         pt.geometry.coordinates[1],
@@ -50170,24 +49528,24 @@ function pointOnLine (pt, coords) {
         start.geometry.coordinates[1],
         stop.geometry.coordinates[0],
         stop.geometry.coordinates[1]
-        );
+      );
     }
     perpendicularPt.properties.dist = Infinity;
     var intersectPt;
-    if(intersect) {
+    if (intersect) {
       var intersectPt = point(intersect);
       intersectPt.properties.dist = distance(pt, intersectPt, units);
     }
 
-    if(start.properties.dist < closestPt.properties.dist) {
+    if (start.properties.dist < closestPt.properties.dist) {
       closestPt = start;
       closestPt.properties.index = i;
     }
-    if(stop.properties.dist < closestPt.properties.dist) {
-     closestPt = stop;
-     closestPt.properties.index = i;
+    if (stop.properties.dist < closestPt.properties.dist) {
+      closestPt = stop;
+      closestPt.properties.index = i;
     }
-    if(intersectPt && intersectPt.properties.dist < closestPt.properties.dist){ 
+    if (intersectPt && intersectPt.properties.dist < closestPt.properties.dist) {
       closestPt = intersectPt;
       closestPt.properties.index = i;
     }
@@ -50199,15 +49557,16 @@ function pointOnLine (pt, coords) {
 // modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
 function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
   // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
-  var denominator, a, b, numerator1, numerator2, result = {
-    x: null,
-    y: null,
-    onLine1: false,
-    onLine2: false
-  };
+  var denominator, a, b, numerator1, numerator2,
+    result = {
+      x: null,
+      y: null,
+      onLine1: false,
+      onLine2: false
+    };
   denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
   if (denominator === 0) {
-    if(result.x !== null && result.y !== null) {
+    if (result.x !== null && result.y !== null) {
       return result;
     } else {
       return false;
@@ -50233,27 +49592,26 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
     result.onLine2 = true;
   }
   // if line1 and line2 are segments, they intersect if both of the above are true
-  if(result.onLine1 && result.onLine2){
+  if (result.onLine1 && result.onLine2) {
     return [result.x, result.y];
-  }
-  else {
+  } else {
     return false;
   }
 }
 
-},{"turf-bearing":280,"turf-destination":281,"turf-distance":282,"turf-linestring":284,"turf-point":285}],280:[function(require,module,exports){
-arguments[4][91][0].apply(exports,arguments)
-},{"dup":91}],281:[function(require,module,exports){
+},{"turf-bearing":270,"turf-destination":271,"turf-distance":272,"turf-linestring":274,"turf-point":275}],270:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"dup":92,"turf-point":285}],282:[function(require,module,exports){
+},{"dup":92}],271:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":283}],283:[function(require,module,exports){
+},{"dup":93,"turf-point":275}],272:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],284:[function(require,module,exports){
-arguments[4][105][0].apply(exports,arguments)
-},{"dup":105}],285:[function(require,module,exports){
+},{"dup":94,"turf-invariant":273}],273:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],286:[function(require,module,exports){
+},{"dup":95}],274:[function(require,module,exports){
+arguments[4][106][0].apply(exports,arguments)
+},{"dup":106}],275:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],276:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 var centroid = require('turf-center');
 var distance = require('turf-distance');
@@ -50404,33 +49762,237 @@ function pointOnSegment (x, y, x1, y1, x2, y2) {
   }
 }
 
-},{"turf-center":287,"turf-distance":291,"turf-explode":293,"turf-featurecollection":296,"turf-inside":297}],287:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"dup":115,"turf-extent":288,"turf-point":290}],288:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"dup":116,"turf-meta":289}],289:[function(require,module,exports){
+},{"turf-center":277,"turf-distance":281,"turf-explode":283,"turf-featurecollection":286,"turf-inside":287}],277:[function(require,module,exports){
+var extent = require('turf-extent'),
+    point = require('turf-point');
+
+/**
+ * Takes a {@link FeatureCollection} of any type and returns the absolute center point of all features.
+ *
+ * @module turf/center
+ * @category measurement
+ * @param {FeatureCollection} features a FeatureCollection of any type
+ * @return {Point} a Point feature at the
+ * absolute center point of all input features
+ * @example
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.522259, 35.4691]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.502754, 35.463455]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.508269, 35.463245]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.516809, 35.465779]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.515372, 35.467072]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.509363, 35.463053]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.511123, 35.466601]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.518547, 35.469327]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.519706, 35.469659]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.517839, 35.466998]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.508678, 35.464942]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [-97.514914, 35.463453]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var centerPt = turf.center(features);
+ * centerPt.properties['marker-size'] = 'large';
+ * centerPt.properties['marker-color'] = '#000';
+ *
+ * var resultFeatures = features.features.concat(centerPt);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+
+module.exports = function(layer, done){
+  var ext = extent(layer);
+  var x = (ext[0] + ext[2])/2;
+  var y = (ext[1] + ext[3])/2;
+  return point([x, y]);
+};
+
+},{"turf-extent":278,"turf-point":280}],278:[function(require,module,exports){
 arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],290:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],291:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":292}],292:[function(require,module,exports){
+},{"dup":117,"turf-meta":279}],279:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],280:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],281:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],293:[function(require,module,exports){
-arguments[4][187][0].apply(exports,arguments)
-},{"dup":187,"turf-featurecollection":296,"turf-meta":294,"turf-point":295}],294:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"dup":117}],295:[function(require,module,exports){
+},{"dup":94,"turf-invariant":282}],282:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],296:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],297:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],298:[function(require,module,exports){
-arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],299:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],300:[function(require,module,exports){
+},{"dup":95}],283:[function(require,module,exports){
+arguments[4][188][0].apply(exports,arguments)
+},{"dup":188,"turf-featurecollection":286,"turf-meta":284,"turf-point":285}],284:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],285:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],286:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],287:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],288:[function(require,module,exports){
+/**
+ * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
+ *
+ * @module turf/point
+ * @category helper
+ * @param {number[]} coordinates longitude, latitude position (each in decimal degrees)
+ * @param {Object=} properties an Object that is used as the {@link Feature}'s
+ * properties
+ * @returns {Point} a Point feature
+ * @example
+ * var pt1 = turf.point([-75.343, 39.984]);
+ *
+ * //=pt1
+ */
+var isArray = Array.isArray || function(arg) {
+  return Object.prototype.toString.call(arg) === '[object Array]';
+};
+module.exports = function(coordinates, properties) {
+  if (!isArray(coordinates)) throw new Error('Coordinates must be an array');
+  if (coordinates.length < 2) throw new Error('Coordinates must be at least 2 numbers long');
+  return {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: coordinates
+    },
+    properties: properties || {}
+  };
+};
+
+},{}],289:[function(require,module,exports){
+/**
+ * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a GeoJSON {@link Polygon} feature.
+ *
+ * @module turf/polygon
+ * @category helper
+ * @param {Array<Array<Number>>} rings an array of LinearRings
+ * @param {Object=} properties a properties object
+ * @returns {Polygon} a Polygon feature
+ * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
+ * or if a LinearRing of the Polygon does not have matching Positions at the
+ * beginning & end.
+ * @example
+ * var polygon = turf.polygon([[
+ *  [-2.275543, 53.464547],
+ *  [-2.275543, 53.489271],
+ *  [-2.215118, 53.489271],
+ *  [-2.215118, 53.464547],
+ *  [-2.275543, 53.464547]
+ * ]], { name: 'poly1', population: 400});
+ *
+ * //=polygon
+ */
+module.exports = function(coordinates, properties){
+
+  if (coordinates === null) throw new Error('No coordinates passed');
+
+  for (var i = 0; i < coordinates.length; i++) {
+    var ring = coordinates[i];
+    for (var j = 0; j < ring[ring.length - 1].length; j++) {
+      if (ring.length < 4) {
+        throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
+      }
+      if (ring[ring.length - 1][j] !== ring[0][j]) {
+        throw new Error('First and last Position are not equivalent.');
+      }
+    }
+  }
+
+  var polygon = {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": coordinates
+    },
+    "properties": properties
+  };
+
+  if (!polygon.properties) {
+    polygon.properties = {};
+  }
+
+  return polygon;
+};
+
+},{}],290:[function(require,module,exports){
 var ss = require('simple-statistics');
 
 /**
@@ -50512,9 +50074,9 @@ module.exports = function(fc, field, percentiles){
   return quantiles;
 };
 
-},{"simple-statistics":301}],301:[function(require,module,exports){
-arguments[4][77][0].apply(exports,arguments)
-},{"dup":77}],302:[function(require,module,exports){
+},{"simple-statistics":291}],291:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],292:[function(require,module,exports){
 var random = require('geojson-random');
 
 /**
@@ -50568,7 +50130,7 @@ module.exports = function(type, count, options) {
     }
 };
 
-},{"geojson-random":303}],303:[function(require,module,exports){
+},{"geojson-random":293}],293:[function(require,module,exports){
 module.exports = function() {
     throw new Error('call .point() or .polygon() instead');
 };
@@ -50673,7 +50235,7 @@ function collection(f) {
     };
 }
 
-},{}],304:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 var featurecollection = require('turf-featurecollection');
 var reclass = require('./index.js');
 
@@ -50770,9 +50332,9 @@ module.exports = function(fc, inField, outField, translations, done){
   return reclassed;
 };
 
-},{"./index.js":304,"turf-featurecollection":305}],305:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],306:[function(require,module,exports){
+},{"./index.js":294,"turf-featurecollection":295}],295:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],296:[function(require,module,exports){
 var featureCollection = require('turf-featurecollection');
 
 /**
@@ -50873,9 +50435,9 @@ module.exports = function(collection, key, val) {
   return newFC;
 };
 
-},{"turf-featurecollection":307}],307:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],308:[function(require,module,exports){
+},{"turf-featurecollection":297}],297:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],298:[function(require,module,exports){
 // http://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
 var featureCollection = require('turf-featurecollection');
 
@@ -50912,9 +50474,9 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(min);
 }
 
-},{"turf-featurecollection":309}],309:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],310:[function(require,module,exports){
+},{"turf-featurecollection":299}],299:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],300:[function(require,module,exports){
 var simplify = require('simplify-js');
 
 /**
@@ -51007,7 +50569,7 @@ function simpleFeature (geom, properties) {
   };
 }
 
-},{"simplify-js":311}],311:[function(require,module,exports){
+},{"simplify-js":301}],301:[function(require,module,exports){
 /*
  (c) 2013, Vladimir Agafonkin
  Simplify.js, a high-performance JS polyline simplification library
@@ -51140,23 +50702,124 @@ else window.simplify = simplify;
 
 })();
 
-},{}],312:[function(require,module,exports){
-arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],313:[function(require,module,exports){
-arguments[4][220][0].apply(exports,arguments)
-},{"dup":220,"turf-distance":314,"turf-midpoint":316,"turf-point":317}],314:[function(require,module,exports){
-arguments[4][93][0].apply(exports,arguments)
-},{"dup":93,"turf-invariant":315}],315:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
+/**
+ * Takes a bounding box and returns a new bounding box with a size expanded or contracted
+ * by a factor of X.
+ *
+ * @module turf/size
+ * @category measurement
+ * @param {Array<number>} bbox a bounding box
+ * @param {number} factor the ratio of the new bbox to the input bbox
+ * @return {Array<number>} the resized bbox
+ * @example
+ * var bbox = [0, 0, 10, 10]
+ *
+ * var resized = turf.size(bbox, 2);
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     turf.bboxPolygon(bbox),
+ *     turf.bboxPolygon(resized)
+ *   ]
+ * };
+ *
+ * //=features
+ */
+module.exports = function(bbox, factor){
+  var currentXDistance = (bbox[2] - bbox[0]);
+  var currentYDistance = (bbox[3] - bbox[1]);
+  var newXDistance = currentXDistance * factor;
+  var newYDistance = currentYDistance * factor;
+  var xChange = newXDistance - currentXDistance;
+  var yChange = newYDistance - currentYDistance;
+
+  var lowX = bbox[0] - (xChange / 2);
+  var lowY = bbox[1] - (yChange / 2);
+  var highX = (xChange / 2) + bbox[2];
+  var highY = (yChange / 2) + bbox[3];
+
+  var sized = [lowX, lowY, highX, highY];
+  return sized;
+}
+
+},{}],303:[function(require,module,exports){
+var featurecollection = require('turf-featurecollection');
+var point = require('turf-point');
+var polygon = require('turf-polygon');
+var distance = require('turf-distance');
+
+/**
+ * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
+ *
+ * @module turf/square-grid
+ * @category interpolation
+ * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
+ * @param {Number} cellWidth width of each cell
+ * @param {String} units units to use for cellWidth
+ * @return {FeatureCollection} grid as FeatureCollection with {@link Polygon} features
+ * @example
+ * var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];
+ * var cellWidth = 10;
+ * var units = 'miles';
+ *
+ * var squareGrid = turf.squareGrid(extent, cellWidth, units);
+ *
+ * //=squareGrid
+ */
+module.exports = function (bbox, cell, units) {
+  var fc = featurecollection([]);
+  var xFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[2], bbox[1]]), units));
+  var cellWidth = xFraction * (bbox[2] - bbox[0]);
+  var yFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[0], bbox[3]]), units));
+  var cellHeight = yFraction * (bbox[3] - bbox[1]);
+
+  var currentX = bbox[0];
+  while (currentX <= bbox[2]) {
+    var currentY = bbox[1];
+    while (currentY <= bbox[3]) {
+      var cellPoly = polygon([[
+          [currentX, currentY],
+          [currentX, currentY+cellHeight],
+          [currentX+cellWidth, currentY+cellHeight],
+          [currentX+cellWidth, currentY],
+          [currentX, currentY]
+        ]]);
+      fc.features.push(cellPoly);
+
+      currentY += cellHeight;
+    }
+    currentX += cellWidth;
+  }
+  
+  return fc;
+}
+},{"turf-distance":304,"turf-featurecollection":306,"turf-point":307,"turf-polygon":308}],304:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"dup":94}],316:[function(require,module,exports){
-arguments[4][223][0].apply(exports,arguments)
-},{"dup":223,"turf-point":317}],317:[function(require,module,exports){
+},{"dup":94,"turf-invariant":305}],305:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],318:[function(require,module,exports){
-arguments[4][85][0].apply(exports,arguments)
-},{"dup":85,"turf-inside":319}],319:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],320:[function(require,module,exports){
+},{"dup":95}],306:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],307:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],308:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],309:[function(require,module,exports){
+arguments[4][221][0].apply(exports,arguments)
+},{"dup":221,"turf-distance":310,"turf-midpoint":312,"turf-point":313}],310:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94,"turf-invariant":311}],311:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],312:[function(require,module,exports){
+arguments[4][224][0].apply(exports,arguments)
+},{"dup":224,"turf-point":313}],313:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],314:[function(require,module,exports){
+arguments[4][86][0].apply(exports,arguments)
+},{"dup":86,"turf-inside":315}],315:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],316:[function(require,module,exports){
 var inside = require('turf-inside');
 
 /**
@@ -51214,31 +50877,149 @@ module.exports = function(points, polygons, field, outField){
   return points;
 };
 
-},{"turf-inside":321}],321:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],322:[function(require,module,exports){
-arguments[4][134][0].apply(exports,arguments)
-},{"dup":134,"turf-featurecollection":323,"turf-polygon":324}],323:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],324:[function(require,module,exports){
-arguments[4][102][0].apply(exports,arguments)
-},{"dup":102}],325:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128,"jsts":326}],326:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"./lib/jsts":327,"dup":108,"javascript.util":329}],327:[function(require,module,exports){
+},{"turf-inside":317}],317:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],318:[function(require,module,exports){
+arguments[4][135][0].apply(exports,arguments)
+},{"dup":135,"turf-featurecollection":319,"turf-polygon":320}],319:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],320:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],321:[function(require,module,exports){
+var featurecollection = require('turf-featurecollection');
+var point = require('turf-point');
+var polygon = require('turf-polygon');
+var distance = require('turf-distance');
+
+/**
+ * Takes a bounding box and a cell depth and returns a {@link FeatureCollection} of {@link Point} features in a grid.
+ *
+ * @module turf/triangle-grid
+ * @category interpolation
+ * @param {Array<number>} extent extent in [minX, minY, maxX, maxY] order
+ * @param {Number} cellWidth width of each cell
+ * @param {String} units units to use for cellWidth
+ * @return {FeatureCollection} grid as FeatureCollection with {@link Polygon} features
+ * @example
+ * var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];
+ * var cellWidth = 10;
+ * var units = 'miles';
+ *
+ * var triangleGrid = turf.triangleGrid(extent, cellWidth, units);
+ *
+ * //=triangleGrid
+ */
+module.exports = function (bbox, cell, units) {
+  var fc = featurecollection([]);
+  var xFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[2], bbox[1]]), units));
+  var cellWidth = xFraction * (bbox[2] - bbox[0]);
+  var yFraction = cell / (distance(point([bbox[0], bbox[1]]), point([bbox[0], bbox[3]]), units));
+  var cellHeight = yFraction * (bbox[3] - bbox[1]);
+
+  var xi = 0;
+  var currentX = bbox[0];
+  while (currentX <= bbox[2]) {
+    var yi = 0;
+    var currentY = bbox[1];
+    while (currentY <= bbox[3]) {
+      if(xi%2===0 && yi%2===0) {
+        var cell1 = polygon([[
+            [currentX, currentY],
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell1);
+        var cell2 = polygon([[
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY+cellHeight]
+          ]]);
+        fc.features.push(cell2);
+      } else if(xi%2===0 && yi%2===1) {
+        var cell1 = polygon([[
+            [currentX, currentY],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell1);
+        var cell2 = polygon([[
+            [currentX, currentY],
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell2);
+      } else if(yi%2===0 && xi%2===1) {
+        var cell1 = polygon([[
+            [currentX, currentY],
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell1);
+        var cell2 = polygon([[
+            [currentX, currentY],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell2);
+      } else if(yi%2===1 && xi%2===1) {
+        var cell1 = polygon([[
+            [currentX, currentY],
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY]
+          ]]);
+        fc.features.push(cell1);
+        var cell2 = polygon([[
+            [currentX, currentY+cellHeight],
+            [currentX+cellWidth, currentY+cellHeight],
+            [currentX+cellWidth, currentY],
+            [currentX, currentY+cellHeight]
+          ]]);
+        fc.features.push(cell2);
+      }
+      currentY += cellHeight;
+      yi++;
+    }
+    xi++;
+    currentX += cellWidth;
+  }
+  return fc;
+};
+
+
+},{"turf-distance":322,"turf-featurecollection":324,"turf-point":325,"turf-polygon":326}],322:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"dup":94,"turf-invariant":323}],323:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"dup":95}],324:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],325:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"dup":96}],326:[function(require,module,exports){
+arguments[4][103][0].apply(exports,arguments)
+},{"dup":103}],327:[function(require,module,exports){
+arguments[4][129][0].apply(exports,arguments)
+},{"dup":129,"jsts":328}],328:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],328:[function(require,module,exports){
+},{"./lib/jsts":329,"dup":109,"javascript.util":331}],329:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"dup":110}],329:[function(require,module,exports){
+},{"dup":110}],330:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dist/javascript.util-node.min.js":328,"dup":111}],330:[function(require,module,exports){
-arguments[4][87][0].apply(exports,arguments)
-},{"dup":87,"simple-statistics":331,"turf-inside":332}],331:[function(require,module,exports){
-arguments[4][77][0].apply(exports,arguments)
-},{"dup":77}],332:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],333:[function(require,module,exports){
+},{"dup":111}],331:[function(require,module,exports){
+arguments[4][112][0].apply(exports,arguments)
+},{"./dist/javascript.util-node.min.js":330,"dup":112}],332:[function(require,module,exports){
+arguments[4][88][0].apply(exports,arguments)
+},{"dup":88,"simple-statistics":333,"turf-inside":334}],333:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],334:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],335:[function(require,module,exports){
 var inside = require('turf-inside');
 var featureCollection = require('turf-featurecollection');
 
@@ -51336,11 +51117,11 @@ module.exports = function(ptFC, polyFC){
   return pointsWithin;
 };
 
-},{"turf-featurecollection":334,"turf-inside":335}],334:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],335:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],336:[function(require,module,exports){
+},{"turf-featurecollection":336,"turf-inside":337}],336:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],337:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],338:[function(require,module,exports){
 module.exports={
     "functions": [
         {
@@ -52112,38 +51893,7 @@ module.exports={
             }
         },
         {
-            "name": "turf/grid",
-            "access": "",
-            "virtual": false,
-            "description": "Takes a bounding box and a cell depth and returns a  FeatureCollection of {@link Point} features in a grid.",
-            "parameters": [
-                {
-                    "name": "extent",
-                    "type": "Array.<number>",
-                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                },
-                {
-                    "name": "depth",
-                    "type": "Number",
-                    "description": "<p>how many cells to output</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                }
-            ],
-            "examples": [
-                "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar depth = 10;\n\nvar grid = turf.grid(extent, depth);\n\n//=grid"
-            ],
-            "returns": {
-                "type": "FeatureCollection",
-                "description": "<p>grid as FeatureCollection with {@link Point} features</p>"
-            }
-        },
-        {
-            "name": "turf/hex",
+            "name": "turf/hex-grid",
             "access": "",
             "virtual": false,
             "description": "Takes a bounding box and a cell size in degrees and returns a  FeatureCollection of flat-topped\nhexagons ({@link Polygon} features) aligned in an &quot;odd-q&quot; vertical grid as\ndescribed in Hexagonal Grids",
@@ -52157,20 +51907,28 @@ module.exports={
                     "nullable": ""
                 },
                 {
-                    "name": "size",
+                    "name": "cellWidth",
                     "type": "Number",
-                    "description": "<p>size of cells in degrees</p>",
+                    "description": "<p>width of cell in specified units</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used in calculating cellWidth ('miles' or 'kilometers')</p>",
                     "default": "",
                     "optional": "",
                     "nullable": ""
                 }
             ],
             "examples": [
-                "var bbox = [7.2669410, 43.695307, 7.2862529, 43.706476];\nvar size = 0.001;\n\nvar hexgrid = turf.hex(bbox, size);\n\n//=hexgrid"
+                "var bbox = [-96,31,-84,40];\nvar cellWidth = 50;\nvar units = 'miles';\n\nvar hexgrid = turf.hexGrid(bbox, cellWidth, units);\n\n//=hexgrid"
             ],
             "returns": {
                 "type": "FeatureCollection",
-                "description": "<p>a FeatureCollection of hexagonal {@link Polygon} features in a grid</p>"
+                "description": "<p>units used in calculating cellWidth ('miles' or 'kilometers')</p>"
             }
         },
         {
@@ -52240,53 +51998,6 @@ module.exports={
                     "MultiLineString"
                 ],
                 "description": "<p>if <code>poly1</code> and <code>poly2</code> overlap, returns a Polygon feature representing the area they overlap; if <code>poly1</code> and <code>poly2</code> do not overlap, returns <code>undefined</code>; if <code>poly1</code> and <code>poly2</code> share a border, a MultiLineString of the locations where their borders are shared</p>"
-            }
-        },
-        {
-            "name": "turf/isobands",
-            "access": "",
-            "virtual": false,
-            "description": "Takes a  FeatureCollection of {@link Point} features with z-values and an array of\nvalue breaks and generates filled contour isobands.",
-            "parameters": [
-                {
-                    "name": "points",
-                    "type": "FeatureCollection",
-                    "description": "<p>a FeeatureCollection of {@link Point} features</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                },
-                {
-                    "name": "z",
-                    "type": "string",
-                    "description": "<p>the property name in <code>points</code> from which z-values will be pulled</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                },
-                {
-                    "name": "resolution",
-                    "type": "number",
-                    "description": "<p>resolution of the underlying grid</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                },
-                {
-                    "name": "breaks",
-                    "type": "Array.<number>",
-                    "description": "<p>where to draw contours</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                }
-            ],
-            "examples": [
-                "// create random points with random\n// z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nvar isolined = turf.isobands(points, 'z', 15, breaks);\n//=isolined"
-            ],
-            "returns": {
-                "type": "FeatureCollection",
-                "description": "<p>a FeatureCollection of {@link Polygon} features representing isobands</p>"
             }
         },
         {
@@ -52487,7 +52198,7 @@ module.exports={
                     "type": "Object",
                     "description": "<p>an Object of key-value pairs to add as properties</p>",
                     "default": "",
-                    "optional": "",
+                    "optional": true,
                     "nullable": ""
                 }
             ],
@@ -52757,6 +52468,45 @@ module.exports={
             }
         },
         {
+            "name": "turf/point-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a  FeatureCollection of {@link Point} features in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>the distance across each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used in calculating cellWidth ('miles' or 'kilometers')</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellWidth = 3;\nvar units = 'miles';\n\nvar grid = turf.pointGrid(extent, cellWidth, units);\n\n//=grid"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>grid as FeatureCollection with {@link Point} features</p>"
+            }
+        },
+        {
             "name": "turf/point-on-line",
             "access": "",
             "virtual": false,
@@ -52817,17 +52567,9 @@ module.exports={
             "description": "Takes coordinates and properties (optional) and returns a new  Point feature.",
             "parameters": [
                 {
-                    "name": "longitude",
-                    "type": "number",
-                    "description": "<p>position west to east in decimal degrees</p>",
-                    "default": "",
-                    "optional": "",
-                    "nullable": ""
-                },
-                {
-                    "name": "latitude",
-                    "type": "number",
-                    "description": "<p>position south to north in decimal degrees</p>",
+                    "name": "coordinates",
+                    "type": "Array.<number>",
+                    "description": "<p>longitude, latitude position (each in decimal degrees)</p>",
                     "default": "",
                     "optional": "",
                     "nullable": ""
@@ -52837,7 +52579,7 @@ module.exports={
                     "type": "Object",
                     "description": "<p>an Object that is used as the {@link Feature}'s\nproperties</p>",
                     "default": "",
-                    "optional": "",
+                    "optional": true,
                     "nullable": ""
                 }
             ],
@@ -52866,9 +52608,9 @@ module.exports={
                 {
                     "name": "properties",
                     "type": "Object",
-                    "description": "<p>an optional properties object</p>",
+                    "description": "<p>a properties object</p>",
                     "default": "",
-                    "optional": "",
+                    "optional": true,
                     "nullable": ""
                 }
             ],
@@ -53170,6 +52912,45 @@ module.exports={
             }
         },
         {
+            "name": "turf/square-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a  FeatureCollection of {@link Point} features in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>width of each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>units to use for cellWidth</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];\nvar cellWidth = 10;\nvar units = 'miles';\n\nvar squareGrid = turf.squareGrid(extent, cellWidth, units);\n\n//=squareGrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>grid as FeatureCollection with {@link Polygon} features</p>"
+            }
+        },
+        {
             "name": "turf/square",
             "access": "",
             "virtual": false,
@@ -53318,6 +53099,45 @@ module.exports={
             }
         },
         {
+            "name": "turf/triangle-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a  FeatureCollection of {@link Point} features in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>width of each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>units to use for cellWidth</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];\nvar cellWidth = 10;\nvar units = 'miles';\n\nvar triangleGrid = turf.triangleGrid(extent, cellWidth, units);\n\n//=triangleGrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>grid as FeatureCollection with {@link Polygon} features</p>"
+            }
+        },
+        {
             "name": "turf/union",
             "access": "",
             "virtual": false,
@@ -53429,7 +53249,7 @@ module.exports={
     ]
 }
 
-},{}],337:[function(require,module,exports){
+},{}],339:[function(require,module,exports){
 var turf = require('turf'),
     docs = require('./docs.json'),
     Rpl = require('rpl-www');
@@ -53450,4 +53270,4 @@ function fToTip(f) {
     return [f.name.replace('/', '.'), f.description];
 }
 
-},{"./docs.json":336,"rpl-www":12,"turf":70}]},{},[337]);
+},{"./docs.json":338,"rpl-www":12,"turf":71}]},{},[339]);
