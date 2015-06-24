@@ -4,6 +4,7 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
+    "test": "node test/index.js",
     "start": "node build.js",
     "build": "node build.js production"
   },
@@ -42,6 +43,10 @@
   },
   "devDependencies": {
     "chokidar": "^1.0.0-rc3",
-    "npm": "^2.6.0"
+    "glob": "^5.0.10",
+    "node-static": "^0.7.6",
+    "npm": "^2.6.0",
+    "queue-async": "^1.0.7",
+    "tape": "^4.0.0"
   }
 }
