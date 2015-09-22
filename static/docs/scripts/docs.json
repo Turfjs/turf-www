@@ -1,0 +1,2160 @@
+{
+    "functions": [
+        {
+            "name": "turf/aggregate",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates a series of aggregations for a set of  Point|points within a set of {@link Polygon|polygons}. Sum, average, count, min, max, and deviation are supported.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>polygons with values on which to aggregate</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>points to be aggregated</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "aggregations",
+                    "type": "Array",
+                    "description": "<p>an array of aggregation objects</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [1.669921, 48.632908],\n          [1.669921, 49.382372],\n          [3.636474, 49.382372],\n          [3.636474, 48.632908],\n          [1.669921, 48.632908]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [2.230224, 47.85003],\n          [2.230224, 48.611121],\n          [4.361572, 48.611121],\n          [4.361572, 47.85003],\n          [2.230224, 47.85003]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.054443,49.138596]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [3.065185,48.850258]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.329101,48.79239]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [2.614746,48.334343]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [3.416748,48.056053]\n      }\n    }\n  ]\n};\nvar aggregations = [\n  {\n    aggregation: 'sum',\n    inField: 'population',\n    outField: 'pop_sum'\n  },\n  {\n    aggregation: 'average',\n    inField: 'population',\n    outField: 'pop_avg'\n  },\n  {\n    aggregation: 'median',\n    inField: 'population',\n    outField: 'pop_median'\n  },\n  {\n    aggregation: 'min',\n    inField: 'population',\n    outField: 'pop_min'\n  },\n  {\n    aggregation: 'max',\n    inField: 'population',\n    outField: 'pop_max'\n  },\n  {\n    aggregation: 'deviation',\n    inField: 'population',\n    outField: 'pop_deviation'\n  },\n  {\n    aggregation: 'variance',\n    inField: 'population',\n    outField: 'pop_variance'\n  },\n  {\n    aggregation: 'count',\n    inField: '',\n    outField: 'point_count'\n  }\n];\n\nvar aggregated = turf.aggregate(\n  polygons, points, aggregations);\n\nvar result = turf.featurecollection(\n  points.features.concat(aggregated.features));\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons with properties listed based on <code>outField</code> values in <code>aggregations</code></p>"
+            }
+        },
+        {
+            "name": "turf/along",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString|line and returns a {@link Point|point} at a specified distance along the line.",
+            "parameters": [
+                {
+                    "name": "line",
+                    "type": "Feature.<LineString>",
+                    "description": "<p>input line</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "distance",
+                    "type": "Number",
+                    "description": "<p>distance along the line</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>can be degrees, radians, miles, or kilometers</p>",
+                    "default": "miles",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\n\nvar along = turf.along(line, 1, 'miles');\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, along]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>Point <code>distance</code> <code>units</code> along the line</p>"
+            }
+        },
+        {
+            "name": "turf/area",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a one or more features and returns their area\nin square meters.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-67.031021, 10.458102],\n          [-67.031021, 10.53372],\n          [-66.929397, 10.53372],\n          [-66.929397, 10.458102],\n          [-67.031021, 10.458102]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-66.919784, 10.397325],\n          [-66.919784, 10.513467],\n          [-66.805114, 10.513467],\n          [-66.805114, 10.397325],\n          [-66.919784, 10.397325]\n        ]]\n      }\n    }\n  ]\n};\n\nvar area = turf.area(polygons);\n\n//=area"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>area in square meters</p>"
+            }
+        },
+        {
+            "name": "turf/average",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the average value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>polygons with values on which to average</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>points from which to calculate the average</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "String",
+                    "description": "<p>the field in the <code>points</code> features from which to pull values to average</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outputField",
+                    "type": "String",
+                    "description": "<p>the field in <code>polygons</code> to put results of the averages</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.666351, 59.890659],\n          [10.666351, 59.936784],\n          [10.762481, 59.936784],\n          [10.762481, 59.890659],\n          [10.666351, 59.890659]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.764541, 59.889281],\n          [10.764541, 59.937128],\n          [10.866165, 59.937128],\n          [10.866165, 59.889281],\n          [10.764541, 59.889281]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.724029, 59.926807]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.715789, 59.904778]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.746002, 59.908566]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.806427, 59.908910]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.79544, 59.931624]\n      }\n    }\n  ]\n};\n\nvar averaged = turf.average(\n polygons, points, 'population', 'pop_avg');\n\nvar resultFeatures = points.features.concat(\n  averaged.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons with the value of <code>outField</code> set to the calculated averages</p>"
+            }
+        },
+        {
+            "name": "turf/bbox-polygon",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bbox and returns an equivalent  Polygon|polygon.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>an Array of bounding box coordinates in the form: <code>[xLow, yLow, xHigh, yHigh]</code></p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n\n//=poly"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a Polygon representation of the bounding box</p>"
+            }
+        },
+        {
+            "name": "turf/bearing",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two  Point|points and finds the geographic bearing between them.",
+            "parameters": [
+                {
+                    "name": "start",
+                    "type": "Feature.<Point>",
+                    "description": "<p>starting Point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "end",
+                    "type": "Feature.<Point>",
+                    "description": "<p>ending Point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": '#f00'\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar point2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": '#0f0'\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.534, 39.123]\n  }\n};\n\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point1, point2]\n};\n\n//=points\n\nvar bearing = turf.bearing(point1, point2);\n\n//=bearing"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>bearing in decimal degrees</p>"
+            }
+        },
+        {
+            "name": "turf/bezier",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString|line and returns a curved version\nby applying a Bezier spline\nalgorithm.\nThe bezier spline implementation is by Leszek Rybicki.",
+            "parameters": [
+                {
+                    "name": "line",
+                    "type": "Feature.<LineString>",
+                    "description": "<p>input LineString</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "resolution",
+                    "type": "Number",
+                    "description": "<p>time in milliseconds between points</p>",
+                    "default": 10000,
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "sharpness",
+                    "type": "Number",
+                    "description": "<p>a measure of how curvy the path should be between splines</p>",
+                    "default": 0.85,
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"stroke\": \"#f00\"\n  },\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-76.091308, 18.427501],\n      [-76.695556, 18.729501],\n      [-76.552734, 19.40443],\n      [-74.61914, 19.134789],\n      [-73.652343, 20.07657],\n      [-73.157958, 20.210656]\n    ]\n  }\n};\n\nvar curved = turf.bezier(line);\ncurved.properties = { stroke: '#0f0' };\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, curved]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<LineString>",
+                "description": "<p>curved line</p>"
+            }
+        },
+        {
+            "name": "turf/buffer",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.",
+            "parameters": [
+                {
+                    "name": "feature",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input to be buffered</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "distance",
+                    "type": "Number",
+                    "description": "<p>distance to draw the buffer</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "unit",
+                    "type": "String",
+                    "description": "<p>'miles', 'feet', 'kilometers', 'meters', or 'degrees'</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-90.548630, 14.616599]\n  }\n};\nvar unit = 'miles';\n\nvar buffered = turf.buffer(pt, 500, unit);\nvar result = turf.featurecollection([buffered.features, pt]);\n\n//=result"
+            ],
+            "returns": {
+                "type": [
+                    "FeatureCollection.<Polygon>",
+                    "FeatureCollection.<MultiPolygon>",
+                    "Polygon",
+                    "MultiPolygon"
+                ],
+                "description": "<p>buffered features</p>"
+            }
+        },
+        {
+            "name": "turf/center",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection and returns the absolute center point of all features.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.522259, 35.4691]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.502754, 35.463455]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.508269, 35.463245]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.516809, 35.465779]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.515372, 35.467072]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.509363, 35.463053]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.511123, 35.466601]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.518547, 35.469327]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.519706, 35.469659]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.517839, 35.466998]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.508678, 35.464942]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.514914, 35.463453]\n      }\n    }\n  ]\n};\n\nvar centerPt = turf.center(features);\ncenterPt.properties['marker-size'] = 'large';\ncenterPt.properties['marker-color'] = '#000';\n\nvar resultFeatures = features.features.concat(centerPt);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>a Point feature at the\nabsolute center point of all input features</p>"
+            }
+        },
+        {
+            "name": "turf/centroid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes one or more features and calculates the centroid using the arithmetic mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating\nthe centroid of a set of polygons.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [105.818939,21.004714],\n      [105.818939,21.061754],\n      [105.890007,21.061754],\n      [105.890007,21.004714],\n      [105.818939,21.004714]\n    ]]\n  }\n};\n\nvar centroidPt = turf.centroid(poly);\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly, centroidPt]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>the centroid of the input features</p>"
+            }
+        },
+        {
+            "name": "turf/combine",
+            "access": "",
+            "virtual": false,
+            "description": "Combines a  FeatureCollection of {@link Point}, {@link LineString}, or {@link Polygon} features into {@link MultiPoint}, {@link MultiLineString}, or {@link MultiPolygon} features.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection.<(Point|LineString|Polygon)>",
+                    "description": "<p>a FeatureCollection of any type</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var fc = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [19.026432, 47.49134]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [19.074497, 47.509548]\n      }\n    }\n  ]\n};\n\nvar combined = turf.combine(fc);\n\n//=combined"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<(MultiPoint|MultiLineString|MultiPolygon)>",
+                "description": "<p>a FeatureCollection of corresponding type to input</p>"
+            }
+        },
+        {
+            "name": "turf/concave",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and returns a concave hull polygon.\nInternally, this implements\na Monotone chain algorithm.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "maxEdge",
+                    "type": "Number",
+                    "description": "<p>the size of an edge necessary for part of the\nhull to become concave (in miles)</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used for maxEdge distance (miles or kilometers)</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.601226, 44.642643]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.591442, 44.651436]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.580799, 44.648749]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.573589, 44.641788]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.587665, 44.64533]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-63.595218, 44.64765]\n      }\n    }\n  ]\n};\n\nvar hull = turf.concave(points, 1, 'miles');\n\nvar resultFeatures = points.features.concat(hull);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a concave hull</p>"
+            }
+        },
+        {
+            "name": "turf/convex",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and returns a\nconvex hull polygon.\nInternally this uses\nthe convex-hull module that\nimplements a monotone chain hull.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.195312, 43.755225]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.404052, 43.8424511]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.579833, 43.659924]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.360107, 43.516688]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.14038, 43.588348]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [10.195312, 43.755225]\n      }\n    }\n  ]\n};\n\nvar hull = turf.convex(points);\n\nvar resultFeatures = points.features.concat(hull);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a convex hull</p>"
+            }
+        },
+        {
+            "name": "turf/count",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and a set of {@link Polygon|polygons} and calculates the number of points that fall within the set of polygons.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "countField",
+                    "type": "String",
+                    "description": "<p>a field to append to the attributes of the Polygon features representing Point counts</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-112.072391,46.586591],\n          [-112.072391,46.61761],\n          [-112.028102,46.61761],\n          [-112.028102,46.586591],\n          [-112.072391,46.586591]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-112.023983,46.570426],\n          [-112.023983,46.615016],\n          [-111.966133,46.615016],\n          [-111.966133,46.570426],\n          [-112.023983,46.570426]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-112.0372, 46.608058]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-112.045955, 46.596264]\n      }\n    }\n  ]\n};\n\nvar counted = turf.count(polygons, points, 'pt_count');\n\nvar resultFeatures = points.features.concat(counted.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons with <code>countField</code> appended</p>"
+            }
+        },
+        {
+            "name": "turf/destination",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Point and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the Haversine formula to account for global curvature.",
+            "parameters": [
+                {
+                    "name": "start",
+                    "type": "Feature.<Point>",
+                    "description": "<p>starting point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "distance",
+                    "type": "Number",
+                    "description": "<p>distance from the starting point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "bearing",
+                    "type": "Number",
+                    "description": "<p>ranging from -180 to 180</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>miles, kilometers, degrees, or radians</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point, distance, bearing, units);\ndestination.properties['marker-color'] = '#f00';\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point, destination]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>destination point</p>"
+            }
+        },
+        {
+            "name": "turf/deviation",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the standard deviation value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in <code>points</code> from which to aggregate</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field to append to <code>polygons</code> representing deviation</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.807159, 30.270335],\n          [-97.807159, 30.369913],\n          [-97.612838, 30.369913],\n          [-97.612838, 30.270335],\n          [-97.807159, 30.270335]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.825698, 30.175405],\n          [-97.825698, 30.264404],\n          [-97.630691, 30.264404],\n          [-97.630691, 30.175405],\n          [-97.825698, 30.175405]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 500\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.709655, 30.311245]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 400\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.766647, 30.345028]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.765274, 30.294646]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 500\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.753601, 30.216355]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.667083, 30.208047]\n      }\n    }\n  ]\n};\n\nvar inField = \"population\";\nvar outField = \"pop_deviation\";\n\nvar deviated = turf.deviation(\n  polygons, points, inField, outField);\n\nvar resultFeatures = points.features.concat(\n  deviated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons with appended field representing deviation</p>"
+            }
+        },
+        {
+            "name": "turf/distance",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the distance between two  Point|points in degress, radians,\nmiles, or kilometers. This uses the\nHaversine formula\nto account for global curvature.",
+            "parameters": [
+                {
+                    "name": "from",
+                    "type": "Feature.<Point>",
+                    "description": "<p>origin point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "to",
+                    "type": "Feature.<Point>",
+                    "description": "<p>destination point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>can be degrees, radians, miles, or kilometers</p>",
+                    "default": "kilometers",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point1 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.343, 39.984]\n  }\n};\nvar point2 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.534, 39.123]\n  }\n};\nvar units = \"miles\";\n\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [point1, point2]\n};\n\n//=points\n\nvar distance = turf.distance(point1, point2, units);\n\n//=distance"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>distance between the two points</p>"
+            }
+        },
+        {
+            "name": "turf/envelope",
+            "access": "",
+            "virtual": false,
+            "description": "Takes any number of features and returns a rectangular  Polygon that encompasses all vertices.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var fc = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location A\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.343, 39.984]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location B\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.833, 39.284]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"Location C\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-75.534, 39.123]\n      }\n    }\n  ]\n};\n\nvar enveloped = turf.envelope(fc);\n\nvar resultFeatures = fc.features.concat(enveloped);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a rectangular Polygon feature that encompasses all vertices</p>"
+            }
+        },
+        {
+            "name": "turf/difference",
+            "access": "",
+            "virtual": false,
+            "description": "Finds the difference between two  Polygon|polygons by clipping the second\npolygon from the first.",
+            "parameters": [
+                {
+                    "name": "poly1",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>input Polygon feaure</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "poly2",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>Polygon feature to difference from <code>poly1</code></p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-46.738586, -23.596711],\n      [-46.738586, -23.458207],\n      [-46.560058, -23.458207],\n      [-46.560058, -23.596711],\n      [-46.738586, -23.596711]\n    ]]\n  }\n};\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-46.650009, -23.631314],\n      [-46.650009, -23.5237],\n      [-46.509246, -23.5237],\n      [-46.509246, -23.631314],\n      [-46.650009, -23.631314]\n    ]]\n  }\n};\n\nvar differenced = turf.difference(poly1, poly2);\ndifferenced.properties.fill = '#f00';\n\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\n//=polygons\n\n//=differenced"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a Polygon feature showing the area of <code>poly1</code> excluding the area of <code>poly2</code></p>"
+            }
+        },
+        {
+            "name": "turf/explode",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a feature or set of features and returns all positions as\n Point|points.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [177.434692, -17.77517],\n      [177.402076, -17.779093],\n      [177.38079, -17.803937],\n      [177.40242, -17.826164],\n      [177.438468, -17.824857],\n      [177.454948, -17.796746],\n      [177.434692, -17.77517]\n    ]]\n  }\n};\n\nvar points = turf.explode(poly);\n\n//=poly\n\n//=points"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<point>",
+                "description": "<p>points representing the exploded input features</p>"
+            }
+        },
+        {
+            "name": "turf/extent",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of features, calculates the extent of all input features, and returns a bounding box.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var input = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.175329, 22.2524]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.170007, 22.267969]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.200649, 22.274641]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [114.186744, 22.265745]\n      }\n    }\n  ]\n};\n\nvar bbox = turf.extent(input);\n\nvar bboxPolygon = turf.bboxPolygon(bbox);\n\nvar resultFeatures = input.features.concat(bboxPolygon);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the bounding box of <code>input</code> given\nas an array in WSEN order (west, south, east, north)</p>"
+            }
+        },
+        {
+            "name": "turf/featurecollection",
+            "access": "",
+            "virtual": false,
+            "description": "Takes one or more  Feature|Features and creates a {@link FeatureCollection}.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "Array.<Feature>",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var features = [\n turf.point([-75.343, 39.984], {name: 'Location A'}),\n turf.point([-75.833, 39.284], {name: 'Location B'}),\n turf.point([-75.534, 39.123], {name: 'Location C'})\n];\n\nvar fc = turf.featurecollection(features);\n\n//=fc"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection of input features</p>"
+            }
+        },
+        {
+            "name": "turf/filter",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection and filters it by a given property and value.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "key",
+                    "type": "String",
+                    "description": "<p>the property on which to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "String",
+                    "description": "<p>the value of that property on which to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.581777, 44.260875]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"birch\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.570018, 44.260691]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.576284, 44.257925]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"redwood\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.56916, 44.254605]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"maple\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.581691, 44.24858]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"species\": \"oak\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-72.583837, 44.255773]\n      }\n    }\n  ]\n};\n\nvar key = \"species\";\nvar value = \"oak\";\n\nvar filtered = turf.filter(features, key, value);\n\n//=features\n\n//=filtered"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a filtered collection with only features that match input <code>key</code> and <code>value</code></p>"
+            }
+        },
+        {
+            "name": "turf/flip",
+            "access": "",
+            "virtual": false,
+            "description": "Takes input features and flips all of their coordinates\nfrom [x, y] to [y, x].",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var serbia = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [20.566406, 43.421008]\n  }\n};\n\n//=serbia\n\nvar saudiArabia = turf.flip(serbia);\n\n//=saudiArabia"
+            ],
+            "returns": {
+                "type": [
+                    "Feature",
+                    "FeatureCollection"
+                ],
+                "description": "<p>a feature or set of features of the same type as <code>input</code> with flipped coordinates</p>"
+            }
+        },
+        {
+            "name": "turf/hex-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell size in degrees and returns a  FeatureCollection of flat-topped\nhexagons ({@link Polygon} features) aligned in an &quot;odd-q&quot; vertical grid as\ndescribed in Hexagonal Grids.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>bounding box in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>width of cell in specified units</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used in calculating cellWidth ('miles' or 'kilometers')</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [-96,31,-84,40];\nvar cellWidth = 50;\nvar units = 'miles';\n\nvar hexgrid = turf.hexGrid(bbox, cellWidth, units);\n\n//=hexgrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>a hexagonal grid</p>"
+            }
+        },
+        {
+            "name": "turf/inside",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Point and a {@link Polygon} or {@link MultiPolygon} and determines if the point resides inside the polygon. The polygon can\nbe convex or concave. The function accounts for holes.",
+            "parameters": [
+                {
+                    "name": "point",
+                    "type": "Feature.<Point>",
+                    "description": "<p>input point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygon",
+                    "type": "Feature.<(Polygon|MultiPolygon)>",
+                    "description": "<p>input polygon or multipolygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#f00\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-111.467285, 40.75766]\n  }\n};\nvar pt2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-111.873779, 40.647303]\n  }\n};\nvar poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-112.074279, 40.52215],\n      [-112.074279, 40.853293],\n      [-111.610107, 40.853293],\n      [-111.610107, 40.52215],\n      [-112.074279, 40.52215]\n    ]]\n  }\n};\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [pt1, pt2, poly]\n};\n\n//=features\n\nvar isInside1 = turf.inside(pt1, poly);\n//=isInside1\n\nvar isInside2 = turf.inside(pt2, poly);\n//=isInside2"
+            ],
+            "returns": {
+                "type": "Boolean",
+                "description": "<p><code>true</code> if the Point is inside the Polygon; <code>false</code> if the Point is not inside the Polygon</p>"
+            }
+        },
+        {
+            "name": "turf/intersect",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two  Polygon|polygons and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.",
+            "parameters": [
+                {
+                    "name": "poly1",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>the first polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "poly2",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>the second polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-122.801742, 45.48565],\n      [-122.801742, 45.60491],\n      [-122.584762, 45.60491],\n      [-122.584762, 45.48565],\n      [-122.801742, 45.48565]\n    ]]\n  }\n}\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-122.520217, 45.535693],\n      [-122.64038, 45.553967],\n      [-122.720031, 45.526554],\n      [-122.669906, 45.507309],\n      [-122.723464, 45.446643],\n      [-122.532577, 45.408574],\n      [-122.487258, 45.477466],\n      [-122.520217, 45.535693]\n    ]]\n  }\n}\n\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//=polygons\n\n//=intersection"
+            ],
+            "returns": {
+                "type": [
+                    "Feature.<Polygon>",
+                    "undefined",
+                    "Feature.<MultiLineString>"
+                ],
+                "description": "<p>if <code>poly1</code> and <code>poly2</code> overlap, returns a Polygon feature representing the area they overlap; if <code>poly1</code> and <code>poly2</code> do not overlap, returns <code>undefined</code>; if <code>poly1</code> and <code>poly2</code> share a border, a MultiLineString of the locations where their borders are shared</p>"
+            }
+        },
+        {
+            "name": "turf/isolines",
+            "access": "",
+            "virtual": false,
+            "description": "Takes  Point|points with z-values and an array of\nvalue breaks and generates isolines.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "z",
+                    "type": "String",
+                    "description": "<p>the property name in <code>points</code> from which z-values will be pulled</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "resolution",
+                    "type": "Number",
+                    "description": "<p>resolution of the underlying grid</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "breaks",
+                    "type": "Array.<Number>",
+                    "description": "<p>where to draw contours</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create random points with random\n// z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nvar isolined = turf.isolines(points, 'z', 15, breaks);\n//=isolined"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<LineString>",
+                "description": "<p>isolines</p>"
+            }
+        },
+        {
+            "name": "turf/jenks",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of features and returns an array of the Jenks Natural breaks\nfor a given property",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "<p>input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "String",
+                    "description": "<p>the property in <code>input</code> on which to calculate Jenks natural breaks</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "numberOfBreaks",
+                    "type": "Number",
+                    "description": "<p>number of classes in which to group the data</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.859733, 40.400424]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.83879, 40.401209]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.817848, 40.376889]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.840507, 40.386043]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [49.854583, 40.37532]\n      }\n    }\n  ]\n};\n\nvar breaks = turf.jenks(points, 'population', 3);\n\n//=breaks"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the break number for each class plus the minimum and maximum values</p>"
+            }
+        },
+        {
+            "name": "turf/kinks",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Polygon|polygon and returns {@link Point|points} at all self-intersections.",
+            "parameters": [
+                {
+                    "name": "polygon",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>input polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-12.034835, 8.901183],\n      [-12.060413, 8.899826],\n      [-12.03638, 8.873199],\n      [-12.059383, 8.871418],\n      [-12.034835, 8.901183]\n    ]]\n  }\n};\n\nvar kinks = turf.kinks(poly);\n\nvar resultFeatures = kinks.intersections.features.concat(poly);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Point>",
+                "description": "<p>self-intersections</p>"
+            }
+        },
+        {
+            "name": "turf/line-distance",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString|line and measures its length in the specified units.",
+            "parameters": [
+                {
+                    "name": "line",
+                    "type": "Feature.<LineString>",
+                    "description": "<p>line to measure</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>can be degrees, radians, miles, or kilometers</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\n\nvar length = turf.lineDistance(line, 'miles');\n\n//=line\n\n//=length"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>length of the input line</p>"
+            }
+        },
+        {
+            "name": "turf/line-slice",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString|line, a start {@link Point}, and a stop point and returns the line in between those points",
+            "parameters": [
+                {
+                    "name": "point1",
+                    "type": "Feature.<Point>",
+                    "description": "<p>starting point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "point2",
+                    "type": "Feature.<Point>",
+                    "description": "<p>stopping point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "line",
+                    "type": "Feature.<LineString>",
+                    "description": "<p>line to slice</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\nvar start = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.029609, 38.881946]\n  }\n};\nvar stop = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.021884, 38.889563]\n  }\n};\n\nvar sliced = turf.lineSlice(start, stop, line);\n\n//=line\n\n//=sliced"
+            ],
+            "returns": {
+                "type": "Feature.<LineString>",
+                "description": "<p>sliced line</p>"
+            }
+        },
+        {
+            "name": "turf/linestring",
+            "access": "",
+            "virtual": false,
+            "description": "Creates a  LineString based on a\ncoordinate array. Properties can be added optionally.",
+            "parameters": [
+                {
+                    "name": "coordinates",
+                    "type": "Array.<Array.<Number>>",
+                    "description": "<p>an array of Positions</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>an Object of key-value pairs to add as properties</p>",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var linestring1 = turf.linestring([\n\t[-21.964416, 64.148203],\n\t[-21.956176, 64.141316],\n\t[-21.93901, 64.135924],\n\t[-21.927337, 64.136673]\n]);\nvar linestring2 = turf.linestring([\n\t[-21.929054, 64.127985],\n\t[-21.912918, 64.134726],\n\t[-21.916007, 64.141016],\n\t[-21.930084, 64.14446]\n], {name: 'line 1', distance: 145});\n\n//=linestring1\n\n//=linestring2"
+            ],
+            "returns": {
+                "type": "Feature.<LineString>",
+                "description": "<p>a LineString feature</p>"
+            }
+        },
+        {
+            "name": "turf/max",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the maximum value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [101.551437, 3.150114],\n          [101.551437, 3.250208],\n          [101.742324, 3.250208],\n          [101.742324, 3.150114],\n          [101.551437, 3.150114]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [101.659927, 3.011612],\n          [101.659927, 3.143944],\n          [101.913986, 3.143944],\n          [101.913986, 3.011612],\n          [101.659927, 3.011612]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.56105, 3.213874]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.709365, 3.211817]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.645507, 3.169311]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.708679, 3.071266]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [101.826782, 3.081551]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.max(\n  polygons, points, 'population', 'max');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons\nwith properties listed as <code>outField</code> values</p>"
+            }
+        },
+        {
+            "name": "turf/median",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the median value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [18.400039, -33.970697],\n          [18.400039, -33.818518],\n          [18.665771, -33.818518],\n          [18.665771, -33.970697],\n          [18.400039, -33.970697]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [18.538742, -34.050383],\n          [18.538742, -33.98721],\n          [18.703536, -33.98721],\n          [18.703536, -34.050383],\n          [18.538742, -34.050383]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.514022, -33.860152]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.48999, -33.926269]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.583374, -33.905755]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.591613, -34.024778]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [18.653411, -34.017949]\n      }\n    }\n  ]\n};\n\nvar medians = turf.median(\n polygons, points, 'population', 'median');\n\nvar resultFeatures = points.features.concat(\n  medians.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons with properties listed as <code>outField</code> values</p>"
+            }
+        },
+        {
+            "name": "turf/merge",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Polygon|polygons and returns a single merged\npolygon feature. If the input polygon features are not contiguous, this function returns a {@link MultiPolygon} feature.",
+            "parameters": [
+                {
+                    "name": "fc",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"fill\": \"#0f0\"\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [9.994812, 53.549487],\n          [10.046997, 53.598209],\n          [10.117721, 53.531737],\n          [9.994812, 53.549487]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"fill\": \"#00f\"\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [10.000991, 53.50418],\n          [10.03807, 53.562539],\n          [9.926834, 53.551731],\n          [10.000991, 53.50418]\n        ]]\n      }\n    }\n  ]\n};\n\nvar merged = turf.merge(polygons);\n\n//=polygons\n\n//=merged"
+            ],
+            "returns": {
+                "type": "Feature.<(Polygon|MultiPolygon)>",
+                "description": "<p>merged polygon or multipolygon</p>"
+            }
+        },
+        {
+            "name": "turf/midpoint",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two  Point|points and returns a point midway between them.",
+            "parameters": [
+                {
+                    "name": "pt1",
+                    "type": "Feature.<Point>",
+                    "description": "<p>first point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "pt2",
+                    "type": "Feature.<Point>",
+                    "description": "<p>second point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [144.834823, -37.771257]\n  }\n};\nvar pt2 = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [145.14244, -37.830937]\n  }\n};\n\nvar midpointed = turf.midpoint(pt1, pt2);\nmidpointed.properties['marker-color'] = '#f00';\n\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [pt1, pt2, midpointed]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>a point midway between <code>pt1</code> and <code>pt2</code></p>"
+            }
+        },
+        {
+            "name": "turf/min",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the minimum value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [72.809658, 18.961818],\n          [72.809658, 18.974805],\n          [72.827167, 18.974805],\n          [72.827167, 18.961818],\n          [72.809658, 18.961818]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [72.820987, 18.947043],\n          [72.820987, 18.95922],\n          [72.841243, 18.95922],\n          [72.841243, 18.947043],\n          [72.820987, 18.947043]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.814464, 18.971396]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.820043, 18.969772]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.817296, 18.964253]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.83575, 18.954837]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [72.828197, 18.95094]\n      }\n    }\n  ]\n};\n\nvar minimums = turf.min(\n  polygons, points, 'population', 'min');\n\nvar resultFeatures = points.features.concat(\n  minimums.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons\nwith properties listed as <code>outField</code> values</p>"
+            }
+        },
+        {
+            "name": "turf/nearest",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a reference  Point|point and a set of points and returns the point from the set closest to the reference.",
+            "parameters": [
+                {
+                    "name": "point",
+                    "type": "Feature.<Point>",
+                    "description": "<p>the reference point</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "against",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input point set</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"marker-color\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [28.965797, 41.010086]\n  }\n};\nvar against = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.973865, 41.011122]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.948459, 41.024204]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [28.938674, 41.013324]\n      }\n    }\n  ]\n};\n\nvar nearest = turf.nearest(point, against);\nnearest.properties['marker-color'] = '#f00';\n\nvar resultFeatures = against.features.concat(point);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>the closest point in the set to the reference point</p>"
+            }
+        },
+        {
+            "name": "turf/planepoint",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a triangular plane as a  Polygon\nand a {@link Point} within that triangle and returns the z-value\nat that point. The Polygon needs to have properties a, b, and c\nthat define the values at its three corners.",
+            "parameters": [
+                {
+                    "name": "interpolatedPoint",
+                    "type": "Feature.<Point>",
+                    "description": "<p>the Point for which a z-value will be calculated</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "triangle",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>a Polygon feature with three vertices</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var point = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-75.3221, 39.529]\n  }\n};\nvar point = turf.point([-75.3221, 39.529]);\n// triangle is a polygon with \"a\", \"b\",\n// and \"c\" values representing\n// the values of the coordinates in order.\nvar triangle = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"a\": 11,\n    \"b\": 122,\n    \"c\": 44\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-75.1221, 39.57],\n      [-75.58, 39.18],\n      [-75.97, 39.86],\n      [-75.1221, 39.57]\n    ]]\n  }\n};\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [triangle, point]\n};\n\nvar zValue = turf.planepoint(point, triangle);\n\n//=features\n\n//=zValue"
+            ],
+            "returns": {
+                "type": "Number",
+                "description": "<p>the z-value for <code>interpolatedPoint</code></p>"
+            }
+        },
+        {
+            "name": "turf/point-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a set of  Point|points in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>the distance across each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>used in calculating cellWidth ('miles' or 'kilometers')</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellWidth = 3;\nvar units = 'miles';\n\nvar grid = turf.pointGrid(extent, cellWidth, units);\n\n//=grid"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Point>",
+                "description": "<p>grid of points</p>"
+            }
+        },
+        {
+            "name": "turf/point-on-line",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  Point and a {@link LineString} and calculates the closest Point on the LineString.",
+            "parameters": [
+                {
+                    "name": "line",
+                    "type": "Feature.<LineString>",
+                    "description": "<p>line to snap to</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "point",
+                    "type": "Feature.<Point>",
+                    "description": "<p>point to snap from</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var line = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"LineString\",\n    \"coordinates\": [\n      [-77.031669, 38.878605],\n      [-77.029609, 38.881946],\n      [-77.020339, 38.884084],\n      [-77.025661, 38.885821],\n      [-77.021884, 38.889563],\n      [-77.019824, 38.892368]\n    ]\n  }\n};\nvar pt = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-77.037076, 38.884017]\n  }\n};\n\nvar snapped = turf.pointOnLine(line, pt);\nsnapped.properties['marker-color'] = '#00f'\n\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [line, pt, snapped]\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>closest point on the <code>line</code> to <code>point</code></p>"
+            }
+        },
+        {
+            "name": "turf/point-on-surface",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a feature and returns a  Point guaranteed to be on the surface of the feature.\n\nGiven a {@link Polygon}, the point will be in the area of the polygon\nGiven a {@link LineString}, the point will be along the string\nGiven a {@link Point}, the point will the same as the input\n",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": [
+                        "Feature",
+                        "FeatureCollection"
+                    ],
+                    "description": "<p>any feature or set of features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// create a random polygon\nvar polygon = turf.random('polygon');\n\n//=polygon\n\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\nvar resultFeatures = polygon.features.concat(pointOnPolygon);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "Feature",
+                "description": "<p>a point on the surface of <code>input</code></p>"
+            }
+        },
+        {
+            "name": "turf/point",
+            "access": "",
+            "virtual": false,
+            "description": "Takes coordinates and properties (optional) and returns a new  Point feature.",
+            "parameters": [
+                {
+                    "name": "coordinates",
+                    "type": "Array.<Number>",
+                    "description": "<p>longitude, latitude position (each in decimal degrees)</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>an Object that is used as the {@link Feature}'s\nproperties</p>",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var pt1 = turf.point([-75.343, 39.984]);\n\n//=pt1"
+            ],
+            "returns": {
+                "type": "Feature.<Point>",
+                "description": "<p>a Point feature</p>"
+            }
+        },
+        {
+            "name": "turf/polygon",
+            "access": "",
+            "virtual": false,
+            "description": "Takes an array of LinearRings and optionally an  Object with properties and returns a {@link Polygon} feature.",
+            "parameters": [
+                {
+                    "name": "rings",
+                    "type": "Array.<Array.<Number>>",
+                    "description": "<p>an array of LinearRings</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "properties",
+                    "type": "Object",
+                    "description": "<p>a properties object</p>",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygon = turf.polygon([[\n [-2.275543, 53.464547],\n [-2.275543, 53.489271],\n [-2.215118, 53.489271],\n [-2.215118, 53.464547],\n [-2.275543, 53.464547]\n]], { name: 'poly1', population: 400});\n\n//=polygon"
+            ],
+            "returns": {
+                "type": "Feature.<Polygon>",
+                "description": "<p>a Polygon feature</p>"
+            }
+        },
+        {
+            "name": "turf/quantile",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection, a property name, and a set of percentiles and returns a quantile array.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "<p>set of features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "field",
+                    "type": "String",
+                    "description": "<p>the property in <code>input</code> from which to retrieve quantile values</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "percentiles",
+                    "type": "Array.<number>",
+                    "description": "<p>an Array of percentiles on which to calculate quantile values</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 5\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [5, 5]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 40\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [1, 3]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 80\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [14, 2]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 90\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13, 1]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [19, 7]\n      }\n    }\n  ]\n};\n\nvar breaks = turf.quantile(\n  points, 'population', [25, 50, 75, 99]);\n\n//=breaks"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>an array of the break values</p>"
+            }
+        },
+        {
+            "name": "turf/random",
+            "access": "",
+            "virtual": false,
+            "description": "Generates random  GeoJSON data, including {@link Point|Points} and {@link Polygon|Polygons}, for testing\nand experimentation.",
+            "parameters": [
+                {
+                    "name": "type",
+                    "type": "String",
+                    "description": "<p>type of features desired: 'points' or 'polygons'</p>",
+                    "default": "'point'",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "count",
+                    "type": "Number",
+                    "description": "<p>how many geometries should be generated.</p>",
+                    "default": 1,
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "options",
+                    "type": "Object",
+                    "description": "<p>options relevant to the feature desired. Can include:</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "options.bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>a bounding box inside of which geometries\nare placed. In the case of {@link Point} features, they are guaranteed to be within this bounds,\nwhile {@link Polygon} features have their centroid within the bounds.</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "options.num_vertices",
+                    "type": "Number",
+                    "description": "<p>options.vertices the number of vertices added\nto polygon features.</p>",
+                    "default": 10,
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "options.max_radial_length",
+                    "type": "Number",
+                    "description": "<p>the total number of decimal\ndegrees longitude or latitude that a polygon can extent outwards to\nfrom its center.</p>",
+                    "default": 10,
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.random('points', 100, {\n  bbox: [-70, 40, -60, 60]\n});\n\n//=points\n\nvar polygons = turf.random('polygons', 4, {\n  bbox: [-70, 40, -60, 60]\n});\n\n//=polygons"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>generated random features</p>"
+            }
+        },
+        {
+            "name": "turf/reclass",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection, an input field, an output field, and\nan array of translations and outputs an identical FeatureCollection with\nthe output field property populated.",
+            "parameters": [
+                {
+                    "name": "input",
+                    "type": "FeatureCollection",
+                    "description": "<p>set of input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field to translate</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store translated results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "translations",
+                    "type": "Array.<number>",
+                    "description": "<p>an array of translations</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.170547, 32.888669]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.182048, 32.889533]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.17398, 32.882182]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.174324, 32.895011]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [13.185825, 32.884344]\n      }\n    }\n  ]\n};\n// 0 to 200 will map to \"small\", 200 to 400 will map to \"medium\", 400 to 600 will map to \"large\"\nvar translations = [\n  [0, 200, \"small\"],\n  [200, 400, \"medium\"],\n  [400, 600, \"large\"]\n];\n\nvar reclassed = turf.reclass(\n  points, 'population', 'size', translations);\n\n//=reclassed"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection with identical geometries to <code>input</code> but with <code>outField</code> populated.</p>"
+            }
+        },
+        {
+            "name": "turf/remove",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection of any type, a property, and a value and\nreturns a FeatureCollection with features matching that\nproperty-value pair removed.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "<p>set of input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "property",
+                    "type": "String",
+                    "description": "<p>the property to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "String",
+                    "description": "<p>the value to filter</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.235004, 5.551918]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#f00'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.209598, 5.56439]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.197753, 5.556018]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#000'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.217323, 5.549526]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#0f0'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.211315, 5.543887]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#00f'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.202217, 5.547134]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        'marker-color': '#0f0'\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-0.231227, 5.56644]\n      }\n    }\n  ]\n};\n\n//=points\n\nvar filtered = turf.remove(points, 'marker-color', '#00f');\n\n//=filtered"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>the resulting FeatureCollection without features that match the property-value pair</p>"
+            }
+        },
+        {
+            "name": "turf/sample",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  FeatureCollection and returns a FeatureCollection with given number of {@link Feature|features} at random.",
+            "parameters": [
+                {
+                    "name": "features",
+                    "type": "FeatureCollection",
+                    "description": "<p>set of input features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "n",
+                    "type": "Number",
+                    "description": "<p>number of features to select</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var points = turf.random('points', 1000);\n\n//=points\n\nvar sample = turf.sample(points, 10);\n\n//=sample"
+            ],
+            "returns": {
+                "type": "FeatureCollection",
+                "description": "<p>a FeatureCollection with <code>n</code> features</p>"
+            }
+        },
+        {
+            "name": "turf/simplify",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a  LineString or {@link Polygon} and returns a simplified version. Internally uses simplify-js to perform simplification.",
+            "parameters": [
+                {
+                    "name": "feature",
+                    "type": [
+                        "Feature.<(LineString|Polygon|MultiLineString|MultiPolygon)>",
+                        "FeatureCollection",
+                        "GeometryCollection"
+                    ],
+                    "description": "<p>feature to be simplified</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "tolerance",
+                    "type": "Number",
+                    "description": "<p>simplification tolerance</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "highQuality",
+                    "type": "Boolean",
+                    "description": "<p>whether or not to spend more time to create\na higher-quality simplification with a different algorithm</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var feature = {\n  \"type\": \"Feature\",\n  \"properties\": {},\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-70.603637, -33.399918],\n      [-70.614624, -33.395332],\n      [-70.639343, -33.392466],\n      [-70.659942, -33.394759],\n      [-70.683975, -33.404504],\n      [-70.697021, -33.419406],\n      [-70.701141, -33.434306],\n      [-70.700454, -33.446339],\n      [-70.694274, -33.458369],\n      [-70.682601, -33.465816],\n      [-70.668869, -33.472117],\n      [-70.646209, -33.473835],\n      [-70.624923, -33.472117],\n      [-70.609817, -33.468107],\n      [-70.595397, -33.458369],\n      [-70.587158, -33.442901],\n      [-70.587158, -33.426283],\n      [-70.590591, -33.414248],\n      [-70.594711, -33.406224],\n      [-70.603637, -33.399918]\n    ]]\n  }\n};\nvar tolerance = 0.01;\n\nvar simplified = turf.simplify(\n feature, tolerance, false);\n\n//=feature\n\n//=simplified"
+            ],
+            "returns": {
+                "type": [
+                    "Feature.<(LineString|Polygon|MultiLineString|MultiPolygon)>",
+                    "FeatureCollection",
+                    "GeometryCollection"
+                ],
+                "description": "<p>a simplified feature</p>"
+            }
+        },
+        {
+            "name": "turf/size",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and returns a new bounding box with a size expanded or contracted\nby a factor of X.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>a bounding box</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "factor",
+                    "type": "Number",
+                    "description": "<p>the ratio of the new bbox to the input bbox</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 10, 10]\n\nvar resized = turf.size(bbox, 2);\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    turf.bboxPolygon(bbox),\n    turf.bboxPolygon(resized)\n  ]\n};\n\n//=features"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>the resized bbox</p>"
+            }
+        },
+        {
+            "name": "turf/square-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a set of square  Polygon|polygons in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>width of each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>units to use for cellWidth</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];\nvar cellWidth = 10;\nvar units = 'miles';\n\nvar squareGrid = turf.squareGrid(extent, cellWidth, units);\n\n//=squareGrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>grid a grid of polygons</p>"
+            }
+        },
+        {
+            "name": "turf/square",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and calculates the minimum square bounding box that would contain the input.",
+            "parameters": [
+                {
+                    "name": "bbox",
+                    "type": "Array.<number>",
+                    "description": "<p>a bounding box</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [-20,-20,-15,0];\n\nvar squared = turf.square(bbox);\n\nvar features = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    turf.bboxPolygon(bbox),\n    turf.bboxPolygon(squared)\n  ]\n};\n\n//=features"
+            ],
+            "returns": {
+                "type": "Array.<number>",
+                "description": "<p>a square surrounding <code>bbox</code></p>"
+            }
+        },
+        {
+            "name": "turf/sum",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the sum of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-87.990188, 43.026486],\n          [-87.990188, 43.062115],\n          [-87.913284, 43.062115],\n          [-87.913284, 43.026486],\n          [-87.990188, 43.026486]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-87.973709, 42.962452],\n          [-87.973709, 43.014689],\n          [-87.904014, 43.014689],\n          [-87.904014, 42.962452],\n          [-87.973709, 42.962452]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.974052, 43.049321]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.957229, 43.037277]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.931137, 43.048568]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.963409, 42.99611]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-87.94178, 42.974762]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.sum(\n  polygons, points, 'population', 'sum');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons\nwith properties listed as <code>outField</code></p>"
+            }
+        },
+        {
+            "name": "turf/tag",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and a set of {@link Polygon|polygons} and performs a spatial join.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polyId",
+                    "type": "String",
+                    "description": "<p>property in <code>polygons</code> to add to joined Point features</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "containingPolyId",
+                    "type": "String",
+                    "description": "<p>property in <code>points</code> in which to store joined property from `polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var bbox = [0, 0, 10, 10];\n// create a triangular grid of polygons\nvar triangleGrid = turf.triangleGrid(bbox, 50, 'miles');\ntriangleGrid.features.forEach(function(f) {\n  f.properties.fill = '#' +\n    (~~(Math.random() * 16)).toString(16) +\n    (~~(Math.random() * 16)).toString(16) +\n    (~~(Math.random() * 16)).toString(16);\n  f.properties.stroke = 0;\n  f.properties['fill-opacity'] = 1;\n});\nvar randomPoints = turf.random('point', 30, {\n  bbox: bbox\n});\nvar both = turf.featurecollection(\n  triangleGrid.features.concat(randomPoints.features));\n\n//=both\n\nvar tagged = turf.tag(randomPoints, triangleGrid,\n                      'fill', 'marker-color');\n\n//=tagged"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Point>",
+                "description": "<p>points with <code>containingPolyId</code> property containing values from <code>polyId</code></p>"
+            }
+        },
+        {
+            "name": "turf/tin",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and the name of a z-value property and\ncreates a Triangulated Irregular Network,\nor a TIN for short, returned as a collection of Polygons. These are often used\nfor developing elevation contour maps or stepped heat visualizations.\nThis triangulates the points, as well as adds properties called a, b,\nand c representing the value of the given propertyName at each of\nthe points that represent the corners of the triangle.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "propertyName",
+                    "type": "String",
+                    "description": "<p>name of the property from which to pull z values\nThis is optional: if not given, then there will be no extra data added to the derived triangles.</p>",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "// generate some random point data\nvar points = turf.random('points', 30, {\n  bbox: [50, 30, 70, 50]\n});\n//=points\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z')\nfor (var i = 0; i < tin.features.length; i++) {\n  var properties  = tin.features[i].properties;\n  // roughly turn the properties of each\n  // triangle into a fill color\n  // so we can visualize the result\n  properties.fill = '#' + properties.a +\n    properties.b + properties.c;\n}\n//=tin"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>TIN output</p>"
+            }
+        },
+        {
+            "name": "turf/triangle-grid",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a bounding box and a cell depth and returns a set of triangular  Polygon|polygons in a grid.",
+            "parameters": [
+                {
+                    "name": "extent",
+                    "type": "Array.<number>",
+                    "description": "<p>extent in [minX, minY, maxX, maxY] order</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "cellWidth",
+                    "type": "Number",
+                    "description": "<p>width of each cell</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "units",
+                    "type": "String",
+                    "description": "<p>units to use for cellWidth</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var extent = [-77.3876953125,38.71980474264239,-76.9482421875,39.027718840211605];\nvar cellWidth = 10;\nvar units = 'miles';\n\nvar triangleGrid = turf.triangleGrid(extent, cellWidth, units);\n\n//=triangleGrid"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>grid of polygons</p>"
+            }
+        },
+        {
+            "name": "turf/union",
+            "access": "",
+            "virtual": false,
+            "description": "Takes two  Polygon|polygons and returns a combined polygon. If the input polygons are not contiguous, this function returns a {@link MultiPolygon} feature.",
+            "parameters": [
+                {
+                    "name": "poly1",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>input polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "poly2",
+                    "type": "Feature.<Polygon>",
+                    "description": "<p>another input polygon</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var poly1 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#0f0\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-82.574787, 35.594087],\n      [-82.574787, 35.615581],\n      [-82.545261, 35.615581],\n      [-82.545261, 35.594087],\n      [-82.574787, 35.594087]\n    ]]\n  }\n};\nvar poly2 = {\n  \"type\": \"Feature\",\n  \"properties\": {\n    \"fill\": \"#00f\"\n  },\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-82.560024, 35.585153],\n      [-82.560024, 35.602602],\n      [-82.52964, 35.602602],\n      [-82.52964, 35.585153],\n      [-82.560024, 35.585153]\n    ]]\n  }\n};\nvar polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [poly1, poly2]\n};\n\nvar union = turf.union(poly1, poly2);\n\n//=polygons\n\n//=union"
+            ],
+            "returns": {
+                "type": "Feature.<(Polygon|MultiPolygon)>",
+                "description": "<p>a combined {@link Polygon} or {@link MultiPolygon} feature</p>"
+            }
+        },
+        {
+            "name": "turf/variance",
+            "access": "",
+            "virtual": false,
+            "description": "Calculates the variance value of a field for a set of  Point|points within a set of {@link Polygon|polygons}.",
+            "parameters": [
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "inField",
+                    "type": "String",
+                    "description": "<p>the field in input data to analyze</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "outField",
+                    "type": "String",
+                    "description": "<p>the field in which to store results</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var polygons = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.414398, 37.684092],\n          [-97.414398, 37.731353],\n          [-97.332344, 37.731353],\n          [-97.332344, 37.684092],\n          [-97.414398, 37.684092]\n        ]]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-97.333717, 37.606072],\n          [-97.333717, 37.675397],\n          [-97.237586, 37.675397],\n          [-97.237586, 37.606072],\n          [-97.333717, 37.606072]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.401351, 37.719676]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 600\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.355346, 37.706639]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.387962, 37.70012]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 200\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.301788, 37.66507]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"population\": 300\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-97.265052, 37.643325]\n      }\n    }\n  ]\n};\n\nvar aggregated = turf.variance(\n  polygons, points, 'population', 'variance');\n\nvar resultFeatures = points.features.concat(\n  aggregated.features);\nvar result = {\n  \"type\": \"FeatureCollection\",\n  \"features\": resultFeatures\n};\n\n//=result"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Polygon>",
+                "description": "<p>polygons\nwith properties listed as <code>outField</code></p>"
+            }
+        },
+        {
+            "name": "turf/within",
+            "access": "",
+            "virtual": false,
+            "description": "Takes a set of  Point|points and a set of {@link Polygon|polygons} and returns the points that fall within the polygons.",
+            "parameters": [
+                {
+                    "name": "points",
+                    "type": "FeatureCollection.<Point>",
+                    "description": "<p>input points</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "polygons",
+                    "type": "FeatureCollection.<Polygon>",
+                    "description": "<p>input polygons</p>",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [
+                "var searchWithin = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [[\n          [-46.653,-23.543],\n          [-46.634,-23.5346],\n          [-46.613,-23.543],\n          [-46.614,-23.559],\n          [-46.631,-23.567],\n          [-46.653,-23.560],\n          [-46.653,-23.543]\n        ]]\n      }\n    }\n  ]\n};\nvar points = {\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6318, -23.5523]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6246, -23.5325]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.6062, -23.5513]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.663, -23.554]\n      }\n    }, {\n      \"type\": \"Feature\",\n      \"properties\": {},\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-46.643, -23.557]\n      }\n    }\n  ]\n};\n\nvar ptsWithin = turf.within(points, searchWithin);\n\n//=points\n\n//=searchWithin\n\n//=ptsWithin"
+            ],
+            "returns": {
+                "type": "FeatureCollection.<Point>",
+                "description": "<p>points that land within at least one polygon</p>"
+            }
+        }
+    ]
+}
