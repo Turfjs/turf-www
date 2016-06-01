@@ -4,7 +4,8 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "docs": "documentation build node_modules/turf/index.js --external='../../turf-*' -f html -o docs"
+    "docs": "documentation build turf -f html -o docs",
+    "serve": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -f html -o docs"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,6 @@
     "turf": "^3.0.0"
   },
   "devDependencies": {
-    "documentation": "4.0.0-beta2"
+    "documentation": "4.0.0-beta4"
   }
 }
