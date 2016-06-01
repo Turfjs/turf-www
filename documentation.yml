@@ -1,0 +1,73 @@
+toc:
+  - name: Aggregation
+  - collect
+  - name: Measurement
+  - along
+  - area
+  - bboxPolygon
+  - bearing
+  - center
+  - centroid
+  - destination
+  - distance
+  - envelope
+  - extent
+  - lineDistance
+  - midpoint
+  - pointOnSurface
+  - size
+  - square
+  - name: Transformation
+  - bezier
+  - buffer
+  - concave
+  - convex
+  - difference
+  - intersect
+  - merge
+  - simplify
+  - union
+  - name: Misc
+  - combine
+  - explode
+  - flip
+  - kinks
+  - lineSlice
+  - pointOnLine
+  - name: Helper
+  - featureCollection
+  - feature
+  - lineString
+  - multiLineString
+  - point
+  - polygon
+  - multiPoint
+  - multiPolygon
+  - geometryCollection
+  - name: Data
+  - random
+  - sample
+  - name: Interpolation
+  - isolines
+  - planepoint
+  - tin
+  - name: Joins
+  - inside
+  - tag
+  - name: Grids
+  - hexGrid
+  - pointGrid
+  - squareGrid
+  - triangleGrid
+  - within
+  - name: Classification
+  - nearest
+  - name: Meta
+  - propEach
+  - coordEach
+  - coordReduce
+  - featureEach
+  - getCoord
+  - name: Assertions
+  - featureOf
+  - collectionOf

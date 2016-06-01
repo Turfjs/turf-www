@@ -4,8 +4,9 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "start": "node build.js",
-    "build": "node build.js production"
+    "docs": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f html -o docs",
+    "test": "documentation lint turf/packages/turf-*/index.js",
+    "serve": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -f html -o docs"
   },
   "repository": {
     "type": "git",
@@ -23,25 +24,11 @@
   },
   "homepage": "https://github.com/turfjs/turf-www",
   "dependencies": {
-    "browserify": "^9.0.3",
-    "jsdoc": "^3.3.0-beta1",
     "lodash": "^3.3.1",
-    "metalsmith": "^1.3.0",
-    "metalsmith-assets": "^0.1.0",
-    "metalsmith-collections": "^0.7.0",
-    "metalsmith-markdown": "^0.2.1",
-    "metalsmith-permalinks": "^0.4.0",
-    "metalsmith-serve": "0.0.3",
-    "metalsmith-templates": "^0.6.0",
-    "metalsmith-watch": "^0.2.0",
-    "rpl-www": "0.2.0",
     "striptags": "^2.0.1",
-    "taffydb": "^2.7.2",
-    "turf": "^2.0.0",
-    "underscore": "^1.8.2"
+    "turf": "^3.0.0"
   },
   "devDependencies": {
-    "chokidar": "^1.0.0-rc3",
-    "npm": "^2.6.0"
+    "documentation": "4.0.0-beta4"
   }
 }
