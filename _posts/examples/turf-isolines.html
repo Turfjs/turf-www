@@ -1,0 +1,29 @@
+---
+template: example.html
+title: turf-isolines
+description: Takes a FeatureCollection of points with z values and an array of value breaks and generates isolines. These are commonly used to create elevation maps, but can be used for general data interpolation as well.
+tags:
+    - interpolation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([39.236242036607756,-106.80770874023438], 11);
+
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json');
+points_layer.on('ready', function () {
+    var resolution = 30;
+    var breaks = [500,2000,4000,5000,6000,8000,9000,10000,11000,12000,15000];
+    var isolines = turf.isolines(points_layer.toGeoJSON(), 'elevation', resolution, breaks);
+    isolines.features.forEach(function (feature) {
+        feature.properties["stroke"] = "#25561F";
+        feature.properties["stroke-width"] = 2;
+        feature.properties["stroke-opacity"] = .5;
+    });
+
+    L.mapbox.featureLayer().setGeoJSON(isolines).addTo(map);
+});
+</script>

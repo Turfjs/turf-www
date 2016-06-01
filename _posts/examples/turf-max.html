@@ -1,0 +1,50 @@
+---
+template: example.html
+title: turf-max
+description: Calculates the max value of a field for points within a set of polygons.
+tags:
+    - aggregation
+---
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([39.2350, -106.8370], 10);
+
+var polys = [
+    turf.polygon([[
+      [ -106.9200, 39.24152637306577 ],
+      [ -106.9200, 39.3300 ],
+      [ -106.7200, 39.3300 ],
+      [ -106.7200, 39.24152637306577 ],
+      [ -106.9200, 39.24152637306577 ]]
+    ], {
+        "fill": "#6BC65F",
+        "stroke": "#6BC65F",
+        "stroke-width": 5,
+        "title": "Max elevation of points in poly"
+    }),
+    turf.polygon([[
+      [ -106.9200, 39.1200 ],
+      [ -106.9200, 39.24152637306577 ],
+      [ -106.7200, 39.24152637306577 ],
+      [ -106.7200, 39.1200 ],
+      [ -106.9200, 39.1200 ]]
+    ], {
+        "fill": "#25561F",
+        "stroke": "#25561F",
+        "stroke-width": 5,
+        "title": "Max elevation of points in poly"
+    })
+];
+var poly_fc = turf.featurecollection(polys);
+var points_layer = L.mapbox.featureLayer().loadURL('/assets/js/elevation.json').addTo(map);
+points_layer.on('ready', function () {
+
+var max = turf.max(poly_fc, points_layer.toGeoJSON(), 'elevation', 'description');
+
+L.mapbox.featureLayer().setGeoJSON(max).addTo(map);
+});
+</script>

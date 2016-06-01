@@ -1,0 +1,63 @@
+---
+template: example.html
+title: turf-destination
+description: Calculates the destination point given one point feature, distance in degrees, radians, miles, or kilometers, and bearing in degrees. This uses the haversine formula to account for global curvature.
+tags:
+    - measurement
+---
+<div id='map'></div>
+<input type='text' id='bearing' class='turf-controls' title='Bearing (degrees)'
+    placeholder='Bearing (degrees)' value='90'
+    style="position: absolute; right: 5px; top: 3px; width:100px;">
+</input>
+<input type='text' id='distance' class='turf-controls' title='Distance (miles)'
+    placeholder='Distance (miles)' value='45'
+    style="position: absolute; right: 5px; top: 35px; width:100px;">
+</input>
+<button id='enter' class='turf-controls'
+    style="position: absolute; right: 5px; top: 70px;"
+onclick="calculateDestination()">find destination
+</button>
+
+
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+<script src='https://rawgit.com/Fragger/Leaflet.Geodesic/master/src/L.Geodesic.js'></script>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+
+var point = turf.point([-97.508269, 35.463245], {
+    "marker-color": "#6BC65F",
+    "title": "Start Point"
+});
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([35.463453, -97.508014], 8);
+
+var initial_point = L.mapbox.featureLayer().setGeoJSON(point).addTo(map);
+var polyline =  L.mapbox.featureLayer().addTo(map);
+var destination_point = L.mapbox.featureLayer().addTo(map);
+calculateDestination();
+
+function calculateDestination() {
+    var layers = initial_point.getLayers();
+    var bearing = document.getElementById('bearing').value;
+    var distance = document.getElementById('distance').value;
+    var destination = turf.destination(point, distance, bearing, 'miles');
+
+    var linestring = turf.linestring([
+            point.geometry.coordinates,
+            destination.geometry.coordinates]);
+    var bassakwards = linestring.geometry.coordinates.map(function (element) {
+        return [element[1],element[0]];
+    });
+    var geodesic = new L.GeodesicPolyline(bassakwards, {
+        'color': "#6BC65F",
+        "opacity": 1,
+        'weight': 5
+    });
+    polyline.clearLayers().addLayer(geodesic);
+    destination_point.setGeoJSON(destination);
+}
+
+</script>

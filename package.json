@@ -1,0 +1,34 @@
+{
+  "name": "turf-www",
+  "version": "1.0.0",
+  "description": "create the turf website and online documentation",
+  "main": "index.js",
+  "scripts": {
+    "docs": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f html -o docs",
+    "test": "documentation lint turf/packages/turf-*/index.js",
+    "serve": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -f html -o docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/turfjs/turf-www.git"
+  },
+  "keywords": [
+    "turf",
+    "www",
+    "website"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/turfjs/turf-www/issues"
+  },
+  "homepage": "https://github.com/turfjs/turf-www",
+  "dependencies": {
+    "lodash": "^3.3.1",
+    "striptags": "^2.0.1",
+    "turf": "^3.0.0"
+  },
+  "devDependencies": {
+    "documentation": "4.0.0-beta4"
+  }
+}

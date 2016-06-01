@@ -1,0 +1,60 @@
+---
+template: example.html
+title: turf-bearing
+description: Calculates the bearing between two point features in degrees.
+tags:
+    - measurement
+---
+<div id='map'></div>
+<p id='bearing' class='turf-controls'
+    style="position: absolute; right: 5px; top: 5px;"> --
+</p>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+<script src='https://rawgit.com/Fragger/Leaflet.Geodesic/master/src/L.Geodesic.js'></script>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ';
+
+
+var point = turf.point([-97.502754, 35.463455], {
+    "marker-color": "#25561F",
+    "title": "End Point"
+})
+var point2 = turf.point([-97.508269, 35.463245], {
+    "marker-color": "#6BC65F",
+    "title": "Start Point"
+});
+
+var point_fc = turf.featurecollection([point, point2]);
+
+var map = L.mapbox.map('map', 'morganherlocker.kgidd73k')
+    .setView([35.463453, -97.508014], 15);
+
+var bearing = L.mapbox.featureLayer().setGeoJSON(point_fc);
+var polyline =  L.mapbox.featureLayer().addTo(map);
+
+bearing.eachLayer(function(layer) {
+    layer.options.draggable = true;
+    layer.on('drag', function(e) {
+        calculateBearing();
+    });
+});
+calculateBearing();
+bearing.addTo(map);
+
+function calculateBearing() {
+    var layers = bearing.getLayers();
+    var linestring = turf.linestring([layers[1].toGeoJSON().geometry.coordinates, layers[0].toGeoJSON().geometry.coordinates]);
+    var bassakwards = linestring.geometry.coordinates.map(function (element) {
+        return [element[1],element[0]];
+    });
+    var geodesic = new L.GeodesicPolyline(bassakwards, {
+        'color': "#6BC65F",
+        "opacity": 1,
+        'weight': 5
+    });
+    polyline.clearLayers().addLayer(geodesic);
+    var calc_bearing = turf.bearing(layers[1].toGeoJSON(), layers[0].toGeoJSON()).toFixed(3);
+    document.getElementById('bearing').innerHTML = calc_bearing;
+}
+
+</script>

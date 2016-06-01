@@ -1,0 +1,64 @@
+.fill-turf-green {
+    background:#2ecc71;
+}
+
+.big {
+  font-size:40px;
+  line-height:50px;
+}
+
+.pad1r {
+  padding-right:10px;
+}
+
+.fixed {
+    position:fixed;
+}
+
+.docnav nav {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 20px;
+  bottom: 20px;
+}
+
+.docnav           { position:fixed; top:100px; bottom:0; width:100%; }
+.docnav .active   { color:#404040; color:rgba(0,0,0,0.75); }
+.docnav .limiter  { height:100%; }
+.docnav .col3     { height:100%; }
+.docnav nav {
+  position:absolute;
+  left:0; top:0; right:20px; bottom:20px;
+  }
+
+.quiet-scroll pre {
+  overflow:auto;
+  white-space:pre;
+  word-wrap:normal;
+  word-break:normal;
+  }
+.quiet-scroll pre::-webkit-scrollbar,
+.quiet-scroll::-webkit-scrollbar {
+  width:1px;
+  height:1px;
+  border-left:0;
+  background:rgba(0,0,0,0.1);
+  }
+.quiet-scroll pre::-webkit-scrollbar-track,
+.quiet-scroll::-webkit-scrollbar-track {
+  background:none;
+  }
+.quiet-scroll pre::-webkit-scrollbar-thumb,
+.quiet-scroll::-webkit-scrollbar-thumb {
+  background:rgba(0,0,0,0.4);
+  border-radius:0;
+  }
+.quiet-scroll pre::-webkit-scrollbar:hover,
+.quiet-scroll::-webkit-scrollbar:hover {
+  background:rgba(0,0,0,0.4);
+  }
+
+.force-inline * {
+  display:inline !important;
+}
