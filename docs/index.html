@@ -215,6 +215,16 @@
               
                 
                 <li><a
+                  href='#concave'
+                  class="">
+                  concave
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#convex'
                   class="">
                   convex
@@ -715,9 +725,9 @@
               
                 
                 <li><a
-                  href='#index'
+                  href='#circle'
                   class="">
-                  index
+                  circle
                   
                 </a>
                 
@@ -2169,9 +2179,7 @@ to account for global curvature.</p>
   
 
   <p>Takes two <a href="#Point">points</a> and returns a point midway between them.
-This gives the middle point in terms of latitude and longitude averaging,
-so the midpoint is guaranteed to fall on the line on an equirectangular
-projection, but may not be halfway between the points on the globe.</p>
+The midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.</p>
 
 
   <div class='pre p1 fill-light'>midpoint</div>
@@ -2660,6 +2668,163 @@ curved.properties = { stroke: <span class="hljs-string">'#0f0'</span> };
 
 <span class="hljs-keyword">var</span> buffered = turf.buffer(pt, <span class="hljs-number">500</span>, unit);
 <span class="hljs-keyword">var</span> result = turf.featurecollection([buffered, pt]);
+
+<span class="hljs-comment">//=result</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+            
+          
+            
+              <section class='py2 clearfix'>
+
+  
+  <div class='clearfix'>
+    <h2 class='fl' id='concave'>
+      concave
+    </h2>
+    
+  </div>
+  
+
+  <p>Takes a set of <a href="#Point">points</a> and returns a concave hull polygon.</p>
+<p>Internally, this uses <a href="https://github.com/Turfjs/turf-tin">turf-tin</a> to generate geometries.</p>
+
+
+  <div class='pre p1 fill-light'>concave(points: FeatureCollection&lt;Point&gt;, maxEdge: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, units: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): Feature&lt;Polygon&gt;</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>points</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> input points
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>maxEdge</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> the size of an edge necessary for part of the
+hull to become concave (in miles)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>units</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> used for maxEdge distance (miles or kilometers)
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Feature&lt;Polygon&gt;</code>:
+        a concave hull
+
+      
+    
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if maxEdge parameter is missing
+</li>
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if units parameter is missing
+</li>
+      
+    </ul>
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> points = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.601226</span>, <span class="hljs-number">44.642643</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.591442</span>, <span class="hljs-number">44.651436</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.580799</span>, <span class="hljs-number">44.648749</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.573589</span>, <span class="hljs-number">44.641788</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.587665</span>, <span class="hljs-number">44.64533</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.595218</span>, <span class="hljs-number">44.64765</span>]
+      }
+    }
+  ]
+};
+
+<span class="hljs-keyword">var</span> hull = turf.concave(points, <span class="hljs-number">1</span>, <span class="hljs-string">'miles'</span>);
+
+<span class="hljs-keyword">var</span> resultFeatures = points.features.concat(hull);
+<span class="hljs-keyword">var</span> result = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: resultFeatures
+};
 
 <span class="hljs-comment">//=result</span></pre>
     
@@ -3648,7 +3813,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>polygon</span> <code class='quiet'>(Feature&lt;Polygon&gt;)</code> input polygon
+            <span class='code bold'>polygon</span> <code class='quiet'>((Feature&lt;Polygon&gt; | Polygon))</code> input polygon
 
           </div>
           
@@ -7032,18 +7197,17 @@ as an array in WSEN order (west, south, east, north)
 
   
   <div class='clearfix'>
-    <h2 class='fl' id='index'>
-      index
+    <h2 class='fl' id='circle'>
+      circle
     </h2>
     
   </div>
   
 
-  <p>Takes a set of <a href="#Point">points</a> and returns a concave hull polygon.</p>
-<p>Internally, this uses <a href="https://github.com/Turfjs/turf-tin">turf-tin</a> to generate geometries.</p>
+  <p>Takes a <a href="#Point">Point</a> and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.</p>
 
 
-  <div class='pre p1 fill-light'>index(points: FeatureCollection&lt;Point&gt;, maxEdge: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, units: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): Feature&lt;Polygon&gt;</div>
+  <div class='pre p1 fill-light'>circle</div>
 
   
 
@@ -7059,7 +7223,7 @@ as an array in WSEN order (west, south, east, north)
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>points</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> input points
+            <span class='code bold'>center</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> center point
 
           </div>
           
@@ -7067,8 +7231,7 @@ as an array in WSEN order (west, south, east, north)
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>maxEdge</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> the size of an edge necessary for part of the
-hull to become concave (in miles)
+            <span class='code bold'>radius</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> radius of the circle
 
           </div>
           
@@ -7076,7 +7239,17 @@ hull to become concave (in miles)
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>units</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> used for maxEdge distance (miles or kilometers)
+            <span class='code bold'>steps</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> number of steps
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>units</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>]
+            (default <code>kilometers</code>)
+            )</code> miles, kilometers, degrees, or radians
 
           </div>
           
@@ -7091,84 +7264,37 @@ hull to become concave (in miles)
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code>Feature&lt;Polygon&gt;</code>:
-        a concave hull
+        circle polygon
 
       
     
   
 
-  
-    <div class='py1 quiet mt1 prose-big'>Throws</div>
-    <ul>
-      
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if maxEdge parameter is missing
-</li>
-      
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if units parameter is missing
-</li>
-      
-    </ul>
   
 
   
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> points = {
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.601226</span>, <span class="hljs-number">44.642643</span>]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.591442</span>, <span class="hljs-number">44.651436</span>]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.580799</span>, <span class="hljs-number">44.648749</span>]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.573589</span>, <span class="hljs-number">44.641788</span>]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.587665</span>, <span class="hljs-number">44.64533</span>]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-63.595218</span>, <span class="hljs-number">44.64765</span>]
-      }
-    }
-  ]
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> center = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"marker-color"</span>: <span class="hljs-string">"#0f0"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]
+  }
 };
+<span class="hljs-keyword">var</span> radius = <span class="hljs-number">5</span>;
+<span class="hljs-keyword">var</span> steps = <span class="hljs-number">10</span>;
+<span class="hljs-keyword">var</span> units = <span class="hljs-string">'kilometers'</span>;
 
-<span class="hljs-keyword">var</span> hull = turf.concave(points, <span class="hljs-number">1</span>, <span class="hljs-string">'miles'</span>);
+<span class="hljs-keyword">var</span> circle = turf.circle(center, radius, steps, units);
 
-<span class="hljs-keyword">var</span> resultFeatures = points.features.concat(hull);
 <span class="hljs-keyword">var</span> result = {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: resultFeatures
+  <span class="hljs-string">"features"</span>: [center, circle]
 };
 
 <span class="hljs-comment">//=result</span></pre>
