@@ -846,7 +846,15 @@ polygon.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>aggregations</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code> an array of aggregation objects
+            <span class='code bold'>inProperty</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property to be nested from
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>outProperty</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property to be nested into
 
           </div>
           
@@ -863,8 +871,6 @@ polygon.</p>
       <code>FeatureCollection&lt;Polygon&gt;</code>:
         polygons with properties listed based on 
 <code>outField</code>
- values in 
-<code>aggregations</code>
 
       
     
@@ -876,143 +882,18 @@ polygon.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> polygons = {
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
-        <span class="hljs-string">"coordinates"</span>: [[
-          [<span class="hljs-number">1.669921</span>, <span class="hljs-number">48.632908</span>],
-          [<span class="hljs-number">1.669921</span>, <span class="hljs-number">49.382372</span>],
-          [<span class="hljs-number">3.636474</span>, <span class="hljs-number">49.382372</span>],
-          [<span class="hljs-number">3.636474</span>, <span class="hljs-number">48.632908</span>],
-          [<span class="hljs-number">1.669921</span>, <span class="hljs-number">48.632908</span>]
-        ]]
-      }
-    }, {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {},
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
-        <span class="hljs-string">"coordinates"</span>: [[
-          [<span class="hljs-number">2.230224</span>, <span class="hljs-number">47.85003</span>],
-          [<span class="hljs-number">2.230224</span>, <span class="hljs-number">48.611121</span>],
-          [<span class="hljs-number">4.361572</span>, <span class="hljs-number">48.611121</span>],
-          [<span class="hljs-number">4.361572</span>, <span class="hljs-number">47.85003</span>],
-          [<span class="hljs-number">2.230224</span>, <span class="hljs-number">47.85003</span>]
-        ]]
-      }
-    }
-  ]
-};
-<span class="hljs-keyword">var</span> points = {
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {
-        <span class="hljs-string">"population"</span>: <span class="hljs-number">200</span>
-      },
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">2.054443</span>,<span class="hljs-number">49.138596</span>]
-      }
-    },
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {
-        <span class="hljs-string">"population"</span>: <span class="hljs-number">600</span>
-      },
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">3.065185</span>,<span class="hljs-number">48.850258</span>]
-      }
-    },
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {
-        <span class="hljs-string">"population"</span>: <span class="hljs-number">100</span>
-      },
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">2.329101</span>,<span class="hljs-number">48.79239</span>]
-      }
-    },
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {
-        <span class="hljs-string">"population"</span>: <span class="hljs-number">200</span>
-      },
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">2.614746</span>,<span class="hljs-number">48.334343</span>]
-      }
-    },
-    {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-      <span class="hljs-string">"properties"</span>: {
-        <span class="hljs-string">"population"</span>: <span class="hljs-number">300</span>
-      },
-      <span class="hljs-string">"geometry"</span>: {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
-        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">3.416748</span>,<span class="hljs-number">48.056053</span>]
-      }
-    }
-  ]
-};
-<span class="hljs-keyword">var</span> aggregations = [
-  {
-    aggregation: <span class="hljs-string">'sum'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_sum'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'average'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_avg'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'median'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_median'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'min'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_min'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'max'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_max'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'deviation'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_deviation'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'variance'</span>,
-    inField: <span class="hljs-string">'population'</span>,
-    outField: <span class="hljs-string">'pop_variance'</span>
-  },
-  {
-    aggregation: <span class="hljs-string">'count'</span>,
-    inField: <span class="hljs-string">''</span>,
-    outField: <span class="hljs-string">'point_count'</span>
-  }
-];
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> poly1 = polygon([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> poly2 = polygon([[[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">20</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> polyFC = featurecollection([poly1, poly2]);
+<span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">5</span>,<span class="hljs-number">5</span>], {population: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>], {population: <span class="hljs-number">600</span>});
+<span class="hljs-keyword">var</span> pt3 = point([<span class="hljs-number">14</span>,<span class="hljs-number">2</span>], {population: <span class="hljs-number">100</span>});
+<span class="hljs-keyword">var</span> pt4 = point([<span class="hljs-number">13</span>,<span class="hljs-number">1</span>], {population: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt5 = point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {population: <span class="hljs-number">300</span>});
+<span class="hljs-keyword">var</span> ptFC = featurecollection([pt1, pt2, pt3, pt4, pt5]);
+<span class="hljs-keyword">var</span> aggregated = aggregate(polyFC, ptFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
 
-<span class="hljs-keyword">var</span> aggregated = turf.aggregate(
-  polygons, points, statsProperty);
-
-<span class="hljs-keyword">var</span> result = turf.featurecollection(
-  points.features.concat(aggregated.features));
-
-<span class="hljs-comment">//=result</span></pre>
+aggregated.features[<span class="hljs-number">0</span>].properties.values <span class="hljs-comment">// =&gt; [200, 600]);</span></pre>
     
   
 
@@ -1745,7 +1626,7 @@ the centroid of a set of polygons.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>start</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> starting point
+            <span class='code bold'>from</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> starting point
 
           </div>
           
@@ -1912,7 +1793,7 @@ to account for global curvature.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> point1 = {
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> <span class="hljs-keyword">from</span> = {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
   <span class="hljs-string">"properties"</span>: {},
   <span class="hljs-string">"geometry"</span>: {
@@ -1920,7 +1801,7 @@ to account for global curvature.</p>
     <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]
   }
 };
-<span class="hljs-keyword">var</span> point2 = {
+<span class="hljs-keyword">var</span> to = {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
   <span class="hljs-string">"properties"</span>: {},
   <span class="hljs-string">"geometry"</span>: {
@@ -1932,12 +1813,12 @@ to account for global curvature.</p>
 
 <span class="hljs-keyword">var</span> points = {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [point1, point2]
+  <span class="hljs-string">"features"</span>: [<span class="hljs-keyword">from</span>, to]
 };
 
 <span class="hljs-comment">//=points</span>
 
-<span class="hljs-keyword">var</span> distance = turf.distance(point1, point2, units);
+<span class="hljs-keyword">var</span> distance = turf.distance(<span class="hljs-keyword">from</span>, to, units);
 
 <span class="hljs-comment">//=distance</span></pre>
     
@@ -2198,7 +2079,7 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pt1</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> first point
+            <span class='code bold'>from</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> first point
 
           </div>
           
@@ -2206,7 +2087,7 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pt2</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> second point
+            <span class='code bold'>to</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> second point
 
           </div>
           
@@ -2874,7 +2755,7 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>input</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> input points
+            <span class='code bold'>featurecollection</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> input points
 
           </div>
           
@@ -3626,7 +3507,7 @@ into <a href="#MultiPoint">MultiPoint</a>, <a href="#MultiLineString">MultiLineS
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>input</span> <code class='quiet'>((Feature | FeatureCollection))</code> input features
+            <span class='code bold'>geojson</span> <code class='quiet'>((Feature | FeatureCollection))</code> input features
 
           </div>
           
@@ -4244,6 +4125,14 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         </div>
       
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>properties</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code> properties
+
+          </div>
+          
+        </div>
+      
     </div>
   
 
@@ -4423,7 +4312,7 @@ coordinate array. Properties can be added optionally.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>coordinates</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;)</code> an array of Positions
+            <span class='code bold'>coordinates</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;)</code> an array of LineStrings
 
           </div>
           
@@ -4466,7 +4355,7 @@ coordinate array. Properties can be added optionally.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiLine = turf.multilinestring([[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]);
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiLine = turf.multiLineString([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]]);
 
 <span class="hljs-comment">//=multiLine</span></pre>
     
@@ -4596,7 +4485,7 @@ properties
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>rings</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;)</code> an array of LinearRings
+            <span class='code bold'>coordinates</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;)</code> an array of LinearRings
 
           </div>
           
@@ -4737,7 +4626,7 @@ coordinate array. Properties can be added optionally.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiPt = turf.multipoint([[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]);
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiPt = turf.multiPoint([[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]);
 
 <span class="hljs-comment">//=multiPt</span></pre>
     
@@ -4784,7 +4673,7 @@ coordinate array. Properties can be added optionally.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>coordinates</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;)</code> an array of Positions
+            <span class='code bold'>coordinates</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;&gt;)</code> an array of Polygons
 
           </div>
           
@@ -4827,7 +4716,7 @@ coordinate array. Properties can be added optionally.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiPoly = turf.multipolygon([[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]);
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> multiPoly = turf.multiPolygon([[[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
 
 <span class="hljs-comment">//=multiPoly</span></pre>
     
@@ -5127,7 +5016,7 @@ from its center.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>features</span> <code class='quiet'>(FeatureCollection)</code> set of input features
+            <span class='code bold'>featurecollection</span> <code class='quiet'>(FeatureCollection)</code> set of input features
 
           </div>
           
@@ -5135,7 +5024,7 @@ from its center.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>n</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> number of features to select
+            <span class='code bold'>num</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> number of features to select
 
           </div>
           
@@ -5337,7 +5226,7 @@ that define the values at its three corners.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>interpolatedPoint</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> the Point for which a z-value will be calculated
+            <span class='code bold'>point</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> the Point for which a z-value will be calculated
 
           </div>
           
@@ -5470,7 +5359,7 @@ the points that represent the corners of the triangle.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>propertyName</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>])</code> name of the property from which to pull z values
+            <span class='code bold'>z</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>])</code> name of the property from which to pull z values
 This is optional: if not given, then there will be no extra data added to the derived triangles.
 
           </div>
@@ -5717,7 +5606,7 @@ be convex or concave. The function accounts for holes.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>polyId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property in 
+            <span class='code bold'>field</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property in 
 <code>polygons</code>
  to add to joined Point features
 
@@ -5727,7 +5616,7 @@ be convex or concave. The function accounts for holes.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>containingPolyId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property in 
+            <span class='code bold'>outField</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> property in 
 <code>points</code>
  in which to store joined property from &#x60;polygons
 
@@ -5849,7 +5738,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>cellWidth</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> width of cell in specified units
+            <span class='code bold'>cellSize</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> dimension of cell in specified units
 
           </div>
           
@@ -5858,6 +5747,14 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>units</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code> used in calculating cellWidth (&#x27;miles&#x27; or &#x27;kilometers&#x27;)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>triangles</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code> whether to return as triangles instead of hexagons
 
           </div>
           
@@ -5934,7 +5831,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>extent</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
+            <span class='code bold'>bbox</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
 [minX, minY, maxX, maxY]
  order
 
@@ -5944,7 +5841,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>cellWidth</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> the distance across each cell
+            <span class='code bold'>cellSize</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> the distance across each cell
 
           </div>
           
@@ -6031,7 +5928,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>extent</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
+            <span class='code bold'>bbox</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
 [minX, minY, maxX, maxY]
  order
 
@@ -6041,7 +5938,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>cellWidth</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> width of each cell
+            <span class='code bold'>cellSize</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> width of each cell
 
           </div>
           
@@ -6126,7 +6023,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>extent</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
+            <span class='code bold'>bbox</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)</code> extent in 
 [minX, minY, maxX, maxY]
  order
 
@@ -6136,7 +6033,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>cellWidth</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> width of each cell
+            <span class='code bold'>cellSize</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> dimension of each cell
 
           </div>
           
@@ -6384,7 +6281,7 @@ is geodesic.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>point</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> the reference point
+            <span class='code bold'>targetPoint</span> <code class='quiet'>(Feature&lt;Point&gt;)</code> the reference point
 
           </div>
           
@@ -6392,7 +6289,7 @@ is geodesic.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>against</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> input point set
+            <span class='code bold'>points</span> <code class='quiet'>(FeatureCollection&lt;Point&gt;)</code> against input point set
 
           </div>
           
@@ -6667,7 +6564,7 @@ similar to how Array.reduce works. However, in this case we lazily run
 the reduction, so an array of all coordinates is unnecessary.</p>
 
 
-  <div class='pre p1 fill-light'>coordReduce(layer: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, memo: Any, excludeWrapCoord: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</div>
+  <div class='pre p1 fill-light'>coordReduce(layer: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, memo: Any, excludeWrapCoord: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]): Any</div>
 
   
 
@@ -6720,6 +6617,14 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Any</code>:
+        combined value
+
+      
+    
   
 
   
@@ -6826,7 +6731,7 @@ featureEach(feature, <span class="hljs-function"><span class="hljs-keyword">func
 geometry, or a single coordinate.</p>
 
 
-  <div class='pre p1 fill-light'>getCoord(value: Any, obj: ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</div>
+  <div class='pre p1 fill-light'>getCoord(obj: Any): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</div>
 
   
 
@@ -6842,15 +6747,8 @@ geometry, or a single coordinate.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>value</span> <code class='quiet'>(Any)</code> any value
+            <span class='code bold'>obj</span> <code class='quiet'>(Any)</code> any value
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>obj</span> <code class='quiet'>()</code> 
           </div>
           
         </div>
@@ -6911,7 +6809,7 @@ geometry, or a single coordinate.</p>
 Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry types.</p>
 
 
-  <div class='pre p1 fill-light'>featureOf(feature: Feature, value: , type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
+  <div class='pre p1 fill-light'>featureOf(feature: Feature, type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
 
   
 
@@ -6929,13 +6827,6 @@ Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry ty
           <div>
             <span class='code bold'>feature</span> <code class='quiet'>(Feature)</code> a feature with an expected geometry type
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>value</span> <code class='quiet'>()</code> 
           </div>
           
         </div>
@@ -7000,7 +6891,7 @@ Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry ty
 Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry types.</p>
 
 
-  <div class='pre p1 fill-light'>collectionOf(featurecollection: FeatureCollection, value: , type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
+  <div class='pre p1 fill-light'>collectionOf(featurecollection: FeatureCollection, type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
 
   
 
@@ -7018,13 +6909,6 @@ Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry ty
           <div>
             <span class='code bold'>featurecollection</span> <code class='quiet'>(FeatureCollection)</code> a featurecollection for which features will be judged
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>value</span> <code class='quiet'>()</code> 
           </div>
           
         </div>
@@ -7104,7 +6988,7 @@ Internally this uses <a href="#geojsonType">geojsonType</a> to judge geometry ty
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>input</span> <code class='quiet'>((Feature | FeatureCollection))</code> input features
+            <span class='code bold'>geojson</span> <code class='quiet'>((Feature | FeatureCollection))</code> input features
 
           </div>
           
@@ -7408,7 +7292,7 @@ similar to how Array.reduce works. However, in this case we lazily run
 the reduction, so an array of all properties is unnecessary.</p>
 
 
-  <div class='pre p1 fill-light'>propReduce(layer: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, memo: Any)</div>
+  <div class='pre p1 fill-light'>propReduce(layer: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, memo: Any): Any</div>
 
   
 
@@ -7452,6 +7336,14 @@ a new memo
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Any</code>:
+        combined value
+
+      
+    
   
 
   
