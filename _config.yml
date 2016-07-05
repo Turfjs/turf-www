@@ -1,3 +1,0 @@
-# simply a hack to make gh-pages work
-source: _site
-destination: __site
