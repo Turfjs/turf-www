@@ -29,6 +29,6 @@
     "turf": "^3.0.0"
   },
   "devDependencies": {
-    "documentation": "4.0.0-beta4"
+    "documentation": "4.0.0-beta8"
   }
 }
