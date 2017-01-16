@@ -4,9 +4,14 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "docs": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f html -o docs",
-    "test": "documentation lint turf/packages/turf-*/index.js",
-    "serve": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -f html -o docs"
+    "copyAssets": "cp -R template/turf_2017/assets/ assets/",
+    "moveDocFile": "mv docs/index.html docs.html",
+    "deleteDocDirectory": "rm -R docs",
+    "deploy": "npm run buildAPI && npm run copyAssets && npm run moveDocFile && npm run deleteDocDirectory",
+    "buildAPI": "documentation build -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs",
+    "lintAPI": "documentation lint turf/packages/turf-*/index.js",
+    "serveAPI": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs -w",
+    "serve": "static-server"
   },
   "repository": {
     "type": "git",
@@ -29,6 +34,8 @@
     "turf": "^3.0.0"
   },
   "devDependencies": {
-    "documentation": "4.0.0-beta8"
+    "copy": "^0.3.0",
+    "documentation": "^4.0.0-beta.18",
+    "static-server": "^2.0.3"
   }
 }

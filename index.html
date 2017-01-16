@@ -1,266 +1,247 @@
+<!doctype html>
 <html>
 <head>
-  <link rel='icon' type='image/ico' href='/favicon.ico'>
-  <title>Turf.js</title>
-  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
-  <link href='/assets/css/main.css' rel='stylesheet' />
-  <script src='//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js'></script>
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
+  <meta charset='utf-8' />
+  <title>Turf.js | Geospatial Analysis Library</title>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link rel="stylesheet" href="./assets/css/pure-min.css" />
+  <link rel="stylesheet" href="./assets/css/custom.css" />
+  <link rel="stylesheet" href="./assets/css/github.css" />
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <style>
+    #map1, #map2{
+      height: 200px;
+      width: 100%;
+    }
+    #moduleHolder{
+      width: 100%;
+      height: 200px;
+    }
+    #moduleHolder div {
+      background-color: #f7f7f7;
+      line-height: 2rem;
+      position: relative;
+      top: 45%;
+    }
+    .credits{
+      text-align: center;
+      margin-top: 50px;
+    }
+    #home .centredContainer{
+      margin-bottom: 0px;
+    }
+  </style>
 </head>
-<body>
-<div class='unlimiter fill-turf-green clearfix'>
-  <div class='limiter'>
-    <div class='col10 pad4 margin1 clearfix'>
-      <div class='round clearfix fill-turf-green dark pad1x'>
-        <h2 style='line-height:40px' class='space-right2 fancy inline'><a style='color:#fff;' href='/'>
-          TURF
-        </a></h2>
-        <a href='/docs/' style='vertical-align:top;' class='button fill-darken0'>API Docs</a>
-        <a href='/learn.html'   style='vertical-align:top;' class='button fill-darken0'>Learn</a>
-        <iframe src="https://ghbtns.com/github-btn.html?user=turfjs&repo=turf&type=star&count=true&size=large" frameborder="0"
-          scrolling="0" width="160px" style='vertical-align:top;margin-top:5px;margin-left:30px;' height="30px"></iframe>
+<body id="home">
+  <div class="pure-menu pure-menu-horizontal pure-u-1-1">
+    <div class="logoHolder">
+      <a href="index.html" class="pure-menu-heading pure-menu-link">TURF</a>
+    </div>
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item"><a href="getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
+      <li class="pure-menu-item"><a href="docs.html" class="pure-menu-link">API</a></li>
+      <li class="pure-menu-item"><a href="examples.html" class="pure-menu-link">EXAMPLES</a></li>
+      <li class="pure-menu-item" id="github">
+        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="./assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-g">
+    <div class="pure-u-1-1 centredContainer">
+      <h2 style="text-align: center;">Advanced geospatial analysis for browsers
+        and node</h2>
+        <div class="pure-g">
+          <div class="pure-u-1-3">
+            <div id="map1"></div>
+            <h4>Simple</h4>
+            <p>Modular, simple-to-understand JavaScript functions that speak GeoJSON</p>
+          </div>
+          <div class="pure-u-1-3">
+            <div id="moduleHolder">
+              <div style="text-align: center;">> turf.tin(points);</div>
+            </div>
+            <h4>Fast</h4>
+            <p>Takes advantage of the newest algorithms and doesn't require you to send data to a server</p>
+          </div>
+          <div class="pure-u-1-3">
+            <div id="map2"></div>
+            <h4>Modular</h4>
+            <p>Turf is a collection of small modules. You can require just what you use with browserify</p>
+          </div>
+          <div class="pure-u-1-1">
+            <h3>Installation</h3>
+            <table class="installTable">
+              <tbody>
+                <tr>
+                  <td style="width: 30%"><strong>npm</strong></td><td style="width: 70%">npm install @turf/turf</td>
+                </tr>
+                <tr>
+                  <td><strong>cdn</strong></td><td>https://npmcdn.com/@turf/turf/turf.min.js</td>
+                </tr>
+                <tr>
+                  <td><strong>download</strong></td><td><a href="https://npmcdn.com/@turf/turf/turf.min.js" style="color: #2ecc71; text-decoration: none;">turf.min.js</a></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="credits">
+              <p>Library released under <a href="https://github.com/Turfjs/turf/blob/master/LICENSE">MIT license</a>. © 2017 <a href="https://twitter.com/morganherlocker">Morgan Herlocker.</a></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class='limiter'>
-  <div class='pad2y'>
-  <div class='col10 margin1 clearfix'>
-    <div class='prose clearfix fill-white'>
-      <div class='pad4y'>
-        
-<p class='big'>Advanced geospatial analysis for browsers
-and node</p>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+  <script>
+    L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+    var mapOptions = { attributionControl: false, zoomControl: false };
+    var map1 = L.mapbox.map('map1', 'tmcw.kncfa9dj', mapOptions);
+    var map2 = L.mapbox.map('map2', 'tmcw.kncfa9dj', mapOptions);
 
-<div class='col12 clearfix space-bottom4 space-top4 hide-mobile'>
-  <div class='col4 keyline-all'>
-    <div id='map1' class='row3'>
-    </div>
-  </div>
-  <div class='col3'>
-    <div class='scroll-styled row3  pad4y'>
-      <pre class='icon next unround'>turf.tin(points);</pre>
-    </div>
-  </div>
-  <div class='col5 keyline-all'>
-    <div id='map2' class='row3'>
-    </div>
-  </div>
-</div>
-
-<div class='col12 clearfix pad2'>
-  <div class='col4 pad1r'>
-    <h2>Simple</h2>
-    <p>Modular, simple-to-understand JavaScript
-    functions that speak GeoJSON</p>
-  </div>
-  <div class='col4 pad1r'>
-    <h2>Fast</h2>
-    <p>Takes advantage of the newest algorithms
-    and doesn't require you to send data to a server</p>
-  </div>
-  <div class='col4 pad1r'>
-    <h2>Modular</h2>
-    <p>Turf is a collection of small modules.
-    You can require just what you use
-    with browserify</p>
-  </div>
-</div>
-
-<div class='col12 space-top4 clearfix round'>
-  <div class='col2'>
-    <h2>Install</h2>
-  </div>
-  <div class='col10 keyline-all round'>
-    <div class='keyline-bottom clearfix'>
-      <div class='pad1y pad1x col2'>
-        <h3>node</h3>
-      </div>
-      <div class='col10'>
-        <pre>npm install @turf/turf</pre>
-      </div>
-    </div>
-    <div class='keyline-bottom clearfix'>
-      <div class='pad1y pad1x col2'>
-        <h3>CDN</h3>
-      </div>
-      <div class='col10 scroll-styled'>
-        <pre>https://npmcdn.com/@turf/turf@3.5.1/turf.min.js</pre>
-      </div>
-    </div>
-    <div class='clearfix'>
-      <div class='pad1y pad1x col2'>
-        <h3>Download</h3>
-      </div>
-      <div class='col10 scroll-styled pad0'>
-        <a download='turf.min.js' href='https://unpkg.com/@turf/turf@3.5.2/turf.min.js'>turf.min.js</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-var points = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 10
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+    function pointToLayer(feature, latlng) {
+      return L.circleMarker(latlng);
+    };
+    var points = {
+      "type": "FeatureCollection",
+      "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 10
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -74.00081634521484,
           40.73919337320588
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 12
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 12
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.99227619171143,
           40.74234739360884
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 16
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 16
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.9972972869873,
           40.732201970137126
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 5
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 5
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.99476528167725,
           40.73799025385534
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 15
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 15
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.98914337158203,
           40.74153451605774
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 5
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 5
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.99330615997314,
           40.734803508271256
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "price": 2
+          ]
+        }
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
+      {
+        "type": "Feature",
+        "properties": {
+          "price": 2
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
           -73.98837089538574,
           40.73906330729812
-        ]
-      }
-    }
-  ]
-};
-L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
-function pointToLayer(feature, latlng) {
-    return L.circleMarker(latlng);
-};
-
-function valueSum(obj) {
-    var sum = 0;
-    for (var k in obj) sum += obj[k];
-    return sum;
-}
-
-var geojsonOptions = {
-    pointToLayer: pointToLayer,
-    style: function(feature) {
-      if (feature.geometry.type === 'Polygon') {
-        var sum = valueSum(feature.properties) / 62;
-        return {
-          weight: 1,
-          fillOpacity: sum,
-          color: '#222'
+          ]
         }
-      } else {
-        return {
-          radius: 3,
-          stroke: false,
-          color: '#000',
-          fillOpacity: 1
-        };
       }
+      ]
+    };
+
+
+    function valueSum(obj) {
+      var sum = 0;
+      for (var k in obj) sum += obj[k];
+        return sum;
     }
-};
+    var geojsonOptions = {
+      pointToLayer: pointToLayer,
+      style: function(feature) {
+        if (feature.geometry.type === 'Polygon') {
+          var sum = valueSum(feature.properties) / 62;
+          return {
+            weight: 1,
+            fillOpacity: sum,
+            color: '#222'
+          }
+        } else {
+          return {
+            radius: 3,
+            stroke: false,
+            color: '#000',
+            fillOpacity: 1
+          };
+        }
+      }
+    };
 
-var mapOptions = { attributionControl: false, zoomControl: false };
-var map1 = L.mapbox.map('map1', 'tmcw.kncfa9dj', mapOptions);
-map1.scrollWheelZoom.disable();
-var pointsLayer1 = L.geoJson(points, geojsonOptions).addTo(map1);
-map1.fitBounds(pointsLayer1.getBounds());
+    var pointsLayer1 = L.geoJson(points, geojsonOptions).addTo(map1);
+    map1.fitBounds(pointsLayer1.getBounds());
 
-var map2 = L.mapbox.map('map2', 'tmcw.kncfa9dj', mapOptions);
-map2.scrollWheelZoom.disable();
-var tin = turf.tin(points, 'price');
-map2.addLayer(L.geoJson(tin, geojsonOptions));
-var pointsLayer2 = L.geoJson(points, geojsonOptions).addTo(map2);
-map2.fitBounds(pointsLayer2.getBounds());
+    var tin = turf.tin(points, 'price');
+    map2.addLayer(L.geoJson(tin, geojsonOptions));
+    var pointsLayer2 = L.geoJson(points, geojsonOptions).addTo(map2);
+    map2.fitBounds(pointsLayer2.getBounds());
 
-</script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      </div>
-    </div>
-    <div class='quiet small center pad1y'>
-      Library released under <a href='https://github.com/Turfjs/turf/blob/master/LICENSE'>MIT license</a>.
-        &copy; 2016 <a href='https://twitter.com/morganherlocker'>Morgan Herlocker</a>.
-    </div>
-  </div>
-</div>
-</div>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-12158002-13', 'auto');
-  ga('send', 'pageview');
-
-</script>
+    ga('create', 'UA-12158002-13', 'auto');
+    ga('send', 'pageview');
+  </script>
 </body>
+</html>

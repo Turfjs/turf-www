@@ -1,8 +1,2 @@
-# Dependency directory
-# Deployed apps should consider commenting this line out:
-# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
+npm-debug.log*
 node_modules
-
-# ignore jekyll build artifacts
-_site
-_docs
