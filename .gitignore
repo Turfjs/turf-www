@@ -6,3 +6,6 @@ node_modules
 # ignore jekyll build artifacts
 _site
 _docs
+
+# ignore generated test file
+test/turf.js
