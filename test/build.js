@@ -5,7 +5,7 @@ var path = require('path');
 var testFilePath = path.resolve(__dirname + '/turf.js');
 
 var requireString = 'var turf = require(\'@turf/turf\');\n\nvar turfMeta = require(\'@turf/meta\');\n\nvar test = require(\'ava\');\n\n';
-glob('../turf/packages/turf-*/index.js', function (err, files) {
+glob('turf/packages/turf-*/index.js', function (err, files) {
   if (err) {
     throw err;
   }
