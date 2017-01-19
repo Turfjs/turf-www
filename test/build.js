@@ -18,7 +18,7 @@ glob('turf/packages/turf-*/index.js', function (err, files) {
     writeableStream.on('error', function (err) {
       throw err;
     });
-    turfFunctions.map(function (turfFunction) {
+    turfFunctions.forEach(function (turfFunction) {
       if(turfFunction.examples) {
         turfFunction.examples.forEach(function (example) {
           var turfName = turfFunction.name;
@@ -33,5 +33,6 @@ glob('turf/packages/turf-*/index.js', function (err, files) {
         });
       }
     });
+    writeableStream.end();
   });
 });
