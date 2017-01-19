@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "docs": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f html -o docs",
-    "test": "documentation lint turf/packages/turf-*/index.js",
+    "lint": "documentation lint turf/packages/turf-*/index.js",
+    "build-test": "node test/build",
+    "test-runner": "ava test/turf.js",
+    "test": "npm run lint && npm run build-test && npm run test-runner",
     "serve": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -f html -o docs"
   },
   "repository": {
@@ -24,11 +27,14 @@
   },
   "homepage": "https://github.com/turfjs/turf-www",
   "dependencies": {
+    "@turf/turf": "^3.7.4",
     "lodash": "^3.3.1",
-    "striptags": "^2.0.1",
-    "turf": "^3.0.0"
+    "striptags": "^2.0.1"
   },
   "devDependencies": {
-    "documentation": "4.0.0-beta8"
+    "@turf/meta": "^3.7.3",
+    "ava": "^0.17.0",
+    "documentation": "4.0.0-beta8",
+    "glob": "^7.1.1"
   }
 }
