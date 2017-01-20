@@ -8,18 +8,18 @@ turf-www is the website for [Turf](http://github.com/turfjs/turf). It lives at h
 The main sections of turf-www are:
 
 - [homepage](http://turfjs.org)
-- [API docs](http://turfjs.org/static/docs)
-- [examples and tutorials](http://turfjs.org/learn.html)
+- [API docs](http://turfjs.org/docs)
+- [examples and tutorials](http://turfjs.org/examples.html)
 
 ## Contributing
 
 ### Documentation
 
-To learn about contributing documentation, read [DOCUMENTATION.md](https://github.com/Turfjs/turf-www/blob/master/DOCUMENTATION.md) in this repo.
+To learn about contributing documentation, read [CONTRIBUTING.md](https://github.com/Turfjs/turf-www/blob/master/CONTRIBUTING.md) in this repo.
 
 ### Examples and Tutorials
 
-If you have examples or tutorials you have written, please open an issue and someone will add them to [learn.html](https://github.com/Turfjs/turf-www/blob/gh-pages/learn.html).
+If you have examples or tutorials you have written, please open an issue and someone will add them to [examples.html](https://github.com/Turfjs/turf-www/blob/gh-pages/examples.html).
 
 Our list of examples and tutorials will be growing and changing over time.
 

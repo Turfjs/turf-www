@@ -9,3 +9,4 @@ _docs
 
 # ignore generated test file
 test/turf.js
+npm-debug.log*
