@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Turf.js | Getting Started</title>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link rel="stylesheet" href="./assets/css/pure-min.css" />
+  <link rel="stylesheet" href="./assets/css/custom.css" />
+  <link rel="stylesheet" href="./assets/css/github.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+  <div class="pure-menu pure-menu-horizontal pure-u-1-1">
+    <div class="logoHolder">
+      <a href="index.html" class="pure-menu-heading pure-menu-link">TURF</a>
+    </div>
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item linkActive"><a href="getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
+      <li class="pure-menu-item"><a href="docs.html" class="pure-menu-link">API</a></li>
+      <li class="pure-menu-item"><a href="examples.html" class="pure-menu-link">EXAMPLES</a></li>
+      <li class="pure-menu-item" id="github">
+        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="./assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-g">
+    <div class="pure-u-1-1 centredContainer panel">
+      <h2>Getting started with Turf.js</h2>
+      <p>There are a few different ways to get started using Turf, the documentation below will provide a couple of the common scenarios.</p>
+      <h3>Using directly in the browser</h3>
+      <p>Load the minified file via a script tag, this will expose a global variable named turf.</p>
+        <pre><code class="html">
+&lt;script src='https://npmcdn.com/@turf/turf/turf.min.js'&gt;&lt;/script&gt;   
+&lt;script&gt;
+    var bbox = turf.bbox(features);
+&lt;/script&gt;
+          </code></pre>
+        <p><strong>Note:</strong> The full build of Turf weighs around 500kb which is a fair bit of javascript to load so you probably only want to pull in the bits you need, see the instructions below on how to create a custom build.</p>
+        <h3>Using in Node or with a build tool</h3>
+        <p>If you're working in Node or with build tool (such as webpack, browserify or rollup) you can include individual turf modules in your project.</p>
+        <pre><code class="js">
+// Import your module of interest after you've installed your module
+const turfCollect = require('@turf/collect');
+// And then use it
+turfCollect(points, polys, 'population', 'populationValues')
+          </code></pre>
+
+        <h3>Creating custom builds for use in the browser</h3>
+        <p><strong>Step 1</strong> Create a folder and install whatever modules you are interested in via npm</p>
+          <pre><code class="js">
+npm install @turf/collect @turf/buffer
+          </code></pre>
+          <p><strong>Step 2</strong> Create a file called main.js in the root directory, in this include your required modules within a modules.exports statement</p>
+          <pre><code class="js">
+module.exports = {
+   collect: require('@turf/collect'),
+   buffer: require('@turf/buffer')
+};
+        </code></pre>
+        <p><strong>Step 3</strong> Run the following browserify command</p>
+        <pre><code class="js">
+browserify main.js -s turf > outTurf.js
+        </code></pre>
+        <p><strong>Done</strong> You can now use your outTurf.js file where you want just like you would normally use Turf, eg load it via a script tag and call turf using the turf global variable.</p>
+    </div>
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

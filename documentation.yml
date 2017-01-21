@@ -4,28 +4,29 @@ toc:
   - name: Measurement
   - along
   - area
+  - bbox
   - bboxPolygon
   - bearing
   - center
+  - centerOfMass
   - centroid
   - destination
   - distance
   - envelope
-  - extent
   - lineDistance
   - midpoint
   - pointOnSurface
-  - size
   - square
   - name: Transformation
   - bezier
   - buffer
+  - circle
   - concave
   - convex
   - difference
   - intersect
-  - merge
   - simplify
+  - tesselate
   - union
   - name: Misc
   - combine
@@ -33,17 +34,18 @@ toc:
   - flip
   - kinks
   - lineSlice
+  - lineSliceAlong
   - pointOnLine
   - name: Helper
   - featureCollection
   - feature
+  - geometryCollection
   - lineString
   - multiLineString
-  - point
-  - polygon
   - multiPoint
   - multiPolygon
-  - geometryCollection
+  - point
+  - polygon
   - name: Data
   - random
   - sample
@@ -56,6 +58,7 @@ toc:
   - tag
   - name: Grids
   - hexGrid
+  - idw
   - pointGrid
   - squareGrid
   - triangleGrid
@@ -63,14 +66,18 @@ toc:
   - name: Classification
   - nearest
   - name: Meta
-  - propEach
+  - coordAll
   - coordEach
   - coordReduce
   - featureEach
-  - getCoord
+  - geomEach
+  - propEach
+  - propReduce
   - name: Assertions
-  - featureOf
   - collectionOf
+  - geojsonType
+  - getCoord
+  - featureOf
 paths:
   GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
   Point: "http://geojson.org/geojson-spec.html#point"
