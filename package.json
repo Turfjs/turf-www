@@ -14,7 +14,7 @@
     "serve": "static-server",
     "build-test": "node test/build",
     "test-runner": "ava test/turf.js",
-    "test": "npm run lint && npm run build-test && npm run test-runner"
+    "test": "npm run lintAPI && npm run build-test && npm run test-runner"
   },
   "repository": {
     "type": "git",
@@ -37,11 +37,11 @@
     "striptags": "^2.0.1"
   },
   "devDependencies": {
-    "copy": "^0.3.0",
-    "documentation": "^4.0.0-beta.18",
-    "static-server": "^2.0.3",
     "@turf/meta": "^3.7.3",
     "ava": "^0.17.0",
-    "glob": "^7.1.1"
+    "copy": "^0.3.0",
+    "documentation": "^4.0.0-beta.18",
+    "glob": "^7.1.1",
+    "static-server": "^2.0.3"
   }
 }

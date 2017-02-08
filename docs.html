@@ -996,12 +996,12 @@ minX, minY, maxX, maxY
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">114.175329</span>, <span class="hljs-number">22.2524</span>])
-<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">114.170007</span>, <span class="hljs-number">22.267969</span>])
-<span class="hljs-keyword">var</span> pt3 = point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
-<span class="hljs-keyword">var</span> pt4 = point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
-<span class="hljs-keyword">var</span> pt5 = point([<span class="hljs-number">114.186744</span>, <span class="hljs-number">22.265745</span>])
-<span class="hljs-keyword">var</span> features = featureCollection([pt1, pt2, pt3, pt4, pt5])
+    <pre><span class="hljs-keyword">var</span> pt1 = turf.point([<span class="hljs-number">114.175329</span>, <span class="hljs-number">22.2524</span>])
+<span class="hljs-keyword">var</span> pt2 = turf.point([<span class="hljs-number">114.170007</span>, <span class="hljs-number">22.267969</span>])
+<span class="hljs-keyword">var</span> pt3 = turf.point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
+<span class="hljs-keyword">var</span> pt4 = turf.point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
+<span class="hljs-keyword">var</span> pt5 = turf.point([<span class="hljs-number">114.186744</span>, <span class="hljs-number">22.265745</span>])
+<span class="hljs-keyword">var</span> features = turf.featureCollection([pt1, pt2, pt3, pt4, pt5])
 
 <span class="hljs-keyword">var</span> bbox = turf.bbox(features);
 
@@ -2595,7 +2595,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
 <span class="hljs-keyword">var</span> unit = <span class="hljs-string">'miles'</span>;
 
 <span class="hljs-keyword">var</span> buffered = turf.buffer(pt, <span class="hljs-number">500</span>, unit);
-<span class="hljs-keyword">var</span> result = turf.featurecollection([buffered, pt]);
+<span class="hljs-keyword">var</span> result = turf.featureCollection([buffered, pt]);
 
 <span class="hljs-comment">//=result</span></pre>
     
@@ -2692,7 +2692,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> center = point([<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]);
+    <pre><span class="hljs-keyword">var</span> center = turf.point([<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]);
 <span class="hljs-keyword">var</span> radius = <span class="hljs-number">5</span>;
 <span class="hljs-keyword">var</span> steps = <span class="hljs-number">10</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'kilometers'</span>;
@@ -3205,7 +3205,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> poly1 = polygon([[
+    <pre><span class="hljs-keyword">var</span> poly1 = turf.polygon([[
   [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>],
   [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.60491</span>],
   [<span class="hljs-number">-122.584762</span>, <span class="hljs-number">45.60491</span>],
@@ -3213,7 +3213,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
   [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>]
 ]]);
 
-<span class="hljs-keyword">var</span> poly2 = polygon([[
+<span class="hljs-keyword">var</span> poly2 = turf.polygon([[
   [<span class="hljs-number">-122.520217</span>, <span class="hljs-number">45.535693</span>],
   [<span class="hljs-number">-122.64038</span>, <span class="hljs-number">45.553967</span>],
   [<span class="hljs-number">-122.720031</span>, <span class="hljs-number">45.526554</span>],
@@ -3862,7 +3862,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
   </h3>
   
 
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and returns <a href="http://geojson.org/geojson-spec.html#point">points</a> at all self-intersections.</p>
+  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">linestring</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">multi-linestring</a>, <a href="http://geojson.org/geojson-spec.html#multipolygon">multi-polygon</a>, or <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and returns <a href="http://geojson.org/geojson-spec.html#point">points</a> at all self-intersections.</p>
 
   
  
@@ -3885,9 +3885,9 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <tbody>
         
         <tr>
-          <td>polygon</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)</td>
-          <td>input polygon
+          <td>feature</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)></td>
+          <td>input feature
 </td>
           </tr>
           
@@ -3928,7 +3928,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
 
 <span class="hljs-keyword">var</span> kinks = turf.kinks(poly);
 
-<span class="hljs-keyword">var</span> resultFeatures = kinks.intersections.features.concat(poly);
+<span class="hljs-keyword">var</span> resultFeatures = kinks.features.concat(poly);
 <span class="hljs-keyword">var</span> result = {
   <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
   <span class="hljs-string">"features"</span>: resultFeatures
@@ -4179,7 +4179,7 @@ and returns a subsection of the line in-between those points.</p>
 
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> sliced = turf.lineSliceAlong(start, stop, line, units);
+<span class="hljs-keyword">var</span> sliced = turf.lineSliceAlong(line, start, stop, units);
 
 <span class="hljs-comment">//=line</span>
 
@@ -4955,7 +4955,7 @@ coordinate array. Properties can be added optionally.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> multiPoly = turf.multiPolygon([[[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
+    <pre><span class="hljs-keyword">var</span> multiPoly = turf.multiPolygon([[[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]]);
 
 <span class="hljs-comment">//=multiPoly</span></pre>
     
@@ -5762,8 +5762,8 @@ be convex or concave. The function accounts for holes.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt = point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
-<span class="hljs-keyword">var</span> poly = polygon([[
+    <pre><span class="hljs-keyword">var</span> pt = turf.point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
+<span class="hljs-keyword">var</span> poly = turf.polygon([[
   [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
   [<span class="hljs-number">-81</span>, <span class="hljs-number">47</span>],
   [<span class="hljs-number">-72</span>, <span class="hljs-number">47</span>],
@@ -5876,16 +5876,16 @@ be convex or concave. The function accounts for holes.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
-<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">-77</span>, <span class="hljs-number">38</span>]);
-<span class="hljs-keyword">var</span> poly1 = polygon([[
+    <pre><span class="hljs-keyword">var</span> pt1 = turf.point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
+<span class="hljs-keyword">var</span> pt2 = turf.point([<span class="hljs-number">-77</span>, <span class="hljs-number">38</span>]);
+<span class="hljs-keyword">var</span> poly1 = turf.polygon([[
   [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
   [<span class="hljs-number">-81</span>, <span class="hljs-number">47</span>],
   [<span class="hljs-number">-72</span>, <span class="hljs-number">47</span>],
   [<span class="hljs-number">-72</span>, <span class="hljs-number">41</span>],
   [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>]
 ]], {<span class="hljs-attr">pop</span>: <span class="hljs-number">3000</span>});
-<span class="hljs-keyword">var</span> poly2 = polygon([[
+<span class="hljs-keyword">var</span> poly2 = turf.polygon([[
   [<span class="hljs-number">-81</span>, <span class="hljs-number">35</span>],
   [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
   [<span class="hljs-number">-72</span>, <span class="hljs-number">41</span>],
@@ -5893,8 +5893,8 @@ be convex or concave. The function accounts for holes.</p>
   [<span class="hljs-number">-81</span>, <span class="hljs-number">35</span>]
 ]], {<span class="hljs-attr">pop</span>: <span class="hljs-number">1000</span>});
 
-<span class="hljs-keyword">var</span> points = featureCollection([pt1, pt2]);
-<span class="hljs-keyword">var</span> polygons = featureCollection([poly1, poly2]);
+<span class="hljs-keyword">var</span> points = turf.featureCollection([pt1, pt2]);
+<span class="hljs-keyword">var</span> polygons = turf.featureCollection([poly1, poly2]);
 
 <span class="hljs-keyword">var</span> tagged = turf.tag(points, polygons,
                       <span class="hljs-string">'pop'</span>, <span class="hljs-string">'population'</span>);
@@ -6400,7 +6400,7 @@ minX, minY, maxX, maxY
 <span class="hljs-keyword">var</span> cellSize = <span class="hljs-number">10</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> triangleGrid = turf.triangleGrid(extent, cellSize, units);
+<span class="hljs-keyword">var</span> triangleGrid = turf.triangleGrid(bbox, cellSize, units);
 
 <span class="hljs-comment">//=triangleGrid</span></pre>
     
@@ -6846,7 +6846,7 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
     
     
     <pre><span class="hljs-keyword">var</span> point = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>, <span class="hljs-attr">coordinates</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] };
-coordEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">coords</span>) </span>{
+turfMeta.coordEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">coords</span>) </span>{
   <span class="hljs-comment">// coords is equal to [0, 0]</span>
 });</pre>
     
@@ -7017,7 +7017,7 @@ Array.forEach.</p>
     
     
     <pre><span class="hljs-keyword">var</span> feature = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>, <span class="hljs-attr">geometry</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">properties</span>: {} };
-featureEach(feature, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">feature</span>) </span>{
+turfMeta.featureEach(feature, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">feature</span>) </span>{
   <span class="hljs-comment">// feature == feature</span>
 });</pre>
     
@@ -7099,7 +7099,7 @@ Array.forEach.</p>
   <span class="hljs-attr">geometry</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>, <span class="hljs-attr">coordinates</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] },
   <span class="hljs-attr">properties</span>: {}
 };
-geomEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">geom</span>) </span>{
+turfMeta.geomEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">geom</span>) </span>{
   <span class="hljs-comment">// geom is the point geometry</span>
 });</pre>
     
@@ -7177,7 +7177,7 @@ Array.forEach.</p>
     
     
     <pre><span class="hljs-keyword">var</span> point = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>, <span class="hljs-attr">geometry</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">properties</span>: { <span class="hljs-attr">foo</span>: <span class="hljs-number">1</span> } };
-propEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">props</span>) </span>{
+turfMeta.propEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">props</span>) </span>{
   <span class="hljs-comment">// props is equal to { foo: 1}</span>
 });</pre>
     
@@ -7274,7 +7274,7 @@ a new memo
 <span class="hljs-comment">// javascript type of each property of every feature</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">propTypes</span> (<span class="hljs-params">layer</span>) </span>{
   opts = opts || {}
-  <span class="hljs-keyword">return</span> propReduce(layer, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prev, props</span>) </span>{
+  <span class="hljs-keyword">return</span> turfMeta.propReduce(layer, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prev, props</span>) </span>{
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> prop <span class="hljs-keyword">in</span> props) {
       <span class="hljs-keyword">if</span> (prev[prop]) <span class="hljs-keyword">continue</span>
       prev[prop] = <span class="hljs-keyword">typeof</span> props[prop]
