@@ -29,6 +29,23 @@ module.exports = function (comments, options, callback) {
         var slugger = new GithubSlugger();
         return slugger.slug(str);
       },
+      parseGeoJsonForMap: function (section) {
+        var layersString = section.tags.filter(function (item){
+          return item.title === 'exampleFeaturesToAddToMap';
+        })
+        var layersArray = layersString[0].description.split(', ');
+        var outString = ''
+        layersArray.forEach(function (item, index){
+          outString = outString.concat('var layer' + index + ' = L.geoJSON(' + item + ',{onEachFeature: function (feature, layer){ if (feature.properties){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(' + section.name + 'Map);\n')
+          if (layersArray.length -1 === index) {
+             outString = outString.concat(section.name + 'Map.fitBounds(layer' + index + '.getBounds());\n')
+          }
+        })
+        return hljs.fixMarkup(outString)
+      },
+      parseExample: function (string) {
+        return hljs.fixMarkup(string);
+      },
       getNpmPath: function (filepath) {
         var folder = path.dirname(filepath);
         var foldersArray = folder.split("\\");
