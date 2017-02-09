@@ -4,9 +4,9 @@
   <meta charset='utf-8' />
   <title>Turf.js | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
-  <link rel="stylesheet" href="./assets/css/pure-min.css" />
-  <link rel="stylesheet" href="./assets/css/custom.css" />
-  <link rel="stylesheet" href="./assets/css/github.css" />
+  <link rel="stylesheet" href="../assets/css/pure-min.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <link rel="stylesheet" href="../assets/css/github.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>
@@ -15,11 +15,11 @@
       <a href="index.html" class="pure-menu-heading pure-menu-link">TURF</a>
     </div>
     <ul class="pure-menu-list">
-      <li class="pure-menu-item"><a href="getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
+      <li class="pure-menu-item"><a href="../getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
       <li class="pure-menu-item linkActive"><a href="docs.html" class="pure-menu-link">API</a></li>
-      <li class="pure-menu-item"><a href="examples.html" class="pure-menu-link">EXAMPLES</a></li>
+      <li class="pure-menu-item"><a href="../examples.html" class="pure-menu-link">EXAMPLES</a></li>
       <li class="pure-menu-item" id="github">
-        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="./assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
+        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="../assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
       </li>
     </ul>
   </div>
@@ -528,13 +528,6 @@
           
           
           <li class="">
-            <a href='#geomeach'>
-              geomEach
-            </a>
-          </li>
-          
-          
-          <li class="">
             <a href='#propeach'>
               propEach
             </a>
@@ -605,11 +598,11 @@
   </h3>
   
 
-  <p>Merges a specified property from a FeatureCollection of points into a
-FeatureCollection of polygons. Given an <code>inProperty</code> on points and an <code>outProperty</code>
-for polygons, this finds every point that lies within each polygon, collects the
-<code>inProperty</code> values from those points, and adds them as an array to <code>outProperty</code>
-on the polygon.</p>
+  <p>Joins attributes FeatureCollection of polygons with a FeatureCollection of
+points. Given an <code>inProperty</code> on points and an <code>outProperty</code> for polygons,
+this finds every point that lies within each polygon, collects the <code>inProperty</code>
+values from those points, and adds them as an array to <code>outProperty</code> on the
+polygon.</p>
 
   
  
@@ -680,18 +673,18 @@ on the polygon.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> poly1 = turf.polygon([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
-<span class="hljs-keyword">var</span> poly2 = turf.polygon([[[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">20</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>]]]);
-<span class="hljs-keyword">var</span> polyFC = turf.featureCollection([poly1, poly2]);
-<span class="hljs-keyword">var</span> pt1 = turf.point([<span class="hljs-number">5</span>,<span class="hljs-number">5</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
-<span class="hljs-keyword">var</span> pt2 = turf.point([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">600</span>});
-<span class="hljs-keyword">var</span> pt3 = turf.point([<span class="hljs-number">14</span>,<span class="hljs-number">2</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">100</span>});
-<span class="hljs-keyword">var</span> pt4 = turf.point([<span class="hljs-number">13</span>,<span class="hljs-number">1</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
-<span class="hljs-keyword">var</span> pt5 = turf.point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">300</span>});
-<span class="hljs-keyword">var</span> ptFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
-<span class="hljs-keyword">var</span> collected = turf.collect(polyFC, ptFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
+    <pre><span class="hljs-keyword">var</span> poly1 = polygon([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> poly2 = polygon([[[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">20</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> polyFC = featurecollection([poly1, poly2]);
+<span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">5</span>,<span class="hljs-number">5</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">600</span>});
+<span class="hljs-keyword">var</span> pt3 = point([<span class="hljs-number">14</span>,<span class="hljs-number">2</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">100</span>});
+<span class="hljs-keyword">var</span> pt4 = point([<span class="hljs-number">13</span>,<span class="hljs-number">1</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt5 = point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">300</span>});
+<span class="hljs-keyword">var</span> ptFC = featurecollection([pt1, pt2, pt3, pt4, pt5]);
+<span class="hljs-keyword">var</span> aggregated = aggregate(polyFC, ptFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
 
-collected.features[<span class="hljs-number">0</span>].properties.values <span class="hljs-comment">// =&gt; [200, 600]);</span></pre>
+aggregated.features[<span class="hljs-number">0</span>].properties.values <span class="hljs-comment">// =&gt; [200, 600]);</span></pre>
     
     
 
@@ -759,8 +752,8 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
+            (default miles)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
           </tr>
@@ -835,7 +828,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
   </h3>
   
 
-  <p>Takes one or more features and returns their area
+  <p>Takes a one or more features and returns their area
 in square meters.</p>
 
   
@@ -873,7 +866,7 @@ in square meters.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: area in square meters
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>: area in square meters
 </p>
         
       
@@ -980,11 +973,10 @@ in square meters.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: bbox extent in 
-[
-minX, minY, maxX, maxY
-]
- order
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: the bounding box of 
+<code>input</code>
+ given
+as an array in WSEN order (west, south, east, north)
 </p>
         
       
@@ -996,20 +988,52 @@ minX, minY, maxX, maxY
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">114.175329</span>, <span class="hljs-number">22.2524</span>])
-<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">114.170007</span>, <span class="hljs-number">22.267969</span>])
-<span class="hljs-keyword">var</span> pt3 = point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
-<span class="hljs-keyword">var</span> pt4 = point([<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>])
-<span class="hljs-keyword">var</span> pt5 = point([<span class="hljs-number">114.186744</span>, <span class="hljs-number">22.265745</span>])
-<span class="hljs-keyword">var</span> features = featureCollection([pt1, pt2, pt3, pt4, pt5])
+    <pre><span class="hljs-keyword">var</span> input = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">114.175329</span>, <span class="hljs-number">22.2524</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">114.170007</span>, <span class="hljs-number">22.267969</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">114.200649</span>, <span class="hljs-number">22.274641</span>]
+      }
+    }, {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">114.186744</span>, <span class="hljs-number">22.265745</span>]
+      }
+    }
+  ]
+};
 
-<span class="hljs-keyword">var</span> bbox = turf.bbox(features);
+<span class="hljs-keyword">var</span> bbox = turf.bbox(input);
 
 <span class="hljs-keyword">var</span> bboxPolygon = turf.bboxPolygon(bbox);
 
-<span class="hljs-comment">//=bbox</span>
+<span class="hljs-keyword">var</span> resultFeatures = input.features.concat(bboxPolygon);
+<span class="hljs-keyword">var</span> result = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: resultFeatures
+};
 
-<span class="hljs-comment">//=bboxPolygon</span></pre>
+<span class="hljs-comment">//=result</span></pre>
     
     
 
@@ -1057,11 +1081,8 @@ minX, minY, maxX, maxY
         <tr>
           <td>bbox</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
-          <td>extent in 
-[
-minX, minY, maxX, maxY
-]
- order
+          <td>an Array of bounding box coordinates in the form: 
+<code>[xLow, yLow, xHigh, yHigh]</code>
 </td>
           </tr>
           
@@ -1156,7 +1177,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: bearing in decimal degrees
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>: bearing in decimal degrees
 </p>
         
       
@@ -1221,7 +1242,7 @@ minX, minY, maxX, maxY
   </h3>
   
 
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
+  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
 
   
  
@@ -1244,8 +1265,8 @@ minX, minY, maxX, maxY
       <tbody>
         
         <tr>
-          <td>layer</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>)</td>
+          <td>features</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a></td>
           <td>input features
 </td>
           </tr>
@@ -1258,7 +1279,8 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature at the absolute center point of all input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature at the
+absolute center point of all input features
 </p>
         
       
@@ -1705,7 +1727,7 @@ the centroid of a set of polygons.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -1817,7 +1839,7 @@ to account for global curvature.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -1831,7 +1853,7 @@ to account for global curvature.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: distance between the two points
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>: distance between the two points
 </p>
         
       
@@ -1916,8 +1938,8 @@ to account for global curvature.</p>
       <tbody>
         
         <tr>
-          <td>features</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>)</td>
+          <td>fc</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a></td>
           <td>input features
 </td>
           </tr>
@@ -2007,7 +2029,7 @@ to account for global curvature.</p>
   </h3>
   
 
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and measures its length in the specified units.</p>
+  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and measures its length in the specified units.</p>
 
   
  
@@ -2031,14 +2053,14 @@ to account for global curvature.</p>
         
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)>)</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
           <td>line to measure
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -2052,7 +2074,7 @@ to account for global curvature.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: length of the input line
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>: length of the input line
 </p>
         
       
@@ -2333,11 +2355,7 @@ would contain the input.</p>
         <tr>
           <td>bbox</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
-          <td>extent in 
-[
-minX, minY, maxX, maxY
-]
- order
+          <td>a bounding box
 </td>
           </tr>
           
@@ -2438,7 +2456,7 @@ algorithm.</p>
           
         <tr>
           <td>resolution</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?
             (default 10000)</td>
           <td>time in milliseconds between points
 </td>
@@ -2446,7 +2464,7 @@ algorithm.</p>
           
         <tr>
           <td>sharpness</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?
             (default 0.85)</td>
           <td>a measure of how curvy the path should be between splines
 </td>
@@ -2551,14 +2569,14 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           </tr>
           
         <tr>
-          <td>radius</td>
+          <td>distance</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
           <td>distance to draw the buffer
 </td>
           </tr>
           
         <tr>
-          <td>units</td>
+          <td>unit</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
           <td>any of the options supported by turf units
 </td>
@@ -2658,15 +2676,14 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           
         <tr>
           <td>steps</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
-            (default 64)</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
           <td>number of steps
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -2692,14 +2709,28 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> center = point([<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]);
+    <pre><span class="hljs-keyword">var</span> center = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"marker-color"</span>: <span class="hljs-string">"#0f0"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-75.343</span>, <span class="hljs-number">39.984</span>]
+  }
+};
 <span class="hljs-keyword">var</span> radius = <span class="hljs-number">5</span>;
 <span class="hljs-keyword">var</span> steps = <span class="hljs-number">10</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'kilometers'</span>;
 
 <span class="hljs-keyword">var</span> circle = turf.circle(center, radius, steps, units);
 
-<span class="hljs-comment">//=circle</span></pre>
+<span class="hljs-keyword">var</span> result = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [center, circle]
+};
+
+<span class="hljs-comment">//=result</span></pre>
     
     
 
@@ -2762,9 +2793,8 @@ hull to become concave (in miles)
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
-          <td>can be degrees, radians, miles, or kilometers
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>used for maxEdge distance (miles or kilometers)
 </td>
           </tr>
           
@@ -2786,6 +2816,9 @@ hull to become concave (in miles)
     <h4>Throws</h4>
     
       <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if maxEdge parameter is missing
+</p>
+    
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: if units parameter is missing
 </p>
     
     
@@ -2874,9 +2907,8 @@ hull to become concave (in miles)
   </h3>
   
 
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">feature</a>
-or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">featureCollection</a>
-and returns a <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> polygon.</p>
+  <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a
+<a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> polygon.</p>
 <p>Internally this uses
 the <a href="https://github.com/mikolalysenko/convex-hull">convex-hull</a> module that
 implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain">monotone chain hull</a>.</p>
@@ -2902,9 +2934,9 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
       <tbody>
         
         <tr>
-          <td>feature</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>)</td>
-          <td>input Feature or FeatureCollection
+          <td>featurecollection</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td>input points
 </td>
           </tr>
           
@@ -3032,17 +3064,17 @@ polygon from the first.</p>
       <tbody>
         
         <tr>
-          <td>p1</td>
+          <td>poly1</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
-          <td>input Polygon feature
+          <td>input Polygon feaure
 </td>
           </tr>
           
         <tr>
-          <td>p2</td>
+          <td>poly2</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
           <td>Polygon feature to difference from 
-<code>p1</code>
+<code>poly1</code>
 </td>
           </tr>
           
@@ -3055,9 +3087,9 @@ polygon from the first.</p>
       
         <h4>Returns</h4>
         <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon feature showing the area of 
-<code>p1</code>
+<code>poly1</code>
  excluding the area of 
-<code>p2</code>
+<code>poly2</code>
 </p>
         
       
@@ -3179,21 +3211,21 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
     
       
         <h4>Returns</h4>
-        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>): returns a feature representing the point(s) they share (in case of a 
-<a href="http://geojson.org/geojson-spec.html#point">Point</a>
-  or 
-<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>
-), the borders they share (in case of a 
-<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>
- or a 
-<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>
-), the area they share (in case of 
-<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>
- or 
-<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>
-). If they do not share any point, returns 
+        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>>): if 
+<code>poly1</code>
+ and 
+<code>poly2</code>
+ overlap, returns a Polygon feature representing the area they overlap; if 
+<code>poly1</code>
+ and 
+<code>poly2</code>
+ do not overlap, returns 
 <code>undefined</code>
-.
+; if 
+<code>poly1</code>
+ and 
+<code>poly2</code>
+ share a border, a MultiLineString of the locations where their borders are shared
 </p>
         
       
@@ -3205,26 +3237,50 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> poly1 = polygon([[
-  [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>],
-  [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.60491</span>],
-  [<span class="hljs-number">-122.584762</span>, <span class="hljs-number">45.60491</span>],
-  [<span class="hljs-number">-122.584762</span>, <span class="hljs-number">45.48565</span>],
-  [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>]
-]]);
+    <pre><span class="hljs-keyword">var</span> poly1 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"fill"</span>: <span class="hljs-string">"#0f0"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+    <span class="hljs-string">"coordinates"</span>: [[
+      [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>],
+      [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.60491</span>],
+      [<span class="hljs-number">-122.584762</span>, <span class="hljs-number">45.60491</span>],
+      [<span class="hljs-number">-122.584762</span>, <span class="hljs-number">45.48565</span>],
+      [<span class="hljs-number">-122.801742</span>, <span class="hljs-number">45.48565</span>]
+    ]]
+  }
+}
+<span class="hljs-keyword">var</span> poly2 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"fill"</span>: <span class="hljs-string">"#00f"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+    <span class="hljs-string">"coordinates"</span>: [[
+      [<span class="hljs-number">-122.520217</span>, <span class="hljs-number">45.535693</span>],
+      [<span class="hljs-number">-122.64038</span>, <span class="hljs-number">45.553967</span>],
+      [<span class="hljs-number">-122.720031</span>, <span class="hljs-number">45.526554</span>],
+      [<span class="hljs-number">-122.669906</span>, <span class="hljs-number">45.507309</span>],
+      [<span class="hljs-number">-122.723464</span>, <span class="hljs-number">45.446643</span>],
+      [<span class="hljs-number">-122.532577</span>, <span class="hljs-number">45.408574</span>],
+      [<span class="hljs-number">-122.487258</span>, <span class="hljs-number">45.477466</span>],
+      [<span class="hljs-number">-122.520217</span>, <span class="hljs-number">45.535693</span>]
+    ]]
+  }
+}
 
-<span class="hljs-keyword">var</span> poly2 = polygon([[
-  [<span class="hljs-number">-122.520217</span>, <span class="hljs-number">45.535693</span>],
-  [<span class="hljs-number">-122.64038</span>, <span class="hljs-number">45.553967</span>],
-  [<span class="hljs-number">-122.720031</span>, <span class="hljs-number">45.526554</span>],
-  [<span class="hljs-number">-122.669906</span>, <span class="hljs-number">45.507309</span>],
-  [<span class="hljs-number">-122.723464</span>, <span class="hljs-number">45.446643</span>],
-  [<span class="hljs-number">-122.532577</span>, <span class="hljs-number">45.408574</span>],
-  [<span class="hljs-number">-122.487258</span>, <span class="hljs-number">45.477466</span>],
-  [<span class="hljs-number">-122.520217</span>, <span class="hljs-number">45.535693</span>]
-]]);
+<span class="hljs-keyword">var</span> polygons = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [poly1, poly2]
+};
 
 <span class="hljs-keyword">var</span> intersection = turf.intersect(poly1, poly2);
+
+<span class="hljs-comment">//=polygons</span>
 
 <span class="hljs-comment">//=intersection</span></pre>
     
@@ -3280,16 +3336,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
           
         <tr>
           <td>tolerance</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
-            (default 1)</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
           <td>simplification tolerance
 </td>
           </tr>
           
         <tr>
           <td>highQuality</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
-            (default false)</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></td>
           <td>whether or not to spend more time to create
 a higher-quality simplification with a different algorithm
 </td>
@@ -3399,7 +3453,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <tbody>
         
         <tr>
-          <td>poly</td>
+          <td>polygon</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
           <td>the polygon to tesselate
 </td>
@@ -3425,9 +3479,9 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> poly = turf.random(<span class="hljs-string">'polygon'</span>).features[<span class="hljs-number">0</span>];
+    <pre><span class="hljs-keyword">var</span> polygon = {<span class="hljs-string">"type"</span>:<span class="hljs-string">"Feature"</span>,<span class="hljs-string">"id"</span>:<span class="hljs-string">"USA-CA"</span>,<span class="hljs-string">"properties"</span>:{<span class="hljs-string">"name"</span>:<span class="hljs-string">"California"</span>},<span class="hljs-string">"geometry"</span>:{<span class="hljs-string">"type"</span>:<span class="hljs-string">"Polygon"</span>,<span class="hljs-string">"coordinates"</span>:[[[<span class="hljs-number">-123.233256</span>,<span class="hljs-number">42.006186</span>],[<span class="hljs-number">-122.378853</span>,<span class="hljs-number">42.011663</span>],[<span class="hljs-number">-121.037003</span>,<span class="hljs-number">41.995232</span>],[<span class="hljs-number">-120.001861</span>,<span class="hljs-number">41.995232</span>],[<span class="hljs-number">-119.996384</span>,<span class="hljs-number">40.264519</span>],[<span class="hljs-number">-120.001861</span>,<span class="hljs-number">38.999346</span>],[<span class="hljs-number">-118.71478</span>,<span class="hljs-number">38.101128</span>],[<span class="hljs-number">-117.498899</span>,<span class="hljs-number">37.21934</span>],[<span class="hljs-number">-116.540435</span>,<span class="hljs-number">36.501861</span>],[<span class="hljs-number">-115.85034</span>,<span class="hljs-number">35.970598</span>],[<span class="hljs-number">-114.634459</span>,<span class="hljs-number">35.00118</span>],[<span class="hljs-number">-114.634459</span>,<span class="hljs-number">34.87521</span>],[<span class="hljs-number">-114.470151</span>,<span class="hljs-number">34.710902</span>],[<span class="hljs-number">-114.333228</span>,<span class="hljs-number">34.448009</span>],[<span class="hljs-number">-114.136058</span>,<span class="hljs-number">34.305608</span>],[<span class="hljs-number">-114.256551</span>,<span class="hljs-number">34.174162</span>],[<span class="hljs-number">-114.415382</span>,<span class="hljs-number">34.108438</span>],[<span class="hljs-number">-114.535874</span>,<span class="hljs-number">33.933176</span>],[<span class="hljs-number">-114.497536</span>,<span class="hljs-number">33.697668</span>],[<span class="hljs-number">-114.524921</span>,<span class="hljs-number">33.54979</span>],[<span class="hljs-number">-114.727567</span>,<span class="hljs-number">33.40739</span>],[<span class="hljs-number">-114.661844</span>,<span class="hljs-number">33.034958</span>],[<span class="hljs-number">-114.524921</span>,<span class="hljs-number">33.029481</span>],[<span class="hljs-number">-114.470151</span>,<span class="hljs-number">32.843265</span>],[<span class="hljs-number">-114.524921</span>,<span class="hljs-number">32.755634</span>],[<span class="hljs-number">-114.72209</span>,<span class="hljs-number">32.717295</span>],[<span class="hljs-number">-116.04751</span>,<span class="hljs-number">32.624187</span>],[<span class="hljs-number">-117.126467</span>,<span class="hljs-number">32.536556</span>],[<span class="hljs-number">-117.24696</span>,<span class="hljs-number">32.668003</span>],[<span class="hljs-number">-117.252437</span>,<span class="hljs-number">32.876127</span>],[<span class="hljs-number">-117.329114</span>,<span class="hljs-number">33.122589</span>],[<span class="hljs-number">-117.471515</span>,<span class="hljs-number">33.297851</span>],[<span class="hljs-number">-117.7837</span>,<span class="hljs-number">33.538836</span>],[<span class="hljs-number">-118.183517</span>,<span class="hljs-number">33.763391</span>],[<span class="hljs-number">-118.260194</span>,<span class="hljs-number">33.703145</span>],[<span class="hljs-number">-118.413548</span>,<span class="hljs-number">33.741483</span>],[<span class="hljs-number">-118.391641</span>,<span class="hljs-number">33.840068</span>],[<span class="hljs-number">-118.566903</span>,<span class="hljs-number">34.042715</span>],[<span class="hljs-number">-118.802411</span>,<span class="hljs-number">33.998899</span>],[<span class="hljs-number">-119.218659</span>,<span class="hljs-number">34.146777</span>],[<span class="hljs-number">-119.278905</span>,<span class="hljs-number">34.26727</span>],[<span class="hljs-number">-119.558229</span>,<span class="hljs-number">34.415147</span>],[<span class="hljs-number">-119.875891</span>,<span class="hljs-number">34.40967</span>],[<span class="hljs-number">-120.138784</span>,<span class="hljs-number">34.475393</span>],[<span class="hljs-number">-120.472878</span>,<span class="hljs-number">34.448009</span>],[<span class="hljs-number">-120.64814</span>,<span class="hljs-number">34.579455</span>],[<span class="hljs-number">-120.609801</span>,<span class="hljs-number">34.858779</span>],[<span class="hljs-number">-120.670048</span>,<span class="hljs-number">34.902595</span>],[<span class="hljs-number">-120.631709</span>,<span class="hljs-number">35.099764</span>],[<span class="hljs-number">-120.894602</span>,<span class="hljs-number">35.247642</span>],[<span class="hljs-number">-120.905556</span>,<span class="hljs-number">35.450289</span>],[<span class="hljs-number">-121.004141</span>,<span class="hljs-number">35.461243</span>],[<span class="hljs-number">-121.168449</span>,<span class="hljs-number">35.636505</span>],[<span class="hljs-number">-121.283465</span>,<span class="hljs-number">35.674843</span>],[<span class="hljs-number">-121.332757</span>,<span class="hljs-number">35.784382</span>],[<span class="hljs-number">-121.716143</span>,<span class="hljs-number">36.195153</span>],[<span class="hljs-number">-121.896882</span>,<span class="hljs-number">36.315645</span>],[<span class="hljs-number">-121.935221</span>,<span class="hljs-number">36.638785</span>],[<span class="hljs-number">-121.858544</span>,<span class="hljs-number">36.6114</span>],[<span class="hljs-number">-121.787344</span>,<span class="hljs-number">36.803093</span>],[<span class="hljs-number">-121.929744</span>,<span class="hljs-number">36.978355</span>],[<span class="hljs-number">-122.105006</span>,<span class="hljs-number">36.956447</span>],[<span class="hljs-number">-122.335038</span>,<span class="hljs-number">37.115279</span>],[<span class="hljs-number">-122.417192</span>,<span class="hljs-number">37.241248</span>],[<span class="hljs-number">-122.400761</span>,<span class="hljs-number">37.361741</span>],[<span class="hljs-number">-122.515777</span>,<span class="hljs-number">37.520572</span>],[<span class="hljs-number">-122.515777</span>,<span class="hljs-number">37.783465</span>],[<span class="hljs-number">-122.329561</span>,<span class="hljs-number">37.783465</span>],[<span class="hljs-number">-122.406238</span>,<span class="hljs-number">38.15042</span>],[<span class="hljs-number">-122.488392</span>,<span class="hljs-number">38.112082</span>],[<span class="hljs-number">-122.504823</span>,<span class="hljs-number">37.931343</span>],[<span class="hljs-number">-122.701993</span>,<span class="hljs-number">37.893004</span>],[<span class="hljs-number">-122.937501</span>,<span class="hljs-number">38.029928</span>],[<span class="hljs-number">-122.97584</span>,<span class="hljs-number">38.265436</span>],[<span class="hljs-number">-123.129194</span>,<span class="hljs-number">38.451652</span>],[<span class="hljs-number">-123.331841</span>,<span class="hljs-number">38.566668</span>],[<span class="hljs-number">-123.44138</span>,<span class="hljs-number">38.698114</span>],[<span class="hljs-number">-123.737134</span>,<span class="hljs-number">38.95553</span>],[<span class="hljs-number">-123.687842</span>,<span class="hljs-number">39.032208</span>],[<span class="hljs-number">-123.824765</span>,<span class="hljs-number">39.366301</span>],[<span class="hljs-number">-123.764519</span>,<span class="hljs-number">39.552517</span>],[<span class="hljs-number">-123.85215</span>,<span class="hljs-number">39.831841</span>],[<span class="hljs-number">-124.109566</span>,<span class="hljs-number">40.105688</span>],[<span class="hljs-number">-124.361506</span>,<span class="hljs-number">40.259042</span>],[<span class="hljs-number">-124.410798</span>,<span class="hljs-number">40.439781</span>],[<span class="hljs-number">-124.158859</span>,<span class="hljs-number">40.877937</span>],[<span class="hljs-number">-124.109566</span>,<span class="hljs-number">41.025814</span>],[<span class="hljs-number">-124.158859</span>,<span class="hljs-number">41.14083</span>],[<span class="hljs-number">-124.065751</span>,<span class="hljs-number">41.442061</span>],[<span class="hljs-number">-124.147905</span>,<span class="hljs-number">41.715908</span>],[<span class="hljs-number">-124.257444</span>,<span class="hljs-number">41.781632</span>],[<span class="hljs-number">-124.213628</span>,<span class="hljs-number">42.000709</span>],[<span class="hljs-number">-123.233256</span>,<span class="hljs-number">42.006186</span>]]]}};
 
-<span class="hljs-keyword">var</span> triangles = turf.tesselate(poly);
+<span class="hljs-keyword">var</span> triangles = turf.tesselate(polygon);
 
 <span class="hljs-comment">//=triangles</span></pre>
     
@@ -3452,7 +3506,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
   </h3>
   
 
-  <p>Takes two or more <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns a combined polygon. If the input polygons are not contiguous, this function returns a <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> feature.</p>
+  <p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns a combined polygon. If the input polygons are not contiguous, this function returns a <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> feature.</p>
 
   
  
@@ -3475,9 +3529,16 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <tbody>
         
         <tr>
-          <td>A</td>
-          <td>...<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
-          <td>polygon to combine
+          <td>poly1</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td>input polygon
+</td>
+          </tr>
+          
+        <tr>
+          <td>poly2</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td>another input polygon
 </td>
           </tr>
           
@@ -3983,14 +4044,14 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
       <tbody>
         
         <tr>
-          <td>startPt</td>
+          <td>point1</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
           <td>starting point
 </td>
           </tr>
           
         <tr>
-          <td>stopPt</td>
+          <td>point2</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
           <td>stopping point
 </td>
@@ -4179,7 +4240,7 @@ and returns a subsection of the line in-between those points.</p>
 
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> sliced = turf.lineSliceAlong(start, stop, line, units);
+<span class="hljs-keyword">var</span> sliced = turf.lineSliceAlong(line, start, stop, units);
 
 <span class="hljs-comment">//=line</span>
 
@@ -4236,17 +4297,9 @@ and returns a subsection of the line in-between those points.</p>
           </tr>
           
         <tr>
-          <td>pt</td>
+          <td>point</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
           <td>point to snap from
-</td>
-          </tr>
-          
-        <tr>
-          <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
-          <td>can be degrees, radians, miles, or kilometers
 </td>
           </tr>
           
@@ -4262,13 +4315,6 @@ and returns a subsection of the line in-between those points.</p>
 <code>line</code>
  to 
 <code>point</code>
-. The properties object will contain three values: 
-<code>index</code>
-: closest point was found on nth line part, 
-<code>dist</code>
-: distance between pt and the closest point, 
-<code>location</code>
-: distance along the line between start and the closest point.
 </p>
         
       
@@ -4304,7 +4350,7 @@ and returns a subsection of the line in-between those points.</p>
   }
 };
 
-<span class="hljs-keyword">var</span> snapped = turf.pointOnLine(line, pt, <span class="hljs-string">'miles'</span>);
+<span class="hljs-keyword">var</span> snapped = turf.pointOnLine(line, pt);
 snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span class="hljs-string">'#00f'</span>
 
 <span class="hljs-keyword">var</span> result = {
@@ -4562,7 +4608,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>>: a GeoJSON GeometryCollection Feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>>: a geometrycollection feature
 </p>
         
       
@@ -4582,7 +4628,7 @@ coordinate array. Properties can be added optionally.</p>
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"LineString"</span>,
     <span class="hljs-string">"coordinates"</span>: [ [<span class="hljs-number">101</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">102</span>, <span class="hljs-number">1</span>] ]
   };
-<span class="hljs-keyword">var</span> collection = turf.geometryCollection([pt, line]);
+<span class="hljs-keyword">var</span> collection = turf.geometrycollection([[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]]);
 
 <span class="hljs-comment">//=collection</span></pre>
     
@@ -5195,7 +5241,7 @@ and experimentation.</p>
         
         <tr>
           <td>type</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?
             (default &#39;point&#39;)</td>
           <td>type of features desired: 'points' or 'polygons'
 </td>
@@ -5203,7 +5249,7 @@ and experimentation.</p>
           
         <tr>
           <td>count</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?
             (default 1)</td>
           <td>how many geometries should be generated.
 </td>
@@ -5516,7 +5562,7 @@ that define the values at its three corners.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: the z-value for 
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>: the z-value for 
 <code>interpolatedPoint</code>
 </p>
         
@@ -5747,7 +5793,7 @@ be convex or concave. The function accounts for holes.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>: <code>true</code>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>: <code>true</code>
  if the Point is inside the Polygon; 
 <code>false</code>
  if the Point is not inside the Polygon
@@ -5762,18 +5808,53 @@ be convex or concave. The function accounts for holes.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt = point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
-<span class="hljs-keyword">var</span> poly = polygon([[
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">47</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">47</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>]
-]]);
+    <pre><span class="hljs-keyword">var</span> pt1 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"marker-color"</span>: <span class="hljs-string">"#f00"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-111.467285</span>, <span class="hljs-number">40.75766</span>]
+  }
+};
+<span class="hljs-keyword">var</span> pt2 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {
+    <span class="hljs-string">"marker-color"</span>: <span class="hljs-string">"#0f0"</span>
+  },
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-111.873779</span>, <span class="hljs-number">40.647303</span>]
+  }
+};
+<span class="hljs-keyword">var</span> poly = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+    <span class="hljs-string">"coordinates"</span>: [[
+      [<span class="hljs-number">-112.074279</span>, <span class="hljs-number">40.52215</span>],
+      [<span class="hljs-number">-112.074279</span>, <span class="hljs-number">40.853293</span>],
+      [<span class="hljs-number">-111.610107</span>, <span class="hljs-number">40.853293</span>],
+      [<span class="hljs-number">-111.610107</span>, <span class="hljs-number">40.52215</span>],
+      [<span class="hljs-number">-112.074279</span>, <span class="hljs-number">40.52215</span>]
+    ]]
+  }
+};
 
-<span class="hljs-keyword">var</span> isInside = turf.inside(pt, poly);
+<span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [pt1, pt2, poly]
+};
 
-<span class="hljs-comment">//=isInside</span></pre>
+<span class="hljs-comment">//=features</span>
+
+<span class="hljs-keyword">var</span> isInside1 = turf.inside(pt1, poly);
+<span class="hljs-comment">//=isInside1</span>
+
+<span class="hljs-keyword">var</span> isInside2 = turf.inside(pt2, poly);
+<span class="hljs-comment">//=isInside2</span></pre>
     
     
 
@@ -5837,9 +5918,7 @@ be convex or concave. The function accounts for holes.</p>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
           <td>property in 
 <code>polygons</code>
- to add to joined {
-<Point>
-} features
+ to add to joined Point features
 </td>
           </tr>
           
@@ -5848,8 +5927,7 @@ be convex or concave. The function accounts for holes.</p>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
           <td>property in 
 <code>points</code>
- in which to store joined property from 
-<code>polygons</code>
+ in which to store joined property from `polygons
 </td>
           </tr>
           
@@ -5876,28 +5954,27 @@ be convex or concave. The function accounts for holes.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> pt1 = point([<span class="hljs-number">-77</span>, <span class="hljs-number">44</span>]);
-<span class="hljs-keyword">var</span> pt2 = point([<span class="hljs-number">-77</span>, <span class="hljs-number">38</span>]);
-<span class="hljs-keyword">var</span> poly1 = polygon([[
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">47</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">47</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>]
-]], {<span class="hljs-attr">pop</span>: <span class="hljs-number">3000</span>});
-<span class="hljs-keyword">var</span> poly2 = polygon([[
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">35</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">41</span>],
-  [<span class="hljs-number">-72</span>, <span class="hljs-number">35</span>],
-  [<span class="hljs-number">-81</span>, <span class="hljs-number">35</span>]
-]], {<span class="hljs-attr">pop</span>: <span class="hljs-number">1000</span>});
+    <pre><span class="hljs-keyword">var</span> bbox = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>, <span class="hljs-number">10</span>];
+<span class="hljs-comment">// create a triangular grid of polygons</span>
+<span class="hljs-keyword">var</span> triangleGrid = turf.triangleGrid(bbox, <span class="hljs-number">50</span>, <span class="hljs-string">'miles'</span>);
+triangleGrid.features.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>) </span>{
+  f.properties.fill = <span class="hljs-string">'#'</span> +
+    (~~(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">16</span>)).toString(<span class="hljs-number">16</span>) +
+    (~~(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">16</span>)).toString(<span class="hljs-number">16</span>) +
+    (~~(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">16</span>)).toString(<span class="hljs-number">16</span>);
+  f.properties.stroke = <span class="hljs-number">0</span>;
+  f.properties[<span class="hljs-string">'fill-opacity'</span>] = <span class="hljs-number">1</span>;
+});
+<span class="hljs-keyword">var</span> randomPoints = turf.random(<span class="hljs-string">'point'</span>, <span class="hljs-number">30</span>, {
+  <span class="hljs-attr">bbox</span>: bbox
+});
+<span class="hljs-keyword">var</span> both = turf.featurecollection(
+  triangleGrid.features.concat(randomPoints.features));
 
-<span class="hljs-keyword">var</span> points = featureCollection([pt1, pt2]);
-<span class="hljs-keyword">var</span> polygons = featureCollection([poly1, poly2]);
+<span class="hljs-comment">//=both</span>
 
-<span class="hljs-keyword">var</span> tagged = turf.tag(points, polygons,
-                      <span class="hljs-string">'pop'</span>, <span class="hljs-string">'population'</span>);
+<span class="hljs-keyword">var</span> tagged = turf.tag(randomPoints, triangleGrid,
+                      <span class="hljs-string">'fill'</span>, <span class="hljs-string">'marker-color'</span>);
 
 <span class="hljs-comment">//=tagged</span></pre>
     
@@ -5956,7 +6033,7 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
         <tr>
           <td>bbox</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
-          <td>extent in 
+          <td>bounding box in 
 [
 minX, minY, maxX, maxY
 ]
@@ -5973,16 +6050,14 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
-          <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>used in calculating cellWidth ('miles' or 'kilometers')
 </td>
           </tr>
           
         <tr>
           <td>triangles</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
-            (default false)</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></td>
           <td>whether to return as triangles instead of hexagons
 </td>
           </tr>
@@ -6008,10 +6083,10 @@ minX, minY, maxX, maxY
     
     
     <pre><span class="hljs-keyword">var</span> bbox = [<span class="hljs-number">-96</span>,<span class="hljs-number">31</span>,<span class="hljs-number">-84</span>,<span class="hljs-number">40</span>];
-<span class="hljs-keyword">var</span> cellSize = <span class="hljs-number">50</span>;
+<span class="hljs-keyword">var</span> cellWidth = <span class="hljs-number">50</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> hexgrid = turf.hexGrid(bbox, cellSize, units);
+<span class="hljs-keyword">var</span> hexgrid = turf.hexGrid(bbox, cellWidth, units);
 
 <span class="hljs-comment">//=hexgrid</span></pre>
     
@@ -6178,7 +6253,7 @@ minX, minY, maxX, maxY
           <td>units</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
             (default kilometers)</td>
-          <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
+          <td>used in calculating cellWidth, can be degrees, radians, miles, or kilometers
 </td>
           </tr>
           
@@ -6203,10 +6278,10 @@ minX, minY, maxX, maxY
     
     
     <pre><span class="hljs-keyword">var</span> extent = [<span class="hljs-number">-70.823364</span>, <span class="hljs-number">-33.553984</span>, <span class="hljs-number">-70.473175</span>, <span class="hljs-number">-33.302986</span>];
-<span class="hljs-keyword">var</span> cellSize = <span class="hljs-number">3</span>;
+<span class="hljs-keyword">var</span> cellWidth = <span class="hljs-number">3</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> grid = turf.pointGrid(extent, cellSize, units);
+<span class="hljs-keyword">var</span> grid = turf.pointGrid(extent, cellWidth, units);
 
 <span class="hljs-comment">//=grid</span></pre>
     
@@ -6273,9 +6348,8 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
-          <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>units to use for cellWidth
 </td>
           </tr>
           
@@ -6299,11 +6373,11 @@ minX, minY, maxX, maxY
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> bbox = [<span class="hljs-number">-96</span>,<span class="hljs-number">31</span>,<span class="hljs-number">-84</span>,<span class="hljs-number">40</span>];
-<span class="hljs-keyword">var</span> cellSize = <span class="hljs-number">10</span>;
+    <pre><span class="hljs-keyword">var</span> extent = [<span class="hljs-number">-77.3876953125</span>,<span class="hljs-number">38.71980474264239</span>,<span class="hljs-number">-76.9482421875</span>,<span class="hljs-number">39.027718840211605</span>];
+<span class="hljs-keyword">var</span> cellWidth = <span class="hljs-number">10</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> squareGrid = turf.squareGrid(bbox, cellSize, units);
+<span class="hljs-keyword">var</span> squareGrid = turf.squareGrid(extent, cellWidth, units);
 
 <span class="hljs-comment">//=squareGrid</span></pre>
     
@@ -6370,9 +6444,8 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
-            (default kilometers)</td>
-          <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>units to use for cellWidth
 </td>
           </tr>
           
@@ -6396,11 +6469,11 @@ minX, minY, maxX, maxY
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> bbox = [<span class="hljs-number">-96</span>,<span class="hljs-number">31</span>,<span class="hljs-number">-84</span>,<span class="hljs-number">40</span>]
-<span class="hljs-keyword">var</span> cellSize = <span class="hljs-number">10</span>;
+    <pre><span class="hljs-keyword">var</span> extent = [<span class="hljs-number">-77.3876953125</span>,<span class="hljs-number">38.71980474264239</span>,<span class="hljs-number">-76.9482421875</span>,<span class="hljs-number">39.027718840211605</span>];
+<span class="hljs-keyword">var</span> cellWidth = <span class="hljs-number">10</span>;
 <span class="hljs-keyword">var</span> units = <span class="hljs-string">'miles'</span>;
 
-<span class="hljs-keyword">var</span> triangleGrid = turf.triangleGrid(extent, cellSize, units);
+<span class="hljs-keyword">var</span> triangleGrid = turf.triangleGrid(extent, cellWidth, units);
 
 <span class="hljs-comment">//=triangleGrid</span></pre>
     
@@ -6756,7 +6829,7 @@ arrays.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>: coordinate position array
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>>>: coordinate position array
 </p>
         
       
@@ -7037,88 +7110,6 @@ featureEach(feature, <span class="hljs-function"><span class="hljs-keyword">func
 
   
   <p class="npmBadge">npm install @turf/meta</p>
-  <h3 id='geomeach'>
-    geomEach
-  </h3>
-  
-
-  <p>Iterate over each geometry in any GeoJSON object, similar to
-Array.forEach.</p>
-
-  
- 
-
- 
-
- 
-  <p><i><strong>Note:</strong> geomEach is part of the @turf/meta module. To use it directly you will need to import the @turf/meta and call the geomEach method.</i></p>
- 
-
-  
-  <h4>Arguments</h4>
-  <div>
-    <table class="pure-table pure-table-horizontal">
-      <thead>
-        <tr>
-          <td style="width:15%">Argument</td>
-          <td style="width:30%">Type</td>
-          <td style="width:55%">Description</td>
-        </tr>
-      </thead>
-      <tbody>
-        
-        <tr>
-          <td>layer</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></td>
-          <td>any GeoJSON object
-</td>
-          </tr>
-          
-        <tr>
-          <td>callback</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (value)
-</td>
-          </tr>
-          
-        </tbody>
-      </table>
-    </div>
-    
-
-    
-
-    
-
-    
-    <h4>Example</h4>
-    
-    
-    <pre><span class="hljs-keyword">var</span> point = {
-  <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>,
-  <span class="hljs-attr">geometry</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>, <span class="hljs-attr">coordinates</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] },
-  <span class="hljs-attr">properties</span>: {}
-};
-geomEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">geom</span>) </span>{
-  <span class="hljs-comment">// geom is the point geometry</span>
-});</pre>
-    
-    
-
-    
-
-    
-
-    
-  </div>
-
-      
-      
-      
-      <div class="panel">
-
-  
-  <p class="npmBadge">npm install @turf/meta</p>
   <h3 id='propeach'>
     propEach
   </h3>
@@ -7266,22 +7257,6 @@ a new memo
 
     
 
-    
-    <h4>Example</h4>
-    
-    
-    <pre><span class="hljs-comment">// an example of an even more advanced function that gives you the</span>
-<span class="hljs-comment">// javascript type of each property of every feature</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">propTypes</span> (<span class="hljs-params">layer</span>) </span>{
-  opts = opts || {}
-  <span class="hljs-keyword">return</span> propReduce(layer, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prev, props</span>) </span>{
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> prop <span class="hljs-keyword">in</span> props) {
-      <span class="hljs-keyword">if</span> (prev[prop]) <span class="hljs-keyword">continue</span>
-      prev[prop] = <span class="hljs-keyword">typeof</span> props[prop]
-    }
-  }, {})
-}</pre>
-    
     
 
     
@@ -7617,6 +7592,6 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     </div>
   </div>
 
-  <script src="./assets/js/filter.js"></script>
+  <script src="../assets/js/filter.js"></script>
 </body>
 </html>
