@@ -12,7 +12,7 @@
 <body>
   <div class="pure-menu pure-menu-horizontal pure-u-1-1">
     <div class="logoHolder">
-      <a href="index.html" class="pure-menu-heading pure-menu-link">TURF</a>
+      <a href="/index.html" class="pure-menu-heading pure-menu-link">TURF</a>
     </div>
     <ul class="pure-menu-list">
       <li class="pure-menu-item"><a href="../getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
