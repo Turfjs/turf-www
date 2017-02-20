@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "copyAssets": "cp -R template/turf_2017/assets/ assets/",
-    "moveDocFile": "mv docs/index.html docs.html",
-    "deleteDocDirectory": "rm -R docs",
-    "deploy": "npm run buildAPI && npm run copyAssets && npm run moveDocFile && npm run deleteDocDirectory",
+    "deleteDocAssetsDirectory": "rm -R docs/assets",
+    "deploy": "npm run buildAPI && npm run copyAssets && npm run deleteDocAssetsDirectory",
     "buildAPI": "documentation build -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs",
     "lintAPI": "documentation lint turf/packages/turf-*/index.js",
     "serveAPI": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs -w",
