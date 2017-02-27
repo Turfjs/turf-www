@@ -31,11 +31,14 @@ toc:
   - name: Misc
   - combine
   - explode
+  - flatten
   - flip
   - kinks
   - lineSlice
   - lineSliceAlong
   - pointOnLine
+  - truncate
+  - unkinkPolygon
   - name: Helper
   - featureCollection
   - feature
