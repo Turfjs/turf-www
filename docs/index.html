@@ -207,6 +207,13 @@
           
           
           <li class="">
+            <a href='#dissolve'>
+              dissolve
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href='#intersect'>
               intersect
             </a>
@@ -604,13 +611,6 @@
             </a>
           </li>
           
-          
-          <li class="">
-            <a href='#dissolve'>
-              dissolve
-            </a>
-          </li>
-          
         </ul>
       </div>
     </div>
@@ -619,7 +619,7 @@
       <div id="innerContent">
       
       
-      <div><h2 id='Aggregation'>
+      <div><h2 id='aggregation'>
 	Aggregation
 </h2>
 </div>
@@ -735,7 +735,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
       
       
       
-      <div><h2 id='Measurement'>
+      <div><h2 id='measurement'>
 	Measurement
 </h2>
 </div>
@@ -2418,7 +2418,7 @@ minX, minY, maxX, maxY
       
       
       
-      <div><h2 id='Transformation'>
+      <div><h2 id='transformation'>
 	Transformation
 </h2>
 </div>
@@ -3159,6 +3159,123 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
+  <p class="npmBadge">npm install @turf/dissolve</p>
+  <h3 id='dissolve'>
+    dissolve
+  </h3>
+  
+
+  <p>Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported</p>
+
+  
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>featureCollection</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td>input feature collection to be dissolved
+</td>
+          </tr>
+          
+        <tr>
+          <td>propertyName</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</td>
+          <td>property name on which to dissolve features
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a FeatureCollection containing the dissolved polygons
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> features = {
+<span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+<span class="hljs-string">"features"</span>: [
+  {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+    <span class="hljs-string">"properties"</span>: {
+      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"yes"</span>
+    },
+    <span class="hljs-string">"geometry"</span>: {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]]]
+    }
+  },
+  {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+    <span class="hljs-string">"properties"</span>: {
+      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"yes"</span>
+    },
+    <span class="hljs-string">"geometry"</span>: {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>]]]
+    }
+  },
+  {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+    <span class="hljs-string">"properties"</span>: {
+      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"no"</span>
+    },
+    <span class="hljs-string">"geometry"</span>: {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>],[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>]]]
+    }
+  }
+ ]
+}
+
+<span class="hljs-keyword">var</span> dissolved = turf.dissolve(features, <span class="hljs-string">'combine'</span>);
+
+<span class="hljs-comment">//=dissolved</span></pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
   <p class="npmBadge">npm install @turf/intersect</p>
   <h3 id='intersect'>
     intersect
@@ -3590,7 +3707,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       
       
       
-      <div><h2 id='Misc'>
+      <div><h2 id='misc'>
 	Misc
 </h2>
 </div>
@@ -4628,7 +4745,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       
       
       
-      <div><h2 id='Helper'>
+      <div><h2 id='helper'>
 	Helper
 </h2>
 </div>
@@ -5456,7 +5573,7 @@ beginning &#x26; end.
       
       
       
-      <div><h2 id='Data'>
+      <div><h2 id='data'>
 	Data
 </h2>
 </div>
@@ -5649,7 +5766,7 @@ and experimentation.</p>
       
       
       
-      <div><h2 id='Interpolation'>
+      <div><h2 id='interpolation'>
 	Interpolation
 </h2>
 </div>
@@ -5988,7 +6105,7 @@ This is optional: if not given, then there will be no extra data added to the de
       
       
       
-      <div><h2 id='Joins'>
+      <div><h2 id='joins'>
 	Joins
 </h2>
 </div>
@@ -6215,7 +6332,7 @@ be convex or concave. The function accounts for holes.</p>
       
       
       
-      <div><h2 id='Grids'>
+      <div><h2 id='grids'>
 	Grids
 </h2>
 </div>
@@ -6866,7 +6983,7 @@ minX, minY, maxX, maxY
       
       
       
-      <div><h2 id='Classification'>
+      <div><h2 id='classification'>
 	Classification
 </h2>
 </div>
@@ -7002,7 +7119,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       
       
       
-      <div><h2 id='Meta'>
+      <div><h2 id='meta'>
 	Meta
 </h2>
 </div>
@@ -7596,7 +7713,7 @@ a new memo
       
       
       
-      <div><h2 id='Assertions'>
+      <div><h2 id='assertions'>
 	Assertions
 </h2>
 </div>
@@ -7905,123 +8022,6 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
     
 
-    
-
-    
-
-    
-
-    
-  </div>
-
-      
-      
-      
-      <div class="panel">
-
-  
-  <p class="npmBadge">npm install @turf/dissolve</p>
-  <h3 id='dissolve'>
-    dissolve
-  </h3>
-  
-
-  <p>Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported</p>
-
-  
- 
-
- 
-
- 
-
-  
-  <h4>Arguments</h4>
-  <div>
-    <table class="pure-table pure-table-horizontal">
-      <thead>
-        <tr>
-          <td style="width:15%">Argument</td>
-          <td style="width:30%">Type</td>
-          <td style="width:55%">Description</td>
-        </tr>
-      </thead>
-      <tbody>
-        
-        <tr>
-          <td>featureCollection</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
-          <td>input feature collection to be dissolved
-</td>
-          </tr>
-          
-        <tr>
-          <td>propertyName</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</td>
-          <td>property name on which to dissolve features
-</td>
-          </tr>
-          
-        </tbody>
-      </table>
-    </div>
-    
-
-    
-      
-        <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a FeatureCollection containing the dissolved polygons
-</p>
-        
-      
-    
-
-    
-
-    
-    <h4>Example</h4>
-    
-    
-    <pre><span class="hljs-keyword">var</span> features = {
-<span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-<span class="hljs-string">"features"</span>: [
-  {
-    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-    <span class="hljs-string">"properties"</span>: {
-      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"yes"</span>
-    },
-    <span class="hljs-string">"geometry"</span>: {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
-      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]]]
-    }
-  },
-  {
-    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-    <span class="hljs-string">"properties"</span>: {
-      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"yes"</span>
-    },
-    <span class="hljs-string">"geometry"</span>: {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
-      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>]]]
-    }
-  },
-  {
-    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
-    <span class="hljs-string">"properties"</span>: {
-      <span class="hljs-string">"combine"</span>: <span class="hljs-string">"no"</span>
-    },
-    <span class="hljs-string">"geometry"</span>: {
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
-      <span class="hljs-string">"coordinates"</span>: [[[<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>],[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">-1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>]]]
-    }
-  }
- ]
-}
-
-<span class="hljs-keyword">var</span> dissolved = turf.dissolve(features, <span class="hljs-string">'combine'</span>);
-
-<span class="hljs-comment">//=dissolved</span></pre>
-    
     
 
     
