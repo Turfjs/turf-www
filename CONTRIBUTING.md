@@ -7,11 +7,11 @@ the `--recursive` flag._
 Run `npm run serve` - this will show you the currently compiled docs at http://localhost:9080
 
 ### Updating the API page
-Changes to the API documentation happen upstream in the actual [Turf repository](https://github.com/turfjs/turf/). FOr example if you wanted to update the buffer documentation you would go to the [@turf/buffer/index.js](https://github.com/Turfjs/turf/blob/master/packages/turf-buffer/index.js) and edit jsdocs. 
+Changes to the API documentation happen upstream in the actual [Turf repository](https://github.com/turfjs/turf/). FOr example if you wanted to update the buffer documentation you would go to the [@turf/buffer/index.js](https://github.com/Turfjs/turf/blob/master/packages/turf-buffer/index.js) and edit the jsdocs. 
 
 Presuming you've updated the documentation in the relevant turf module and your changes have been accepted, you can now update the docs using the following procedure
-1. Start by updating the turf dependency: `cd` into the turf submodule and `git pull origin master`
-2. Run `npm run deploy`
+1. Start by updating the turf dependency: `cd` into the turf submodule and `git pull origin master`.
+2. Run `npm run deploy` .
 3. Commit and push the changes
 
 ### Updating the API template

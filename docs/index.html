@@ -284,6 +284,20 @@
           
           
           <li class="">
+            <a href='#linechunk'>
+              lineChunk
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href='#lineintersect'>
+              lineIntersect
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href='#lineslice'>
               lineSlice
             </a>
@@ -293,6 +307,13 @@
           <li class="">
             <a href='#lineslicealong'>
               lineSliceAlong
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href='#mask'>
+              mask
             </a>
           </li>
           
@@ -608,6 +629,27 @@
           <li class="">
             <a href='#featureof'>
               featureOf
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href='#calculatefinalbearing'>
+              calculateFinalBearing
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href='#featurereduce'>
+              featureReduce
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href='#geomreduce'>
+              geomReduce
             </a>
           </li>
           
@@ -1178,6 +1220,14 @@ minX, minY, maxX, maxY
 </td>
           </tr>
           
+        <tr>
+          <td>final</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            (default false)</td>
+          <td>calculates the final bearing if true
+</td>
+          </tr>
+          
         </tbody>
       </table>
     </div>
@@ -1219,15 +1269,7 @@ minX, minY, maxX, maxY
   }
 };
 
-<span class="hljs-keyword">var</span> points = {
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [point1, point2]
-};
-
-<span class="hljs-comment">//=points</span>
-
 <span class="hljs-keyword">var</span> bearing = turf.bearing(point1, point2);
-
 <span class="hljs-comment">//=bearing</span></pre>
     
     
@@ -2904,9 +2946,7 @@ hull to become concave (in miles)
   </h3>
   
 
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">feature</a>
-or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">featureCollection</a>
-and returns a <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> polygon.</p>
+  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a convex hull <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>.</p>
 <p>Internally this uses
 the <a href="https://github.com/mikolalysenko/convex-hull">convex-hull</a> module that
 implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain">monotone chain hull</a>.</p>
@@ -3084,7 +3124,7 @@ polygon from the first.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon feature showing the area of 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a Polygon or MultiPolygon feature showing the area of 
 <code>p1</code>
  excluding the area of 
 <code>p2</code>
@@ -3921,7 +3961,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
   </h3>
   
 
-  <p>Flattens any <a href="GeoJSON">GeoJSON</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> using <a href="https://github.com/mapbox/geojson-flatten">geojson-flatten</a>.</p>
+  <p>Flattens any <a href="GeoJSON">GeoJSON</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inspired by <a href="https://github.com/tmcw/geojson-flatten">geojson-flatten</a>.</p>
 
   
  
@@ -3951,6 +3991,20 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
  with multi-geometry 
 <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
 s
+</td>
+          </tr>
+          
+        <tr>
+          <td>properties</td>
+          <td>any?
+            (default {})</td>
+          <td>translate properties to each 
+<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
+ (only applies for 
+<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>
+ &#x26; 
+<a href="GeometryObject">GeometryObject</a>
+)
 </td>
           </tr>
           
@@ -4170,6 +4224,217 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
 };
 
 <span class="hljs-comment">//=result</span></pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/line-chunk</p>
+  <h3 id='linechunk'>
+    lineChunk
+  </h3>
+  
+
+  <p>Divides a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> into chunks of a specified length.
+If the line is shorter than the segment length then the original line is returned.</p>
+
+  
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>featureIn</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>)>)</td>
+          <td>the lines to split
+</td>
+          </tr>
+          
+        <tr>
+          <td>segmentLength</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+          <td>how long to make each segment
+</td>
+          </tr>
+          
+        <tr>
+          <td>units</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+            (default &#39;kilometers&#39;)</td>
+          <td>units can be degrees, radians, miles, or kilometers
+</td>
+          </tr>
+          
+        <tr>
+          <td>reverse</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            (default false)</td>
+          <td>reverses coordinates to start the first chunked segment at the end
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: collection of line segments
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> line = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"LineString"</span>,
+    <span class="hljs-string">"coordinates"</span>: [
+      [<span class="hljs-number">-95</span>, <span class="hljs-number">40</span>],
+      [<span class="hljs-number">-93</span>, <span class="hljs-number">45</span>],
+      [<span class="hljs-number">-85</span>, <span class="hljs-number">50</span>]
+    ]
+  }
+};
+<span class="hljs-keyword">var</span> result = turf.lineChunk(line, <span class="hljs-number">15</span>, <span class="hljs-string">'miles'</span>);
+<span class="hljs-comment">//=result</span></pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/line-intersect</p>
+  <h3 id='lineintersect'>
+    lineIntersect
+  </h3>
+  
+
+  <p>Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).</p>
+
+  
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>line1</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>any LineString or Polygon
+</td>
+          </tr>
+          
+        <tr>
+          <td>line2</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>any LineString or Polygon
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: point(s) that intersect both
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> line1 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"LineString"</span>,
+    <span class="hljs-string">"coordinates"</span>: [
+      [<span class="hljs-number">126</span>, <span class="hljs-number">-11</span>],
+      [<span class="hljs-number">129</span>, <span class="hljs-number">-21</span>]
+    ]
+  }
+};
+<span class="hljs-keyword">var</span> line2 = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"LineString"</span>,
+    <span class="hljs-string">"coordinates"</span>: [
+      [<span class="hljs-number">123</span>, <span class="hljs-number">-18</span>],
+      [<span class="hljs-number">131</span>, <span class="hljs-number">-14</span>]
+    ]
+  }
+};
+<span class="hljs-keyword">var</span> points = turf.lineIntersect(line1, line2);
+<span class="hljs-comment">//= points</span></pre>
     
     
 
@@ -4419,6 +4684,96 @@ and returns a subsection of the line in-between those points.</p>
 <span class="hljs-comment">//=line</span>
 
 <span class="hljs-comment">//=sliced</span></pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/mask</p>
+  <h3 id='mask'>
+    mask
+  </h3>
+  
+
+  <p>Takes any type of <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and an optional mask and returns a <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> exterior ring with holes.</p>
+
+  
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>polygon</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>GeoJSON Polygon used as interior rings or holes.
+</td>
+          </tr>
+          
+        <tr>
+          <td>mask</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>?</td>
+          <td>GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used)
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: Masked Polygon (exterior ring with holes).
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> poylgon = {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+    <span class="hljs-string">"properties"</span>: {},
+    <span class="hljs-string">"geometry"</span>: {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Polygon"</span>,
+      <span class="hljs-string">"coordinates"</span>: [
+        [[<span class="hljs-number">100</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">101</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">101</span>,<span class="hljs-number">1</span>], [<span class="hljs-number">100</span>,<span class="hljs-number">1</span>], [<span class="hljs-number">100</span>, <span class="hljs-number">0</span>]]
+     ]
+   }
+}
+<span class="hljs-keyword">var</span> masked = turf.mask(polygon);
+<span class="hljs-comment">//=masked</span></pre>
     
     
 
@@ -5092,16 +5447,16 @@ coordinate array. Properties can be added optionally.</p>
     
     
     <pre><span class="hljs-keyword">var</span> linestring1 = turf.lineString([
-[<span class="hljs-number">-21.964416</span>, <span class="hljs-number">64.148203</span>],
-[<span class="hljs-number">-21.956176</span>, <span class="hljs-number">64.141316</span>],
-[<span class="hljs-number">-21.93901</span>, <span class="hljs-number">64.135924</span>],
-[<span class="hljs-number">-21.927337</span>, <span class="hljs-number">64.136673</span>]
+  [<span class="hljs-number">-21.964416</span>, <span class="hljs-number">64.148203</span>],
+  [<span class="hljs-number">-21.956176</span>, <span class="hljs-number">64.141316</span>],
+  [<span class="hljs-number">-21.93901</span>, <span class="hljs-number">64.135924</span>],
+  [<span class="hljs-number">-21.927337</span>, <span class="hljs-number">64.136673</span>]
 ]);
 <span class="hljs-keyword">var</span> linestring2 = turf.lineString([
-[<span class="hljs-number">-21.929054</span>, <span class="hljs-number">64.127985</span>],
-[<span class="hljs-number">-21.912918</span>, <span class="hljs-number">64.134726</span>],
-[<span class="hljs-number">-21.916007</span>, <span class="hljs-number">64.141016</span>],
-	[<span class="hljs-number">-21.930084</span>, <span class="hljs-number">64.14446</span>]
+  [<span class="hljs-number">-21.929054</span>, <span class="hljs-number">64.127985</span>],
+  [<span class="hljs-number">-21.912918</span>, <span class="hljs-number">64.134726</span>],
+  [<span class="hljs-number">-21.916007</span>, <span class="hljs-number">64.141016</span>],
+  [<span class="hljs-number">-21.930084</span>, <span class="hljs-number">64.14446</span>]
 ], {<span class="hljs-attr">name</span>: <span class="hljs-string">'line 1'</span>, <span class="hljs-attr">distance</span>: <span class="hljs-number">145</span>});
 
 <span class="hljs-comment">//=linestring1</span>
@@ -7135,8 +7490,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
   </h3>
   
 
-  <p>Get all coordinates from any GeoJSON object, returning an array of coordinate
-arrays.</p>
+  <p>Get all coordinates from any GeoJSON object.</p>
 
   
  
@@ -7184,6 +7538,34 @@ arrays.</p>
     
 
     
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+<span class="hljs-keyword">var</span> coords = turf.coordAll(features);
+<span class="hljs-comment">//=coords</span></pre>
+    
+    
 
     
 
@@ -7204,8 +7586,7 @@ arrays.</p>
   </h3>
   
 
-  <p>Iterate over coordinates in any GeoJSON object, similar to
-Array.forEach.</p>
+  <p>Iterate over coordinates in any GeoJSON object, similar to Array.forEach()</p>
 
   
  
@@ -7239,13 +7620,14 @@ Array.forEach.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (value)
+          <td>a method that takes (currentCoords, currentIndex)
 </td>
           </tr>
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
 </td>
@@ -7264,9 +7646,30 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> point = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>, <span class="hljs-attr">coordinates</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] };
-turfMeta.coordEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">coords</span>) </span>{
-  <span class="hljs-comment">// coords is equal to [0, 0]</span>
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">currentCoords, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=currentCoords</span>
+  <span class="hljs-comment">//=currentIndex</span>
 });</pre>
     
     
@@ -7290,9 +7693,7 @@ turfMeta.coordEach(point, <span class="hljs-function"><span class="hljs-keyword"
   </h3>
   
 
-  <p>Reduce coordinates in any GeoJSON object into a single value,
-similar to how Array.reduce works. However, in this case we lazily run
-the reduction, so an array of all coordinates is unnecessary.</p>
+  <p>Reduce coordinates in any GeoJSON object, similar to Array.reduce()</p>
 
   
  
@@ -7326,21 +7727,21 @@ the reduction, so an array of all coordinates is unnecessary.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (memo, value) and returns
-a new memo
+          <td>a method that takes (previousValue, currentCoords, currentIndex)
 </td>
           </tr>
           
         <tr>
-          <td>memo</td>
-          <td>any</td>
-          <td>the starting value of memo: can be any type.
+          <td>initialValue</td>
+          <td>any?</td>
+          <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
 </td>
@@ -7354,7 +7755,7 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
     
       
         <h4>Returns</h4>
-        <p>any: combined value
+        <p>any: The value that results from the reduction.
 </p>
         
       
@@ -7362,6 +7763,38 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
 
     
 
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.coordReduce(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">previousValue, currentCoords, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=previousValue</span>
+  <span class="hljs-comment">//=currentCoords</span>
+  <span class="hljs-comment">//=currentIndex</span>
+  <span class="hljs-keyword">return</span> currentCoords;
+});</pre>
+    
     
 
     
@@ -7418,7 +7851,7 @@ Array.forEach.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (value)
+          <td>a method that takes (currentFeature, currentIndex)
 </td>
           </tr>
           
@@ -7435,9 +7868,30 @@ Array.forEach.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> feature = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>, <span class="hljs-attr">geometry</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">properties</span>: {} };
-turfMeta.featureEach(feature, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">feature</span>) </span>{
-  <span class="hljs-comment">// feature == feature</span>
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">currentFeature, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=currentFeature</span>
+  <span class="hljs-comment">//=currentIndex</span>
 });</pre>
     
     
@@ -7461,8 +7915,7 @@ turfMeta.featureEach(feature, <span class="hljs-function"><span class="hljs-keyw
   </h3>
   
 
-  <p>Iterate over each geometry in any GeoJSON object, similar to
-Array.forEach.</p>
+  <p>Iterate over each geometry in any GeoJSON object, similar to Array.forEach()</p>
 
   
  
@@ -7496,7 +7949,7 @@ Array.forEach.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (value)
+          <td>a method that takes (currentGeometry, currentIndex)
 </td>
           </tr>
           
@@ -7513,13 +7966,30 @@ Array.forEach.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> point = {
-  <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>,
-  <span class="hljs-attr">geometry</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'Point'</span>, <span class="hljs-attr">coordinates</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] },
-  <span class="hljs-attr">properties</span>: {}
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
 };
-turfMeta.geomEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">geom</span>) </span>{
-  <span class="hljs-comment">// geom is the point geometry</span>
+turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">currentGeometry, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=currentGeometry</span>
+  <span class="hljs-comment">//=currentIndex</span>
 });</pre>
     
     
@@ -7543,8 +8013,7 @@ turfMeta.geomEach(point, <span class="hljs-function"><span class="hljs-keyword">
   </h3>
   
 
-  <p>Iterate over property objects in any GeoJSON object, similar to
-Array.forEach.</p>
+  <p>Iterate over properties in any GeoJSON object, similar to Array.forEach()</p>
 
   
  
@@ -7578,7 +8047,7 @@ Array.forEach.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (value)
+          <td>a method that takes (currentProperties, currentIndex)
 </td>
           </tr>
           
@@ -7595,9 +8064,30 @@ Array.forEach.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> point = { <span class="hljs-attr">type</span>: <span class="hljs-string">'Feature'</span>, <span class="hljs-attr">geometry</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">properties</span>: { <span class="hljs-attr">foo</span>: <span class="hljs-number">1</span> } };
-turfMeta.propEach(point, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">props</span>) </span>{
-  <span class="hljs-comment">// props is equal to { foo: 1}</span>
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.propEach(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">currentProperties, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=currentProperties</span>
+  <span class="hljs-comment">//=currentIndex</span>
 });</pre>
     
     
@@ -7657,15 +8147,14 @@ the reduction, so an array of all properties is unnecessary.</p>
         <tr>
           <td>callback</td>
           <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
-          <td>a method that takes (memo, coord) and returns
-a new memo
+          <td>a method that takes (previousValue, currentProperties, currentIndex)
 </td>
           </tr>
           
         <tr>
-          <td>memo</td>
-          <td>any</td>
-          <td>the starting value of memo: can be any type.
+          <td>initialValue</td>
+          <td>any?</td>
+          <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
           
@@ -7677,7 +8166,7 @@ a new memo
     
       
         <h4>Returns</h4>
-        <p>any: combined value
+        <p>any: The value that results from the reduction.
 </p>
         
       
@@ -7689,17 +8178,33 @@ a new memo
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-comment">// an example of an even more advanced function that gives you the</span>
-<span class="hljs-comment">// javascript type of each property of every feature</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">propTypes</span> (<span class="hljs-params">layer</span>) </span>{
-  opts = opts || {}
-  <span class="hljs-keyword">return</span> turfMeta.propReduce(layer, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prev, props</span>) </span>{
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> prop <span class="hljs-keyword">in</span> props) {
-      <span class="hljs-keyword">if</span> (prev[prop]) <span class="hljs-keyword">continue</span>
-      prev[prop] = <span class="hljs-keyword">typeof</span> props[prop]
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
     }
-  }, {})
-}</pre>
+  ]
+};
+turf.propReduce(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">previousValue, currentProperties, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=previousValue</span>
+  <span class="hljs-comment">//=currentProperties</span>
+  <span class="hljs-comment">//=currentIndex</span>
+  <span class="hljs-keyword">return</span> currentProperties
+});</pre>
     
     
 
@@ -7755,9 +8260,9 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <tbody>
         
         <tr>
-          <td>featurecollection</td>
+          <td>featureCollection</td>
           <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a></td>
-          <td>a featurecollection for which features will be judged
+          <td>a FeatureCollection for which features will be judged
 </td>
           </tr>
           
@@ -7892,8 +8397,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
   </h3>
   
 
-  <p>Unwrap a coordinate from a Feature with a Point geometry, a Point
-geometry, or a single coordinate.</p>
+  <p>Unwrap coordinates from a Feature, Geometry Object or an Array of numbers</p>
 
   
  
@@ -7919,7 +8423,7 @@ geometry, or a single coordinate.</p>
         
         <tr>
           <td>obj</td>
-          <td>any</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any> | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;any>)</td>
           <td>any value
 </td>
           </tr>
@@ -7932,7 +8436,7 @@ geometry, or a single coordinate.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: a coordinate
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any>: coordinates
 </p>
         
       
@@ -8022,6 +8526,307 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
     
 
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/bearing</p>
+  <h3 id='calculatefinalbearing'>
+    calculateFinalBearing
+  </h3>
+  
+
+  <p>Calculates Final Bearing</p>
+
+  
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>start</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td>starting Point
+</td>
+          </tr>
+          
+        <tr>
+          <td>end</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td>ending Point
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: bearing
+</p>
+        
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/meta</p>
+  <h3 id='featurereduce'>
+    featureReduce
+  </h3>
+  
+
+  <p>Reduce features in any GeoJSON object, similar to Array.reduce().</p>
+
+  
+ 
+
+ 
+
+ 
+  <p><i><strong>Note:</strong> featureReduce is part of the @turf/meta module. To use it directly you will need to import the @turf/meta and call the featureReduce method.</i></p>
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>layer</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></td>
+          <td>any GeoJSON object
+</td>
+          </tr>
+          
+        <tr>
+          <td>callback</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
+          <td>a method that takes (previousValue, currentFeature, currentIndex)
+</td>
+          </tr>
+          
+        <tr>
+          <td>initialValue</td>
+          <td>any?</td>
+          <td>Value to use as the first argument to the first call of the callback.
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p>any: The value that results from the reduction.
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">previousValue, currentFeature, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=previousValue</span>
+  <span class="hljs-comment">//=currentFeature</span>
+  <span class="hljs-comment">//=currentIndex</span>
+  <span class="hljs-keyword">return</span> currentFeature
+});</pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+  <p class="npmBadge">npm install @turf/meta</p>
+  <h3 id='geomreduce'>
+    geomReduce
+  </h3>
+  
+
+  <p>Reduce geometry in any GeoJSON object, similar to Array.reduce().</p>
+
+  
+ 
+
+ 
+
+ 
+  <p><i><strong>Note:</strong> geomReduce is part of the @turf/meta module. To use it directly you will need to import the @turf/meta and call the geomReduce method.</i></p>
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>layer</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></td>
+          <td>any GeoJSON object
+</td>
+          </tr>
+          
+        <tr>
+          <td>callback</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a></td>
+          <td>a method that takes (previousValue, currentGeometry, currentIndex)
+</td>
+          </tr>
+          
+        <tr>
+          <td>initialValue</td>
+          <td>any?</td>
+          <td>Value to use as the first argument to the first call of the callback.
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p>any: The value that results from the reduction.
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> features = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
+  <span class="hljs-string">"features"</span>: [
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">37</span>]
+      }
+    },
+    {
+      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+      <span class="hljs-string">"properties"</span>: {<span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span>},
+      <span class="hljs-string">"geometry"</span>: {
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+        <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">36</span>, <span class="hljs-number">53</span>]
+      }
+    }
+  ]
+};
+turf.geomReduce(features, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">previousValue, currentGeometry, currentIndex</span>) </span>{
+  <span class="hljs-comment">//=previousValue</span>
+  <span class="hljs-comment">//=currentGeometry</span>
+  <span class="hljs-comment">//=currentIndex</span>
+  <span class="hljs-keyword">return</span> currentGeometry
+});</pre>
+    
     
 
     

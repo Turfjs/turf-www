@@ -35,8 +35,11 @@ toc:
   - flatten
   - flip
   - kinks
+  - lineChunk
+  - lineIntersect
   - lineSlice
   - lineSliceAlong
+  - mask
   - pointOnLine
   - truncate
   - unkinkPolygon
