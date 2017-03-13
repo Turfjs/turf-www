@@ -17,6 +17,7 @@ toc:
   - midpoint
   - pointOnSurface
   - square
+  - greatCircle
   - name: Transformation
   - bezier
   - buffer
@@ -60,16 +61,16 @@ toc:
   - isolines
   - planepoint
   - tin
+  - idw
   - name: Joins
   - inside
+  - within
   - tag
   - name: Grids
   - hexGrid
-  - idw
   - pointGrid
   - squareGrid
   - triangleGrid
-  - within
   - name: Classification
   - nearest
   - name: Meta
@@ -77,13 +78,16 @@ toc:
   - coordEach
   - coordReduce
   - featureEach
+  - featureReduce
   - geomEach
+  - geomReduce
   - propEach
   - propReduce
   - name: Assertions
   - collectionOf
   - geojsonType
   - getCoord
+  - getCoords
   - featureOf
 paths:
   GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
