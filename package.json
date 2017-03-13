@@ -13,7 +13,7 @@
     "serve": "static-server",
     "build-test": "node test/build",
     "test-runner": "ava test/turf.js",
-    "test": "npm run lint && npm run build-test && npm run test-runner"
+    "test": "npm run lintAPI && npm run build-test && npm run test-runner"
   },
   "repository": {
     "type": "git",

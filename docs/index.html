@@ -1,654 +1,670 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8' />
+  <meta charset="utf-8" />
   <title>Turf.js | Documentation</title>
-  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="../assets/css/pure-min.css" />
   <link rel="stylesheet" href="../assets/css/custom.css" />
   <link rel="stylesheet" href="../assets/css/github.css" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js"></script>
   <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>
   <div class="pure-menu pure-menu-horizontal pure-u-1-1">
     <div class="logoHolder">
-      <a href="/index.html" class="pure-menu-heading pure-menu-link">TURF</a>
+      <a href="../" class="pure-menu-heading pure-menu-link">TURF</a>
     </div>
     <ul class="pure-menu-list">
-      <li class="pure-menu-item"><a href="../getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
-      <li class="pure-menu-item linkActive"><a href="/docs" class="pure-menu-link">API</a></li>
-      <li class="pure-menu-item"><a href="../examples.html" class="pure-menu-link">EXAMPLES</a></li>
+      <li class="pure-menu-item"><a href="../getting-started/" class="pure-menu-link">GETTING STARTED</a></li>
+      <li class="pure-menu-item linkActive"><a href="../docs/" class="pure-menu-link">API</a></li>
+      <li class="pure-menu-item"><a href="../examples/" class="pure-menu-link">EXAMPLES</a></li>
       <li class="pure-menu-item" id="github">
         <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="../assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
       </li>
     </ul>
   </div>
   <div class="pure-g">
-    <div id='toc' class="pure-u-1-5">
+    <div id="toc" class="pure-u-1-5">
       <div class="sidebarContents">
-      <input id="sidebarFilter" placeholder='search'>
+      <input id="sidebarFilter" placeholder="search">
         <ul id="turfModules">
           
           
           <li class="category">
-            <a href='#aggregation'>
+            <a href="#aggregation">
               Aggregation
             </a>
           </li>
           
           
           <li class="">
-            <a href='#collect'>
+            <a href="#collect">
               collect
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#measurement'>
+            <a href="#measurement">
               Measurement
             </a>
           </li>
           
           
           <li class="">
-            <a href='#along'>
+            <a href="#along">
               along
             </a>
           </li>
           
           
           <li class="">
-            <a href='#area'>
+            <a href="#area">
               area
             </a>
           </li>
           
           
           <li class="">
-            <a href='#bbox'>
+            <a href="#bbox">
               bbox
             </a>
           </li>
           
           
           <li class="">
-            <a href='#bboxpolygon'>
+            <a href="#bboxpolygon">
               bboxPolygon
             </a>
           </li>
           
           
           <li class="">
-            <a href='#bearing'>
+            <a href="#bearing">
               bearing
             </a>
           </li>
           
           
           <li class="">
-            <a href='#center'>
+            <a href="#center">
               center
             </a>
           </li>
           
           
           <li class="">
-            <a href='#centerofmass'>
+            <a href="#centerofmass">
               centerOfMass
             </a>
           </li>
           
           
           <li class="">
-            <a href='#centroid'>
+            <a href="#centroid">
               centroid
             </a>
           </li>
           
           
           <li class="">
-            <a href='#destination'>
+            <a href="#destination">
               destination
             </a>
           </li>
           
           
           <li class="">
-            <a href='#distance'>
+            <a href="#distance">
               distance
             </a>
           </li>
           
           
           <li class="">
-            <a href='#envelope'>
+            <a href="#envelope">
               envelope
             </a>
           </li>
           
           
           <li class="">
-            <a href='#linedistance'>
+            <a href="#linedistance">
               lineDistance
             </a>
           </li>
           
           
           <li class="">
-            <a href='#midpoint'>
+            <a href="#midpoint">
               midpoint
             </a>
           </li>
           
           
           <li class="">
-            <a href='#pointonsurface'>
+            <a href="#pointonsurface">
               pointOnSurface
             </a>
           </li>
           
           
           <li class="">
-            <a href='#square'>
+            <a href="#square">
               square
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#transformation'>
+            <a href="#transformation">
               Transformation
             </a>
           </li>
           
           
           <li class="">
-            <a href='#bezier'>
+            <a href="#bezier">
               bezier
             </a>
           </li>
           
           
           <li class="">
-            <a href='#buffer'>
+            <a href="#buffer">
               buffer
             </a>
           </li>
           
           
           <li class="">
-            <a href='#circle'>
+            <a href="#circle">
               circle
             </a>
           </li>
           
           
           <li class="">
-            <a href='#concave'>
+            <a href="#concave">
               concave
             </a>
           </li>
           
           
           <li class="">
-            <a href='#convex'>
+            <a href="#convex">
               convex
             </a>
           </li>
           
           
           <li class="">
-            <a href='#difference'>
+            <a href="#difference">
               difference
             </a>
           </li>
           
           
           <li class="">
-            <a href='#dissolve'>
+            <a href="#dissolve">
               dissolve
             </a>
           </li>
           
           
           <li class="">
-            <a href='#intersect'>
+            <a href="#intersect">
               intersect
             </a>
           </li>
           
           
           <li class="">
-            <a href='#simplify'>
+            <a href="#simplify">
               simplify
             </a>
           </li>
           
           
           <li class="">
-            <a href='#tesselate'>
+            <a href="#tesselate">
               tesselate
             </a>
           </li>
           
           
           <li class="">
-            <a href='#union'>
+            <a href="#union">
               union
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#misc'>
+            <a href="#misc">
               Misc
             </a>
           </li>
           
           
           <li class="">
-            <a href='#combine'>
+            <a href="#combine">
               combine
             </a>
           </li>
           
           
           <li class="">
-            <a href='#explode'>
+            <a href="#explode">
               explode
             </a>
           </li>
           
           
           <li class="">
-            <a href='#flatten'>
+            <a href="#flatten">
               flatten
             </a>
           </li>
           
           
           <li class="">
-            <a href='#flip'>
+            <a href="#flip">
               flip
             </a>
           </li>
           
           
           <li class="">
-            <a href='#kinks'>
+            <a href="#kinks">
               kinks
             </a>
           </li>
           
           
           <li class="">
-            <a href='#linechunk'>
+            <a href="#linechunk">
               lineChunk
             </a>
           </li>
           
           
           <li class="">
-            <a href='#lineintersect'>
+            <a href="#lineintersect">
               lineIntersect
             </a>
           </li>
           
           
           <li class="">
-            <a href='#lineslice'>
+            <a href="#lineslice">
               lineSlice
             </a>
           </li>
           
           
           <li class="">
-            <a href='#lineslicealong'>
+            <a href="#lineslicealong">
               lineSliceAlong
             </a>
           </li>
           
           
           <li class="">
-            <a href='#mask'>
+            <a href="#mask">
               mask
             </a>
           </li>
           
           
           <li class="">
-            <a href='#pointonline'>
+            <a href="#pointonline">
               pointOnLine
             </a>
           </li>
           
           
           <li class="">
-            <a href='#truncate'>
+            <a href="#truncate">
               truncate
             </a>
           </li>
           
           
           <li class="">
-            <a href='#unkinkpolygon'>
+            <a href="#unkinkpolygon">
               unkinkPolygon
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#helper'>
+            <a href="#helper">
               Helper
             </a>
           </li>
           
           
           <li class="">
-            <a href='#featurecollection'>
+            <a href="#featurecollection">
               featureCollection
             </a>
           </li>
           
           
           <li class="">
-            <a href='#feature'>
+            <a href="#feature">
               feature
             </a>
           </li>
           
           
           <li class="">
-            <a href='#geometrycollection'>
+            <a href="#geometrycollection">
               geometryCollection
             </a>
           </li>
           
           
           <li class="">
-            <a href='#linestring'>
+            <a href="#linestring">
               lineString
             </a>
           </li>
           
           
           <li class="">
-            <a href='#multilinestring'>
+            <a href="#multilinestring">
               multiLineString
             </a>
           </li>
           
           
           <li class="">
-            <a href='#multipoint'>
+            <a href="#multipoint">
               multiPoint
             </a>
           </li>
           
           
           <li class="">
-            <a href='#multipolygon'>
+            <a href="#multipolygon">
               multiPolygon
             </a>
           </li>
           
           
           <li class="">
-            <a href='#point'>
+            <a href="#point">
               point
             </a>
           </li>
           
           
           <li class="">
-            <a href='#polygon'>
+            <a href="#polygon">
               polygon
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#data'>
+            <a href="#data">
               Data
             </a>
           </li>
           
           
           <li class="">
-            <a href='#random'>
+            <a href="#random">
               random
             </a>
           </li>
           
           
           <li class="">
-            <a href='#sample'>
+            <a href="#sample">
               sample
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#interpolation'>
+            <a href="#interpolation">
               Interpolation
             </a>
           </li>
           
           
           <li class="">
-            <a href='#isolines'>
+            <a href="#isolines">
               isolines
             </a>
           </li>
           
           
           <li class="">
-            <a href='#planepoint'>
+            <a href="#planepoint">
               planepoint
             </a>
           </li>
           
           
           <li class="">
-            <a href='#tin'>
+            <a href="#tin">
               tin
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#joins'>
+            <a href="#joins">
               Joins
             </a>
           </li>
           
           
           <li class="">
-            <a href='#inside'>
+            <a href="#inside">
               inside
             </a>
           </li>
           
           
           <li class="">
-            <a href='#tag'>
+            <a href="#tag">
               tag
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#grids'>
+            <a href="#grids">
               Grids
             </a>
           </li>
           
           
           <li class="">
-            <a href='#hexgrid'>
+            <a href="#hexgrid">
               hexGrid
             </a>
           </li>
           
           
           <li class="">
-            <a href='#idw'>
+            <a href="#idw">
               idw
             </a>
           </li>
           
           
           <li class="">
-            <a href='#pointgrid'>
+            <a href="#pointgrid">
               pointGrid
             </a>
           </li>
           
           
           <li class="">
-            <a href='#squaregrid'>
+            <a href="#squaregrid">
               squareGrid
             </a>
           </li>
           
           
           <li class="">
-            <a href='#trianglegrid'>
+            <a href="#trianglegrid">
               triangleGrid
             </a>
           </li>
           
           
           <li class="">
-            <a href='#within'>
+            <a href="#within">
               within
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#classification'>
+            <a href="#classification">
               Classification
             </a>
           </li>
           
           
           <li class="">
-            <a href='#nearest'>
+            <a href="#nearest">
               nearest
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#meta'>
+            <a href="#meta">
               Meta
             </a>
           </li>
           
           
           <li class="">
-            <a href='#coordall'>
+            <a href="#coordall">
               coordAll
             </a>
           </li>
           
           
           <li class="">
-            <a href='#coordeach'>
+            <a href="#coordeach">
               coordEach
             </a>
           </li>
           
           
           <li class="">
-            <a href='#coordreduce'>
+            <a href="#coordreduce">
               coordReduce
             </a>
           </li>
           
           
           <li class="">
-            <a href='#featureeach'>
+            <a href="#featureeach">
               featureEach
             </a>
           </li>
           
           
           <li class="">
-            <a href='#geomeach'>
+            <a href="#geomeach">
               geomEach
             </a>
           </li>
           
           
           <li class="">
-            <a href='#propeach'>
+            <a href="#propeach">
               propEach
             </a>
           </li>
           
           
           <li class="">
-            <a href='#propreduce'>
+            <a href="#propreduce">
               propReduce
             </a>
           </li>
           
           
           <li class="category">
-            <a href='#assertions'>
+            <a href="#assertions">
               Assertions
             </a>
           </li>
           
           
           <li class="">
-            <a href='#collectionof'>
+            <a href="#collectionof">
               collectionOf
             </a>
           </li>
           
           
           <li class="">
-            <a href='#geojsontype'>
+            <a href="#geojsontype">
               geojsonType
             </a>
           </li>
           
           
           <li class="">
-            <a href='#getcoord'>
+            <a href="#getcoord">
               getCoord
             </a>
           </li>
           
           
           <li class="">
-            <a href='#featureof'>
+            <a href="#featureof">
               featureOf
             </a>
           </li>
           
           
           <li class="">
-            <a href='#calculatefinalbearing'>
+            <a href="#calculatefinalbearing">
               calculateFinalBearing
             </a>
           </li>
           
           
           <li class="">
-            <a href='#featurereduce'>
+            <a href="#greatcircle">
+              greatCircle
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#getcoords">
+              getCoords
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#featurereduce">
               featureReduce
             </a>
           </li>
           
           
           <li class="">
-            <a href='#geomreduce'>
+            <a href="#geomreduce">
               geomReduce
             </a>
           </li>
@@ -658,11 +674,10 @@
     </div>
 
     <div id="mainContent" class="pure-u-4-5">
-      <div id="innerContent">
       
       
       <div><h2 id='aggregation'>
-	Aggregation
+  Aggregation
 </h2>
 </div>
       
@@ -671,7 +686,9 @@
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/collect</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-collect</p>
   <h3 id='collect'>
     collect
   </h3>
@@ -683,7 +700,7 @@ for polygons, this finds every point that lies within each polygon, collects the
 <code>inProperty</code> values from those points, and adds them as an array to <code>outProperty</code>
 on the polygon.</p>
 
-  
+
  
 
  
@@ -705,14 +722,14 @@ on the polygon.</p>
         
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>polygons with values on which to aggregate
 </td>
           </tr>
           
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>points to be aggregated
 </td>
           </tr>
@@ -739,7 +756,7 @@ on the polygon.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: polygons with properties listed based on 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: polygons with properties listed based on 
 <code>outField</code>
 </p>
         
@@ -778,7 +795,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
       
       
       <div><h2 id='measurement'>
-	Measurement
+  Measurement
 </h2>
 </div>
       
@@ -787,7 +804,9 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/along</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-along</p>
   <h3 id='along'>
     along
   </h3>
@@ -795,7 +814,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and returns a <a href="http://geojson.org/geojson-spec.html#point">point</a> at a specified distance along the line.</p>
 
-  
+
  
 
  
@@ -817,7 +836,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>input line
 </td>
           </tr>
@@ -831,7 +850,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -845,7 +864,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: Point 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: Point 
 <code>distance</code>
  
 <code>units</code>
@@ -901,7 +920,9 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/area</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-area</p>
   <h3 id='area'>
     area
   </h3>
@@ -910,7 +931,7 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
   <p>Takes one or more features and returns their area
 in square meters.</p>
 
-  
+
  
 
  
@@ -1009,7 +1030,9 @@ in square meters.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/bbox</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bbox</p>
   <h3 id='bbox'>
     bbox
   </h3>
@@ -1017,7 +1040,7 @@ in square meters.</p>
 
   <p>Takes a set of features, calculates the bbox of all input features, and returns a bounding box.</p>
 
-  
+
  
 
  
@@ -1052,10 +1075,8 @@ in square meters.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: bbox extent in 
-[
-minX, minY, maxX, maxY
-]
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: bbox extent in 
+[minX, minY, maxX, maxY]
  order
 </p>
         
@@ -1098,7 +1119,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/bbox-polygon</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bbox-polygon</p>
   <h3 id='bboxpolygon'>
     bboxPolygon
   </h3>
@@ -1106,7 +1129,7 @@ minX, minY, maxX, maxY
 
   <p>Takes a bbox and returns an equivalent <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a>.</p>
 
-  
+
  
 
  
@@ -1128,11 +1151,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -1145,7 +1166,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon representation of the bounding box
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a Polygon representation of the bounding box
 </p>
         
       
@@ -1178,7 +1199,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/bearing</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bearing</p>
   <h3 id='bearing'>
     bearing
   </h3>
@@ -1186,7 +1209,7 @@ minX, minY, maxX, maxY
 
   <p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and finds the geographic bearing between them.</p>
 
-  
+
  
 
  
@@ -1208,21 +1231,21 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>start</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting Point
 </td>
           </tr>
           
         <tr>
           <td>end</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>ending Point
 </td>
           </tr>
           
         <tr>
           <td>final</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>calculates the final bearing if true
 </td>
@@ -1287,7 +1310,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/center</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-center</p>
   <h3 id='center'>
     center
   </h3>
@@ -1295,7 +1320,7 @@ minX, minY, maxX, maxY
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
 
-  
+
  
 
  
@@ -1330,7 +1355,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature at the absolute center point of all input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a Point feature at the absolute center point of all input features
 </p>
         
       
@@ -1460,7 +1485,9 @@ centerPt.properties[<span class="hljs-string">'marker-color'</span>] = <span cla
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/center-of-mass</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-center-of-mass</p>
   <h3 id='centerofmass'>
     centerOfMass
   </h3>
@@ -1471,7 +1498,7 @@ or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">f
 and returns its <a href="https://en.wikipedia.org/wiki/Center_of_mass">center of mass</a>
 using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon">Centroid of Polygon</a>.</p>
 
-  
+
  
 
  
@@ -1506,7 +1533,7 @@ using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the center of mass
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the center of mass
 </p>
         
       
@@ -1629,7 +1656,9 @@ using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/centroid</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-centroid</p>
   <h3 id='centroid'>
     centroid
   </h3>
@@ -1640,7 +1669,7 @@ the mean of all vertices.
 This lessens the effect of small islands and artifacts when calculating
 the centroid of a set of polygons.</p>
 
-  
+
  
 
  
@@ -1675,7 +1704,7 @@ the centroid of a set of polygons.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the centroid of the input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the centroid of the input features
 </p>
         
       
@@ -1726,7 +1755,9 @@ the centroid of a set of polygons.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/destination</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-destination</p>
   <h3 id='destination'>
     destination
   </h3>
@@ -1734,7 +1765,7 @@ the centroid of a set of polygons.</p>
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the <a href="http://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a> to account for global curvature.</p>
 
-  
+
  
 
  
@@ -1756,7 +1787,7 @@ the centroid of a set of polygons.</p>
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting point
 </td>
           </tr>
@@ -1777,7 +1808,7 @@ the centroid of a set of polygons.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -1791,7 +1822,7 @@ the centroid of a set of polygons.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: destination point
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: destination point
 </p>
         
       
@@ -1842,7 +1873,9 @@ destination.properties[<span class="hljs-string">'marker-color'</span>] = <span 
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/distance</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-distance</p>
   <h3 id='distance'>
     distance
   </h3>
@@ -1853,7 +1886,7 @@ miles, or kilometers. This uses the
 <a href="http://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a>
 to account for global curvature.</p>
 
-  
+
  
 
  
@@ -1875,21 +1908,21 @@ to account for global curvature.</p>
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>origin point
 </td>
           </tr>
           
         <tr>
           <td>to</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>destination point
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -1959,7 +1992,9 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/envelope</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-envelope</p>
   <h3 id='envelope'>
     envelope
   </h3>
@@ -1967,7 +2002,7 @@ to account for global curvature.</p>
 
   <p>Takes any number of features and returns a rectangular <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> that encompasses all vertices.</p>
 
-  
+
  
 
  
@@ -2002,7 +2037,7 @@ to account for global curvature.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a rectangular Polygon feature that encompasses all vertices
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a rectangular Polygon feature that encompasses all vertices
 </p>
         
       
@@ -2073,7 +2108,9 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/line-distance</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-distance</p>
   <h3 id='linedistance'>
     lineDistance
   </h3>
@@ -2081,7 +2118,7 @@ to account for global curvature.</p>
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and measures its length in the specified units.</p>
 
-  
+
  
 
  
@@ -2103,14 +2140,14 @@ to account for global curvature.</p>
         
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;)</td>
           <td>line to measure
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -2173,7 +2210,9 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/midpoint</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-midpoint</p>
   <h3 id='midpoint'>
     midpoint
   </h3>
@@ -2182,7 +2221,7 @@ to account for global curvature.</p>
   <p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a point midway between them.
 The midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.</p>
 
-  
+
  
 
  
@@ -2204,14 +2243,14 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>first point
 </td>
           </tr>
           
         <tr>
           <td>to</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>second point
 </td>
           </tr>
@@ -2224,7 +2263,7 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a point midway between 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a point midway between 
 <code>pt1</code>
  and 
 <code>pt2</code>
@@ -2282,7 +2321,9 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/point-on-surface</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-on-surface</p>
   <h3 id='pointonsurface'>
     pointOnSurface
   </h3>
@@ -2295,7 +2336,7 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
 <li>Given a <a href="http://geojson.org/geojson-spec.html#point">Point</a>, the point will the same as the input</li>
 </ul>
 
-  
+
  
 
  
@@ -2373,7 +2414,9 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/square</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-square</p>
   <h3 id='square'>
     square
   </h3>
@@ -2382,7 +2425,7 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
   <p>Takes a bounding box and calculates the minimum square bounding box that
 would contain the input.</p>
 
-  
+
  
 
  
@@ -2404,11 +2447,9 @@ would contain the input.</p>
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -2421,7 +2462,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: a square surrounding 
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: a square surrounding 
 <code>bbox</code>
 </p>
         
@@ -2461,7 +2502,7 @@ minX, minY, maxX, maxY
       
       
       <div><h2 id='transformation'>
-	Transformation
+  Transformation
 </h2>
 </div>
       
@@ -2470,7 +2511,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/bezier</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bezier</p>
   <h3 id='bezier'>
     bezier
   </h3>
@@ -2481,7 +2524,7 @@ by applying a <a href="http://en.wikipedia.org/wiki/B%C3%A9zier_spline">Bezier s
 algorithm.</p>
 <p>The bezier spline implementation is by <a href="http://leszek.rybicki.cc/">Leszek Rybicki</a>.</p>
 
-  
+
  
 
  
@@ -2503,14 +2546,14 @@ algorithm.</p>
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>input LineString
 </td>
           </tr>
           
         <tr>
           <td>resolution</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 10000)</td>
           <td>time in milliseconds between points
 </td>
@@ -2518,7 +2561,7 @@ algorithm.</p>
           
         <tr>
           <td>sharpness</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 0.85)</td>
           <td>a measure of how curvy the path should be between splines
 </td>
@@ -2532,7 +2575,7 @@ algorithm.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: curved line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: curved line
 </p>
         
       
@@ -2587,7 +2630,9 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/buffer</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-buffer</p>
   <h3 id='buffer'>
     buffer
   </h3>
@@ -2595,7 +2640,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
 
   <p>Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.</p>
 
-  
+
  
 
  
@@ -2644,7 +2689,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     
       
         <h4>Returns</h4>
-        <p>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>): buffered features
+        <p>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>&gt; | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>): buffered features
 </p>
         
       
@@ -2686,7 +2731,9 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/circle</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-circle</p>
   <h3 id='circle'>
     circle
   </h3>
@@ -2694,7 +2741,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.</p>
 
-  
+
  
 
  
@@ -2716,7 +2763,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
         
         <tr>
           <td>center</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>center point
 </td>
           </tr>
@@ -2730,7 +2777,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           
         <tr>
           <td>steps</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 64)</td>
           <td>number of steps
 </td>
@@ -2738,7 +2785,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -2752,7 +2799,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: circle polygon
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: circle polygon
 </p>
         
       
@@ -2788,7 +2835,9 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/concave</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-concave</p>
   <h3 id='concave'>
     concave
   </h3>
@@ -2797,7 +2846,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
   <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a concave hull polygon.</p>
 <p>Internally, this uses <a href="https://github.com/Turfjs/turf-tin">turf-tin</a> to generate geometries.</p>
 
-  
+
  
 
  
@@ -2819,7 +2868,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
@@ -2834,7 +2883,7 @@ hull to become concave (in miles)
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -2848,7 +2897,7 @@ hull to become concave (in miles)
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a concave hull
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a concave hull
 </p>
         
       
@@ -2940,7 +2989,9 @@ hull to become concave (in miles)
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/convex</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-convex</p>
   <h3 id='convex'>
     convex
   </h3>
@@ -2951,7 +3002,7 @@ hull to become concave (in miles)
 the <a href="https://github.com/mikolalysenko/convex-hull">convex-hull</a> module that
 implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain">monotone chain hull</a>.</p>
 
-  
+
  
 
  
@@ -2986,7 +3037,7 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a convex hull
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a convex hull
 </p>
         
       
@@ -3072,7 +3123,9 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/difference</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-difference</p>
   <h3 id='difference'>
     difference
   </h3>
@@ -3081,7 +3134,7 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
   <p>Finds the difference between two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> by clipping the second
 polygon from the first.</p>
 
-  
+
  
 
  
@@ -3103,14 +3156,14 @@ polygon from the first.</p>
         
         <tr>
           <td>p1</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input Polygon feature
 </td>
           </tr>
           
         <tr>
           <td>p2</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>Polygon feature to difference from 
 <code>p1</code>
 </td>
@@ -3124,7 +3177,7 @@ polygon from the first.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a Polygon or MultiPolygon feature showing the area of 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a Polygon or MultiPolygon feature showing the area of 
 <code>p1</code>
  excluding the area of 
 <code>p2</code>
@@ -3199,7 +3252,9 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/dissolve</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-dissolve</p>
   <h3 id='dissolve'>
     dissolve
   </h3>
@@ -3207,7 +3262,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
 
   <p>Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported</p>
 
-  
+
  
 
  
@@ -3229,14 +3284,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>featureCollection</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input feature collection to be dissolved
 </td>
           </tr>
           
         <tr>
           <td>propertyName</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</td>
           <td>property name on which to dissolve features
 </td>
           </tr>
@@ -3249,7 +3304,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a FeatureCollection containing the dissolved polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a FeatureCollection containing the dissolved polygons
 </p>
         
       
@@ -3316,15 +3371,17 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/intersect</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-intersect</p>
   <h3 id='intersect'>
     intersect
   </h3>
   
 
-  <p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.</p>
+  <p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don&#x27;t intersect, returns undefined.</p>
 
-  
+
  
 
  
@@ -3346,14 +3403,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>poly1</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the first polygon
 </td>
           </tr>
           
         <tr>
           <td>poly2</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the second polygon
 </td>
           </tr>
@@ -3430,7 +3487,9 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/simplify</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-simplify</p>
   <h3 id='simplify'>
     simplify
   </h3>
@@ -3438,7 +3497,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and returns a simplified version. Internally uses <a href="http://mourner.github.io/simplify-js/">simplify-js</a> to perform simplification.</p>
 
-  
+
  
 
  
@@ -3460,14 +3519,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>feature</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>)</td>
           <td>feature to be simplified
 </td>
           </tr>
           
         <tr>
           <td>tolerance</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 1)</td>
           <td>simplification tolerance
 </td>
@@ -3475,7 +3534,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
           
         <tr>
           <td>highQuality</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to spend more time to create
 a higher-quality simplification with a different algorithm
@@ -3490,7 +3549,7 @@ a higher-quality simplification with a different algorithm
     
       
         <h4>Returns</h4>
-        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>): a simplified feature
+        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>): a simplified feature
 </p>
         
       
@@ -3556,16 +3615,18 @@ a higher-quality simplification with a different algorithm
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/tesselate</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tesselate</p>
   <h3 id='tesselate'>
     tesselate
   </h3>
   
 
-  <p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&#x3C;Polygon></a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&#x3C;Polygon></a> of triangles
+  <p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&lt;Polygon&gt;</a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&lt;Polygon&gt;</a> of triangles
 using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
 
-  
+
  
 
  
@@ -3587,7 +3648,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
         
         <tr>
           <td>poly</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the polygon to tesselate
 </td>
           </tr>
@@ -3600,7 +3661,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a geometrycollection feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a geometrycollection feature
 </p>
         
       
@@ -3633,7 +3694,9 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/union</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-union</p>
   <h3 id='union'>
     union
   </h3>
@@ -3641,7 +3704,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
 
   <p>Takes two or more <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns a combined polygon. If the input polygons are not contiguous, this function returns a <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> feature.</p>
 
-  
+
  
 
  
@@ -3663,7 +3726,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
         
         <tr>
           <td>A</td>
-          <td>...<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td>...<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>polygon to combine
 </td>
           </tr>
@@ -3676,7 +3739,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a combined 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a combined 
 <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>
  or 
 <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>
@@ -3748,7 +3811,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       
       
       <div><h2 id='misc'>
-	Misc
+  Misc
 </h2>
 </div>
       
@@ -3757,7 +3820,9 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/combine</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-combine</p>
   <h3 id='combine'>
     combine
   </h3>
@@ -3768,7 +3833,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
 into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>, or
 <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> features.</p>
 
-  
+
  
 
  
@@ -3790,7 +3855,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
         
         <tr>
           <td>fc</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#point">Point</a> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#point">Point</a> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;</td>
           <td>a FeatureCollection of any type
 </td>
           </tr>
@@ -3803,7 +3868,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a FeatureCollection of corresponding type to input
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a FeatureCollection of corresponding type to input
 </p>
         
       
@@ -3855,7 +3920,9 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/explode</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-explode</p>
   <h3 id='explode'>
     explode
   </h3>
@@ -3864,7 +3931,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
   <p>Takes a feature or set of features and returns all positions as
 <a href="http://geojson.org/geojson-spec.html#point">points</a>.</p>
 
-  
+
  
 
  
@@ -3899,7 +3966,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="#point">point</a>>: points representing the exploded input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="#point">point</a>&gt;: points representing the exploded input features
 </p>
         
       
@@ -3955,7 +4022,9 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/flatten</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-flatten</p>
   <h3 id='flatten'>
     flatten
   </h3>
@@ -3963,7 +4032,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
 
   <p>Flattens any <a href="GeoJSON">GeoJSON</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inspired by <a href="https://github.com/tmcw/geojson-flatten">geojson-flatten</a>.</p>
 
-  
+
  
 
  
@@ -3996,13 +4065,13 @@ s
           
         <tr>
           <td>properties</td>
-          <td>any?
+          <td>[Any]
             (default {})</td>
           <td>translate properties to each 
 <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
  (only applies for 
 <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>
- &#x26; 
+ &amp; 
 <a href="GeometryObject">GeometryObject</a>
 )
 </td>
@@ -4057,7 +4126,9 @@ s
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/flip</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-flip</p>
   <h3 id='flip'>
     flip
   </h3>
@@ -4066,7 +4137,7 @@ s
   <p>Takes input features and flips all of their coordinates
 from <code>[x, y]</code> to <code>[y, x]</code>.</p>
 
-  
+
  
 
  
@@ -4145,7 +4216,9 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/kinks</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-kinks</p>
   <h3 id='kinks'>
     kinks
   </h3>
@@ -4153,7 +4226,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">linestring</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">multi-linestring</a>, <a href="http://geojson.org/geojson-spec.html#multipolygon">multi-polygon</a>, or <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and returns <a href="http://geojson.org/geojson-spec.html#point">points</a> at all self-intersections.</p>
 
-  
+
  
 
  
@@ -4174,8 +4247,8 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <tbody>
         
         <tr>
-          <td>feature</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)></td>
+          <td>featureIn</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;</td>
           <td>input feature
 </td>
           </tr>
@@ -4188,7 +4261,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: self-intersections
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: self-intersections
 </p>
         
       
@@ -4240,7 +4313,9 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/line-chunk</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-chunk</p>
   <h3 id='linechunk'>
     lineChunk
   </h3>
@@ -4249,7 +4324,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
   <p>Divides a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> into chunks of a specified length.
 If the line is shorter than the segment length then the original line is returned.</p>
 
-  
+
  
 
  
@@ -4271,7 +4346,7 @@ If the line is shorter than the segment length then the original line is returne
         
         <tr>
           <td>featureIn</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>)&gt;)</td>
           <td>the lines to split
 </td>
           </tr>
@@ -4285,7 +4360,7 @@ If the line is shorter than the segment length then the original line is returne
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default &#39;kilometers&#39;)</td>
           <td>units can be degrees, radians, miles, or kilometers
 </td>
@@ -4293,7 +4368,7 @@ If the line is shorter than the segment length then the original line is returne
           
         <tr>
           <td>reverse</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>reverses coordinates to start the first chunked segment at the end
 </td>
@@ -4307,7 +4382,7 @@ If the line is shorter than the segment length then the original line is returne
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: collection of line segments
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: collection of line segments
 </p>
         
       
@@ -4349,7 +4424,9 @@ If the line is shorter than the segment length then the original line is returne
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/line-intersect</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-intersect</p>
   <h3 id='lineintersect'>
     lineIntersect
   </h3>
@@ -4357,7 +4434,7 @@ If the line is shorter than the segment length then the original line is returne
 
   <p>Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).</p>
 
-  
+
  
 
  
@@ -4379,14 +4456,14 @@ If the line is shorter than the segment length then the original line is returne
         
         <tr>
           <td>line1</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>any LineString or Polygon
 </td>
           </tr>
           
         <tr>
           <td>line2</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>any LineString or Polygon
 </td>
           </tr>
@@ -4399,7 +4476,7 @@ If the line is shorter than the segment length then the original line is returne
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: point(s) that intersect both
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: point(s) that intersect both
 </p>
         
       
@@ -4451,7 +4528,9 @@ If the line is shorter than the segment length then the original line is returne
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/line-slice</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-slice</p>
   <h3 id='lineslice'>
     lineSlice
   </h3>
@@ -4459,10 +4538,10 @@ If the line is shorter than the segment length then the original line is returne
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>, and a stop point
 and returns a subsection of the line in-between those points.
-The start &#x26; stop points don't need to fall exactly on the line.</p>
+The start &amp; stop points don&#x27;t need to fall exactly on the line.</p>
 <p>This can be useful for extracting only the part of a route between waypoints.</p>
 
-  
+
  
 
  
@@ -4484,21 +4563,21 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
         
         <tr>
           <td>startPt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting point
 </td>
           </tr>
           
         <tr>
           <td>stopPt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>stopping point
 </td>
           </tr>
           
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt; | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
           <td>line to slice
 </td>
           </tr>
@@ -4511,7 +4590,7 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: sliced line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: sliced line
 </p>
         
       
@@ -4576,7 +4655,9 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/line-slice-along</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-slice-along</p>
   <h3 id='lineslicealong'>
     lineSliceAlong
   </h3>
@@ -4587,7 +4668,7 @@ and a specified  distance along the line to a stop point
 and returns a subsection of the line in-between those points.</p>
 <p>This can be useful for extracting only the part of a route between two distances.</p>
 
-  
+
  
 
  
@@ -4609,7 +4690,7 @@ and returns a subsection of the line in-between those points.</p>
         
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt; | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
           <td>input line
 </td>
           </tr>
@@ -4630,7 +4711,7 @@ and returns a subsection of the line in-between those points.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -4644,7 +4725,7 @@ and returns a subsection of the line in-between those points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: sliced line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: sliced line
 </p>
         
       
@@ -4700,7 +4781,9 @@ and returns a subsection of the line in-between those points.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/mask</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-mask</p>
   <h3 id='mask'>
     mask
   </h3>
@@ -4708,7 +4791,7 @@ and returns a subsection of the line in-between those points.</p>
 
   <p>Takes any type of <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and an optional mask and returns a <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> exterior ring with holes.</p>
 
-  
+
  
 
  
@@ -4730,14 +4813,14 @@ and returns a subsection of the line in-between those points.</p>
         
         <tr>
           <td>polygon</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>GeoJSON Polygon used as interior rings or holes.
 </td>
           </tr>
           
         <tr>
           <td>mask</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>?</td>
+          <td>[<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;]</td>
           <td>GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used)
 </td>
           </tr>
@@ -4750,7 +4833,7 @@ and returns a subsection of the line in-between those points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: Masked Polygon (exterior ring with holes).
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: Masked Polygon (exterior ring with holes).
 </p>
         
       
@@ -4762,7 +4845,7 @@ and returns a subsection of the line in-between those points.</p>
     <h4>Example</h4>
     
     
-    <pre><span class="hljs-keyword">var</span> poylgon = {
+    <pre><span class="hljs-keyword">var</span> polygon = {
     <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
     <span class="hljs-string">"properties"</span>: {},
     <span class="hljs-string">"geometry"</span>: {
@@ -4790,7 +4873,9 @@ and returns a subsection of the line in-between those points.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/point-on-line</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-on-line</p>
   <h3 id='pointonline'>
     pointOnLine
   </h3>
@@ -4798,7 +4883,7 @@ and returns a subsection of the line in-between those points.</p>
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> and calculates the closest Point on the LineString.</p>
 
-  
+
  
 
  
@@ -4820,21 +4905,21 @@ and returns a subsection of the line in-between those points.</p>
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>line to snap to
 </td>
           </tr>
           
         <tr>
           <td>pt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>point to snap from
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -4848,7 +4933,7 @@ and returns a subsection of the line in-between those points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: closest point on the 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: closest point on the 
 <code>line</code>
  to 
 <code>point</code>
@@ -4919,7 +5004,9 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/truncate</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-truncate</p>
   <h3 id='truncate'>
     truncate
   </h3>
@@ -4927,7 +5014,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
 
   <p>Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the geometry.</p>
 
-  
+
  
 
  
@@ -4956,7 +5043,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>precision</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 6)</td>
           <td>coordinate decimal precision
 </td>
@@ -4964,7 +5051,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 2)</td>
           <td>maximum number of coordinates (primarly used to remove z coordinates)
 </td>
@@ -5020,7 +5107,9 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/unkink-polygon</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-unkink-polygon</p>
   <h3 id='unkinkpolygon'>
     unkinkPolygon
   </h3>
@@ -5029,7 +5118,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
   <p>Takes a kinked polygon and returns a feature collection of polygons that have no kinks.
 Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> internally.</p>
 
-  
+
  
 
  
@@ -5051,7 +5140,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
         
         <tr>
           <td>geojson</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>GeoJSON Polygon or MultiPolygon
 </td>
           </tr>
@@ -5064,7 +5153,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: Unkinked polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: Unkinked polygons
 </p>
         
       
@@ -5101,7 +5190,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       
       
       <div><h2 id='helper'>
-	Helper
+  Helper
 </h2>
 </div>
       
@@ -5110,7 +5199,9 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='featurecollection'>
     featureCollection
   </h3>
@@ -5118,7 +5209,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
 
   <p>Takes one or more <a href="http://geojson.org/geojson-spec.html#feature-objects">Features</a> and creates a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> featureCollection is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the featureCollection method.</i></p>
  
@@ -5142,7 +5233,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
         
         <tr>
           <td>features</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&gt;</td>
           <td>input features
 </td>
           </tr>
@@ -5192,7 +5283,9 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='feature'>
     feature
   </h3>
@@ -5200,7 +5293,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
 
   <p>Wraps a GeoJSON <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> in a GeoJSON <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> feature is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the feature method.</i></p>
  
@@ -5283,16 +5376,18 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='geometrycollection'>
     geometryCollection
   </h3>
   
 
-  <p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&#x3C;GeometryCollection></a> based on a
+  <p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&lt;GeometryCollection&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> geometryCollection is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the geometryCollection method.</i></p>
  
@@ -5316,14 +5411,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>geometries</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;{Geometry}></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;{Geometry}&gt;</td>
           <td>an array of GeoJSON Geometries
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5336,7 +5431,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>>: a GeoJSON GeometryCollection Feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>&gt;: a GeoJSON GeometryCollection Feature
 </p>
         
       
@@ -5375,7 +5470,9 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='linestring'>
     lineString
   </h3>
@@ -5384,7 +5481,7 @@ coordinate array. Properties can be added optionally.</p>
   <p>Creates a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> based on a
 coordinate array. Properties can be added optionally.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> lineString is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the lineString method.</i></p>
  
@@ -5408,14 +5505,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;</td>
           <td>an array of Positions
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5428,7 +5525,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: a LineString feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: a LineString feature
 </p>
         
       
@@ -5478,16 +5575,18 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='multilinestring'>
     multiLineString
   </h3>
   
 
-  <p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&#x3C;MultiLineString></a> based on a
+  <p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&lt;MultiLineString&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> multiLineString is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiLineString method.</i></p>
  
@@ -5511,14 +5610,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;</td>
           <td>an array of LineStrings
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5531,7 +5630,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>>: a MultiLineString feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>&gt;: a MultiLineString feature
 </p>
         
       
@@ -5568,16 +5667,18 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='multipoint'>
     multiPoint
   </h3>
   
 
-  <p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&#x3C;MultiPoint></a> based on a
+  <p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&lt;MultiPoint&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> multiPoint is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiPoint method.</i></p>
  
@@ -5601,14 +5702,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;</td>
           <td>an array of Positions
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5621,7 +5722,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>>: a MultiPoint feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>&gt;: a MultiPoint feature
 </p>
         
       
@@ -5658,16 +5759,18 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='multipolygon'>
     multiPolygon
   </h3>
   
 
-  <p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&#x3C;MultiPolygon></a> based on a
+  <p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&lt;MultiPolygon&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> multiPolygon is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiPolygon method.</i></p>
  
@@ -5691,14 +5794,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;&gt;</td>
           <td>an array of Polygons
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5711,7 +5814,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>>: a multipolygon feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>&gt;: a multipolygon feature
 </p>
         
       
@@ -5748,7 +5851,9 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='point'>
     point
   </h3>
@@ -5756,7 +5861,7 @@ coordinate array. Properties can be added optionally.</p>
 
   <p>Takes coordinates and properties (optional) and returns a new <a href="http://geojson.org/geojson-spec.html#point">Point</a> feature.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> point is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the point method.</i></p>
  
@@ -5780,17 +5885,17 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>longitude, latitude position (each in decimal degrees)
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object that is used as the 
 <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
-'s
+&#x27;s
 properties
 </td>
           </tr>
@@ -5803,7 +5908,7 @@ properties
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a Point feature
 </p>
         
       
@@ -5834,7 +5939,9 @@ properties
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/helpers</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
   <h3 id='polygon'>
     polygon
   </h3>
@@ -5842,7 +5949,7 @@ properties
 
   <p>Takes an array of LinearRings and optionally an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> with properties and returns a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> feature.</p>
 
-  
+
  
   <p><i><strong>Note:</strong> polygon is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the polygon method.</i></p>
  
@@ -5866,14 +5973,14 @@ properties
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;</td>
           <td>an array of LinearRings
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>a properties object
 </td>
           </tr>
@@ -5886,7 +5993,7 @@ properties
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a Polygon feature
 </p>
         
       
@@ -5897,7 +6004,7 @@ properties
     
       <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: throw an error if a LinearRing of the polygon has too few positions
 or if a LinearRing of the Polygon does not have matching Positions at the
-beginning &#x26; end.
+beginning &amp; end.
 </p>
     
     
@@ -5929,7 +6036,7 @@ beginning &#x26; end.
       
       
       <div><h2 id='data'>
-	Data
+  Data
 </h2>
 </div>
       
@@ -5938,7 +6045,9 @@ beginning &#x26; end.
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/random</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-random</p>
   <h3 id='random'>
     random
   </h3>
@@ -5947,7 +6056,7 @@ beginning &#x26; end.
   <p>Generates random <a href="GeoJSON">GeoJSON</a> data, including <a href="http://geojson.org/geojson-spec.html#point">Points</a> and <a href="http://geojson.org/geojson-spec.html#polygon">Polygons</a>, for testing
 and experimentation.</p>
 
-  
+
  
 
  
@@ -5969,15 +6078,15 @@ and experimentation.</p>
         
         <tr>
           <td>type</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default &#39;point&#39;)</td>
-          <td>type of features desired: 'points' or 'polygons'
+          <td>type of features desired: &#x27;points&#x27; or &#x27;polygons&#x27;
 </td>
           </tr>
           
         <tr>
           <td>count</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 1)</td>
           <td>how many geometries should be generated.
 </td>
@@ -6037,7 +6146,9 @@ and experimentation.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/sample</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-sample</p>
   <h3 id='sample'>
     sample
   </h3>
@@ -6045,7 +6156,7 @@ and experimentation.</p>
 
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a FeatureCollection with given number of <a href="http://geojson.org/geojson-spec.html#feature-objects">features</a> at random.</p>
 
-  
+
  
 
  
@@ -6122,7 +6233,7 @@ and experimentation.</p>
       
       
       <div><h2 id='interpolation'>
-	Interpolation
+  Interpolation
 </h2>
 </div>
       
@@ -6131,7 +6242,9 @@ and experimentation.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/isolines</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-isolines</p>
   <h3 id='isolines'>
     isolines
   </h3>
@@ -6140,7 +6253,7 @@ and experimentation.</p>
   <p>Takes <a href="http://geojson.org/geojson-spec.html#point">points</a> with z-values and an array of
 value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolines</a>.</p>
 
-  
+
  
 
  
@@ -6162,7 +6275,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
@@ -6185,7 +6298,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
           
         <tr>
           <td>breaks</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>where to draw contours
 </td>
           </tr>
@@ -6198,7 +6311,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: isolines
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: isolines
 </p>
         
       
@@ -6237,7 +6350,9 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/planepoint</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-planepoint</p>
   <h3 id='planepoint'>
     planepoint
   </h3>
@@ -6248,7 +6363,7 @@ and a <a href="http://geojson.org/geojson-spec.html#point">Point</a> within that
 at that point. The Polygon needs to have properties <code>a</code>, <code>b</code>, and <code>c</code>
 that define the values at its three corners.</p>
 
-  
+
  
 
  
@@ -6270,14 +6385,14 @@ that define the values at its three corners.</p>
         
         <tr>
           <td>point</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>the Point for which a z-value will be calculated
 </td>
           </tr>
           
         <tr>
           <td>triangle</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>a Polygon feature with three vertices
 </td>
           </tr>
@@ -6359,7 +6474,9 @@ that define the values at its three corners.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/tin</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tin</p>
   <h3 id='tin'>
     tin
   </h3>
@@ -6373,7 +6490,7 @@ for developing elevation contour maps or stepped heat visualizations.</p>
 and <code>c</code> representing the value of the given <code>propertyName</code> at each of
 the points that represent the corners of the triangle.</p>
 
-  
+
  
 
  
@@ -6395,14 +6512,14 @@ the points that represent the corners of the triangle.</p>
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>z</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>]</td>
           <td>name of the property from which to pull z values
 This is optional: if not given, then there will be no extra data added to the derived triangles.
 </td>
@@ -6416,7 +6533,7 @@ This is optional: if not given, then there will be no extra data added to the de
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: TIN output
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: TIN output
 </p>
         
       
@@ -6461,7 +6578,7 @@ This is optional: if not given, then there will be no extra data added to the de
       
       
       <div><h2 id='joins'>
-	Joins
+  Joins
 </h2>
 </div>
       
@@ -6470,7 +6587,9 @@ This is optional: if not given, then there will be no extra data added to the de
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/inside</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-inside</p>
   <h3 id='inside'>
     inside
   </h3>
@@ -6479,7 +6598,7 @@ This is optional: if not given, then there will be no extra data added to the de
   <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> or <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> and determines if the point resides inside the polygon. The polygon can
 be convex or concave. The function accounts for holes.</p>
 
-  
+
  
 
  
@@ -6501,14 +6620,14 @@ be convex or concave. The function accounts for holes.</p>
         
         <tr>
           <td>point</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input point
 </td>
           </tr>
           
         <tr>
           <td>polygon</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;</td>
           <td>input polygon or multipolygon
 </td>
           </tr>
@@ -6564,7 +6683,9 @@ be convex or concave. The function accounts for holes.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/tag</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tag</p>
   <h3 id='tag'>
     tag
   </h3>
@@ -6572,7 +6693,7 @@ be convex or concave. The function accounts for holes.</p>
 
   <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and performs a spatial join.</p>
 
-  
+
  
 
  
@@ -6594,14 +6715,14 @@ be convex or concave. The function accounts for holes.</p>
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input polygons
 </td>
           </tr>
@@ -6635,7 +6756,7 @@ be convex or concave. The function accounts for holes.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: points with 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: points with 
 <code>containingPolyId</code>
  property containing values from 
 <code>polyId</code>
@@ -6688,7 +6809,7 @@ be convex or concave. The function accounts for holes.</p>
       
       
       <div><h2 id='grids'>
-	Grids
+  Grids
 </h2>
 </div>
       
@@ -6697,17 +6818,19 @@ be convex or concave. The function accounts for holes.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/hex-grid</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-hex-grid</p>
   <h3 id='hexgrid'>
     hexGrid
   </h3>
   
 
   <p>Takes a bounding box and a cell size in degrees and returns a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of flat-topped
-hexagons (<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features) aligned in an "odd-q" vertical grid as
+hexagons (<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features) aligned in an &quot;odd-q&quot; vertical grid as
 described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Grids</a>.</p>
 
-  
+
  
 
  
@@ -6729,11 +6852,9 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -6747,7 +6868,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -6755,7 +6876,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>triangles</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether to return as triangles instead of hexagons
 </td>
@@ -6769,7 +6890,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a hexagonal grid
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a hexagonal grid
 </p>
         
       
@@ -6804,18 +6925,20 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/idw</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-idw</p>
   <h3 id='idw'>
     idw
   </h3>
   
 
   <p>Takes a FeatureCollection of points with known value, a power parameter, a cell depth, a unit of measurement
-and returns a FeatureCollection of polygons in a square-grid with an interpolated value property "IDW" for each grid cell.
+and returns a FeatureCollection of polygons in a square-grid with an interpolated value property &quot;IDW&quot; for each grid cell.
 It finds application when in need of creating a continuous surface (i.e. rainfall, temperature, chemical dispersion surface...)
 from a set of spatially scattered points.</p>
 
-  
+
  
 
  
@@ -6837,7 +6960,7 @@ from a set of spatially scattered points.</p>
         
         <tr>
           <td>controlPoints</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>Sampled points with known value
 </td>
           </tr>
@@ -6865,7 +6988,7 @@ from a set of spatially scattered points.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -6879,7 +7002,7 @@ from a set of spatially scattered points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid A grid of polygons with a property field "IDW"
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid A grid of polygons with a property field &quot;IDW&quot;
 </p>
         
       
@@ -6902,15 +7025,17 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/point-grid</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-grid</p>
   <h3 id='pointgrid'>
     pointGrid
   </h3>
   
 
-  <p>Takes a bounding box and a cell depth and returns a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> in a grid.</p>
+  <p>Creates a <a href="http://geojson.org/geojson-spec.html#point">Point</a> grid from a bounding box, <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> or <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
 
-  
+
  
 
  
@@ -6932,11 +7057,9 @@ from a set of spatially scattered points.</p>
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;any&gt;)</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -6950,7 +7073,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -6964,7 +7087,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: grid of points
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: grid of points
 </p>
         
       
@@ -6999,7 +7122,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/square-grid</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-square-grid</p>
   <h3 id='squaregrid'>
     squareGrid
   </h3>
@@ -7007,7 +7132,7 @@ minX, minY, maxX, maxY
 
   <p>Takes a bounding box and a cell depth and returns a set of square <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
 
-  
+
  
 
  
@@ -7029,11 +7154,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7047,7 +7170,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7061,7 +7184,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid a grid of polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid a grid of polygons
 </p>
         
       
@@ -7096,7 +7219,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/triangle-grid</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-triangle-grid</p>
   <h3 id='trianglegrid'>
     triangleGrid
   </h3>
@@ -7104,7 +7229,7 @@ minX, minY, maxX, maxY
 
   <p>Takes a bounding box and a cell depth and returns a set of triangular <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
 
-  
+
  
 
  
@@ -7126,11 +7251,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7144,7 +7267,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7158,7 +7281,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid of polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid of polygons
 </p>
         
       
@@ -7193,7 +7316,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/within</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-within</p>
   <h3 id='within'>
     within
   </h3>
@@ -7201,7 +7326,7 @@ minX, minY, maxX, maxY
 
   <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns the points that fall within the polygons.</p>
 
-  
+
  
 
  
@@ -7223,14 +7348,14 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input polygons
 </td>
           </tr>
@@ -7243,7 +7368,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: points that land within at least one polygon
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: points that land within at least one polygon
 </p>
         
       
@@ -7339,7 +7464,7 @@ minX, minY, maxX, maxY
       
       
       <div><h2 id='classification'>
-	Classification
+  Classification
 </h2>
 </div>
       
@@ -7348,7 +7473,9 @@ minX, minY, maxX, maxY
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/nearest</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-nearest</p>
   <h3 id='nearest'>
     nearest
   </h3>
@@ -7359,7 +7486,7 @@ with Point geometries and returns the
 point from the FeatureCollection closest to the reference. This calculation
 is geodesic.</p>
 
-  
+
  
 
  
@@ -7381,14 +7508,14 @@ is geodesic.</p>
         
         <tr>
           <td>targetPoint</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>the reference point
 </td>
           </tr>
           
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>against input point set
 </td>
           </tr>
@@ -7401,7 +7528,7 @@ is geodesic.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the closest point in the set to the reference point
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the closest point in the set to the reference point
 </p>
         
       
@@ -7475,7 +7602,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       
       
       <div><h2 id='meta'>
-	Meta
+  Meta
 </h2>
 </div>
       
@@ -7484,7 +7611,9 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='coordall'>
     coordAll
   </h3>
@@ -7492,7 +7621,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
 
   <p>Get all coordinates from any GeoJSON object.</p>
 
-  
+
  
 
  
@@ -7529,7 +7658,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>: coordinate position array
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;: coordinate position array
 </p>
         
       
@@ -7580,7 +7709,9 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='coordeach'>
     coordEach
   </h3>
@@ -7588,7 +7719,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
 
   <p>Iterate over coordinates in any GeoJSON object, similar to Array.forEach()</p>
 
-  
+
  
 
  
@@ -7626,7 +7757,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
@@ -7687,7 +7818,9 @@ turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='coordreduce'>
     coordReduce
   </h3>
@@ -7695,7 +7828,7 @@ turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">
 
   <p>Reduce coordinates in any GeoJSON object, similar to Array.reduce()</p>
 
-  
+
  
 
  
@@ -7733,14 +7866,14 @@ turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
@@ -7755,7 +7888,7 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -7810,7 +7943,9 @@ turf.coordReduce(features, <span class="hljs-function"><span class="hljs-keyword
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='featureeach'>
     featureEach
   </h3>
@@ -7819,7 +7954,7 @@ turf.coordReduce(features, <span class="hljs-function"><span class="hljs-keyword
   <p>Iterate over features in any GeoJSON object, similar to
 Array.forEach.</p>
 
-  
+
  
 
  
@@ -7909,7 +8044,9 @@ turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='geomeach'>
     geomEach
   </h3>
@@ -7917,7 +8054,7 @@ turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword
 
   <p>Iterate over each geometry in any GeoJSON object, similar to Array.forEach()</p>
 
-  
+
  
 
  
@@ -8007,7 +8144,9 @@ turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">f
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='propeach'>
     propEach
   </h3>
@@ -8015,7 +8154,7 @@ turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">f
 
   <p>Iterate over properties in any GeoJSON object, similar to Array.forEach()</p>
 
-  
+
  
 
  
@@ -8105,7 +8244,9 @@ turf.propEach(features, <span class="hljs-function"><span class="hljs-keyword">f
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='propreduce'>
     propReduce
   </h3>
@@ -8115,7 +8256,7 @@ turf.propEach(features, <span class="hljs-function"><span class="hljs-keyword">f
 similar to how Array.reduce works. However, in this case we lazily run
 the reduction, so an array of all properties is unnecessary.</p>
 
-  
+
  
 
  
@@ -8153,7 +8294,7 @@ the reduction, so an array of all properties is unnecessary.</p>
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8166,7 +8307,7 @@ the reduction, so an array of all properties is unnecessary.</p>
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8219,7 +8360,7 @@ turf.propReduce(features, <span class="hljs-function"><span class="hljs-keyword"
       
       
       <div><h2 id='assertions'>
-	Assertions
+  Assertions
 </h2>
 </div>
       
@@ -8228,7 +8369,9 @@ turf.propReduce(features, <span class="hljs-function"><span class="hljs-keyword"
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/invariant</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
   <h3 id='collectionof'>
     collectionOf
   </h3>
@@ -8237,7 +8380,7 @@ turf.propReduce(features, <span class="hljs-function"><span class="hljs-keyword"
   <p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inputs for Turf.
 Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry types.</p>
 
-  
+
  
 
  
@@ -8310,7 +8453,9 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/invariant</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
   <h3 id='geojsontype'>
     geojsonType
   </h3>
@@ -8318,7 +8463,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
 
   <p>Enforce expectations about types of GeoJSON objects for Turf.</p>
 
-  
+
  
 
  
@@ -8391,15 +8536,17 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/invariant</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
   <h3 id='getcoord'>
     getCoord
   </h3>
   
 
-  <p>Unwrap coordinates from a Feature, Geometry Object or an Array of numbers</p>
+  <p>Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.</p>
 
-  
+
  
 
  
@@ -8423,7 +8570,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
         
         <tr>
           <td>obj</td>
-          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any> | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;any>)</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt; | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;)</td>
           <td>any value
 </td>
           </tr>
@@ -8436,7 +8583,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any>: coordinates
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: coordinates
 </p>
         
       
@@ -8459,7 +8606,9 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/invariant</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
   <h3 id='featureof'>
     featureOf
   </h3>
@@ -8468,7 +8617,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
   <p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> inputs for Turf.
 Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry types.</p>
 
-  
+
  
 
  
@@ -8541,7 +8690,9 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/bearing</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bearing</p>
   <h3 id='calculatefinalbearing'>
     calculateFinalBearing
   </h3>
@@ -8549,7 +8700,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
 
   <p>Calculates Final Bearing</p>
 
-  
+
  
 
  
@@ -8571,14 +8722,14 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
         
         <tr>
           <td>start</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting Point
 </td>
           </tr>
           
         <tr>
           <td>end</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>ending Point
 </td>
           </tr>
@@ -8614,7 +8765,202 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-great-circle</p>
+  <h3 id='greatcircle'>
+    greatCircle
+  </h3>
+  
+
+  <p>Calculate great circles routes as {@LineString}</p>
+
+
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>start</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
+          <td>source point feature
+</td>
+          </tr>
+          
+        <tr>
+          <td>end</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
+          <td>destination point feature
+</td>
+          </tr>
+          
+        <tr>
+          <td>properties</td>
+          <td>[Any]
+            (default {})</td>
+          <td>line feature properties
+</td>
+          </tr>
+          
+        <tr>
+          <td>npoints</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
+            (default 100)</td>
+          <td>number of points
+</td>
+          </tr>
+          
+        <tr>
+          <td>offset</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
+            (default 10)</td>
+          <td>offset controls the likelyhood that lines will
+be split which cross the dateline. The higher the number the more likely.
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: great circle line feature
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> start = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-122</span>, <span class="hljs-number">48</span>]
+  }
+}
+<span class="hljs-keyword">var</span> end = {
+  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,
+  <span class="hljs-string">"properties"</span>: {},
+  <span class="hljs-string">"geometry"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,
+    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">-77</span>, <span class="hljs-number">39</span>]
+  }
+}
+<span class="hljs-keyword">var</span> line = turf.greatCircle(start, end, {<span class="hljs-string">'name'</span>: <span class="hljs-string">'Seattle to DC'</span>});
+<span class="hljs-comment">//=line</span></pre>
+    
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <h3 id='getcoords'>
+    getCoords
+  </h3>
+  
+
+  <p>Unwrap coordinates from a Feature, Geometry Object or an Array of numbers</p>
+
+
+ 
+
+ 
+  <p><i><strong>Note:</strong> getCoords is part of the @turf/invariant module. To use it directly you will need to import the @turf/invariant and call the getCoords method.</i></p>
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>obj</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt; | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;any&gt;)</td>
+          <td>any value
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt;: coordinates
+</p>
+        
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel">
+
+  
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='featurereduce'>
     featureReduce
   </h3>
@@ -8622,7 +8968,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
 
   <p>Reduce features in any GeoJSON object, similar to Array.reduce().</p>
 
-  
+
  
 
  
@@ -8660,7 +9006,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8673,7 +9019,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8728,7 +9074,9 @@ turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keywo
       <div class="panel">
 
   
-  <p class="npmBadge">npm install @turf/meta</p>
+    
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
   <h3 id='geomreduce'>
     geomReduce
   </h3>
@@ -8736,7 +9084,7 @@ turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keywo
 
   <p>Reduce geometry in any GeoJSON object, similar to Array.reduce().</p>
 
-  
+
  
 
  
@@ -8774,7 +9122,7 @@ turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keywo
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8787,7 +9135,7 @@ turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keywo
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8838,7 +9186,6 @@ turf.geomReduce(features, <span class="hljs-function"><span class="hljs-keyword"
 
       
       
-      </div>
     </div>
   </div>
 
