@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset='utf-8' />
+  <meta charset="utf-8" />
   <title>Turf.js | Geospatial Analysis Library</title>
-  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="./assets/css/pure-min.css" />
   <link rel="stylesheet" href="./assets/css/custom.css" />
   <link rel="stylesheet" href="./assets/css/github.css" />
-  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
+  <link href="https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <style>
     #map1, #map2{
@@ -36,14 +36,14 @@
 <body id="home">
   <div class="pure-menu pure-menu-horizontal pure-u-1-1">
     <div class="logoHolder">
-      <a href="index.html" class="pure-menu-heading pure-menu-link">TURF</a>
+      <a href="./" class="pure-menu-heading pure-menu-link">TURF</a>
     </div>
     <ul class="pure-menu-list">
-      <li class="pure-menu-item"><a href="getting-started.html" class="pure-menu-link">GETTING STARTED</a></li>
-      <li class="pure-menu-item"><a href="/docs" class="pure-menu-link">API</a></li>
-      <li class="pure-menu-item"><a href="examples.html" class="pure-menu-link">EXAMPLES</a></li>
+      <li class="pure-menu-item"><a href="./getting-started/" class="pure-menu-link">GETTING STARTED</a></li>
+      <li class="pure-menu-item"><a href="./docs/" class="pure-menu-link">API</a></li>
+      <li class="pure-menu-item"><a href="./examples/" class="pure-menu-link">EXAMPLES</a></li>
       <li class="pure-menu-item" id="github">
-        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="./assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
+        <a href="https://github.com/Turfjs/turf" class="pure-menu-link"><img src="assets/images/github.svg" alt="Kiwi standing on oval" class="githubLogo">GITHUB</a>
       </li>
     </ul>
   </div>
@@ -62,7 +62,7 @@
               <div style="text-align: center;">> turf.tin(points);</div>
             </div>
             <h4>Fast</h4>
-            <p>Takes advantage of the newest algorithms and doesn't require you to send data to a server</p>
+            <p>Takes advantage of the newest algorithms and doesn"t require you to send data to a server</p>
           </div>
           <div class="pure-u-1-3">
             <div id="map2"></div>
@@ -92,13 +92,13 @@
       </div>
     </div>
   </div>
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
+  <script src="https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js"></script>
   <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
   <script>
-    L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+    L.mapbox.accessToken = "pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ";
     var mapOptions = { attributionControl: false, zoomControl: false };
-    var map1 = L.mapbox.map('map1', 'tmcw.kncfa9dj', mapOptions);
-    var map2 = L.mapbox.map('map2', 'tmcw.kncfa9dj', mapOptions);
+    var map1 = L.mapbox.map("map1", "tmcw.kncfa9dj", mapOptions);
+    var map2 = L.mapbox.map("map2", "tmcw.kncfa9dj", mapOptions);
 
     function pointToLayer(feature, latlng) {
       return L.circleMarker(latlng);
@@ -209,18 +209,18 @@
     var geojsonOptions = {
       pointToLayer: pointToLayer,
       style: function(feature) {
-        if (feature.geometry.type === 'Polygon') {
+        if (feature.geometry.type === "Polygon") {
           var sum = valueSum(feature.properties) / 62;
           return {
             weight: 1,
             fillOpacity: sum,
-            color: '#222'
+            color: "#222"
           }
         } else {
           return {
             radius: 3,
             stroke: false,
-            color: '#000',
+            color: "#000",
             fillOpacity: 1
           };
         }
@@ -230,18 +230,18 @@
     var pointsLayer1 = L.geoJson(points, geojsonOptions).addTo(map1);
     map1.fitBounds(pointsLayer1.getBounds());
 
-    var tin = turf.tin(points, 'price');
+    var tin = turf.tin(points, "price");
     map2.addLayer(L.geoJson(tin, geojsonOptions));
     var pointsLayer2 = L.geoJson(points, geojsonOptions).addTo(map2);
     map2.fitBounds(pointsLayer2.getBounds());
 
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
 
-    ga('create', 'UA-12158002-13', 'auto');
-    ga('send', 'pageview');
+    ga("create", "UA-12158002-13", "auto");
+    ga("send", "pageview");
   </script>
 </body>
 </html>

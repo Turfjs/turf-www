@@ -1,3 +1,7 @@
+body{
+	overflow-y: scroll;
+}
+
 .pure-g [class*=pure-u]{
 	font-family: 'Open Sans', sans-serif;
 }
@@ -127,17 +131,9 @@ p, li, .pure-table{
 	font-size: 14px;
 }
 
-#mainContent {
-    position: fixed;
-    left: 20%;
-    right: 0px;
-    top: 60px;
-    overflow-y: scroll;
-    bottom: 0px;
-}
-
-#innerContent {
-	margin-top: 20px;
+#mainContent{
+	margin-left: 20%;
+	margin-top: 30px;
 	padding: 60px;
 }
 

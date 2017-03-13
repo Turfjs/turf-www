@@ -96,3 +96,4 @@ paths:
   Geometry: "http://geojson.org/geojson-spec.html#geometry"
   Feature: "http://geojson.org/geojson-spec.html#feature-objects"
   FeatureCollection: "http://geojson.org/geojson-spec.html#feature-collection-objects"
+  BBox: "http://geojson.org/geojson-spec.html#bounding-boxes"
