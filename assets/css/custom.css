@@ -148,11 +148,14 @@ p, li, .pure-table{
 }
 
 h2 {
+  padding-top: 30px;
+  margin-top: -30px;
   margin-left: 20px;
 }
 
 h3 {
-  margin-top: 0px;
+  padding-top: 20px;
+  margin-top: -20px;
 }
 
 h4 {
