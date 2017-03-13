@@ -81,7 +81,7 @@ p, li, .pure-table{
   top: 4px;
 }
 
-#toc{
+#toc {
   position: fixed;
   top: 60px;
   bottom: 0;
@@ -133,6 +133,7 @@ p, li, .pure-table{
     right: 0px;
     top: 60px;
     overflow-y: scroll;
+    padding-top: 30px;
     bottom: 0px;
 }
 
