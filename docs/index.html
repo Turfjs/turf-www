@@ -686,20 +686,20 @@
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-collect</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-collect</p>
   <h3 id='collect'>
     collect
   </h3>
-  
-
-  <p>Merges a specified property from a FeatureCollection of points into a
+  <div><p>Merges a specified property from a FeatureCollection of points into a
 FeatureCollection of polygons. Given an <code>inProperty</code> on points and an <code>outProperty</code>
 for polygons, this finds every point that lies within each polygon, collects the
 <code>inProperty</code> values from those points, and adds them as an array to <code>outProperty</code>
 on the polygon.</p>
+</div>
 
+  
+  
 
  
 
@@ -804,8 +804,16 @@ collected.features[<span class="hljs-number">0</span>].properties.values <span c
       <div class="panel">
 
   
-    
-    <div id='alongMap' style="height: 350px; margin: -20px -20px 20px -20px"></div>
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-along</p>
+  <h3 id='along'>
+    along
+  </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and returns a <a href="http://geojson.org/geojson-spec.html#point">point</a> at a specified distance along the line.</p>
+</div>
+
+  
+    <div id='alongMap' style="height: 350px"></div>
     <script type="text/javascript">
       L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
       var alongMap = L.mapbox.map('alongMap', 'mapbox.streets');
@@ -836,15 +844,7 @@ alongMap.fitBounds(layer1.getBounds());
       
     </script>
   
-
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-along</p>
-  <h3 id='along'>
-    along
-  </h3>
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and returns a <a href="http://geojson.org/geojson-spec.html#point">point</a> at a specified distance along the line.</p>
-
 
  
 
@@ -945,17 +945,17 @@ alongMap.fitBounds(layer1.getBounds());
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-area</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-area</p>
   <h3 id='area'>
     area
   </h3>
-  
-
-  <p>Takes one or more features and returns their area
+  <div><p>Takes one or more features and returns their area
 in square meters.</p>
+</div>
 
+  
+  
 
  
 
@@ -1055,16 +1055,16 @@ in square meters.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bbox</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-bbox</p>
   <h3 id='bbox'>
     bbox
   </h3>
+  <div><p>Takes a set of features, calculates the bbox of all input features, and returns a bounding box.</p>
+</div>
+
   
-
-  <p>Takes a set of features, calculates the bbox of all input features, and returns a bounding box.</p>
-
+  
 
  
 
@@ -1144,16 +1144,16 @@ in square meters.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bbox-polygon</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-bbox-polygon</p>
   <h3 id='bboxpolygon'>
     bboxPolygon
   </h3>
+  <div><p>Takes a bbox and returns an equivalent <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a>.</p>
+</div>
+
   
-
-  <p>Takes a bbox and returns an equivalent <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a>.</p>
-
+  
 
  
 
@@ -1224,16 +1224,16 @@ in square meters.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bearing</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-bearing</p>
   <h3 id='bearing'>
     bearing
   </h3>
+  <div><p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and finds the geographic bearing between them.</p>
+</div>
+
   
-
-  <p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and finds the geographic bearing between them.</p>
-
+  
 
  
 
@@ -1335,16 +1335,16 @@ in square meters.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-center</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-center</p>
   <h3 id='center'>
     center
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
-
+  
 
  
 
@@ -1510,19 +1510,19 @@ centerPt.properties[<span class="hljs-string">'marker-color'</span>] = <span cla
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-center-of-mass</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-center-of-mass</p>
   <h3 id='centerofmass'>
     centerOfMass
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">feature</a>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">feature</a>
 or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">featureCollection</a>
 and returns its <a href="https://en.wikipedia.org/wiki/Center_of_mass">center of mass</a>
 using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon">Centroid of Polygon</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -1681,19 +1681,19 @@ using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-centroid</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-centroid</p>
   <h3 id='centroid'>
     centroid
   </h3>
-  
-
-  <p>Takes one or more features and calculates the centroid using
+  <div><p>Takes one or more features and calculates the centroid using
 the mean of all vertices.
 This lessens the effect of small islands and artifacts when calculating
 the centroid of a set of polygons.</p>
+</div>
 
+  
+  
 
  
 
@@ -1780,16 +1780,16 @@ the centroid of a set of polygons.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-destination</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-destination</p>
   <h3 id='destination'>
     destination
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the <a href="http://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a> to account for global curvature.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the <a href="http://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a> to account for global curvature.</p>
-
+  
 
  
 
@@ -1898,19 +1898,19 @@ destination.properties[<span class="hljs-string">'marker-color'</span>] = <span 
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-distance</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-distance</p>
   <h3 id='distance'>
     distance
   </h3>
-  
-
-  <p>Calculates the distance between two <a href="http://geojson.org/geojson-spec.html#point">points</a> in degrees, radians,
+  <div><p>Calculates the distance between two <a href="http://geojson.org/geojson-spec.html#point">points</a> in degrees, radians,
 miles, or kilometers. This uses the
 <a href="http://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a>
 to account for global curvature.</p>
+</div>
 
+  
+  
 
  
 
@@ -2017,16 +2017,16 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-envelope</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-envelope</p>
   <h3 id='envelope'>
     envelope
   </h3>
+  <div><p>Takes any number of features and returns a rectangular <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> that encompasses all vertices.</p>
+</div>
+
   
-
-  <p>Takes any number of features and returns a rectangular <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> that encompasses all vertices.</p>
-
+  
 
  
 
@@ -2133,16 +2133,16 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-distance</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-line-distance</p>
   <h3 id='linedistance'>
     lineDistance
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and measures its length in the specified units.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and measures its length in the specified units.</p>
-
+  
 
  
 
@@ -2235,17 +2235,17 @@ to account for global curvature.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-midpoint</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-midpoint</p>
   <h3 id='midpoint'>
     midpoint
   </h3>
-  
-
-  <p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a point midway between them.
+  <div><p>Takes two <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a point midway between them.
 The midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.</p>
+</div>
 
+  
+  
 
  
 
@@ -2346,21 +2346,21 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-on-surface</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-point-on-surface</p>
   <h3 id='pointonsurface'>
     pointOnSurface
   </h3>
-  
-
-  <p>Takes a feature and returns a <a href="http://geojson.org/geojson-spec.html#point">Point</a> guaranteed to be on the surface of the feature.</p>
+  <div><p>Takes a feature and returns a <a href="http://geojson.org/geojson-spec.html#point">Point</a> guaranteed to be on the surface of the feature.</p>
 <ul>
 <li>Given a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>, the point will be in the area of the polygon</li>
 <li>Given a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>, the point will be along the string</li>
 <li>Given a <a href="http://geojson.org/geojson-spec.html#point">Point</a>, the point will the same as the input</li>
 </ul>
+</div>
 
+  
+  
 
  
 
@@ -2439,17 +2439,17 @@ midpointed.properties[<span class="hljs-string">'marker-color'</span>] = <span c
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-square</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-square</p>
   <h3 id='square'>
     square
   </h3>
-  
-
-  <p>Takes a bounding box and calculates the minimum square bounding box that
+  <div><p>Takes a bounding box and calculates the minimum square bounding box that
 would contain the input.</p>
+</div>
 
+  
+  
 
  
 
@@ -2536,19 +2536,19 @@ would contain the input.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bezier</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-bezier</p>
   <h3 id='bezier'>
     bezier
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and returns a curved version
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a> and returns a curved version
 by applying a <a href="http://en.wikipedia.org/wiki/B%C3%A9zier_spline">Bezier spline</a>
 algorithm.</p>
 <p>The bezier spline implementation is by <a href="http://leszek.rybicki.cc/">Leszek Rybicki</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -2655,16 +2655,16 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-buffer</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-buffer</p>
   <h3 id='buffer'>
     buffer
   </h3>
+  <div><p>Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.</p>
+</div>
+
   
-
-  <p>Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.</p>
-
+  
 
  
 
@@ -2756,16 +2756,16 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-circle</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-circle</p>
   <h3 id='circle'>
     circle
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.</p>
-
+  
 
  
 
@@ -2860,17 +2860,17 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-concave</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-concave</p>
   <h3 id='concave'>
     concave
   </h3>
-  
-
-  <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a concave hull polygon.</p>
+  <div><p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and returns a concave hull polygon.</p>
 <p>Internally, this uses <a href="https://github.com/Turfjs/turf-tin">turf-tin</a> to generate geometries.</p>
+</div>
 
+  
+  
 
  
 
@@ -3014,19 +3014,19 @@ hull to become concave (in miles)
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-convex</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-convex</p>
   <h3 id='convex'>
     convex
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a convex hull <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>.</p>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a convex hull <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>.</p>
 <p>Internally this uses
 the <a href="https://github.com/mikolalysenko/convex-hull">convex-hull</a> module that
 implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain">monotone chain hull</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -3148,17 +3148,17 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-difference</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-difference</p>
   <h3 id='difference'>
     difference
   </h3>
-  
-
-  <p>Finds the difference between two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> by clipping the second
+  <div><p>Finds the difference between two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> by clipping the second
 polygon from the first.</p>
+</div>
 
+  
+  
 
  
 
@@ -3277,16 +3277,16 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-dissolve</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-dissolve</p>
   <h3 id='dissolve'>
     dissolve
   </h3>
+  <div><p>Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported</p>
+</div>
+
   
-
-  <p>Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported</p>
-
+  
 
  
 
@@ -3396,16 +3396,16 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-intersect</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-intersect</p>
   <h3 id='intersect'>
     intersect
   </h3>
+  <div><p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don&#x27;t intersect, returns undefined.</p>
+</div>
+
   
-
-  <p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don&#x27;t intersect, returns undefined.</p>
-
+  
 
  
 
@@ -3512,16 +3512,16 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-simplify</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-simplify</p>
   <h3 id='simplify'>
     simplify
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and returns a simplified version. Internally uses <a href="http://mourner.github.io/simplify-js/">simplify-js</a> to perform simplification.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> and returns a simplified version. Internally uses <a href="http://mourner.github.io/simplify-js/">simplify-js</a> to perform simplification.</p>
-
+  
 
  
 
@@ -3640,17 +3640,17 @@ a higher-quality simplification with a different algorithm
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tesselate</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-tesselate</p>
   <h3 id='tesselate'>
     tesselate
   </h3>
-  
-
-  <p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&lt;Polygon&gt;</a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&lt;Polygon&gt;</a> of triangles
+  <div><p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&lt;Polygon&gt;</a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&lt;Polygon&gt;</a> of triangles
 using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -3719,16 +3719,16 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-union</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-union</p>
   <h3 id='union'>
     union
   </h3>
+  <div><p>Takes two or more <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns a combined polygon. If the input polygons are not contiguous, this function returns a <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> feature.</p>
+</div>
+
   
-
-  <p>Takes two or more <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns a combined polygon. If the input polygons are not contiguous, this function returns a <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> feature.</p>
-
+  
 
  
 
@@ -3845,19 +3845,19 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-combine</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-combine</p>
   <h3 id='combine'>
     combine
   </h3>
-  
-
-  <p>Combines a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of <a href="http://geojson.org/geojson-spec.html#point">Point</a>,
+  <div><p>Combines a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of <a href="http://geojson.org/geojson-spec.html#point">Point</a>,
 <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>, or <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features
 into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>, or
 <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> features.</p>
+</div>
 
+  
+  
 
  
 
@@ -3945,17 +3945,17 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-explode</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-explode</p>
   <h3 id='explode'>
     explode
   </h3>
-  
-
-  <p>Takes a feature or set of features and returns all positions as
+  <div><p>Takes a feature or set of features and returns all positions as
 <a href="http://geojson.org/geojson-spec.html#point">points</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -4047,16 +4047,16 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-flatten</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-flatten</p>
   <h3 id='flatten'>
     flatten
   </h3>
+  <div><p>Flattens any <a href="GeoJSON">GeoJSON</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inspired by <a href="https://github.com/tmcw/geojson-flatten">geojson-flatten</a>.</p>
+</div>
+
   
-
-  <p>Flattens any <a href="GeoJSON">GeoJSON</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inspired by <a href="https://github.com/tmcw/geojson-flatten">geojson-flatten</a>.</p>
-
+  
 
  
 
@@ -4151,17 +4151,17 @@ s
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-flip</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-flip</p>
   <h3 id='flip'>
     flip
   </h3>
-  
-
-  <p>Takes input features and flips all of their coordinates
+  <div><p>Takes input features and flips all of their coordinates
 from <code>[x, y]</code> to <code>[y, x]</code>.</p>
+</div>
 
+  
+  
 
  
 
@@ -4241,16 +4241,16 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-kinks</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-kinks</p>
   <h3 id='kinks'>
     kinks
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">linestring</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">multi-linestring</a>, <a href="http://geojson.org/geojson-spec.html#multipolygon">multi-polygon</a>, or <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and returns <a href="http://geojson.org/geojson-spec.html#point">points</a> at all self-intersections.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">linestring</a>, <a href="http://geojson.org/geojson-spec.html#multilinestring">multi-linestring</a>, <a href="http://geojson.org/geojson-spec.html#multipolygon">multi-polygon</a>, or <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and returns <a href="http://geojson.org/geojson-spec.html#point">points</a> at all self-intersections.</p>
-
+  
 
  
 
@@ -4338,17 +4338,17 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-chunk</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-line-chunk</p>
   <h3 id='linechunk'>
     lineChunk
   </h3>
-  
-
-  <p>Divides a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> into chunks of a specified length.
+  <div><p>Divides a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> into chunks of a specified length.
 If the line is shorter than the segment length then the original line is returned.</p>
+</div>
 
+  
+  
 
  
 
@@ -4449,16 +4449,16 @@ If the line is shorter than the segment length then the original line is returne
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-intersect</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-line-intersect</p>
   <h3 id='lineintersect'>
     lineIntersect
   </h3>
+  <div><p>Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).</p>
+</div>
+
   
-
-  <p>Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).</p>
-
+  
 
  
 
@@ -4553,19 +4553,19 @@ If the line is shorter than the segment length then the original line is returne
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-slice</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-line-slice</p>
   <h3 id='lineslice'>
     lineSlice
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>, and a stop point
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>, and a stop point
 and returns a subsection of the line in-between those points.
 The start &amp; stop points don&#x27;t need to fall exactly on the line.</p>
 <p>This can be useful for extracting only the part of a route between waypoints.</p>
+</div>
 
+  
+  
 
  
 
@@ -4680,19 +4680,19 @@ The start &amp; stop points don&#x27;t need to fall exactly on the line.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-line-slice-along</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-line-slice-along</p>
   <h3 id='lineslicealong'>
     lineSliceAlong
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a specified distance along the line to a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>,
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a specified distance along the line to a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>,
 and a specified  distance along the line to a stop point
 and returns a subsection of the line in-between those points.</p>
 <p>This can be useful for extracting only the part of a route between two distances.</p>
+</div>
 
+  
+  
 
  
 
@@ -4806,8 +4806,16 @@ and returns a subsection of the line in-between those points.</p>
       <div class="panel">
 
   
-    
-    <div id='maskMap' style="height: 350px; margin: -20px -20px 20px -20px"></div>
+
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-mask</p>
+  <h3 id='mask'>
+    mask
+  </h3>
+  <div><p>Takes any type of <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and an optional mask and returns a <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> exterior ring with holes.</p>
+</div>
+
+  
+    <div id='maskMap' style="height: 350px"></div>
     <script type="text/javascript">
       L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
       var maskMap = L.mapbox.map('maskMap', 'mapbox.streets');
@@ -4837,15 +4845,7 @@ maskMap.fitBounds(layer0.getBounds());
       
     </script>
   
-
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-mask</p>
-  <h3 id='mask'>
-    mask
-  </h3>
   
-
-  <p>Takes any type of <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> and an optional mask and returns a <a href="http://geojson.org/geojson-spec.html#polygon">polygon</a> exterior ring with holes.</p>
-
 
  
 
@@ -4934,16 +4934,16 @@ maskMap.fitBounds(layer0.getBounds());
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-on-line</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-point-on-line</p>
   <h3 id='pointonline'>
     pointOnLine
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> and calculates the closest Point on the LineString.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> and calculates the closest Point on the LineString.</p>
-
+  
 
  
 
@@ -5065,16 +5065,16 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-truncate</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-truncate</p>
   <h3 id='truncate'>
     truncate
   </h3>
+  <div><p>Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the geometry.</p>
+</div>
+
   
-
-  <p>Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the geometry.</p>
-
+  
 
  
 
@@ -5168,17 +5168,17 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-unkink-polygon</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-unkink-polygon</p>
   <h3 id='unkinkpolygon'>
     unkinkPolygon
   </h3>
-  
-
-  <p>Takes a kinked polygon and returns a feature collection of polygons that have no kinks.
+  <div><p>Takes a kinked polygon and returns a feature collection of polygons that have no kinks.
 Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> internally.</p>
+</div>
 
+  
+  
 
  
 
@@ -5260,16 +5260,16 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='featurecollection'>
     featureCollection
   </h3>
+  <div><p>Takes one or more <a href="http://geojson.org/geojson-spec.html#feature-objects">Features</a> and creates a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>.</p>
+</div>
+
   
-
-  <p>Takes one or more <a href="http://geojson.org/geojson-spec.html#feature-objects">Features</a> and creates a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>.</p>
-
+  
 
  
   <p><i><strong>Note:</strong> featureCollection is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the featureCollection method.</i></p>
@@ -5344,16 +5344,16 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='feature'>
     feature
   </h3>
+  <div><p>Wraps a GeoJSON <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> in a GeoJSON <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
+</div>
+
   
-
-  <p>Wraps a GeoJSON <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> in a GeoJSON <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
-
+  
 
  
   <p><i><strong>Note:</strong> feature is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the feature method.</i></p>
@@ -5437,17 +5437,17 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='geometrycollection'>
     geometryCollection
   </h3>
-  
-
-  <p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&lt;GeometryCollection&gt;</a> based on a
+  <div><p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&lt;GeometryCollection&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
+</div>
 
+  
+  
 
  
   <p><i><strong>Note:</strong> geometryCollection is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the geometryCollection method.</i></p>
@@ -5531,17 +5531,17 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='linestring'>
     lineString
   </h3>
-  
-
-  <p>Creates a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> based on a
+  <div><p>Creates a <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> based on a
 coordinate array. Properties can be added optionally.</p>
+</div>
 
+  
+  
 
  
   <p><i><strong>Note:</strong> lineString is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the lineString method.</i></p>
@@ -5636,17 +5636,17 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='multilinestring'>
     multiLineString
   </h3>
-  
-
-  <p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&lt;MultiLineString&gt;</a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&lt;MultiLineString&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
+</div>
 
+  
+  
 
  
   <p><i><strong>Note:</strong> multiLineString is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiLineString method.</i></p>
@@ -5728,17 +5728,17 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='multipoint'>
     multiPoint
   </h3>
-  
-
-  <p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&lt;MultiPoint&gt;</a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&lt;MultiPoint&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
+</div>
 
+  
+  
 
  
   <p><i><strong>Note:</strong> multiPoint is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiPoint method.</i></p>
@@ -5820,17 +5820,17 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='multipolygon'>
     multiPolygon
   </h3>
-  
-
-  <p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&lt;MultiPolygon&gt;</a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&lt;MultiPolygon&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
+</div>
 
+  
+  
 
  
   <p><i><strong>Note:</strong> multiPolygon is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the multiPolygon method.</i></p>
@@ -5912,16 +5912,16 @@ coordinate array. Properties can be added optionally.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='point'>
     point
   </h3>
+  <div><p>Takes coordinates and properties (optional) and returns a new <a href="http://geojson.org/geojson-spec.html#point">Point</a> feature.</p>
+</div>
+
   
-
-  <p>Takes coordinates and properties (optional) and returns a new <a href="http://geojson.org/geojson-spec.html#point">Point</a> feature.</p>
-
+  
 
  
   <p><i><strong>Note:</strong> point is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the point method.</i></p>
@@ -6000,16 +6000,16 @@ properties
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-helpers</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-helpers</p>
   <h3 id='polygon'>
     polygon
   </h3>
+  <div><p>Takes an array of LinearRings and optionally an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> with properties and returns a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> feature.</p>
+</div>
+
   
-
-  <p>Takes an array of LinearRings and optionally an <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> with properties and returns a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> feature.</p>
-
+  
 
  
   <p><i><strong>Note:</strong> polygon is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the polygon method.</i></p>
@@ -6106,17 +6106,17 @@ beginning &amp; end.
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-random</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-random</p>
   <h3 id='random'>
     random
   </h3>
-  
-
-  <p>Generates random <a href="GeoJSON">GeoJSON</a> data, including <a href="http://geojson.org/geojson-spec.html#point">Points</a> and <a href="http://geojson.org/geojson-spec.html#polygon">Polygons</a>, for testing
+  <div><p>Generates random <a href="GeoJSON">GeoJSON</a> data, including <a href="http://geojson.org/geojson-spec.html#point">Points</a> and <a href="http://geojson.org/geojson-spec.html#polygon">Polygons</a>, for testing
 and experimentation.</p>
+</div>
 
+  
+  
 
  
 
@@ -6207,16 +6207,16 @@ and experimentation.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-sample</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-sample</p>
   <h3 id='sample'>
     sample
   </h3>
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a FeatureCollection with given number of <a href="http://geojson.org/geojson-spec.html#feature-objects">features</a> at random.</p>
+</div>
+
   
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns a FeatureCollection with given number of <a href="http://geojson.org/geojson-spec.html#feature-objects">features</a> at random.</p>
-
+  
 
  
 
@@ -6303,17 +6303,17 @@ and experimentation.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-isolines</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-isolines</p>
   <h3 id='isolines'>
     isolines
   </h3>
-  
-
-  <p>Takes <a href="http://geojson.org/geojson-spec.html#point">points</a> with z-values and an array of
+  <div><p>Takes <a href="http://geojson.org/geojson-spec.html#point">points</a> with z-values and an array of
 value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolines</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -6411,19 +6411,19 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-planepoint</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-planepoint</p>
   <h3 id='planepoint'>
     planepoint
   </h3>
-  
-
-  <p>Takes a triangular plane as a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>
+  <div><p>Takes a triangular plane as a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>
 and a <a href="http://geojson.org/geojson-spec.html#point">Point</a> within that triangle and returns the z-value
 at that point. The Polygon needs to have properties <code>a</code>, <code>b</code>, and <code>c</code>
 that define the values at its three corners.</p>
+</div>
 
+  
+  
 
  
 
@@ -6535,22 +6535,22 @@ that define the values at its three corners.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tin</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-tin</p>
   <h3 id='tin'>
     tin
   </h3>
-  
-
-  <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and the name of a z-value property and
+  <div><p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and the name of a z-value property and
 creates a <a href="http://en.wikipedia.org/wiki/Triangulated_irregular_network">Triangulated Irregular Network</a>,
 or a TIN for short, returned as a collection of Polygons. These are often used
 for developing elevation contour maps or stepped heat visualizations.</p>
 <p>This triangulates the points, as well as adds properties called <code>a</code>, <code>b</code>,
 and <code>c</code> representing the value of the given <code>propertyName</code> at each of
 the points that represent the corners of the triangle.</p>
+</div>
 
+  
+  
 
  
 
@@ -6648,17 +6648,17 @@ This is optional: if not given, then there will be no extra data added to the de
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-inside</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-inside</p>
   <h3 id='inside'>
     inside
   </h3>
-  
-
-  <p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> or <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> and determines if the point resides inside the polygon. The polygon can
+  <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#point">Point</a> and a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> or <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> and determines if the point resides inside the polygon. The polygon can
 be convex or concave. The function accounts for holes.</p>
+</div>
 
+  
+  
 
  
 
@@ -6744,16 +6744,16 @@ be convex or concave. The function accounts for holes.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-tag</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-tag</p>
   <h3 id='tag'>
     tag
   </h3>
+  <div><p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and performs a spatial join.</p>
+</div>
+
   
-
-  <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and performs a spatial join.</p>
-
+  
 
  
 
@@ -6879,18 +6879,18 @@ be convex or concave. The function accounts for holes.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-hex-grid</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-hex-grid</p>
   <h3 id='hexgrid'>
     hexGrid
   </h3>
-  
-
-  <p>Takes a bounding box and a cell size in degrees and returns a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of flat-topped
+  <div><p>Takes a bounding box and a cell size in degrees and returns a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of flat-topped
 hexagons (<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features) aligned in an &quot;odd-q&quot; vertical grid as
 described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Grids</a>.</p>
+</div>
 
+  
+  
 
  
 
@@ -6986,19 +6986,19 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-idw</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-idw</p>
   <h3 id='idw'>
     idw
   </h3>
-  
-
-  <p>Takes a FeatureCollection of points with known value, a power parameter, a cell depth, a unit of measurement
+  <div><p>Takes a FeatureCollection of points with known value, a power parameter, a cell depth, a unit of measurement
 and returns a FeatureCollection of polygons in a square-grid with an interpolated value property &quot;IDW&quot; for each grid cell.
 It finds application when in need of creating a continuous surface (i.e. rainfall, temperature, chemical dispersion surface...)
 from a set of spatially scattered points.</p>
+</div>
 
+  
+  
 
  
 
@@ -7086,16 +7086,16 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-point-grid</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-point-grid</p>
   <h3 id='pointgrid'>
     pointGrid
   </h3>
+  <div><p>Creates a <a href="http://geojson.org/geojson-spec.html#point">Point</a> grid from a bounding box, <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> or <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
+</div>
+
   
-
-  <p>Creates a <a href="http://geojson.org/geojson-spec.html#point">Point</a> grid from a bounding box, <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> or <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>.</p>
-
+  
 
  
 
@@ -7183,16 +7183,16 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-square-grid</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-square-grid</p>
   <h3 id='squaregrid'>
     squareGrid
   </h3>
+  <div><p>Takes a bounding box and a cell depth and returns a set of square <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
+</div>
+
   
-
-  <p>Takes a bounding box and a cell depth and returns a set of square <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
-
+  
 
  
 
@@ -7280,16 +7280,16 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-triangle-grid</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-triangle-grid</p>
   <h3 id='trianglegrid'>
     triangleGrid
   </h3>
+  <div><p>Takes a bounding box and a cell depth and returns a set of triangular <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
+</div>
+
   
-
-  <p>Takes a bounding box and a cell depth and returns a set of triangular <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> in a grid.</p>
-
+  
 
  
 
@@ -7377,16 +7377,16 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-within</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-within</p>
   <h3 id='within'>
     within
   </h3>
+  <div><p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns the points that fall within the polygons.</p>
+</div>
+
   
-
-  <p>Takes a set of <a href="http://geojson.org/geojson-spec.html#point">points</a> and a set of <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and returns the points that fall within the polygons.</p>
-
+  
 
  
 
@@ -7534,19 +7534,19 @@ from a set of spatially scattered points.</p>
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-nearest</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-nearest</p>
   <h3 id='nearest'>
     nearest
   </h3>
-  
-
-  <p>Takes a reference <a href="http://geojson.org/geojson-spec.html#point">point</a> and a FeatureCollection of Features
+  <div><p>Takes a reference <a href="http://geojson.org/geojson-spec.html#point">point</a> and a FeatureCollection of Features
 with Point geometries and returns the
 point from the FeatureCollection closest to the reference. This calculation
 is geodesic.</p>
+</div>
 
+  
+  
 
  
 
@@ -7672,16 +7672,16 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='coordall'>
     coordAll
   </h3>
+  <div><p>Get all coordinates from any GeoJSON object.</p>
+</div>
+
   
-
-  <p>Get all coordinates from any GeoJSON object.</p>
-
+  
 
  
 
@@ -7770,16 +7770,16 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='coordeach'>
     coordEach
   </h3>
+  <div><p>Iterate over coordinates in any GeoJSON object, similar to Array.forEach()</p>
+</div>
+
   
-
-  <p>Iterate over coordinates in any GeoJSON object, similar to Array.forEach()</p>
-
+  
 
  
 
@@ -7879,16 +7879,16 @@ turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='coordreduce'>
     coordReduce
   </h3>
+  <div><p>Reduce coordinates in any GeoJSON object, similar to Array.reduce()</p>
+</div>
+
   
-
-  <p>Reduce coordinates in any GeoJSON object, similar to Array.reduce()</p>
-
+  
 
  
 
@@ -8004,17 +8004,17 @@ turf.coordReduce(features, <span class="hljs-function"><span class="hljs-keyword
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='featureeach'>
     featureEach
   </h3>
-  
-
-  <p>Iterate over features in any GeoJSON object, similar to
+  <div><p>Iterate over features in any GeoJSON object, similar to
 Array.forEach.</p>
+</div>
 
+  
+  
 
  
 
@@ -8105,16 +8105,16 @@ turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='geomeach'>
     geomEach
   </h3>
+  <div><p>Iterate over each geometry in any GeoJSON object, similar to Array.forEach()</p>
+</div>
+
   
-
-  <p>Iterate over each geometry in any GeoJSON object, similar to Array.forEach()</p>
-
+  
 
  
 
@@ -8205,16 +8205,16 @@ turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">f
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='propeach'>
     propEach
   </h3>
+  <div><p>Iterate over properties in any GeoJSON object, similar to Array.forEach()</p>
+</div>
+
   
-
-  <p>Iterate over properties in any GeoJSON object, similar to Array.forEach()</p>
-
+  
 
  
 
@@ -8305,18 +8305,18 @@ turf.propEach(features, <span class="hljs-function"><span class="hljs-keyword">f
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='propreduce'>
     propReduce
   </h3>
-  
-
-  <p>Reduce properties in any GeoJSON object into a single value,
+  <div><p>Reduce properties in any GeoJSON object into a single value,
 similar to how Array.reduce works. However, in this case we lazily run
 the reduction, so an array of all properties is unnecessary.</p>
+</div>
 
+  
+  
 
  
 
@@ -8430,17 +8430,17 @@ turf.propReduce(features, <span class="hljs-function"><span class="hljs-keyword"
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-invariant</p>
   <h3 id='collectionof'>
     collectionOf
   </h3>
-  
-
-  <p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inputs for Turf.
+  <div><p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> inputs for Turf.
 Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry types.</p>
+</div>
 
+  
+  
 
  
 
@@ -8514,16 +8514,16 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-invariant</p>
   <h3 id='geojsontype'>
     geojsonType
   </h3>
+  <div><p>Enforce expectations about types of GeoJSON objects for Turf.</p>
+</div>
+
   
-
-  <p>Enforce expectations about types of GeoJSON objects for Turf.</p>
-
+  
 
  
 
@@ -8597,16 +8597,16 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-invariant</p>
   <h3 id='getcoord'>
     getCoord
   </h3>
+  <div><p>Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.</p>
+</div>
+
   
-
-  <p>Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.</p>
-
+  
 
  
 
@@ -8667,17 +8667,17 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-invariant</p>
   <h3 id='featureof'>
     featureOf
   </h3>
-  
-
-  <p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> inputs for Turf.
+  <div><p>Enforce expectations about types of <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> inputs for Turf.
 Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry types.</p>
+</div>
 
+  
+  
 
  
 
@@ -8751,16 +8751,16 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-bearing</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-bearing</p>
   <h3 id='calculatefinalbearing'>
     calculateFinalBearing
   </h3>
+  <div><p>Calculates Final Bearing</p>
+</div>
+
   
-
-  <p>Calculates Final Bearing</p>
-
+  
 
  
 
@@ -8826,16 +8826,16 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-great-circle</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-great-circle</p>
   <h3 id='greatcircle'>
     greatCircle
   </h3>
+  <div><p>Calculate great circles routes as {@LineString}</p>
+</div>
+
   
-
-  <p>Calculate great circles routes as {@LineString}</p>
-
+  
 
  
 
@@ -8949,16 +8949,16 @@ be split which cross the dateline. The higher the number the more likely.
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-invariant</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-invariant</p>
   <h3 id='getcoords'>
     getCoords
   </h3>
+  <div><p>Unwrap coordinates from a Feature, Geometry Object or an Array of numbers</p>
+</div>
+
   
-
-  <p>Unwrap coordinates from a Feature, Geometry Object or an Array of numbers</p>
-
+  
 
  
 
@@ -9019,16 +9019,16 @@ be split which cross the dateline. The higher the number the more likely.
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='featurereduce'>
     featureReduce
   </h3>
+  <div><p>Reduce features in any GeoJSON object, similar to Array.reduce().</p>
+</div>
+
   
-
-  <p>Reduce features in any GeoJSON object, similar to Array.reduce().</p>
-
+  
 
  
 
@@ -9135,16 +9135,16 @@ turf.featureReduce(features, <span class="hljs-function"><span class="hljs-keywo
       <div class="panel">
 
   
-    
 
-  <p class="npmBadge">npm install @turf//Users/mac/Github/www-original/turf/packages/turf-meta</p>
+  <p class="npmBadge">npm install @turf//Users/mac/Github/www-main/turf/packages/turf-meta</p>
   <h3 id='geomreduce'>
     geomReduce
   </h3>
+  <div><p>Reduce geometry in any GeoJSON object, similar to Array.reduce().</p>
+</div>
+
   
-
-  <p>Reduce geometry in any GeoJSON object, similar to Array.reduce().</p>
-
+  
 
  
 

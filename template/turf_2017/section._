@@ -1,8 +1,15 @@
 <div class="panel">
 
   <% if (typeof nested === 'undefined') { %>
-    <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
-    <div id='<%- section.name %>Map' style="height: 350px; margin: -20px -20px 20px -20px"></div>
+
+  <p class="npmBadge"><%- getNpmPath(section.context.file)%></p>
+  <h3 id='<%- slug(section.namespace) %>'>
+    <%- section.name %>
+  </h3>
+  <div><%= md(section.description) %></div>
+
+  <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
+    <div id='<%- section.name %>Map' style="height: 350px"></div>
     <script type="text/javascript">
       L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
       var <%- section.name %>Map = L.mapbox.map('<%- section.name %>Map', 'mapbox.streets');
@@ -13,14 +20,7 @@
       <% } %>
     </script>
   <% } %>
-
-  <p class="npmBadge"><%- getNpmPath(section.context.file)%></p>
-  <h3 id='<%- slug(section.namespace) %>'>
-    <%- section.name %>
-  </h3>
   <% } %>
-
-  <%= md(section.description) %>
 
  <% if (section.context.file.includes('turf-helpers')) { %>
   <p><i><strong>Note:</strong> <%- section.name %> is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the <%- section.name %> method.</i></p>
