@@ -1,12 +1,13 @@
 <div class="panel">
 
   <% if (typeof nested === 'undefined') { %>
-    <% if (JSON.stringify(section.tags).includes('exampleFeaturesToAddToMap')) { %>
-    <div id='<%- section.name %>Map' style="height: 200px; margin: -20px -20px 20px -20px"></div>
+    <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
+    <div id='<%- section.name %>Map' style="height: 350px; margin: -20px -20px 20px -20px"></div>
     <script type="text/javascript">
       L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
       var <%- section.name %>Map = L.mapbox.map('<%- section.name %>Map', 'mapbox.streets');
-      <% if (JSON.stringify(section.tags).includes('exampleFeaturesToAddToMap')) { %>
+      <%- section.name %>Map.scrollWheelZoom.disable();
+      <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
         <%= parseExample(section.examples[0].description) %>
         <%= parseGeoJsonForMap(section) %>
       <% } %>

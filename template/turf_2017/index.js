@@ -31,7 +31,7 @@ module.exports = function (comments, options, callback) {
       },
       parseGeoJsonForMap: function (section) {
         var layersString = section.tags.filter(function (item){
-          return item.title === 'exampleFeaturesToAddToMap';
+          return item.title === 'addToMap';
         })
         var layersArray = layersString[0].description.split(', ');
         var outString = ''
