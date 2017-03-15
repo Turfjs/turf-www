@@ -36,7 +36,7 @@ module.exports = function (comments, options, callback) {
         var layersArray = layersString[0].description.split(', ');
         var outString = ''
         layersArray.forEach(function (item, index){
-          outString = outString.concat('var layer' + index + ' = L.geoJSON(' + item + ',{onEachFeature: function (feature, layer){ if (feature.properties){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(' + section.name + 'Map);\n')
+          outString = outString.concat('var layer' + index + ' = L.geoJSON(' + item + ',{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(' + section.name + 'Map);\n')
           if (layersArray.length -1 === index) {
              outString = outString.concat(section.name + 'Map.fitBounds(layer' + index + '.getBounds());\n')
           }
@@ -47,7 +47,7 @@ module.exports = function (comments, options, callback) {
         return hljs.fixMarkup(string);
       },
       getNpmPath: function (filepath) {
-        var module = filepath.match(/packages\/turf-([a-z-\d]+)/i)[1];
+        var module = filepath.match(/packages[\/\\]turf-([a-z-\d]+)/i)[1];
         return "npm install @turf/" + module;
       },
       shortSignature: function (section) {

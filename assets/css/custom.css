@@ -83,6 +83,7 @@ p, li, .pure-table{
 
 #toc {
   position: fixed;
+  width: 250px;
   top: 60px;
   bottom: 0;
   border-right: 1px #e5e5e5 solid;
@@ -129,17 +130,13 @@ p, li, .pure-table{
 
 #mainContent {
     position: fixed;
-    left: 20%;
+    left: 250px;
     right: 0px;
     top: 60px;
-    overflow-y: scroll;
-    padding-top: 30px;
     bottom: 0px;
-}
-
-#innerContent {
-  margin-top: 20px;
-  padding: 60px;
+    overflow-y: scroll;
+    padding: 50px;
+    width: inherit;
 }
 
 .panel{
