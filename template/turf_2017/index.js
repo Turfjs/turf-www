@@ -47,10 +47,8 @@ module.exports = function (comments, options, callback) {
         return hljs.fixMarkup(string);
       },
       getNpmPath: function (filepath) {
-        var folder = path.dirname(filepath);
-        var foldersArray = folder.split("\\");
-        var module = foldersArray[foldersArray.length-1].replace("turf-", "");
-        return "npm install @turf/" + module
+        var module = filepath.match(/packages[\/\\]turf-([a-z-\d]+)/i)[1];
+        return "npm install @turf/" + module;
       },
       shortSignature: function (section) {
         var prefix = '';
