@@ -708,10 +708,12 @@ var pt4 = turf.point([13,1], {population: 200});
 var pt5 = turf.point([19,7], {population: 300});
 var ptFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
 var collected = turf.collect(polyFC, ptFC, 'population', 'values');
-
-collected.features[0].properties.values // => [200, 600]);
+var values = collected.features[0].properties.values
+//=values => [200, 600]
+//=ptFC
+//=collected
         var layer0 = L.geoJSON(collected,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
-var layer1 = L.geoJSON(pointFc,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
+var layer1 = L.geoJSON(pointFC,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
 collectMap.fitBounds(layer1.getBounds());
 
       
@@ -797,8 +799,10 @@ collectMap.fitBounds(layer1.getBounds());
 <span class="hljs-keyword">var</span> pt5 = turf.point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">300</span>});
 <span class="hljs-keyword">var</span> ptFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
 <span class="hljs-keyword">var</span> collected = turf.collect(polyFC, ptFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
-
-collected.features[<span class="hljs-number">0</span>].properties.values <span class="hljs-comment">// =&gt; [200, 600]);</span></pre>
+<span class="hljs-keyword">var</span> values = collected.features[<span class="hljs-number">0</span>].properties.values
+<span class="hljs-comment">//=values =&gt; [200, 600]</span>
+<span class="hljs-comment">//=ptFC</span>
+<span class="hljs-comment">//=collected</span></pre>
     
     
 
