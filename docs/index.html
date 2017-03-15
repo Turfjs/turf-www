@@ -692,6 +692,31 @@ on the polygon.</p>
 </div>
 
   
+    <div id='collectMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var collectMap = L.mapbox.map('collectMap', 'mapbox.streets');
+      collectMap.scrollWheelZoom.disable();
+      
+        var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);
+var poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);
+var polyFC = turf.featureCollection([poly1, poly2]);
+var pt1 = turf.point([5,5], {population: 200});
+var pt2 = turf.point([1,3], {population: 600});
+var pt3 = turf.point([14,2], {population: 100});
+var pt4 = turf.point([13,1], {population: 200});
+var pt5 = turf.point([19,7], {population: 300});
+var ptFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
+var collected = turf.collect(polyFC, ptFC, 'population', 'values');
+
+collected.features[0].properties.values // => [200, 600]);
+        var layer0 = L.geoJSON(collected,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
+var layer1 = L.geoJSON(pointFc,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
+collectMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
+  
   
 
  
@@ -715,14 +740,14 @@ on the polygon.</p>
         
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>polygons with values on which to aggregate
 </td>
           </tr>
           
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>points to be aggregated
 </td>
           </tr>
@@ -749,7 +774,7 @@ on the polygon.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: polygons with properties listed based on 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: polygons with properties listed based on 
 <code>outField</code>
 </p>
         
@@ -860,7 +885,7 @@ alongMap.fitBounds(layer1.getBounds());
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>input line
 </td>
           </tr>
@@ -874,7 +899,7 @@ alongMap.fitBounds(layer1.getBounds());
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -888,7 +913,7 @@ alongMap.fitBounds(layer1.getBounds());
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: Point 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: Point 
 <code>distance</code>
  
 <code>units</code>
@@ -1057,6 +1082,33 @@ in square meters.</p>
 </div>
 
   
+    <div id='bboxMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var bboxMap = L.mapbox.map('bboxMap', 'mapbox.streets');
+      bboxMap.scrollWheelZoom.disable();
+      
+        var pt1 = turf.point([114.175329, 22.2524])
+var pt2 = turf.point([114.170007, 22.267969])
+var pt3 = turf.point([114.200649, 22.274641])
+var pt4 = turf.point([114.200649, 22.274641])
+var pt5 = turf.point([114.186744, 22.265745])
+var features = turf.featureCollection([pt1, pt2, pt3, pt4, pt5])
+
+var bbox = turf.bbox(features);
+
+var bboxPolygon = turf.bboxPolygon(bbox);
+
+//=bbox
+
+//=bboxPolygon
+        var layer0 = L.geoJSON(features,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bboxMap);
+var layer1 = L.geoJSON(bboxPolygon,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bboxMap);
+bboxMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
+  
   
 
  
@@ -1093,10 +1145,8 @@ in square meters.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: bbox extent in 
-[
-minX, minY, maxX, maxY
-]
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: bbox extent in 
+[minX, minY, maxX, maxY]
  order
 </p>
         
@@ -1148,6 +1198,23 @@ minX, minY, maxX, maxY
 </div>
 
   
+    <div id='bboxPolygonMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var bboxPolygonMap = L.mapbox.map('bboxPolygonMap', 'mapbox.streets');
+      bboxPolygonMap.scrollWheelZoom.disable();
+      
+        var bbox = [0, 0, 10, 10];
+
+var poly = turf.bboxPolygon(bbox);
+
+//=poly
+        var layer0 = L.geoJSON(poly,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bboxPolygonMap);
+bboxPolygonMap.fitBounds(layer0.getBounds());
+
+      
+    </script>
+  
   
 
  
@@ -1171,11 +1238,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -1188,7 +1253,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon representation of the bounding box
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a Polygon representation of the bounding box
 </p>
         
       
@@ -1230,6 +1295,43 @@ minX, minY, maxX, maxY
 </div>
 
   
+    <div id='bearingMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var bearingMap = L.mapbox.map('bearingMap', 'mapbox.streets');
+      bearingMap.scrollWheelZoom.disable();
+      
+        var point1 = {
+  "type": "Feature",
+  "properties": {
+    "marker-color": '#f00'
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75.343, 39.984]
+  }
+};
+var point2 = {
+  "type": "Feature",
+  "properties": {
+    "marker-color": '#0f0'
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75.534, 39.123]
+  }
+};
+
+var bearing = turf.bearing(point1, point2);
+point1.properties.bearing = bearing
+//=bearing
+        var layer0 = L.geoJSON(point1,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bearingMap);
+var layer1 = L.geoJSON(point2,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bearingMap);
+bearingMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
+  
   
 
  
@@ -1253,21 +1355,21 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>start</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting Point
 </td>
           </tr>
           
         <tr>
           <td>end</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>ending Point
 </td>
           </tr>
           
         <tr>
           <td>final</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>calculates the final bearing if true
 </td>
@@ -1315,6 +1417,7 @@ minX, minY, maxX, maxY
 };
 
 <span class="hljs-keyword">var</span> bearing = turf.bearing(point1, point2);
+point1.properties.bearing = bearing
 <span class="hljs-comment">//=bearing</span></pre>
     
     
@@ -1340,6 +1443,121 @@ minX, minY, maxX, maxY
   <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> or <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> and returns the absolute center point of all features.</p>
 </div>
 
+  
+    <div id='centerMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var centerMap = L.mapbox.map('centerMap', 'mapbox.streets');
+      centerMap.scrollWheelZoom.disable();
+      
+        var features = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.522259, 35.4691]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.502754, 35.463455]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.508269, 35.463245]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.516809, 35.465779]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.515372, 35.467072]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.509363, 35.463053]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.511123, 35.466601]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.518547, 35.469327]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.519706, 35.469659]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.517839, 35.466998]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.508678, 35.464942]
+      }
+    }, {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.514914, 35.463453]
+      }
+    }
+  ]
+};
+
+var centerPt = turf.center(features);
+centerPt.properties['marker-size'] = 'large';
+centerPt.properties['marker-color'] = '#000';
+
+var resultFeatures = features.features.concat(centerPt);
+var result = {
+  "type": "FeatureCollection",
+  "features": resultFeatures
+};
+
+//=result
+        var layer0 = L.geoJSON(features,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(centerMap);
+var layer1 = L.geoJSON(centerPt,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(centerMap);
+centerMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
   
   
 
@@ -1377,7 +1595,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature at the absolute center point of all input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a Point feature at the absolute center point of all input features
 </p>
         
       
@@ -1555,7 +1773,7 @@ using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the center of mass
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the center of mass
 </p>
         
       
@@ -1726,7 +1944,7 @@ the centroid of a set of polygons.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the centroid of the input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the centroid of the input features
 </p>
         
       
@@ -1809,7 +2027,7 @@ the centroid of a set of polygons.</p>
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting point
 </td>
           </tr>
@@ -1830,7 +2048,7 @@ the centroid of a set of polygons.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -1844,7 +2062,7 @@ the centroid of a set of polygons.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: destination point
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: destination point
 </p>
         
       
@@ -1930,21 +2148,21 @@ to account for global curvature.</p>
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>origin point
 </td>
           </tr>
           
         <tr>
           <td>to</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>destination point
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -2059,7 +2277,7 @@ to account for global curvature.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a rectangular Polygon feature that encompasses all vertices
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a rectangular Polygon feature that encompasses all vertices
 </p>
         
       
@@ -2162,14 +2380,14 @@ to account for global curvature.</p>
         
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;)</td>
           <td>line to measure
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -2265,14 +2483,14 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
         
         <tr>
           <td>from</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>first point
 </td>
           </tr>
           
         <tr>
           <td>to</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>second point
 </td>
           </tr>
@@ -2285,7 +2503,7 @@ The midpoint is calculated geodesically, meaning the curvature of the earth is t
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a point midway between 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a point midway between 
 <code>pt1</code>
  and 
 <code>pt2</code>
@@ -2469,11 +2687,9 @@ would contain the input.</p>
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -2486,7 +2702,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: a square surrounding 
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: a square surrounding 
 <code>bbox</code>
 </p>
         
@@ -2590,21 +2806,21 @@ greatCircleMap.fitBounds(layer0.getBounds());
         
         <tr>
           <td>start</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>source point feature
 </td>
           </tr>
           
         <tr>
           <td>end</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>destination point feature
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td>any?
+          <td>[Any]
             (default {})</td>
           <td>line feature properties
 </td>
@@ -2612,7 +2828,7 @@ greatCircleMap.fitBounds(layer0.getBounds());
           
         <tr>
           <td>npoints</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 100)</td>
           <td>number of points
 </td>
@@ -2620,7 +2836,7 @@ greatCircleMap.fitBounds(layer0.getBounds());
           
         <tr>
           <td>offset</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 10)</td>
           <td>offset controls the likelyhood that lines will
 be split which cross the dateline. The higher the number the more likely.
@@ -2635,7 +2851,7 @@ be split which cross the dateline. The higher the number the more likely.
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: great circle line feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: great circle line feature
 </p>
         
       
@@ -2700,6 +2916,41 @@ algorithm.</p>
 </div>
 
   
+    <div id='bezierMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var bezierMap = L.mapbox.map('bezierMap', 'mapbox.streets');
+      bezierMap.scrollWheelZoom.disable();
+      
+        var line = {
+  "type": "Feature",
+  "properties": {
+    "stroke": "#f00"
+  },
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [-76.091308, 18.427501],
+      [-76.695556, 18.729501],
+      [-76.552734, 19.40443],
+      [-74.61914, 19.134789],
+      [-73.652343, 20.07657],
+      [-73.157958, 20.210656]
+    ]
+  }
+};
+
+var curved = turf.bezier(line);
+curved.properties = { stroke: '#0f0' };
+
+//=curved
+        var layer0 = L.geoJSON(line,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bezierMap);
+var layer1 = L.geoJSON(curved,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bezierMap);
+bezierMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
+  
   
 
  
@@ -2723,14 +2974,14 @@ algorithm.</p>
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>input LineString
 </td>
           </tr>
           
         <tr>
           <td>resolution</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 10000)</td>
           <td>time in milliseconds between points
 </td>
@@ -2738,7 +2989,7 @@ algorithm.</p>
           
         <tr>
           <td>sharpness</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 0.85)</td>
           <td>a measure of how curvy the path should be between splines
 </td>
@@ -2752,7 +3003,7 @@ algorithm.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: curved line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: curved line
 </p>
         
       
@@ -2785,12 +3036,7 @@ algorithm.</p>
 <span class="hljs-keyword">var</span> curved = turf.bezier(line);
 curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-string">'#0f0'</span> };
 
-<span class="hljs-keyword">var</span> result = {
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,
-  <span class="hljs-string">"features"</span>: [line, curved]
-};
-
-<span class="hljs-comment">//=result</span></pre>
+<span class="hljs-comment">//=curved</span></pre>
     
     
 
@@ -2815,6 +3061,32 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
   <div><p>Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.</p>
 </div>
 
+  
+    <div id='bufferMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var bufferMap = L.mapbox.map('bufferMap', 'mapbox.streets');
+      bufferMap.scrollWheelZoom.disable();
+      
+        var pt = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-90.548630, 14.616599]
+  }
+};
+var unit = 'miles';
+
+var buffered = turf.buffer(pt, 500, unit);
+
+//=buffered
+        var layer0 = L.geoJSON(pt,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bufferMap);
+var layer1 = L.geoJSON(buffered,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(bufferMap);
+bufferMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
   
   
 
@@ -2866,7 +3138,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     
       
         <h4>Returns</h4>
-        <p>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>): buffered features
+        <p>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>&gt; | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>): buffered features
 </p>
         
       
@@ -2889,9 +3161,8 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
 <span class="hljs-keyword">var</span> unit = <span class="hljs-string">'miles'</span>;
 
 <span class="hljs-keyword">var</span> buffered = turf.buffer(pt, <span class="hljs-number">500</span>, unit);
-<span class="hljs-keyword">var</span> result = turf.featureCollection([buffered, pt]);
 
-<span class="hljs-comment">//=result</span></pre>
+<span class="hljs-comment">//=buffered</span></pre>
     
     
 
@@ -2940,7 +3211,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
         
         <tr>
           <td>center</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>center point
 </td>
           </tr>
@@ -2954,7 +3225,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           
         <tr>
           <td>steps</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 64)</td>
           <td>number of steps
 </td>
@@ -2962,7 +3233,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>miles, kilometers, degrees, or radians
 </td>
@@ -2976,7 +3247,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: circle polygon
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: circle polygon
 </p>
         
       
@@ -3045,7 +3316,7 @@ curved.properties = { <span class="hljs-attr">stroke</span>: <span class="hljs-s
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
@@ -3060,7 +3331,7 @@ hull to become concave (in miles)
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -3074,7 +3345,7 @@ hull to become concave (in miles)
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a concave hull
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a concave hull
 </p>
         
       
@@ -3214,7 +3485,7 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a convex hull
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a convex hull
 </p>
         
       
@@ -3333,14 +3604,14 @@ polygon from the first.</p>
         
         <tr>
           <td>p1</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input Polygon feature
 </td>
           </tr>
           
         <tr>
           <td>p2</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>Polygon feature to difference from 
 <code>p1</code>
 </td>
@@ -3354,7 +3625,7 @@ polygon from the first.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a Polygon or MultiPolygon feature showing the area of 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a Polygon or MultiPolygon feature showing the area of 
 <code>p1</code>
  excluding the area of 
 <code>p2</code>
@@ -3461,14 +3732,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>featureCollection</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input feature collection to be dissolved
 </td>
           </tr>
           
         <tr>
           <td>propertyName</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</td>
           <td>property name on which to dissolve features
 </td>
           </tr>
@@ -3481,7 +3752,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a FeatureCollection containing the dissolved polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a FeatureCollection containing the dissolved polygons
 </p>
         
       
@@ -3553,7 +3824,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
   <h3 id='intersect'>
     intersect
   </h3>
-  <div><p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.</p>
+  <div><p>Takes two <a href="http://geojson.org/geojson-spec.html#polygon">polygons</a> and finds their intersection. If they share a border, returns the border; if they don&#x27;t intersect, returns undefined.</p>
 </div>
 
   
@@ -3580,14 +3851,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>poly1</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the first polygon
 </td>
           </tr>
           
         <tr>
           <td>poly2</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the second polygon
 </td>
           </tr>
@@ -3696,14 +3967,14 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
         
         <tr>
           <td>feature</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>)</td>
           <td>feature to be simplified
 </td>
           </tr>
           
         <tr>
           <td>tolerance</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 1)</td>
           <td>simplification tolerance
 </td>
@@ -3711,7 +3982,7 @@ differenced.properties.fill = <span class="hljs-string">'#f00'</span>;
           
         <tr>
           <td>highQuality</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to spend more time to create
 a higher-quality simplification with a different algorithm
@@ -3726,7 +3997,7 @@ a higher-quality simplification with a different algorithm
     
       
         <h4>Returns</h4>
-        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>): a simplified feature
+        <p>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>): a simplified feature
 </p>
         
       
@@ -3797,7 +4068,7 @@ a higher-quality simplification with a different algorithm
   <h3 id='tesselate'>
     tesselate
   </h3>
-  <div><p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&#x3C;Polygon></a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&#x3C;Polygon></a> of triangles
+  <div><p>Tesselates a <a href="Feature%3CPolygon%3E">Feature&lt;Polygon&gt;</a> into a <a href="FeatureCollection%3CPolygon%3E">FeatureCollection&lt;Polygon&gt;</a> of triangles
 using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
 </div>
 
@@ -3825,7 +4096,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
         
         <tr>
           <td>poly</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>the polygon to tesselate
 </td>
           </tr>
@@ -3838,7 +4109,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a geometrycollection feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a geometrycollection feature
 </p>
         
       
@@ -3903,7 +4174,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
         
         <tr>
           <td>A</td>
-          <td>...<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td>...<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>polygon to combine
 </td>
           </tr>
@@ -3916,7 +4187,7 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a combined 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a combined 
 <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>
  or 
 <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>
@@ -4032,7 +4303,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
         
         <tr>
           <td>fc</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#point">Point</a> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#point">Point</a> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;</td>
           <td>a FeatureCollection of any type
 </td>
           </tr>
@@ -4045,7 +4316,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: a FeatureCollection of corresponding type to input
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;(<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;: a FeatureCollection of corresponding type to input
 </p>
         
       
@@ -4143,7 +4414,7 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="#point">point</a>>: points representing the exploded input features
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="#point">point</a>&gt;: points representing the exploded input features
 </p>
         
       
@@ -4242,13 +4513,13 @@ s
           
         <tr>
           <td>properties</td>
-          <td>any?
+          <td>[Any]
             (default {})</td>
           <td>translate properties to each 
 <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
  (only applies for 
 <a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>
- &#x26; 
+ &amp; 
 <a href="GeometryObject">GeometryObject</a>
 )
 </td>
@@ -4425,7 +4696,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
         
         <tr>
           <td>featureIn</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>)&gt;</td>
           <td>input feature
 </td>
           </tr>
@@ -4438,7 +4709,7 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: self-intersections
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: self-intersections
 </p>
         
       
@@ -4523,7 +4794,7 @@ If the line is shorter than the segment length then the original line is returne
         
         <tr>
           <td>featureIn</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>)&gt;)</td>
           <td>the lines to split
 </td>
           </tr>
@@ -4537,7 +4808,7 @@ If the line is shorter than the segment length then the original line is returne
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default &#39;kilometers&#39;)</td>
           <td>units can be degrees, radians, miles, or kilometers
 </td>
@@ -4545,7 +4816,7 @@ If the line is shorter than the segment length then the original line is returne
           
         <tr>
           <td>reverse</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>reverses coordinates to start the first chunked segment at the end
 </td>
@@ -4559,7 +4830,7 @@ If the line is shorter than the segment length then the original line is returne
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: collection of line segments
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: collection of line segments
 </p>
         
       
@@ -4633,14 +4904,14 @@ If the line is shorter than the segment length then the original line is returne
         
         <tr>
           <td>line1</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>any LineString or Polygon
 </td>
           </tr>
           
         <tr>
           <td>line2</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>any LineString or Polygon
 </td>
           </tr>
@@ -4653,7 +4924,7 @@ If the line is shorter than the segment length then the original line is returne
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: point(s) that intersect both
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: point(s) that intersect both
 </p>
         
       
@@ -4712,7 +4983,7 @@ If the line is shorter than the segment length then the original line is returne
   </h3>
   <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#linestring">line</a>, a start <a href="http://geojson.org/geojson-spec.html#point">Point</a>, and a stop point
 and returns a subsection of the line in-between those points.
-The start &#x26; stop points don't need to fall exactly on the line.</p>
+The start &amp; stop points don&#x27;t need to fall exactly on the line.</p>
 <p>This can be useful for extracting only the part of a route between waypoints.</p>
 </div>
 
@@ -4740,21 +5011,21 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
         
         <tr>
           <td>startPt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>starting point
 </td>
           </tr>
           
         <tr>
           <td>stopPt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>stopping point
 </td>
           </tr>
           
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt; | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
           <td>line to slice
 </td>
           </tr>
@@ -4767,7 +5038,7 @@ The start &#x26; stop points don't need to fall exactly on the line.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: sliced line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: sliced line
 </p>
         
       
@@ -4867,7 +5138,7 @@ and returns a subsection of the line in-between those points.</p>
         
         <tr>
           <td>line</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>> | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt; | <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>)</td>
           <td>input line
 </td>
           </tr>
@@ -4888,7 +5159,7 @@ and returns a subsection of the line in-between those points.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -4902,7 +5173,7 @@ and returns a subsection of the line in-between those points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: sliced line
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: sliced line
 </p>
         
       
@@ -5020,14 +5291,14 @@ maskMap.fitBounds(layer0.getBounds());
         
         <tr>
           <td>polygon</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>GeoJSON Polygon used as interior rings or holes.
 </td>
           </tr>
           
         <tr>
           <td>mask</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>?</td>
+          <td>[<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;]</td>
           <td>GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used)
 </td>
           </tr>
@@ -5040,7 +5311,7 @@ maskMap.fitBounds(layer0.getBounds());
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: Masked Polygon (exterior ring with holes).
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: Masked Polygon (exterior ring with holes).
 </p>
         
       
@@ -5118,21 +5389,21 @@ maskMap.fitBounds(layer0.getBounds());
         
         <tr>
           <td>line</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;</td>
           <td>line to snap to
 </td>
           </tr>
           
         <tr>
           <td>pt</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>point to snap from
 </td>
           </tr>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>can be degrees, radians, miles, or kilometers
 </td>
@@ -5146,7 +5417,7 @@ maskMap.fitBounds(layer0.getBounds());
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: closest point on the 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: closest point on the 
 <code>line</code>
  to 
 <code>point</code>
@@ -5256,7 +5527,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>precision</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 6)</td>
           <td>coordinate decimal precision
 </td>
@@ -5264,7 +5535,7 @@ snapped.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 2)</td>
           <td>maximum number of coordinates (primarly used to remove z coordinates)
 </td>
@@ -5353,7 +5624,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
         
         <tr>
           <td>geojson</td>
-          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>)</td>
+          <td>(<a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;)</td>
           <td>GeoJSON Polygon or MultiPolygon
 </td>
           </tr>
@@ -5366,7 +5637,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: Unkinked polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: Unkinked polygons
 </p>
         
       
@@ -5446,7 +5717,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
         
         <tr>
           <td>features</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&gt;</td>
           <td>input features
 </td>
           </tr>
@@ -5594,7 +5865,7 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
   <h3 id='geometrycollection'>
     geometryCollection
   </h3>
-  <div><p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&#x3C;GeometryCollection></a> based on a
+  <div><p>Creates a <a href="Feature%3CGeometryCollection%3E">Feature&lt;GeometryCollection&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 </div>
 
@@ -5624,14 +5895,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>geometries</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;{Geometry}></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;{Geometry}&gt;</td>
           <td>an array of GeoJSON Geometries
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5644,7 +5915,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>>: a GeoJSON GeometryCollection Feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#geometrycollection">GeometryCollection</a>&gt;: a GeoJSON GeometryCollection Feature
 </p>
         
       
@@ -5718,14 +5989,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;</td>
           <td>an array of Positions
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5738,7 +6009,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: a LineString feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: a LineString feature
 </p>
         
       
@@ -5793,7 +6064,7 @@ coordinate array. Properties can be added optionally.</p>
   <h3 id='multilinestring'>
     multiLineString
   </h3>
-  <div><p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&#x3C;MultiLineString></a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiLineString%3E">Feature&lt;MultiLineString&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 </div>
 
@@ -5823,14 +6094,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;</td>
           <td>an array of LineStrings
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5843,7 +6114,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>>: a MultiLineString feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>&gt;: a MultiLineString feature
 </p>
         
       
@@ -5885,7 +6156,7 @@ coordinate array. Properties can be added optionally.</p>
   <h3 id='multipoint'>
     multiPoint
   </h3>
-  <div><p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&#x3C;MultiPoint></a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiPoint%3E">Feature&lt;MultiPoint&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 </div>
 
@@ -5915,14 +6186,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;</td>
           <td>an array of Positions
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -5935,7 +6206,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>>: a MultiPoint feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>&gt;: a MultiPoint feature
 </p>
         
       
@@ -5977,7 +6248,7 @@ coordinate array. Properties can be added optionally.</p>
   <h3 id='multipolygon'>
     multiPolygon
   </h3>
-  <div><p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&#x3C;MultiPolygon></a> based on a
+  <div><p>Creates a <a href="Feature%3CMultiPolygon%3E">Feature&lt;MultiPolygon&gt;</a> based on a
 coordinate array. Properties can be added optionally.</p>
 </div>
 
@@ -6007,14 +6278,14 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;&gt;</td>
           <td>an array of Polygons
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object of key-value pairs to add as properties
 </td>
           </tr>
@@ -6027,7 +6298,7 @@ coordinate array. Properties can be added optionally.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>>: a multipolygon feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>&gt;: a multipolygon feature
 </p>
         
       
@@ -6098,17 +6369,17 @@ coordinate array. Properties can be added optionally.</p>
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>longitude, latitude position (each in decimal degrees)
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>an Object that is used as the 
 <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>
-'s
+&#x27;s
 properties
 </td>
           </tr>
@@ -6121,7 +6392,7 @@ properties
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: a Point feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: a Point feature
 </p>
         
       
@@ -6186,14 +6457,14 @@ properties
         
         <tr>
           <td>coordinates</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;&gt;</td>
           <td>an array of LinearRings
 </td>
           </tr>
           
         <tr>
           <td>properties</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>]</td>
           <td>a properties object
 </td>
           </tr>
@@ -6206,7 +6477,7 @@ properties
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a Polygon feature
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a Polygon feature
 </p>
         
       
@@ -6217,7 +6488,7 @@ properties
     
       <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: throw an error if a LinearRing of the polygon has too few positions
 or if a LinearRing of the Polygon does not have matching Positions at the
-beginning &#x26; end.
+beginning &amp; end.
 </p>
     
     
@@ -6291,15 +6562,15 @@ and experimentation.</p>
         
         <tr>
           <td>type</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default &#39;point&#39;)</td>
-          <td>type of features desired: 'points' or 'polygons'
+          <td>type of features desired: &#x27;points&#x27; or &#x27;polygons&#x27;
 </td>
           </tr>
           
         <tr>
           <td>count</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]
             (default 1)</td>
           <td>how many geometries should be generated.
 </td>
@@ -6488,7 +6759,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
@@ -6511,7 +6782,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
           
         <tr>
           <td>breaks</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>where to draw contours
 </td>
           </tr>
@@ -6524,7 +6795,7 @@ value breaks and generates <a href="http://en.wikipedia.org/wiki/Isoline">isolin
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: isolines
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>&gt;: isolines
 </p>
         
       
@@ -6598,14 +6869,14 @@ that define the values at its three corners.</p>
         
         <tr>
           <td>point</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>the Point for which a z-value will be calculated
 </td>
           </tr>
           
         <tr>
           <td>triangle</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>a Polygon feature with three vertices
 </td>
           </tr>
@@ -6725,14 +6996,14 @@ the points that represent the corners of the triangle.</p>
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>z</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>?</td>
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>]</td>
           <td>name of the property from which to pull z values
 This is optional: if not given, then there will be no extra data added to the derived triangles.
 </td>
@@ -6746,7 +7017,7 @@ This is optional: if not given, then there will be no extra data added to the de
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: TIN output
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: TIN output
 </p>
         
       
@@ -6799,7 +7070,7 @@ This is optional: if not given, then there will be no extra data added to the de
     idw
   </h3>
   <div><p>Takes a FeatureCollection of points with known value, a power parameter, a cell depth, a unit of measurement
-and returns a FeatureCollection of polygons in a square-grid with an interpolated value property "IDW" for each grid cell.
+and returns a FeatureCollection of polygons in a square-grid with an interpolated value property &quot;IDW&quot; for each grid cell.
 It finds application when in need of creating a continuous surface (i.e. rainfall, temperature, chemical dispersion surface...)
 from a set of spatially scattered points.</p>
 </div>
@@ -6828,7 +7099,7 @@ from a set of spatially scattered points.</p>
         
         <tr>
           <td>controlPoints</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>Sampled points with known value
 </td>
           </tr>
@@ -6856,7 +7127,7 @@ from a set of spatially scattered points.</p>
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -6870,7 +7141,7 @@ from a set of spatially scattered points.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid A grid of polygons with a property field "IDW"
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid A grid of polygons with a property field &quot;IDW&quot;
 </p>
         
       
@@ -6933,14 +7204,14 @@ be convex or concave. The function accounts for holes.</p>
         
         <tr>
           <td>point</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input point
 </td>
           </tr>
           
         <tr>
           <td>polygon</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)&gt;</td>
           <td>input polygon or multipolygon
 </td>
           </tr>
@@ -7028,14 +7299,14 @@ be convex or concave. The function accounts for holes.</p>
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input polygons
 </td>
           </tr>
@@ -7048,7 +7319,7 @@ be convex or concave. The function accounts for holes.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: points that land within at least one polygon
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: points that land within at least one polygon
 </p>
         
       
@@ -7178,14 +7449,14 @@ be convex or concave. The function accounts for holes.</p>
         
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>input points
 </td>
           </tr>
           
         <tr>
           <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
           <td>input polygons
 </td>
           </tr>
@@ -7219,7 +7490,7 @@ be convex or concave. The function accounts for holes.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: points with 
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: points with 
 <code>containingPolyId</code>
  property containing values from 
 <code>polyId</code>
@@ -7287,7 +7558,7 @@ be convex or concave. The function accounts for holes.</p>
     hexGrid
   </h3>
   <div><p>Takes a bounding box and a cell size in degrees and returns a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of flat-topped
-hexagons (<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features) aligned in an "odd-q" vertical grid as
+hexagons (<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> features) aligned in an &quot;odd-q&quot; vertical grid as
 described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Grids</a>.</p>
 </div>
 
@@ -7315,11 +7586,9 @@ described in <a href="http://www.redblobgames.com/grids/hexagons/">Hexagonal Gri
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7333,7 +7602,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7341,7 +7610,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>triangles</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether to return as triangles instead of hexagons
 </td>
@@ -7355,7 +7624,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: a hexagonal grid
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: a hexagonal grid
 </p>
         
       
@@ -7422,11 +7691,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;any>)</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt; | <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;any&gt;)</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7440,7 +7707,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7454,7 +7721,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: grid of points
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: grid of points
 </p>
         
       
@@ -7521,11 +7788,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7539,7 +7804,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7553,7 +7818,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid a grid of polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid a grid of polygons
 </p>
         
       
@@ -7620,11 +7885,9 @@ minX, minY, maxX, maxY
         
         <tr>
           <td>bbox</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</td>
           <td>extent in 
-[
-minX, minY, maxX, maxY
-]
+[minX, minY, maxX, maxY]
  order
 </td>
           </tr>
@@ -7638,7 +7901,7 @@ minX, minY, maxX, maxY
           
         <tr>
           <td>units</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]
             (default kilometers)</td>
           <td>used in calculating cellSize, can be degrees, radians, miles, or kilometers
 </td>
@@ -7652,7 +7915,7 @@ minX, minY, maxX, maxY
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: grid of polygons
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: grid of polygons
 </p>
         
       
@@ -7729,14 +7992,14 @@ is geodesic.</p>
         
         <tr>
           <td>targetPoint</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>the reference point
 </td>
           </tr>
           
         <tr>
           <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
           <td>against input point set
 </td>
           </tr>
@@ -7749,7 +8012,7 @@ is geodesic.</p>
     
       
         <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>: the closest point in the set to the reference point
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;: the closest point in the set to the reference point
 </p>
         
       
@@ -7879,7 +8142,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>: coordinate position array
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;: coordinate position array
 </p>
         
       
@@ -7978,7 +8241,7 @@ nearest.properties[<span class="hljs-string">'marker-color'</span>] = <span clas
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
@@ -8087,14 +8350,14 @@ turf.coordEach(features, <span class="hljs-function"><span class="hljs-keyword">
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
           
         <tr>
           <td>excludeWrapCoord</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+          <td>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
             (default false)</td>
           <td>whether or not to include
 the final coordinate of LinearRings that wraps the ring in its iteration.
@@ -8109,7 +8372,7 @@ the final coordinate of LinearRings that wraps the ring in its iteration.
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8313,7 +8576,7 @@ turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8326,7 +8589,7 @@ turf.featureEach(features, <span class="hljs-function"><span class="hljs-keyword
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8529,7 +8792,7 @@ turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">f
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8542,7 +8805,7 @@ turf.geomEach(features, <span class="hljs-function"><span class="hljs-keyword">f
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -8747,7 +9010,7 @@ the reduction, so an array of all properties is unnecessary.</p>
           
         <tr>
           <td>initialValue</td>
-          <td>any?</td>
+          <td>[Any]</td>
           <td>Value to use as the first argument to the first call of the callback.
 </td>
           </tr>
@@ -8760,7 +9023,7 @@ the reduction, so an array of all properties is unnecessary.</p>
     
       
         <h4>Returns</h4>
-        <p>any: The value that results from the reduction.
+        <p>Any: The value that results from the reduction.
 </p>
         
       
@@ -9023,7 +9286,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
         
         <tr>
           <td>obj</td>
-          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any> | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>>)</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt; | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;)</td>
           <td>any value
 </td>
           </tr>
@@ -9036,7 +9299,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>: coordinates
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;: coordinates
 </p>
         
       
@@ -9093,7 +9356,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
         
         <tr>
           <td>obj</td>
-          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any> | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;any>)</td>
+          <td>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt; | <a href="http://geojson.org/geojson-spec.html#geometry">Geometry</a> | <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&lt;any&gt;)</td>
           <td>any value
 </td>
           </tr>
@@ -9106,7 +9369,7 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
       
         <h4>Returns</h4>
-        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any>: coordinates
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;any&gt;: coordinates
 </p>
         
       
