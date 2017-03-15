@@ -1,6 +1,4 @@
 toc:
-  - name: Aggregation
-  - collect
   - name: Measurement
   - along
   - area
@@ -89,6 +87,8 @@ toc:
   - getCoord
   - getCoords
   - featureOf
+  - name: Aggregation
+  - collect
 paths:
   GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
   Point: "http://geojson.org/geojson-spec.html#point"

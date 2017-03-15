@@ -34,20 +34,6 @@
           
           
           <li class="category">
-            <a href="#aggregation">
-              Aggregation
-            </a>
-          </li>
-          
-          
-          <li class="">
-            <a href="#collect">
-              collect
-            </a>
-          </li>
-          
-          
-          <li class="category">
             <a href="#measurement">
               Measurement
             </a>
@@ -662,158 +648,25 @@
             </a>
           </li>
           
+          
+          <li class="category">
+            <a href="#aggregation">
+              Aggregation
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#collect">
+              collect
+            </a>
+          </li>
+          
         </ul>
       </div>
     </div>
 
     <div id="mainContent" class="pure-u-4-5">
-      
-      
-      <div><h2 id='aggregation'>
-  Aggregation
-</h2>
-</div>
-      
-      
-      
-      <div class="panel">
-
-  
-
-  <p class="npmBadge">npm install @turf/collect</p>
-  <h3 id='collect'>
-    collect
-  </h3>
-  <div><p>Merges a specified property from a FeatureCollection of points into a
-FeatureCollection of polygons. Given an <code>inProperty</code> on points and an <code>outProperty</code>
-for polygons, this finds every point that lies within each polygon, collects the
-<code>inProperty</code> values from those points, and adds them as an array to <code>outProperty</code>
-on the polygon.</p>
-</div>
-
-  
-    <div id='collectMap' style="height: 350px"></div>
-    <script type="text/javascript">
-      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
-      var collectMap = L.mapbox.map('collectMap', 'mapbox.streets');
-      collectMap.scrollWheelZoom.disable();
-      
-        var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);
-var poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);
-var polyFC = turf.featureCollection([poly1, poly2]);
-var pt1 = turf.point([5,5], {population: 200});
-var pt2 = turf.point([1,3], {population: 600});
-var pt3 = turf.point([14,2], {population: 100});
-var pt4 = turf.point([13,1], {population: 200});
-var pt5 = turf.point([19,7], {population: 300});
-var pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
-var collected = turf.collect(polyFC, pointFC, 'population', 'values');
-var values = collected.features[0].properties.values
-//=values => [200, 600]
-//=pointFC
-//=collected
-        var layer0 = L.geoJSON(collected,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
-var layer1 = L.geoJSON(pointFC,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
-collectMap.fitBounds(layer1.getBounds());
-
-      
-    </script>
-  
-  
-
- 
-
- 
-
- 
-
-  
-  <h4>Arguments</h4>
-  <div>
-    <table class="pure-table pure-table-horizontal">
-      <thead>
-        <tr>
-          <td style="width:15%">Argument</td>
-          <td style="width:30%">Type</td>
-          <td style="width:55%">Description</td>
-        </tr>
-      </thead>
-      <tbody>
-        
-        <tr>
-          <td>polygons</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
-          <td>polygons with values on which to aggregate
-</td>
-          </tr>
-          
-        <tr>
-          <td>points</td>
-          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
-          <td>points to be aggregated
-</td>
-          </tr>
-          
-        <tr>
-          <td>inProperty</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
-          <td>property to be nested from
-</td>
-          </tr>
-          
-        <tr>
-          <td>outProperty</td>
-          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
-          <td>property to be nested into
-</td>
-          </tr>
-          
-        </tbody>
-      </table>
-    </div>
-    
-
-    
-      
-        <h4>Returns</h4>
-        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: polygons with properties listed based on 
-<code>outField</code>
-</p>
-        
-      
-    
-
-    
-
-    
-    <h4>Example</h4>
-    
-    
-    <pre><span class="hljs-keyword">var</span> poly1 = turf.polygon([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
-<span class="hljs-keyword">var</span> poly2 = turf.polygon([[[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">20</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>]]]);
-<span class="hljs-keyword">var</span> polyFC = turf.featureCollection([poly1, poly2]);
-<span class="hljs-keyword">var</span> pt1 = turf.point([<span class="hljs-number">5</span>,<span class="hljs-number">5</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
-<span class="hljs-keyword">var</span> pt2 = turf.point([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">600</span>});
-<span class="hljs-keyword">var</span> pt3 = turf.point([<span class="hljs-number">14</span>,<span class="hljs-number">2</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">100</span>});
-<span class="hljs-keyword">var</span> pt4 = turf.point([<span class="hljs-number">13</span>,<span class="hljs-number">1</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
-<span class="hljs-keyword">var</span> pt5 = turf.point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">300</span>});
-<span class="hljs-keyword">var</span> pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
-<span class="hljs-keyword">var</span> collected = turf.collect(polyFC, pointFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
-<span class="hljs-keyword">var</span> values = collected.features[<span class="hljs-number">0</span>].properties.values
-<span class="hljs-comment">//=values =&gt; [200, 600]</span>
-<span class="hljs-comment">//=pointFC</span>
-<span class="hljs-comment">//=collected</span></pre>
-    
-    
-
-    
-
-    
-
-    
-  </div>
-
-      
       
       
       <div><h2 id='measurement'>
@@ -9465,6 +9318,153 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
     
     
 
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div><h2 id='aggregation'>
+  Aggregation
+</h2>
+</div>
+      
+      
+      
+      <div class="panel">
+
+  
+
+  <p class="npmBadge">npm install @turf/collect</p>
+  <h3 id='collect'>
+    collect
+  </h3>
+  <div><p>Merges a specified property from a FeatureCollection of points into a
+FeatureCollection of polygons. Given an <code>inProperty</code> on points and an <code>outProperty</code>
+for polygons, this finds every point that lies within each polygon, collects the
+<code>inProperty</code> values from those points, and adds them as an array to <code>outProperty</code>
+on the polygon.</p>
+</div>
+
+  
+    <div id='collectMap' style="height: 350px"></div>
+    <script type="text/javascript">
+      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
+      var collectMap = L.mapbox.map('collectMap', 'mapbox.streets');
+      collectMap.scrollWheelZoom.disable();
+      
+        var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);
+var poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);
+var polyFC = turf.featureCollection([poly1, poly2]);
+var pt1 = turf.point([5,5], {population: 200});
+var pt2 = turf.point([1,3], {population: 600});
+var pt3 = turf.point([14,2], {population: 100});
+var pt4 = turf.point([13,1], {population: 200});
+var pt5 = turf.point([19,7], {population: 300});
+var pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
+var collected = turf.collect(polyFC, pointFC, 'population', 'values');
+var values = collected.features[0].properties.values
+//=values => [200, 600]
+//=pointFC
+//=collected
+        var layer0 = L.geoJSON(collected,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
+var layer1 = L.geoJSON(pointFC,{onEachFeature: function (feature, layer){ if (Object.keys(feature.properties).length > 0){layer.bindPopup(JSON.stringify(feature.properties));}}}).addTo(collectMap);
+collectMap.fitBounds(layer1.getBounds());
+
+      
+    </script>
+  
+  
+
+ 
+
+ 
+
+ 
+
+  
+  <h4>Arguments</h4>
+  <div>
+    <table class="pure-table pure-table-horizontal">
+      <thead>
+        <tr>
+          <td style="width:15%">Argument</td>
+          <td style="width:30%">Type</td>
+          <td style="width:55%">Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>polygons</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;</td>
+          <td>polygons with values on which to aggregate
+</td>
+          </tr>
+          
+        <tr>
+          <td>points</td>
+          <td><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#point">Point</a>&gt;</td>
+          <td>points to be aggregated
+</td>
+          </tr>
+          
+        <tr>
+          <td>inProperty</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>property to be nested from
+</td>
+          </tr>
+          
+        <tr>
+          <td>outProperty</td>
+          <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></td>
+          <td>property to be nested into
+</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&lt;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>&gt;: polygons with properties listed based on 
+<code>outField</code>
+</p>
+        
+      
+    
+
+    
+
+    
+    <h4>Example</h4>
+    
+    
+    <pre><span class="hljs-keyword">var</span> poly1 = turf.polygon([[[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> poly2 = turf.polygon([[[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">20</span>],[<span class="hljs-number">20</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">10</span>,<span class="hljs-number">0</span>]]]);
+<span class="hljs-keyword">var</span> polyFC = turf.featureCollection([poly1, poly2]);
+<span class="hljs-keyword">var</span> pt1 = turf.point([<span class="hljs-number">5</span>,<span class="hljs-number">5</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt2 = turf.point([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">600</span>});
+<span class="hljs-keyword">var</span> pt3 = turf.point([<span class="hljs-number">14</span>,<span class="hljs-number">2</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">100</span>});
+<span class="hljs-keyword">var</span> pt4 = turf.point([<span class="hljs-number">13</span>,<span class="hljs-number">1</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">200</span>});
+<span class="hljs-keyword">var</span> pt5 = turf.point([<span class="hljs-number">19</span>,<span class="hljs-number">7</span>], {<span class="hljs-attr">population</span>: <span class="hljs-number">300</span>});
+<span class="hljs-keyword">var</span> pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
+<span class="hljs-keyword">var</span> collected = turf.collect(polyFC, pointFC, <span class="hljs-string">'population'</span>, <span class="hljs-string">'values'</span>);
+<span class="hljs-keyword">var</span> values = collected.features[<span class="hljs-number">0</span>].properties.values
+<span class="hljs-comment">//=values =&gt; [200, 600]</span>
+<span class="hljs-comment">//=pointFC</span>
+<span class="hljs-comment">//=collected</span></pre>
+    
     
 
     
