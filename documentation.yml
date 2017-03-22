@@ -38,6 +38,7 @@ toc:
   - lineIntersect
   - lineSlice
   - lineSliceAlong
+  - lineSegment
   - mask
   - pointOnLine
   - truncate
