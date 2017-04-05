@@ -1,4 +1,6 @@
 toc:
+  - name: Aggregation
+  - collect
   - name: Measurement
   - along
   - area
@@ -36,9 +38,10 @@ toc:
   - kinks
   - lineChunk
   - lineIntersect
+  - lineSegment
   - lineSlice
   - lineSliceAlong
-  - lineSegment
+  - lineSplit
   - mask
   - pointOnLine
   - truncate
@@ -88,8 +91,6 @@ toc:
   - getCoord
   - getCoords
   - featureOf
-  - name: Aggregation
-  - collect
 paths:
   GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
   Point: "http://geojson.org/geojson-spec.html#point"

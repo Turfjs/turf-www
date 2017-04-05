@@ -1,25 +1,23 @@
-<div class="panel">
+<div class="panel" id='<%- slug(section.namespace) %>'>
 
   <% if (typeof nested === 'undefined') { %>
 
-  <p class="npmBadge"><%- getNpmPath(section.context.file)%></p>
-  <h3 id='<%- slug(section.namespace) %>'>
-    <%- section.name %>
-  </h3>
-  <div><%= md(section.description) %></div>
-
-  <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
-    <div id='<%- section.name %>Map' style="height: 350px"></div>
-    <script type="text/javascript">
-      L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ';
-      var <%- section.name %>Map = L.mapbox.map('<%- section.name %>Map', 'mapbox.streets');
-      <%- section.name %>Map.scrollWheelZoom.disable();
-      <% if (JSON.stringify(section.tags).includes('addToMap')) { %>
-        <%= parseExample(section.examples[0].description) %>
-        <%= parseGeoJsonForMap(section) %>
+    <p class="npmBadge"><%- getNpmPath(section.context.file)%></p>
+    <h3><%- section.name %></h3>
+    <div><%= md(section.description) %></div>
+    <div class="mapHolder">
+      <% if (section.context.file.includes('turf-collect')) { %>
+        <div id='turfMap' style="height: 350px"></div>
       <% } %>
-    </script>
-  <% } %>
+      <% if (section.examples) { %>
+      <script type="text/javascript">
+          <%= parseCompleteExample(section.examples[0].description) %>
+           <% if (section.examples[0].description.includes('//addToMap')) { %>
+            mapLayers.<%- section.name %> = [<%- getFeaturesForMap(section.examples[0].description)%>]
+          <% } %>
+      </script>
+    <% } %>
+    </div>
   <% } %>
 
  <% if (section.context.file.includes('turf-helpers')) { %>
@@ -35,28 +33,28 @@
  <% } %>
 
   <% if (section.params) { %>
-  <h4>Arguments</h4>
-  <div>
-    <table class="pure-table pure-table-horizontal">
-      <thead>
-        <tr>
-          <td style="width:15%">Argument</td>
-          <td style="width:30%">Type</td>
-          <td style="width:55%">Description</td>
-        </tr>
-      </thead>
-      <tbody>
-        <% section.params.forEach(function(param) { %>
-        <tr>
-          <td><%- param.name%></td>
-          <td><%= formatType(param.type) %><% if (param.default) { %>
-            (default <%- param.default %>)<% } %></td>
-          <td><%= md(param.description, true) %></td>
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
           </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
+        </thead>
+        <tbody>
+          <% section.params.forEach(function(param) { %>
+          <tr>
+            <td><%- param.name%></td>
+            <td><%= formatType(param.type) %><% if (param.default) { %>
+              (default <%- param.default %>)<% } %></td>
+            <td><%= md(param.description, true) %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
     <% } %>
 
     <% if (section.returns) { %>
@@ -68,32 +66,34 @@
     <% } %>
 
     <% if (section.throws) { %>
-    <h4>Throws</h4>
-    <% section.throws.forEach(function(throws) { %>
-      <p><%= formatType(throws.type) %>: <%= md(throws.description, true) %></p>
-    <% }); %>
+      <h4>Throws</h4>
+      <% section.throws.forEach(function(throws) { %>
+        <p><%= formatType(throws.type) %>: <%= md(throws.description, true) %></p>
+      <% }); %>
     <% } %>
 
     <% if (section.examples) { %>
-    <h4>Example</h4>
-    <% section.examples.forEach(function(example) { %>
-    <% if (example.caption) { %><p><%= md(example.caption) %></p><% } %>
-    <pre><%= highlight(example.description) %></pre>
-    <% }) %>
+      <h4>Example</h4>
+      <% section.examples.forEach(function(example) { %>
+        <% if (example.caption) { %>
+          <p><%= md(example.caption) %></p><% 
+        } %>
+          <pre><%= parseExample(example.description) %></pre>
+      <% }) %>
     <% } %>
 
     <% if (section.members.static && section.members.static.length) { %>
-    <h4>Static Members</h4>
-    <%= renderSectionList({ members: section.members.static, renderSection: renderSection, noun: 'Static Member' }) %>
+      <h4>Static Members</h4>
+      <%= renderSectionList({ members: section.members.static, renderSection: renderSection, noun: 'Static Member' }) %>
     <% } %>
 
     <% if (section.members.instance && section.members.instance.length) { %>
-    <h4>Instance Members</h4>
-    <%= renderSectionList({ members: section.members.instance, renderSection: renderSection, noun: 'Instance Member' }) %>
+      <h4>Instance Members</h4>
+      <%= renderSectionList({ members: section.members.instance, renderSection: renderSection, noun: 'Instance Member' }) %>
     <% } %>
 
     <% if (section.members.events && section.members.events.length) { %>
-    <h4>Events</h4>
-    <%= renderSectionList({ members: section.members.events, renderSection: renderSection, noun: 'Event' }) %>
+      <h4>Events</h4>
+      <%= renderSectionList({ members: section.members.events, renderSection: renderSection, noun: 'Event' }) %>
     <% } %>
   </div>
