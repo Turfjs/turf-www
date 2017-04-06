@@ -1,6 +1,4 @@
 toc:
-  - name: Aggregation
-  - collect
   - name: Measurement
   - along
   - area
@@ -75,6 +73,8 @@ toc:
   - triangleGrid
   - name: Classification
   - nearest
+  - name: Aggregation
+  - collect
   - name: Meta
   - coordAll
   - coordEach
