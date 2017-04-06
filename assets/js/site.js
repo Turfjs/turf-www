@@ -46,7 +46,7 @@ var panelDivs = document.getElementsByClassName('panel');
 var turfModulesOnPage = Array.prototype.slice.call(panelDivs);
 var timer = null;
 var mainContent = document.getElementById('mainContent');
-var currentMapParent = document.getElementById('collect');
+var currentMapParent = document.getElementById('along');
 handleMapMovementEvent(currentMapParent);
 var currentMapId = null;
 
