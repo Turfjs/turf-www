@@ -36,9 +36,10 @@ toc:
   - kinks
   - lineChunk
   - lineIntersect
+  - lineSegment
   - lineSlice
   - lineSliceAlong
-  - lineSegment
+  - lineSplit
   - mask
   - pointOnLine
   - truncate
@@ -72,6 +73,8 @@ toc:
   - triangleGrid
   - name: Classification
   - nearest
+  - name: Aggregation
+  - collect
   - name: Meta
   - coordAll
   - coordEach
@@ -88,8 +91,6 @@ toc:
   - getCoord
   - getCoords
   - featureOf
-  - name: Aggregation
-  - collect
 paths:
   GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
   Point: "http://geojson.org/geojson-spec.html#point"

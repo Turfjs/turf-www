@@ -29,7 +29,7 @@
   <div class="pure-g">
     <div id="toc" class="pure-u-1-5">
       <div class="sidebarContents">
-      <input id="sidebarFilter" placeholder="search">
+        <input id="sidebarFilter" placeholder="search">
         <ul id="turfModules">
           <% docs.forEach(function(doc) { %>
           <% var hasMembers = doc.members.static.length || doc.members.instance.length %>
@@ -42,7 +42,9 @@
         </ul>
       </div>
     </div>
-
+    <script>
+      var mapLayers = {};
+    </script>
     <div id="mainContent" class="pure-u-4-5">
       <% docs.forEach(function(s) { %>
       <% if (s.kind !== "note") { %>
@@ -57,7 +59,7 @@
       <% }) %>
     </div>
   </div>
+  <script src="../assets/js/site.js"></script>
 
-  <script src="../assets/js/filter.js"></script>
 </body>
 </html>
