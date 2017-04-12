@@ -35,11 +35,11 @@ listItemsArray.forEach(function (listItem) {
     return;
   }
   listItem.addEventListener("click", function (e) {
-    var module = e.srcElement.innerText;
+    var module = e.srcElement.hash.substr(1);
     var element = document.getElementById(module);
     handleMapMovementEvent(element);
   });
-})
+});
 
 // Set up the scroll listeners 
 var panelDivs = document.getElementsByClassName('panel');
@@ -55,11 +55,11 @@ mainContent.addEventListener('scroll', function () {
     clearTimeout(timer);        
   }
   timer = setTimeout(function() {
-    var elementsVisible = checkModulesInViewport()
-    if (elementsVisible.length > 0 ){
-      var element = elementsVisible[elementsVisible.length - 1]
-      if (mapLayers[element.id]){
-        handleMapMovementEvent(element)
+    var elementsVisible = checkModulesInViewport();
+    if (elementsVisible.length > 0 ) {
+      var element = elementsVisible[elementsVisible.length - 1];
+      if (mapLayers[element.id]) {
+        handleMapMovementEvent(element);
       }
     }
   }, 150);
@@ -106,9 +106,8 @@ function addNewLayers (elementId) {
           layer.bindPopup(JSON.stringify(layer.feature.properties));
         }
       }
-      // layer.bindPopup('Hello');
     });
     fg.addLayer(geojsonLayer);
-  })
+  });
   turfMap.fitBounds(fg.getBounds());
 }
