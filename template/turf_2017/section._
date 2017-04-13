@@ -13,7 +13,7 @@
       <script type="text/javascript">
           <%= parseCompleteExample(section.examples[0].description) %>
            <% if (section.examples[0].description.includes('//addToMap')) { %>
-            mapLayers.<%- section.name %> = [<%- getFeaturesForMap(section.examples[0].description)%>]
+            mapLayers.<%- slug(section.namespace) %> = [<%- getFeaturesForMap(section.examples[0].description)%>]
           <% } %>
       </script>
     <% } %>

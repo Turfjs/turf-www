@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../assets/css/github.css" />
   <link href="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js"></script>
-  <script src="https://npmcdn.com/@turf/turf/turf.js"></script>
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>
@@ -160,6 +160,13 @@
           
           
           <li class="">
+            <a href="#bboxclip">
+              bboxClip
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href="#bezier">
               bezier
             </a>
@@ -237,8 +244,8 @@
           
           
           <li class="category">
-            <a href="#misc">
-              Misc
+            <a href="#feature-conversion">
+              Feature Conversion
             </a>
           </li>
           
@@ -265,6 +272,20 @@
           
           
           <li class="">
+            <a href="#polygontolinestring">
+              polygonToLineString
+            </a>
+          </li>
+          
+          
+          <li class="category">
+            <a href="#misc">
+              Misc
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href="#flip">
               flip
             </a>
@@ -279,6 +300,13 @@
           
           
           <li class="">
+            <a href="#linearc">
+              lineArc
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href="#linechunk">
               lineChunk
             </a>
@@ -288,6 +316,13 @@
           <li class="">
             <a href="#lineintersect">
               lineIntersect
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#lineoverlap">
+              lineOverlap
             </a>
           </li>
           
@@ -330,6 +365,13 @@
           <li class="">
             <a href="#pointonline">
               pointOnLine
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#sector">
+              sector
             </a>
           </li>
           
@@ -650,6 +692,13 @@
           
           
           <li class="">
+            <a href="#containsnumber">
+              containsNumber
+            </a>
+          </li>
+          
+          
+          <li class="">
             <a href="#geojsontype">
               geojsonType
             </a>
@@ -673,6 +722,34 @@
           <li class="">
             <a href="#featureof">
               featureOf
+            </a>
+          </li>
+          
+          
+          <li class="category">
+            <a href="#unit-conversion">
+              Unit Conversion
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#radianstodistance">
+              radiansToDistance
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#distancetoradians">
+              distanceToRadians
+            </a>
+          </li>
+          
+          
+          <li class="">
+            <a href="#distancetodegrees">
+              distanceToDegrees
             </a>
           </li>
           
@@ -706,6 +783,7 @@
       <script type="text/javascript">
           var line = {
   "type": "Feature",
+  "properties": {},
   "geometry": {
     "type": "LineString",
     "coordinates": [
@@ -797,6 +875,7 @@ var addToMap = [along, line]
         
           <pre>var line = {
   "type": "Feature",
+  "properties": {},
   "geometry": {
     "type": "LineString",
     "coordinates": [
@@ -1072,7 +1151,7 @@ var poly = turf.bboxPolygon(bbox);
 //addToMap
 var addToMap = [poly]
            
-            mapLayers.bboxPolygon = [poly]
+            mapLayers.bboxpolygon = [poly]
           
       </script>
     
@@ -1160,9 +1239,7 @@ var poly = turf.bboxPolygon(bbox);
       <script type="text/javascript">
           var point1 = {
   "type": "Feature",
-  "properties": {
-    "marker-color": '#f00'
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.343, 39.984]
@@ -1170,9 +1247,7 @@ var poly = turf.bboxPolygon(bbox);
 };
 var point2 = {
   "type": "Feature",
-  "properties": {
-    "marker-color": '#0f0'
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.534, 39.123]
@@ -1181,8 +1256,10 @@ var point2 = {
 
 var bearing = turf.bearing(point1, point2);
 //addToMap
-point1.properties.bearing = bearing
 var addToMap = [point1, point2]
+point1.properties['marker-color'] = '#f00'
+point2.properties['marker-color'] = '#0f0'
+point1.properties.bearing = bearing
            
             mapLayers.bearing = [point1, point2]
           
@@ -1254,9 +1331,7 @@ var addToMap = [point1, point2]
         
           <pre>var point1 = {
   "type": "Feature",
-  "properties": {
-    "marker-color": '#f00'
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.343, 39.984]
@@ -1264,9 +1339,7 @@ var addToMap = [point1, point2]
 };
 var point2 = {
   "type": "Feature",
-  "properties": {
-    "marker-color": '#0f0'
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.534, 39.123]
@@ -1667,8 +1740,11 @@ using this formula: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_
 
 var centerOfMass = turf.centerOfMass(feature);
 
-//=centerOfMass
+//addToMap
+var addToMap = [feature, centerOfMass]
            
+            mapLayers.centerofmass = [feature, centerOfMass]
+          
       </script>
     
     </div>
@@ -1814,7 +1890,7 @@ var centerOfMass = turf.centerOfMass(feature);
 
 var centerOfMass = turf.centerOfMass(feature);
 
-//=centerOfMass</pre>
+</pre>
       
     
 
@@ -1860,13 +1936,11 @@ the centroid of a set of polygons.</p>
 
 var centroidPt = turf.centroid(poly);
 
-var result = {
-  "type": "FeatureCollection",
-  "features": [poly, centroidPt]
-};
-
-//=result
+//addToMap
+var addToMap = [poly, centroidPt]
            
+            mapLayers.centroid = [poly, centroidPt]
+          
       </script>
     
     </div>
@@ -1935,12 +2009,7 @@ var result = {
 
 var centroidPt = turf.centroid(poly);
 
-var result = {
-  "type": "FeatureCollection",
-  "features": [poly, centroidPt]
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -1968,9 +2037,7 @@ var result = {
       <script type="text/javascript">
           var point = {
   "type": "Feature",
-  "properties": {
-    "marker-color": "#0f0"
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.343, 39.984]
@@ -1981,15 +2048,14 @@ var bearing = 90;
 var units = 'miles';
 
 var destination = turf.destination(point, distance, bearing, units);
+
+//addToMap
+var addToMap = [point, destination]
 destination.properties['marker-color'] = '#f00';
-
-var result = {
-  "type": "FeatureCollection",
-  "features": [point, destination]
-};
-
-//=result
+point.properties['marker-color'] = '#0f0';
            
+            mapLayers.destination = [point, destination]
+          
       </script>
     
     </div>
@@ -2065,9 +2131,7 @@ var result = {
         
           <pre>var point = {
   "type": "Feature",
-  "properties": {
-    "marker-color": "#0f0"
-  },
+  "properties": {},
   "geometry": {
     "type": "Point",
     "coordinates": [-75.343, 39.984]
@@ -2078,14 +2142,8 @@ var bearing = 90;
 var units = 'miles';
 
 var destination = turf.destination(point, distance, bearing, units);
-destination.properties['marker-color'] = '#f00';
 
-var result = {
-  "type": "FeatureCollection",
-  "features": [point, destination]
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -2137,12 +2195,14 @@ var points = {
   "features": [from, to]
 };
 
-//=points
-
 var distance = turf.distance(from, to, units);
-
-//=distance
+//addToMap
+from.properties.distance = distance
+to.properties.distance = distance
+var addToMap = [points]
            
+            mapLayers.distance = [points]
+          
       </script>
     
     </div>
@@ -2232,11 +2292,8 @@ var points = {
   "features": [from, to]
 };
 
-//=points
-
 var distance = turf.distance(from, to, units);
-
-//=distance</pre>
+</pre>
       
     
 
@@ -2298,14 +2355,11 @@ var distance = turf.distance(from, to, units);
 
 var enveloped = turf.envelope(fc);
 
-var resultFeatures = fc.features.concat(enveloped);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
+//addToMap
+var addToMap = [fc, enveloped]
            
+            mapLayers.envelope = [fc, enveloped]
+          
       </script>
     
     </div>
@@ -2393,13 +2447,7 @@ var result = {
 
 var enveloped = turf.envelope(fc);
 
-var resultFeatures = fc.features.concat(enveloped);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -2442,11 +2490,12 @@ var result = {
 };
 
 var length = turf.lineDistance(line, 'miles');
-
-//=line
-
-//=length
+//addToMap
+line.properties.distance = length
+var addToMap = [line]
            
+            mapLayers.linedistance = [line]
+          
       </script>
     
     </div>
@@ -2523,10 +2572,7 @@ var length = turf.lineDistance(line, 'miles');
 };
 
 var length = turf.lineDistance(line, 'miles');
-
-//=line
-
-//=length</pre>
+</pre>
       
     
 
@@ -2571,16 +2617,13 @@ var pt2 = {
 };
 
 var midpointed = turf.midpoint(pt1, pt2);
+
+//addToMap
+var addToMap = [pt1, pt2, midpointed]
 midpointed.properties['marker-color'] = '#f00';
-
-
-var result = {
-  "type": "FeatureCollection",
-  "features": [pt1, pt2, midpointed]
-};
-
-//=result
            
+            mapLayers.midpoint = [pt1, pt2, midpointed]
+          
       </script>
     
     </div>
@@ -2660,15 +2703,8 @@ var pt2 = {
 };
 
 var midpointed = turf.midpoint(pt1, pt2);
-midpointed.properties['marker-color'] = '#f00';
 
-
-var result = {
-  "type": "FeatureCollection",
-  "features": [pt1, pt2, midpointed]
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -2702,18 +2738,13 @@ var result = {
           // create a random polygon
 var polygon = turf.random('polygon');
 
-//=polygon
-
 var pointOnPolygon = turf.pointOnSurface(polygon);
 
-var resultFeatures = polygon.features.concat(pointOnPolygon);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
+//addToMap
+var addToMap = [polygon, pointOnPolygon]
            
+            mapLayers.pointonsurface = [polygon, pointOnPolygon]
+          
       </script>
     
     </div>
@@ -2769,17 +2800,9 @@ var result = {
           <pre>// create a random polygon
 var polygon = turf.random('polygon');
 
-//=polygon
-
 var pointOnPolygon = turf.pointOnSurface(polygon);
 
-var resultFeatures = polygon.features.concat(pointOnPolygon);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -2818,8 +2841,11 @@ var features = {
   ]
 };
 
-//=features
+//addToMap
+var addToMap = [features]
            
+            mapLayers.square = [features]
+          
       </script>
     
     </div>
@@ -2888,7 +2914,7 @@ var features = {
   ]
 };
 
-//=features</pre>
+</pre>
       
     
 
@@ -2931,8 +2957,11 @@ var end = {
   }
 }
 var line = turf.greatCircle(start, end, {'name': 'Seattle to DC'});
-//=line
+//addToMap
+var addToMap = [start, end, line]
            
+            mapLayers.greatcircle = [start, end, line]
+          
       </script>
     
     </div>
@@ -3033,7 +3062,7 @@ var end = {
   }
 }
 var line = turf.greatCircle(start, end, {'name': 'Seattle to DC'});
-//=line</pre>
+</pre>
       
     
 
@@ -3051,6 +3080,122 @@ var line = turf.greatCircle(start, end, {'name': 'Seattle to DC'});
   Transformation
 </h2>
 </div>
+      
+      
+      
+      <div class="panel" id='bboxclip'>
+
+  
+
+    <p class="npmBadge">npm install @turf/bbox-clip</p>
+    <h3>bboxClip</h3>
+    <div><p>Takes a <a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a> and a bbox and clips the feature to the bbox using <a href="https://github.com/mapbox/lineclip">lineclip</a>.
+May result in degenerate edges when clipping Polygons.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+      <script type="text/javascript">
+          var bbox = [0, 0, 10, 10];
+var poly = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]
+  }
+}
+
+var clipped = turf.bboxClip(poly, bbox);
+//addToMap
+var addToMap = [bbox, poly, clipped]
+           
+            mapLayers.bboxclip = [bbox, poly, clipped]
+          
+      </script>
+    
+    </div>
+  
+
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>feature</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+            <td>feature to clip to the bbox
+</td>
+            </tr>
+            
+          <tr>
+            <td>bbox</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></td>
+            <td>extent in 
+[
+minX, minY, maxX, maxY
+]
+ order
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)>: clipped Feature
+</p>
+        
+      
+    
+
+    
+
+    
+      <h4>Example</h4>
+      
+        
+          <pre>var bbox = [0, 0, 10, 10];
+var poly = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]
+  }
+}
+
+var clipped = turf.bboxClip(poly, bbox);
+</pre>
+      
+    
+
+    
+
+    
+
+    
+  </div>
+
       
       
       
@@ -3088,10 +3233,12 @@ algorithm.</p>
 };
 
 var curved = turf.bezier(line);
+//addToMap
 curved.properties = { stroke: '#0f0' };
-
-//=curved
+var addToMap = [line, curved]
            
+            mapLayers.bezier = [line, curved]
+          
       </script>
     
     </div>
@@ -3178,9 +3325,7 @@ curved.properties = { stroke: '#0f0' };
 };
 
 var curved = turf.bezier(line);
-curved.properties = { stroke: '#0f0' };
-
-//=curved</pre>
+</pre>
       
     
 
@@ -3217,9 +3362,11 @@ curved.properties = { stroke: '#0f0' };
 var unit = 'miles';
 
 var buffered = turf.buffer(pt, 500, unit);
-
-//=buffered
+//addToMap
+var addToMap = [pt, buffered]
            
+            mapLayers.buffer = [pt, buffered]
+          
       </script>
     
     </div>
@@ -3296,8 +3443,7 @@ var buffered = turf.buffer(pt, 500, unit);
 var unit = 'miles';
 
 var buffered = turf.buffer(pt, 500, unit);
-
-//=buffered</pre>
+</pre>
       
     
 
@@ -3329,9 +3475,11 @@ var steps = 10;
 var units = 'kilometers';
 
 var circle = turf.circle(center, radius, steps, units);
-
-//=circle
+//addToMap
+var addToMap = [center, circle]
            
+            mapLayers.circle = [center, circle]
+          
       </script>
     
     </div>
@@ -3412,8 +3560,7 @@ var steps = 10;
 var units = 'kilometers';
 
 var circle = turf.circle(center, radius, steps, units);
-
-//=circle</pre>
+</pre>
       
     
 
@@ -3490,15 +3637,11 @@ var circle = turf.circle(center, radius, steps, units);
 };
 
 var hull = turf.concave(points, 1, 'miles');
-
-var resultFeatures = points.features.concat(hull);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
+//addToMap
+var addToMap = [points, hull]
            
+            mapLayers.concave = [points, hull]
+          
       </script>
     
     </div>
@@ -3622,14 +3765,7 @@ hull to become concave (in miles)
 };
 
 var hull = turf.concave(points, 1, 'miles');
-
-var resultFeatures = points.features.concat(hull);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -3708,15 +3844,11 @@ implements a <a href="http://en.wikibooks.org/wiki/Algorithm_Implementation/Geom
 };
 
 var hull = turf.convex(points);
-
-var resultFeatures = points.features.concat(hull);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
+//addToMap
+var addToMap = [points, hull]
            
+            mapLayers.convex = [points, hull]
+          
       </script>
     
     </div>
@@ -3818,14 +3950,7 @@ var result = {
 };
 
 var hull = turf.convex(points);
-
-var resultFeatures = points.features.concat(hull);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -3854,9 +3979,7 @@ polygon from the first.</p>
       <script type="text/javascript">
           var poly1 = {
   "type": "Feature",
-  "properties": {
-    "fill": "#0f0"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [[
@@ -3870,9 +3993,7 @@ polygon from the first.</p>
 };
 var poly2 = {
   "type": "Feature",
-  "properties": {
-    "fill": "#00f"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [[
@@ -3886,17 +4007,15 @@ var poly2 = {
 };
 
 var differenced = turf.difference(poly1, poly2);
+
+//addToMap
+var addToMap = [poly1, poly2, differenced]
+poly1.properties.fill = '#0f0';
+poly2.properties.fill = '#00f';
 differenced.properties.fill = '#f00';
-
-var polygons = {
-  "type": "FeatureCollection",
-  "features": [poly1, poly2]
-};
-
-//=polygons
-
-//=differenced
            
+            mapLayers.difference = [poly1, poly2, differenced]
+          
       </script>
     
     </div>
@@ -3961,9 +4080,7 @@ var polygons = {
         
           <pre>var poly1 = {
   "type": "Feature",
-  "properties": {
-    "fill": "#0f0"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [[
@@ -3977,9 +4094,7 @@ var polygons = {
 };
 var poly2 = {
   "type": "Feature",
-  "properties": {
-    "fill": "#00f"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [[
@@ -3993,16 +4108,8 @@ var poly2 = {
 };
 
 var differenced = turf.difference(poly1, poly2);
-differenced.properties.fill = '#f00';
 
-var polygons = {
-  "type": "FeatureCollection",
-  "features": [poly1, poly2]
-};
-
-//=polygons
-
-//=differenced</pre>
+</pre>
       
     
 
@@ -4065,9 +4172,11 @@ var polygons = {
 }
 
 var dissolved = turf.dissolve(features, 'combine');
-
-//=dissolved
+//addToMap
+var addToMap = [features, dissolved]
            
+            mapLayers.dissolve = [features, dissolved]
+          
       </script>
     
     </div>
@@ -4163,8 +4272,7 @@ var dissolved = turf.dissolve(features, 'combine');
 }
 
 var dissolved = turf.dissolve(features, 'combine');
-
-//=dissolved</pre>
+</pre>
       
     
 
@@ -4210,9 +4318,11 @@ var poly2 = turf.polygon([[
 ]]);
 
 var intersection = turf.intersect(poly1, poly2);
-
-//=intersection
+//addToMap
+var addToMap = [poly1, poly2, intersection]
            
+            mapLayers.intersect = [poly1, poly2, intersection]
+          
       </script>
     
     </div>
@@ -4305,8 +4415,7 @@ var poly2 = turf.polygon([[
 ]]);
 
 var intersection = turf.intersect(poly1, poly2);
-
-//=intersection</pre>
+</pre>
       
     
 
@@ -4364,13 +4473,13 @@ var intersection = turf.intersect(poly1, poly2);
 
 var tolerance = 0.01;
 
-var simplified = turf.simplify(
- feature, tolerance, false);
+var simplified = turf.simplify(feature, tolerance, false);
 
-//=feature
-
-//=simplified
+//addToMap
+var addToMap = [feature, simplified]
            
+            mapLayers.simplify = [feature, simplified]
+          
       </script>
     
     </div>
@@ -4471,12 +4580,9 @@ a higher-quality simplification with a different algorithm
 
 var tolerance = 0.01;
 
-var simplified = turf.simplify(
- feature, tolerance, false);
+var simplified = turf.simplify(feature, tolerance, false);
 
-//=feature
-
-//=simplified</pre>
+</pre>
       
     
 
@@ -4506,9 +4612,11 @@ using <a href="https://github.com/mapbox/earcut">earcut</a>.</p>
           var poly = turf.random('polygon').features[0];
 
 var triangles = turf.tesselate(poly);
-
-//=triangles
+//addToMap
+var addToMap = [poly, triangles]
            
+            mapLayers.tesselate = [poly, triangles]
+          
       </script>
     
     </div>
@@ -4563,8 +4671,7 @@ var triangles = turf.tesselate(poly);
           <pre>var poly = turf.random('polygon').features[0];
 
 var triangles = turf.tesselate(poly);
-
-//=triangles</pre>
+</pre>
       
     
 
@@ -4622,17 +4729,13 @@ var poly2 = {
     ]]
   }
 };
-var polygons = {
-  "type": "FeatureCollection",
-  "features": [poly1, poly2]
-};
 
 var union = turf.union(poly1, poly2);
-
-//=polygons
-
-//=union
+//addToMap
+var addToMap = [poly1, poly2, union]
            
+            mapLayers.union = [poly1, poly2, union]
+          
       </script>
     
     </div>
@@ -4720,16 +4823,9 @@ var poly2 = {
     ]]
   }
 };
-var polygons = {
-  "type": "FeatureCollection",
-  "features": [poly1, poly2]
-};
 
 var union = turf.union(poly1, poly2);
-
-//=polygons
-
-//=union</pre>
+</pre>
       
     
 
@@ -4743,8 +4839,8 @@ var union = turf.union(poly1, poly2);
       
       
       
-      <div><h2 id='misc'>
-  Misc
+      <div><h2 id='feature conversion'>
+  Feature Conversion
 </h2>
 </div>
       
@@ -4788,8 +4884,11 @@ into <a href="http://geojson.org/geojson-spec.html#multipoint">MultiPoint</a>, <
 
 var combined = turf.combine(fc);
 
-//=combined
+//addToMap
+var addToMap = [combined]
            
+            mapLayers.combine = [combined]
+          
       </script>
     
     </div>
@@ -4864,7 +4963,7 @@ var combined = turf.combine(fc);
 
 var combined = turf.combine(fc);
 
-//=combined</pre>
+</pre>
       
     
 
@@ -4909,11 +5008,11 @@ var combined = turf.combine(fc);
 };
 
 var points = turf.explode(poly);
-
-//=poly
-
-//=points
+//addToMap
+var addToMap = [poly, points]
            
+            mapLayers.explode = [poly, points]
+          
       </script>
     
     </div>
@@ -4989,10 +5088,7 @@ var points = turf.explode(poly);
 };
 
 var points = turf.explode(poly);
-
-//=poly
-
-//=points</pre>
+</pre>
       
     
 
@@ -5029,8 +5125,11 @@ var points = turf.explode(poly);
 
 var flattened = turf.flatten(geometry);
 
-//=flattened
+//addToMap
+var addToMap = [flattened]
            
+            mapLayers.flatten = [flattened]
+          
       </script>
     
     </div>
@@ -5098,7 +5197,7 @@ s
 
 var flattened = turf.flatten(geometry);
 
-//=flattened</pre>
+</pre>
       
     
 
@@ -5109,6 +5208,113 @@ var flattened = turf.flatten(geometry);
     
   </div>
 
+      
+      
+      
+      <div class="panel" id='polygontolinestring'>
+
+  
+
+    <p class="npmBadge">npm install @turf/polygon-to-linestring</p>
+    <h3>polygonToLineString</h3>
+    <div><p>Converts a <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> or <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a> to a <a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a> of <a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> or <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a>.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+      <script type="text/javascript">
+          var poly = {
+  'type': 'Feature',
+  'properties': {},
+  'geometry': {
+    'type': 'Polygon',
+    'coordinates': [[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]
+  }
+}
+var lines = turf.polygonToLineString(poly);
+//addToMap
+var addToMap = [lines]
+           
+            mapLayers.polygontolinestring = [lines]
+          
+      </script>
+    
+    </div>
+  
+
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>polygon</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+            <td>Feature to convert
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | MultiLinestring)>: converted Feature to Lines
+</p>
+        
+      
+    
+
+    
+
+    
+      <h4>Example</h4>
+      
+        
+          <pre>var poly = {
+  'type': 'Feature',
+  'properties': {},
+  'geometry': {
+    'type': 'Polygon',
+    'coordinates': [[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]
+  }
+}
+var lines = turf.polygonToLineString(poly);
+</pre>
+      
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div><h2 id='misc'>
+  Misc
+</h2>
+</div>
       
       
       
@@ -5134,12 +5340,12 @@ from <code>[x, y]</code> to <code>[y, x]</code>.</p>
   }
 };
 
-//=serbia
-
 var saudiArabia = turf.flip(serbia);
-
-//=saudiArabia
+//addToMap
+var addToMap = [serbia, saudiArabia]
            
+            mapLayers.flip = [serbia, saudiArabia]
+          
       </script>
     
     </div>
@@ -5202,11 +5408,8 @@ var saudiArabia = turf.flip(serbia);
   }
 };
 
-//=serbia
-
 var saudiArabia = turf.flip(serbia);
-
-//=saudiArabia</pre>
+</pre>
       
     
 
@@ -5248,15 +5451,11 @@ var saudiArabia = turf.flip(serbia);
 };
 
 var kinks = turf.kinks(poly);
-
-var resultFeatures = kinks.features.concat(poly);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
+//addToMap
+var addToMap = [poly, kinks]
            
+            mapLayers.kinks = [poly, kinks]
+          
       </script>
     
     </div>
@@ -5324,14 +5523,155 @@ var result = {
 };
 
 var kinks = turf.kinks(poly);
+</pre>
+      
+    
 
-var resultFeatures = kinks.features.concat(poly);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
+    
 
-//=result</pre>
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel" id='linearc'>
+
+  
+
+    <p class="npmBadge">npm install @turf/line-arc</p>
+    <h3>lineArc</h3>
+    <div><p>Creates a circular arc, of a circle of the given radius and center point, between bearing1 and bearing2;
+0 bearing is North of center point, positive clockwise.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+      <script type="text/javascript">
+          var center = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75, 40]
+  }
+}
+var radius = 5;
+var bearing1 = 25;
+var bearing2 = 47;
+
+var arc = turf.lineArc(center, radius, bearing1, bearing2);
+
+//addToMap
+var addToMap = [center, arc]
+           
+            mapLayers.linearc = [center, arc]
+          
+      </script>
+    
+    </div>
+  
+
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>center</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+            <td>center point
+</td>
+            </tr>
+            
+          <tr>
+            <td>radius</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>radius of the circle
+</td>
+            </tr>
+            
+          <tr>
+            <td>bearing1</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>angle, in decimal degrees, of the first radius of the arc
+</td>
+            </tr>
+            
+          <tr>
+            <td>bearing2</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>angle, in decimal degrees, of the second radius of the arc
+</td>
+            </tr>
+            
+          <tr>
+            <td>steps</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+              (default 64)</td>
+            <td>number of steps
+</td>
+            </tr>
+            
+          <tr>
+            <td>units</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+              (default kilometers)</td>
+            <td>miles, kilometers, degrees, or radians
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: line arc
+</p>
+        
+      
+    
+
+    
+
+    
+      <h4>Example</h4>
+      
+        
+          <pre>var center = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75, 40]
+  }
+}
+var radius = 5;
+var bearing1 = 25;
+var bearing2 = 47;
+
+var arc = turf.lineArc(center, radius, bearing1, bearing2);
+
+</pre>
       
     
 
@@ -5371,8 +5711,11 @@ If the line is shorter than the segment length then the original line is returne
   }
 };
 var result = turf.lineChunk(line, 15, 'miles');
-//=result
+//addToMap
+var addToMap = [line, result]
            
+            mapLayers.linechunk = [line, result]
+          
       </script>
     
     </div>
@@ -5460,7 +5803,7 @@ var result = turf.lineChunk(line, 15, 'miles');
   }
 };
 var result = turf.lineChunk(line, 15, 'miles');
-//=result</pre>
+</pre>
       
     
 
@@ -5503,8 +5846,11 @@ var line2 = {
   }
 };
 var points = turf.lineIntersect(line1, line2);
-//= points
+//addToMap
+var addToMap = [line, line2, points]
            
+            mapLayers.lineintersect = [line, line2, points]
+          
       </script>
     
     </div>
@@ -5580,7 +5926,134 @@ var line2 = {
   }
 };
 var points = turf.lineIntersect(line1, line2);
-//= points</pre>
+</pre>
+      
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel" id='lineoverlap'>
+
+  
+
+    <p class="npmBadge">npm install @turf/line-overlap</p>
+    <h3>lineOverlap</h3>
+    <div><p>Takes any LineString or Polygon and returns the overlapping lines between both features.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+      <script type="text/javascript">
+          var line1 = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[115, -35], [125, -30], [135, -30], [145, -35]
+    ]
+  }
+}
+var line2 = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[115, -25], [125, -30], [135, -30], [145, -25]
+    ]
+  }
+}
+var overlapping = turf.lineOverlap(line1, line2);
+//addToMap
+var addToMap = [line1, line2, overlapping]
+           
+            mapLayers.lineoverlap = [line1, line2, overlapping]
+          
+      </script>
+    
+    </div>
+  
+
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>line1</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+            <td>any LineString or Polygon
+</td>
+            </tr>
+            
+          <tr>
+            <td>line2</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;(<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a> | <a href="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</a> | <a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a> | <a href="http://geojson.org/geojson-spec.html#multipolygon">MultiPolygon</a>)></td>
+            <td>any LineString or Polygon
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-collection-objects">FeatureCollection</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#linestring">LineString</a>>: lines(s) that are overlapping between both features
+</p>
+        
+      
+    
+
+    
+
+    
+      <h4>Example</h4>
+      
+        
+          <pre>var line1 = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[115, -35], [125, -30], [135, -30], [145, -35]
+    ]
+  }
+}
+var line2 = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[115, -25], [125, -30], [135, -30], [145, -25]
+    ]
+  }
+}
+var overlapping = turf.lineOverlap(line1, line2);
+</pre>
       
     
 
@@ -5615,8 +6088,11 @@ var points = turf.lineIntersect(line1, line2);
   }
 }
 var segments = turf.lineSegment(polygon);
-//=segments
+//addToMap
+var addToMap = [polygon, segments]
            
+            mapLayers.linesegment = [polygon, segments]
+          
       </script>
     
     </div>
@@ -5677,7 +6153,7 @@ var segments = turf.lineSegment(polygon);
   }
 }
 var segments = turf.lineSegment(polygon);
-//=segments</pre>
+</pre>
       
     
 
@@ -5739,11 +6215,11 @@ var stop = {
 };
 
 var sliced = turf.lineSlice(start, stop, line);
-
-//=line
-
-//=sliced
+//addToMap
+var addToMap = [start, stop, line]
            
+            mapLayers.lineslice = [start, stop, line]
+          
       </script>
     
     </div>
@@ -5842,10 +6318,7 @@ var stop = {
 };
 
 var sliced = turf.lineSlice(start, stop, line);
-
-//=line
-
-//=sliced</pre>
+</pre>
       
     
 
@@ -5898,11 +6371,11 @@ var stop = 25;
 var units = 'miles';
 
 var sliced = turf.lineSliceAlong(line, start, stop, units);
-
-//=line
-
-//=sliced
+//addToMap
+var addToMap = [line, start, stop, sliced]
            
+            mapLayers.lineslicealong = [line, start, stop, sliced]
+          
       </script>
     
     </div>
@@ -6000,10 +6473,7 @@ var stop = 25;
 var units = 'miles';
 
 var sliced = turf.lineSliceAlong(line, start, stop, units);
-
-//=line
-
-//=sliced</pre>
+</pre>
       
     
 
@@ -6046,8 +6516,11 @@ var splitter = {
   }
 };
 var split = turf.lineSplit(line, splitter);
-//=split
+//addToMap
+var addToMap = [line, splitter]
            
+            mapLayers.linesplit = [line, splitter]
+          
       </script>
     
     </div>
@@ -6123,7 +6596,7 @@ var splitter = {
   }
 };
 var split = turf.lineSplit(line, splitter);
-//=split</pre>
+</pre>
       
     
 
@@ -6166,8 +6639,11 @@ var mask = {
   }
 }
 var masked = turf.mask(polygon, mask);
-//=masked
+//addToMap
+var addToMap = [masked]
            
+            mapLayers.mask = [masked]
+          
       </script>
     
     </div>
@@ -6243,7 +6719,7 @@ var mask = {
   }
 }
 var masked = turf.mask(polygon, mask);
-//=masked</pre>
+</pre>
       
     
 
@@ -6294,15 +6770,12 @@ var pt = {
 };
 
 var snapped = turf.pointOnLine(line, pt, 'miles');
+//addToMap
+var addToMap = [line, pt, snapped]
 snapped.properties['marker-color'] = '#00f'
-
-var result = {
-  "type": "FeatureCollection",
-  "features": [line, pt, snapped]
-};
-
-//=result
            
+            mapLayers.pointonline = [line, pt, snapped]
+          
       </script>
     
     </div>
@@ -6404,14 +6877,155 @@ var pt = {
 };
 
 var snapped = turf.pointOnLine(line, pt, 'miles');
-snapped.properties['marker-color'] = '#00f'
+</pre>
+      
+    
 
-var result = {
-  "type": "FeatureCollection",
-  "features": [line, pt, snapped]
-};
+    
 
-//=result</pre>
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel" id='sector'>
+
+  
+
+    <p class="npmBadge">npm install @turf/sector</p>
+    <h3>sector</h3>
+    <div><p>Creates a circular sector of a circle of given radius and center <a href="http://geojson.org/geojson-spec.html#point">Point</a>,
+between (clockwise) bearing1 and bearing2; 0 bearing is North of center point, positive clockwise.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+      <script type="text/javascript">
+          var center = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75, 40]
+  }
+}
+var radius = 5;
+var bearing1 = 25;
+var bearing2 = 45;
+
+var sector = turf.sector(center, radius, bearing1, bearing2);
+
+//addToMap
+var addToMap = [center, sector]
+           
+            mapLayers.sector = [center, sector]
+          
+      </script>
+    
+    </div>
+  
+
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>center</td>
+            <td><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#point">Point</a>></td>
+            <td>center point
+</td>
+            </tr>
+            
+          <tr>
+            <td>radius</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>radius of the circle
+</td>
+            </tr>
+            
+          <tr>
+            <td>bearing1</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>angle, in decimal degrees, of the first radius of the sector
+</td>
+            </tr>
+            
+          <tr>
+            <td>bearing2</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>angle, in decimal degrees, of the second radius of the sector
+</td>
+            </tr>
+            
+          <tr>
+            <td>steps</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+              (default 64)</td>
+            <td>number of steps
+</td>
+            </tr>
+            
+          <tr>
+            <td>units</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+              (default kilometers)</td>
+            <td>miles, kilometers, degrees, or radians
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="http://geojson.org/geojson-spec.html#feature-objects">Feature</a>&#x3C;<a href="http://geojson.org/geojson-spec.html#polygon">Polygon</a>>: sector polygon
+</p>
+        
+      
+    
+
+    
+
+    
+      <h4>Example</h4>
+      
+        
+          <pre>var center = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-75, 40]
+  }
+}
+var radius = 5;
+var bearing1 = 25;
+var bearing2 = 45;
+
+var sector = turf.sector(center, radius, bearing1, bearing2);
+
+</pre>
       
     
 
@@ -6568,9 +7182,11 @@ Uses <a href="https://github.com/mclaeysb/simplepolygon">simplepolygon</a> inter
 };
 
 var result = turf.unkinkPolygon(poly);
-
-//=result
+//addToMap
+var addToMap = [poly, result]
            
+            mapLayers.unkinkpolygon = [poly, result]
+          
       </script>
     
     </div>
@@ -6631,8 +7247,7 @@ var result = turf.unkinkPolygon(poly);
 };
 
 var result = turf.unkinkPolygon(poly);
-
-//=result</pre>
+</pre>
       
     
 
@@ -7620,14 +8235,15 @@ and experimentation.</p>
   bbox: [-70, 40, -60, 60]
 });
 
-//=points
-
 var polygons = turf.random('polygons', 4, {
   bbox: [-70, 40, -60, 60]
 });
 
-//=polygons
+//addToMap
+var addToMap = [points, polygons]
            
+            mapLayers.random = [points, polygons]
+          
       </script>
     
     </div>
@@ -7699,13 +8315,11 @@ var polygons = turf.random('polygons', 4, {
   bbox: [-70, 40, -60, 60]
 });
 
-//=points
-
 var polygons = turf.random('polygons', 4, {
   bbox: [-70, 40, -60, 60]
 });
 
-//=polygons</pre>
+</pre>
       
     
 
@@ -7733,12 +8347,16 @@ var polygons = turf.random('polygons', 4, {
       <script type="text/javascript">
           var points = turf.random('points', 1000);
 
-//=points
-
 var sample = turf.sample(points, 10);
-
-//=sample
+//addToMap
+var addToMap = [points, sample]
+turf.featureEach(sample, function (currentFeature) {
+ currentFeature.properties['marker-size'] = 'large';
+ currentFeature.properties['marker-color'] = '#000';
+});
            
+            mapLayers.sample = [points, sample]
+          
       </script>
     
     </div>
@@ -7801,11 +8419,8 @@ var sample = turf.sample(points, 10);
         
           <pre>var points = turf.random('points', 1000);
 
-//=points
-
 var sample = turf.sample(points, 10);
-
-//=sample</pre>
+</pre>
       
     
 
@@ -8000,11 +8615,12 @@ var features = {
 };
 
 var zValue = turf.planepoint(point, triangle);
-
-//=features
-
-//=zValue
+//addToMap
+var addToMap = [features]
+point.properties.zValue = zValue
            
+            mapLayers.planepoint = [features]
+          
       </script>
     
     </div>
@@ -8100,10 +8716,7 @@ var features = {
 };
 
 var zValue = turf.planepoint(point, triangle);
-
-//=features
-
-//=zValue</pre>
+</pre>
       
     
 
@@ -8139,22 +8752,20 @@ the points that represent the corners of the triangle.</p>
 var points = turf.random('points', 30, {
   bbox: [50, 30, 70, 50]
 });
-//=points
 // add a random property to each point between 0 and 9
 for (var i = 0; i < points.features.length; i++) {
   points.features[i].properties.z = ~~(Math.random() * 9);
 }
 var tin = turf.tin(points, 'z')
+//addToMap
+var addToMap = [tin, points]
 for (var i = 0; i < tin.features.length; i++) {
   var properties  = tin.features[i].properties;
-  // roughly turn the properties of each
-  // triangle into a fill color
-  // so we can visualize the result
-  properties.fill = '#' + properties.a +
-    properties.b + properties.c;
+  properties.fill = '#' + properties.a + properties.b + properties.c;
 }
-//=tin
            
+            mapLayers.tin = [tin, points]
+          
       </script>
     
     </div>
@@ -8218,21 +8829,12 @@ This is optional: if not given, then there will be no extra data added to the de
 var points = turf.random('points', 30, {
   bbox: [50, 30, 70, 50]
 });
-//=points
 // add a random property to each point between 0 and 9
 for (var i = 0; i < points.features.length; i++) {
   points.features[i].properties.z = ~~(Math.random() * 9);
 }
 var tin = turf.tin(points, 'z')
-for (var i = 0; i < tin.features.length; i++) {
-  var properties  = tin.features[i].properties;
-  // roughly turn the properties of each
-  // triangle into a fill color
-  // so we can visualize the result
-  properties.fill = '#' + properties.a +
-    properties.b + properties.c;
-}
-//=tin</pre>
+</pre>
       
     
 
@@ -8376,9 +8978,12 @@ var poly = turf.polygon([[
 ]]);
 
 var isInside = turf.inside(pt, poly);
-
-//=isInside
+//addToMap
+var addToMap = [pt, poly]
+pt.properties.isInside = isInside
            
+            mapLayers.inside = [pt, poly]
+          
       </script>
     
     </div>
@@ -8450,8 +9055,7 @@ var poly = turf.polygon([[
 ]]);
 
 var isInside = turf.inside(pt, poly);
-
-//=isInside</pre>
+</pre>
       
     
 
@@ -8541,13 +9145,15 @@ var points = {
 };
 
 var ptsWithin = turf.within(points, searchWithin);
-
-//=points
-
-//=searchWithin
-
-//=ptsWithin
+//addToMap
+var addToMap = [points, searchWithin, ptsWithin]
+turf.featureEach(ptsWithin, function (currentFeature) {
+  currentFeature.properties['marker-size'] = 'large'
+  currentFeature.properties['marker-color'] = '#000';
+});
            
+            mapLayers.within = [points, searchWithin, ptsWithin]
+          
       </script>
     
     </div>
@@ -8670,12 +9276,7 @@ var points = {
 };
 
 var ptsWithin = turf.within(points, searchWithin);
-
-//=points
-
-//=searchWithin
-
-//=ptsWithin</pre>
+</pre>
       
     
 
@@ -8724,8 +9325,11 @@ var polygons = turf.featureCollection([poly1, poly2]);
 var tagged = turf.tag(points, polygons,
                       'pop', 'population');
 
-//=tagged
+//addToMap
+var addToMap = [tagged, polygons]
            
+            mapLayers.tag = [tagged, polygons]
+          
       </script>
     
     </div>
@@ -8831,7 +9435,7 @@ var polygons = turf.featureCollection([poly1, poly2]);
 var tagged = turf.tag(points, polygons,
                       'pop', 'population');
 
-//=tagged</pre>
+</pre>
       
     
 
@@ -8871,9 +9475,11 @@ var cellSize = 50;
 var units = 'miles';
 
 var hexgrid = turf.hexGrid(bbox, cellSize, units);
-
-//=hexgrid
+//addToMap
+var addToMap = [hexgrid]
            
+            mapLayers.hexgrid = [hexgrid]
+          
       </script>
     
     </div>
@@ -8957,8 +9563,7 @@ var cellSize = 50;
 var units = 'miles';
 
 var hexgrid = turf.hexGrid(bbox, cellSize, units);
-
-//=hexgrid</pre>
+</pre>
       
     
 
@@ -8990,8 +9595,11 @@ var units = 'miles';
 
 var grid = turf.pointGrid(extent, cellSize, units);
 
-//=grid
+//addToMap
+var addToMap = [grid]
            
+            mapLayers.pointgrid = [grid]
+          
       </script>
     
     </div>
@@ -9042,6 +9650,14 @@ minX, minY, maxX, maxY
 </td>
             </tr>
             
+          <tr>
+            <td>centered</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+              (default false)</td>
+            <td>adjust points position to center the grid into bbox
+</td>
+            </tr>
+            
           </tbody>
         </table>
       </div>
@@ -9068,7 +9684,7 @@ var units = 'miles';
 
 var grid = turf.pointGrid(extent, cellSize, units);
 
-//=grid</pre>
+</pre>
       
     
 
@@ -9099,8 +9715,11 @@ var cellSize = 50;
 var units = 'miles';
 
 var squareGrid = turf.squareGrid(bbox, cellSize, units);
-//=squareGrid
+//addToMap
+var addToMap = [squareGrid]
            
+            mapLayers.squaregrid = [squareGrid]
+          
       </script>
     
     </div>
@@ -9184,7 +9803,7 @@ var cellSize = 50;
 var units = 'miles';
 
 var squareGrid = turf.squareGrid(bbox, cellSize, units);
-//=squareGrid</pre>
+</pre>
       
     
 
@@ -9216,8 +9835,11 @@ var units = 'miles';
 
 var triangleGrid = turf.triangleGrid(bbox, cellSize, units);
 
-//=triangleGrid
+//addToMap
+var addToMap = [triangleGrid]
            
+            mapLayers.trianglegrid = [triangleGrid]
+          
       </script>
     
     </div>
@@ -9294,7 +9916,7 @@ var units = 'miles';
 
 var triangleGrid = turf.triangleGrid(bbox, cellSize, units);
 
-//=triangleGrid</pre>
+</pre>
       
     
 
@@ -9369,16 +9991,12 @@ var against = {
 };
 
 var nearest = turf.nearest(point, against);
+//addToMap
+var addToMap = [point, against, nearest]
 nearest.properties['marker-color'] = '#f00';
-
-var resultFeatures = against.features.concat(point);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result
            
+            mapLayers.nearest = [point, against, nearest]
+          
       </script>
     
     </div>
@@ -9476,15 +10094,7 @@ var against = {
 };
 
 var nearest = turf.nearest(point, against);
-nearest.properties['marker-color'] = '#f00';
-
-var resultFeatures = against.features.concat(point);
-var result = {
-  "type": "FeatureCollection",
-  "features": resultFeatures
-};
-
-//=result</pre>
+</pre>
       
     
 
@@ -10987,6 +11597,76 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
       
       
       
+      <div class="panel" id='containsnumber'>
+
+  
+
+    <p class="npmBadge">npm install @turf/invariant</p>
+    <h3>containsNumber</h3>
+    <div><p>Checks if coordinates contains a number</p>
+</div>
+    <div class="mapHolder">
+      
+      
+    </div>
+  
+
+ 
+
+ 
+  <p><i><strong>Note:</strong> containsNumber is part of the @turf/invariant module. To use it directly you will need to import the @turf/invariant and call the containsNumber method.</i></p>
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>coordinates</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;any></td>
+            <td>GeoJSON Coordinates
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>: true if Array contains a number
+</p>
+        
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
       <div class="panel" id='geojsontype'>
 
   
@@ -11280,6 +11960,247 @@ Internally this uses <a href="#geojsontype">geojsonType</a> to judge geometry ty
         <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: error if value is not the expected type.
 </p>
       
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div><h2 id='unit conversion'>
+  Unit Conversion
+</h2>
+</div>
+      
+      
+      
+      <div class="panel" id='radianstodistance'>
+
+  
+
+    <p class="npmBadge">npm install @turf/helpers</p>
+    <h3>radiansToDistance</h3>
+    <div><p>Convert a distance measurement from radians to a more friendly unit.</p>
+</div>
+    <div class="mapHolder">
+      
+      
+    </div>
+  
+
+ 
+  <p><i><strong>Note:</strong> radiansToDistance is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the radiansToDistance method.</i></p>
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>radians</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>in radians across the sphere
+</td>
+            </tr>
+            
+          <tr>
+            <td>units</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+              (default kilometers)</td>
+            <td>can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: distance
+</p>
+        
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel" id='distancetoradians'>
+
+  
+
+    <p class="npmBadge">npm install @turf/helpers</p>
+    <h3>distanceToRadians</h3>
+    <div><p>Convert a distance measurement from a real-world unit into radians</p>
+</div>
+    <div class="mapHolder">
+      
+      
+    </div>
+  
+
+ 
+  <p><i><strong>Note:</strong> distanceToRadians is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the distanceToRadians method.</i></p>
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>distance</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>in real units
+</td>
+            </tr>
+            
+          <tr>
+            <td>units</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+              (default kilometers)</td>
+            <td>can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: radians
+</p>
+        
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+      
+      
+      
+      <div class="panel" id='distancetodegrees'>
+
+  
+
+    <p class="npmBadge">npm install @turf/helpers</p>
+    <h3>distanceToDegrees</h3>
+    <div><p>Convert a distance measurement from a real-world unit into degrees</p>
+</div>
+    <div class="mapHolder">
+      
+      
+    </div>
+  
+
+ 
+  <p><i><strong>Note:</strong> distanceToDegrees is part of the @turf/helpers module. To use it directly you will need to import the @turf/helpers and call the distanceToDegrees method.</i></p>
+ 
+
+ 
+
+ 
+
+  
+    <h4>Arguments</h4>
+    <div>
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <td style="width:15%">Argument</td>
+            <td style="width:30%">Type</td>
+            <td style="width:55%">Description</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>distance</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></td>
+            <td>in real units
+</td>
+            </tr>
+            
+          <tr>
+            <td>units</td>
+            <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?
+              (default kilometers)</td>
+            <td>can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+
+    
+      
+        <h4>Returns</h4>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>: degrees
+</p>
+        
+      
+    
+
     
 
     

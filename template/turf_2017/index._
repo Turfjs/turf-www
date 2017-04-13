@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../assets/css/github.css" />
   <link href="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js"></script>
-  <script src="https://npmcdn.com/@turf/turf/turf.js"></script>
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>

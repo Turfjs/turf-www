@@ -89,7 +89,7 @@ function isInViewport (element) {
   var rect = element.getElementsByTagName('h3')[0].getBoundingClientRect();
   return (
     rect.top >= -200 &&
-    rect.bottom <= window.innerHeight + 200
+    rect.bottom <= window.innerHeight + 100
     );
 }
 
