@@ -16,6 +16,9 @@ toc:
   - pointOnSurface
   - square
   - greatCircle
+  - name: Coordinate Mutation
+  - flip
+  - truncate
   - name: Transformation
   - bboxClip
   - bezier
@@ -35,7 +38,6 @@ toc:
   - flatten
   - polygonToLineString
   - name: Misc
-  - flip
   - kinks
   - lineArc
   - lineChunk
@@ -48,7 +50,6 @@ toc:
   - mask
   - pointOnLine
   - sector
-  - truncate
   - unkinkPolygon
   - name: Helper
   - featureCollection
