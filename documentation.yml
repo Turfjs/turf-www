@@ -14,10 +14,16 @@ toc:
   - lineDistance
   - midpoint
   - pointOnSurface
+  - polygonTangents
+  - rhumbBearing
+  - rhumbDestination
+  - rhumbDistance
   - square
   - greatCircle
   - name: Coordinate Mutation
   - flip
+  - rewind
+  - round
   - truncate
   - name: Transformation
   - bboxClip
@@ -29,13 +35,19 @@ toc:
   - difference
   - dissolve
   - intersect
+  - lineOffset
   - simplify
   - tesselate
+  - transformRotate
+  - transformTranslate
+  - transformScale
   - union
   - name: Feature Conversion
   - combine
   - explode
   - flatten
+  - lineStringToPolygon
+  - polygonize
   - polygonToLineString
   - name: Misc
   - kinks
@@ -65,6 +77,7 @@ toc:
   - random
   - sample
   - name: Interpolation
+  - isobands
   - isolines
   - planepoint
   - tin
@@ -88,6 +101,12 @@ toc:
   - coordReduce
   - featureEach
   - featureReduce
+  - flattenEach
+  - flattenReduce
+  - getCoord
+  - getCoords
+  - getGeom
+  - getGeomType
   - geomEach
   - geomReduce
   - propEach
@@ -96,13 +115,20 @@ toc:
   - collectionOf
   - containsNumber
   - geojsonType
-  - getCoord
-  - getCoords
   - featureOf
+  - name: Booleans
+  - booleanClockwise
+  - booleanContains
+  - booleanCrosses
+  - booleanDisjoint
   - name: Unit Conversion
-  - radiansToDistance
+  - bearingToAngle
+  - convertDistance
+  - degrees2radians
   - distanceToRadians
   - distanceToDegrees
+  - radiansToDistance
+  - radians2degrees
 paths:
     GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
     Point: "http://geojson.org/geojson-spec.html#point"

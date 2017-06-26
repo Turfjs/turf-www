@@ -109,5 +109,5 @@ function addNewLayers (elementId) {
     });
     fg.addLayer(geojsonLayer);
   });
-  turfMap.fitBounds(fg.getBounds());
+  turfMap.fitBounds(fg.getBounds({padding: 20}));
 }

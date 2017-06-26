@@ -4,8 +4,8 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "copyAssets": "cp -R template/turf_2017/assets/ assets/",
-    "deleteDocAssetsDirectory": "rm -R docs/assets",
+    "copyAssets": "shx cp -r template/turf_2017/assets assets",
+    "deleteDocAssetsDirectory": "shx rm -R docs/assets",
     "deploy": "npm run buildAPI && npm run copyAssets && npm run deleteDocAssetsDirectory",
     "buildAPI": "documentation build -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs",
     "lintAPI": "documentation lint turf/packages/turf-*/index.js",
@@ -36,11 +36,13 @@
     "striptags": "^2.0.1"
   },
   "devDependencies": {
-    "copy": "^0.3.0",
-    "documentation": "^4.0.0-beta.18",
-    "static-server": "^2.0.3",
     "@turf/meta": "^3.7.3",
     "ava": "^0.17.0",
-    "glob": "^7.1.1"
+    "copy": "^0.3.0",
+    "copyfiles": "^1.2.0",
+    "documentation": "^4.0.0-beta.18",
+    "glob": "^7.1.1",
+    "shx": "^0.2.2",
+    "static-server": "^2.0.3"
   }
 }

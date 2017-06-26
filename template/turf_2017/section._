@@ -9,7 +9,7 @@
       <% if (section.context.file.includes('turf-collect')) { %>
         <div id='turfMap' style="height: 350px"></div>
       <% } %>
-      <% if (section.examples) { %>
+      <% if (section.examples && section.examples[0].description.includes('//addToMap')) { %>
       <script type="text/javascript">
           <%= parseCompleteExample(section.examples[0].description) %>
            <% if (section.examples[0].description.includes('//addToMap')) { %>
