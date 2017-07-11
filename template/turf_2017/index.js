@@ -8,12 +8,12 @@ var fs = require('fs'),
   concat = require('concat-stream'),
   GithubSlugger = require('github-slugger'),
   createFormatters = require('documentation').util.createFormatters,
-  createLinkerStack = require('documentation').util.createLinkerStack,
+  linkerStack = require('documentation').util.LinkerStack,
   hljs = require('highlight.js');
 
 module.exports = function (comments, options, callback) {
 
-  var linkerStack = createLinkerStack(options)
+  var linkerStack = new linkerStack(options)
     .namespaceResolver(comments, function (namespace) {
       var slugger = new GithubSlugger();
       return '#' + slugger.slug(namespace);
