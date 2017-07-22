@@ -8,12 +8,12 @@ var fs = require('fs'),
   concat = require('concat-stream'),
   GithubSlugger = require('github-slugger'),
   createFormatters = require('documentation').util.createFormatters,
-  LinkerStack = require('documentation').util.LinkerStack,
-    hljs = require('highlight.js');
+  createLinkerStack = require('documentation').util.createLinkerStack,
+  hljs = require('highlight.js');
 
 module.exports = function (comments, options, callback) {
 
-  var linkerStack = new LinkerStack(options)
+  var linkerStack = createLinkerStack(options)
     .namespaceResolver(comments, function (namespace) {
       var slugger = new GithubSlugger();
       return '#' + slugger.slug(namespace);
@@ -29,16 +29,16 @@ module.exports = function (comments, options, callback) {
         var slugger = new GithubSlugger();
         return slugger.slug(str);
       },
-      getFeaturesForMap: function (string) {
-        var string = string.split('//addToMap')[1];
+      getFeaturesForMap: function (str) {
+        var string = str.split('//addToMap')[1];
         var outArray = string.match(/\[(.*?)\]/g)[0];
         return outArray.replace('[','').replace(']',''); 
       },
       parseCompleteExample: function (string) {
         return hljs.fixMarkup(string);
       },
-      parseExample: function (string) {
-        var string = string.split('//addToMap')[0]
+      parseExample: function (str) {
+        var string = str.split('//addToMap')[0];
         return hljs.fixMarkup(string);
       },
       getNpmPath: function (filepath) {
