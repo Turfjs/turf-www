@@ -3,6 +3,7 @@ toc:
   - along
   - area
   - bbox
+  - bboxClip
   - bboxPolygon
   - bearing
   - center
@@ -30,6 +31,7 @@ toc:
   - bezier
   - buffer
   - circle
+  - clone
   - concave
   - convex
   - difference
@@ -77,6 +79,7 @@ toc:
   - random
   - sample
   - name: Interpolation
+  - interpolate
   - isobands
   - isolines
   - planepoint
@@ -95,6 +98,8 @@ toc:
   - nearest
   - name: Aggregation
   - collect
+  - clustersDbscan
+  - clustersKmeans
   - name: Meta
   - coordAll
   - coordEach
@@ -111,6 +116,11 @@ toc:
   - geomReduce
   - propEach
   - propReduce
+  - segmentEach
+  - segmentReduce
+  - getCluster
+  - clusterEach
+  - clusterReduce
   - name: Assertions
   - collectionOf
   - containsNumber
@@ -121,8 +131,11 @@ toc:
   - booleanContains
   - booleanCrosses
   - booleanDisjoint
+  - booleanOverlap
+  - booleanPointOnLine
   - name: Unit Conversion
   - bearingToAngle
+  - convertArea
   - convertDistance
   - degrees2radians
   - distanceToRadians
