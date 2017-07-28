@@ -5228,7 +5228,7 @@ all rotations follow the right-hand rule: <a href="https://en.wikipedia.org/wiki
       
       <script type="text/javascript">
           var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);
-var rotatedPoly = turf.transformRotate(poly, 100, [15, 15]);
+var rotatedPoly = turf.transformRotate(poly, 10, [0, 25]);
 
 //addToMap
 var addToMap = [poly, rotatedPoly];
@@ -5311,7 +5311,7 @@ rotatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};
       
         
           <pre>var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);
-var rotatedPoly = turf.transformRotate(poly, 100, [15, 15]);
+var rotatedPoly = turf.transformRotate(poly, 10, [0, 25]);
 
 </pre>
       
