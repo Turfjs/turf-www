@@ -62,7 +62,7 @@ mainContent.addEventListener('scroll', function () {
         handleMapMovementEvent(element);
       }
     }
-  }, 150);
+  }, 50);
 }, false);
 
 function handleMapMovementEvent (element) {

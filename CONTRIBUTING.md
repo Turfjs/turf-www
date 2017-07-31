@@ -9,13 +9,14 @@ Run `npm run serve` - this will show you the currently compiled docs at http://l
 
 ### Updating the API page
 
-Changes to the API documentation happen upstream in the actual [Turf repository](https://github.com/turfjs/turf/). FOr example if you wanted to update the buffer documentation you would go to the [@turf/buffer/index.js](https://github.com/Turfjs/turf/blob/master/packages/turf-buffer/index.js) and edit jsdocs.
+Changes to the API documentation happen upstream in the actual [Turf repository](https://github.com/turfjs/turf/). For example if you wanted to update the buffer documentation you would go to the [@turf/buffer/index.js](https://github.com/Turfjs/turf/blob/master/packages/turf-buffer/index.js) and edit jsdocs.
 
 Presuming you've updated the documentation in the relevant turf module and your changes have been accepted, you can now update the docs using the following procedure:
 
-1. Start by updating the turf dependency: `cd` into the turf submodule and `git pull origin master`
-2. Run `npm run deploy`
-3. Commit and push the changes
+1. Start with updating the turf project dependency: `cd` into the turf-www/turf submodule  and `git pull origin master`
+2. `cd` back to the root of the turf-www project
+3. Run `npm run deploy`
+4. Commit and push the changes
 
 ### Updating the API template
 

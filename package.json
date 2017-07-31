@@ -4,7 +4,7 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "copyAssets": "shx cp -r template/turf_2017/assets assets",
+    "copyAssets": "shx cp -r template/turf_2017/assets/ ./",
     "deleteDocAssetsDirectory": "shx rm -R docs/assets",
     "deploy": "npm run buildAPI && npm run copyAssets && npm run deleteDocAssetsDirectory",
     "buildAPI": "documentation build -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs",
@@ -40,7 +40,7 @@
     "ava": "^0.17.0",
     "copy": "^0.3.0",
     "copyfiles": "^1.2.0",
-    "documentation": "^4.0.0-beta.18",
+    "documentation": "4.0.0-beta.18",
     "glob": "^7.1.1",
     "shx": "^0.2.2",
     "static-server": "^2.0.3"
