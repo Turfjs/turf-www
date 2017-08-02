@@ -1,19 +1,15 @@
 {
+  "private": true,
   "name": "turf-www",
   "version": "1.0.0",
   "description": "create the turf website and online documentation",
-  "main": "index.js",
   "scripts": {
     "copyAssets": "shx cp -r template/turf_2017/assets/ ./",
     "deleteDocAssetsDirectory": "shx rm -R docs/assets",
     "deploy": "npm run buildAPI && npm run copyAssets && npm run deleteDocAssetsDirectory",
     "buildAPI": "documentation build -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs",
-    "lintAPI": "documentation lint turf/packages/turf-*/index.js",
     "serveAPI": "documentation serve -c documentation.yml turf/packages/turf-*/index.js -t template/turf_2017 -f html -o docs -w",
-    "serve": "static-server",
-    "build-test": "node test/build",
-    "test-runner": "ava test/turf.js",
-    "test": "npm run lintAPI && npm run build-test && npm run test-runner"
+    "serve": "static-server"
   },
   "repository": {
     "type": "git",
@@ -24,24 +20,15 @@
     "www",
     "website"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Turf Authors",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/turfjs/turf-www/issues"
   },
   "homepage": "https://github.com/turfjs/turf-www",
-  "dependencies": {
-    "@turf/turf": "^3.7.4",
-    "lodash": "^3.3.1",
-    "striptags": "^2.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@turf/meta": "^3.7.3",
-    "ava": "^0.17.0",
-    "copy": "^0.3.0",
-    "copyfiles": "^1.2.0",
     "documentation": "4.0.0-beta.18",
-    "glob": "^7.1.1",
     "shx": "^0.2.2",
     "static-server": "^2.0.3"
   }
