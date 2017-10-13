@@ -4,26 +4,26 @@ const write = require('write-json-file')
 
 var moduleSidebarList = []
 var completeModules = []
-load.sync(path.join(__dirname, 'tempConfig.json')).forEach(module => {
-  var isHeading = module.kind === 'note'
+load.sync(path.join(__dirname, '..', 'configs', 'config-documentation.json')).forEach(metadata => {
+  var isHeading = metadata.kind === 'note'
   moduleSidebarList.push({
     isHeading: isHeading,
-    name: module.name,
+    name: metadata.name,
     hidden: false
   })
   if (!isHeading) {
-    var parent = getParent(module.context.file)
+    var parent = getParent(metadata.context.file)
     completeModules.push({
-      name: module.name,
-      description: concatTags(module.description.children[0].children, true),
+      name: metadata.name,
+      description: getDescription(metadata),
       parent: parent,
-      snippet: getSnippet(module.examples[0]),
-      example: getExample(module.examples[0]),
-      hasMap: hasMap(module.examples[0]),
-      npmName: getNpmName(module.name, parent),
-      returns: getReturns(module.returns),
-      params: getParams(module.params),
-      throws: getThrows(module.throws)
+      snippet: getSnippet(metadata),
+      example: getExample(metadata),
+      hasMap: hasMap(metadata),
+      npmName: getNpmName(metadata, parent),
+      returns: getReturns(metadata),
+      params: getParams(metadata),
+      throws: getThrows(metadata)
     })
   }
 })
@@ -32,6 +32,7 @@ var config = {
   sidebar: moduleSidebarList,
   modules: completeModules
 }
+write.sync(path.join(__dirname, '..', 'configs', 'config.json'), config)
 write.sync(path.join(__dirname, '..', 'template', 'turf-template', 'src', 'assets', 'config.json'), config)
 console.log('Done compiling the config file')
 
@@ -42,28 +43,36 @@ function getParent (filePath) {
   return null
 }
 
-function getSnippet (example) {
+function getDescription (metadata) {
+  return concatTags(metadata.description.children[0].children, true)
+}
+
+function getSnippet (metadata) {
+  const example = metadata.examples[0]
   if (example) return example.description.split('\r\n//addToMap')[0]
   return false
 }
 
-function getExample (example) {
+function getExample (metadata) {
+  const example = metadata.examples[0]
   if (example) return example.description
   return false
 }
 
-function hasMap (example) {
+function hasMap (metadata) {
+  const example = metadata.examples[0]
   if (example) return example.description.indexOf('//addToMap') !== -1
   return false
 }
 
-function getNpmName (moduleName, parent) {
+function getNpmName (metadata, parent) {
   if (parent !== null) return parent
-  return moduleName.replace(/([A-Z])/g, word => '-' + word.toLowerCase())
+  return metadata.name.replace(/([A-Z])/g, word => '-' + word.toLowerCase())
 }
 
-function getReturns (returns) {
-  return returns.map(function (result) {
+function getReturns (metadata) {
+  return metadata.returns.map(result => {
+    if (!result.description.children.length) return false
     return {
       type: getType(result.type),
       desc: concatTags(result.description.children[0].children, false)
@@ -71,8 +80,9 @@ function getReturns (returns) {
   })
 }
 
-function getThrows (throws) {
-  return throws.map(function (result) {
+function getThrows (metadata) {
+  return metadata.throws.map(result => {
+    if (!result.description.children.length) return false
     return {
       type: getType(result.type),
       desc: concatTags(result.description.children[0].children, false)
@@ -80,10 +90,10 @@ function getThrows (throws) {
   })
 }
 
-function getParams (params) {
-  var outParams = params.map(function (param) {
+function getParams (metadata) {
+  var outParams = metadata.params.map(param => {
     if (!param.type) return { type: null }
-
+    if (!param.description.children.length) return false
     return {
       Argument: param.name,
       Type: getType(param.type),
