@@ -5,7 +5,7 @@
     </Col>
     <Row>
         <Col span="7" offset="3">
-            <div id="inMap"></div>
+            <div class="map-insert" id="inMap"></div>
         </Col>
         <Col span="2" offset="1" class="selector">
             <Select v-model="operation" v-on:on-change="changeOperation">
@@ -13,7 +13,7 @@
             </Select>
         </Col>
         <Col span="7" offset="1">
-            <div id="outMap"></div>
+            <div class="map-insert" id="outMap"></div>
         </Col>
     </Row>
     <br>
@@ -43,11 +43,21 @@ import L from 'mapbox.js'
 import tin from '@turf/tin'
 import buffer from '@turf/buffer'
 import centroid from '@turf/centroid'
-import { points } from '../assets/points'
+import { point, featureCollection } from '@turf/helpers'
 L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
 var map1 = null
 var map2 = null //eslint-disable-line
 var outLayer = null
+
+var points = featureCollection([
+  point([-74.000, 40.739], {price: 8}),
+  point([-73.992, 40.742], {price: 12}),
+  point([-73.997, 40.732], {price: 7}),
+  point([-73.994, 40.737], {price: 13}),
+  point([-73.989, 40.741], {price: 21}),
+  point([-73.993, 40.734], {price: 14}),
+  point([-73.988, 40.739], {price: 9})
+])
 
 export default {
   name: 'Home',
@@ -143,9 +153,11 @@ var geojsonOptions = {
   p {
     text-align: center;
   }
-
-  #inMap, #outMap, .selector {
+  .map-insert {
     height: 300px;
+    min-width: 150px;
+  }
+  .selector {
     .ivu-select{
         margin-top: 120px;
     }

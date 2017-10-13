@@ -10,9 +10,9 @@
 </template>
 
 <script>
+import config from './config.json'
 import Sidebar from './components/Sidebar.vue'
 import ContentArea from './components/ContentArea.vue'
-import config from './assets/config.json'
 import {Row, Col} from 'iview/src/components/grid'
 
 export default {

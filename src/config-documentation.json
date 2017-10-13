@@ -61220,6 +61220,496 @@
           "children": [
             {
               "type": "text",
+              "value": "Reduce clusters in GeoJSON Features, similar to Array.reduce()",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 63,
+                  "offset": 62
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 63,
+              "offset": 62
+            },
+            "indent": []
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 63,
+          "offset": 62
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "name",
+        "description": null,
+        "lineNumber": 3,
+        "name": "clusterReduce"
+      },
+      {
+        "title": "param",
+        "description": "GeoJSON Features",
+        "lineNumber": 4,
+        "type": {
+          "type": "NameExpression",
+          "name": "FeatureCollection"
+        },
+        "name": "geojson"
+      },
+      {
+        "title": "param",
+        "description": "GeoJSON property key/value used to create clusters",
+        "lineNumber": 5,
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "string"
+            },
+            {
+              "type": "NameExpression",
+              "name": "number"
+            }
+          ]
+        },
+        "name": "property"
+      },
+      {
+        "title": "param",
+        "description": "a method that takes (previousValue, cluster, clusterValue, currentIndex)",
+        "lineNumber": 6,
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        },
+        "name": "callback"
+      },
+      {
+        "title": "param",
+        "description": "Value to use as the first argument to the first call of the callback.",
+        "lineNumber": 7,
+        "type": {
+          "type": "OptionalType",
+          "expression": {
+            "type": "AllLiteral"
+          }
+        },
+        "name": "initialValue"
+      },
+      {
+        "title": "returns",
+        "description": "The value that results from the reduction.",
+        "lineNumber": 8,
+        "type": {
+          "type": "AllLiteral"
+        }
+      },
+      {
+        "title": "example",
+        "description": "var geojson = turf.featureCollection([\n    turf.point([0, 0]),\n    turf.point([2, 4]),\n    turf.point([3, 6]),\n    turf.point([5, 1]),\n    turf.point([4, 2])\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Iterate over each cluster and perform a calculation\nvar initialValue = 0\nturf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue, currentIndex) {\n    //=previousValue\n    //=cluster\n    //=clusterValue\n    //=currentIndex\n    return previousValue++;\n}, initialValue);\n\n// Calculate the total number of clusters\nvar total = turf.clusterReduce(clustered, 'cluster', function (previousValue) {\n    return previousValue++;\n}, 0);\n\n// Create an Array of all the values retrieved from the 'cluster' property\nvar values = turf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue) {\n    return previousValue.push(clusterValue);\n}, []);",
+        "lineNumber": 9
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 137,
+        "column": 0
+      },
+      "end": {
+        "line": 177,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 178,
+          "column": 0
+        },
+        "end": {
+          "line": 185,
+          "column": 1
+        }
+      },
+      "file": "/Users/mac/Github/turf-www/turf/packages/turf-clusters/index.js"
+    },
+    "augments": [],
+    "examples": [
+      {
+        "description": "var geojson = turf.featureCollection([\n    turf.point([0, 0]),\n    turf.point([2, 4]),\n    turf.point([3, 6]),\n    turf.point([5, 1]),\n    turf.point([4, 2])\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Iterate over each cluster and perform a calculation\nvar initialValue = 0\nturf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue, currentIndex) {\n    //=previousValue\n    //=cluster\n    //=clusterValue\n    //=currentIndex\n    return previousValue++;\n}, initialValue);\n\n// Calculate the total number of clusters\nvar total = turf.clusterReduce(clustered, 'cluster', function (previousValue) {\n    return previousValue++;\n}, 0);\n\n// Create an Array of all the values retrieved from the 'cluster' property\nvar values = turf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue) {\n    return previousValue.push(clusterValue);\n}, []);"
+      }
+    ],
+    "params": [
+      {
+        "title": "param",
+        "name": "geojson",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "GeoJSON Features",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 17,
+                      "offset": 16
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 17,
+                  "offset": 16
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 17,
+              "offset": 16
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "FeatureCollection"
+        }
+      },
+      {
+        "title": "param",
+        "name": "property",
+        "lineNumber": 5,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "GeoJSON property key/value used to create clusters",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 51,
+                      "offset": 50
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 51,
+                  "offset": 50
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 51,
+              "offset": 50
+            }
+          }
+        },
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "string"
+            },
+            {
+              "type": "NameExpression",
+              "name": "number"
+            }
+          ]
+        }
+      },
+      {
+        "title": "param",
+        "name": "callback",
+        "lineNumber": 6,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a method that takes (previousValue, cluster, clusterValue, currentIndex)",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 73,
+                      "offset": 72
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 73,
+                  "offset": 72
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 73,
+              "offset": 72
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        }
+      },
+      {
+        "title": "param",
+        "name": "initialValue",
+        "lineNumber": 7,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Value to use as the first argument to the first call of the callback.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 70,
+                      "offset": 69
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 70,
+                  "offset": 69
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 70,
+              "offset": 69
+            }
+          }
+        },
+        "type": {
+          "type": "OptionalType",
+          "expression": {
+            "type": "AllLiteral"
+          }
+        }
+      }
+    ],
+    "properties": [],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The value that results from the reduction.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 43,
+                      "offset": 42
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 43,
+                  "offset": 42
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 43,
+              "offset": 42
+            }
+          }
+        },
+        "title": "returns",
+        "type": {
+          "type": "AllLiteral"
+        }
+      }
+    ],
+    "sees": [],
+    "throws": [],
+    "todos": [],
+    "name": "clusterReduce",
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "clusterReduce"
+      }
+    ],
+    "namespace": "clusterReduce"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
               "value": "Callback for clusterReduce",
               "position": {
                 "start": {
@@ -62010,496 +62500,6 @@
       }
     ],
     "namespace": "clusterReduceCallback"
-  },
-  {
-    "description": {
-      "type": "root",
-      "children": [
-        {
-          "type": "paragraph",
-          "children": [
-            {
-              "type": "text",
-              "value": "Reduce clusters in GeoJSON Features, similar to Array.reduce()",
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 63,
-                  "offset": 62
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 63,
-              "offset": 62
-            },
-            "indent": []
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 1,
-          "offset": 0
-        },
-        "end": {
-          "line": 1,
-          "column": 63,
-          "offset": 62
-        }
-      }
-    },
-    "tags": [
-      {
-        "title": "name",
-        "description": null,
-        "lineNumber": 3,
-        "name": "clusterReduce"
-      },
-      {
-        "title": "param",
-        "description": "GeoJSON Features",
-        "lineNumber": 4,
-        "type": {
-          "type": "NameExpression",
-          "name": "FeatureCollection"
-        },
-        "name": "geojson"
-      },
-      {
-        "title": "param",
-        "description": "GeoJSON property key/value used to create clusters",
-        "lineNumber": 5,
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "string"
-            },
-            {
-              "type": "NameExpression",
-              "name": "number"
-            }
-          ]
-        },
-        "name": "property"
-      },
-      {
-        "title": "param",
-        "description": "a method that takes (previousValue, cluster, clusterValue, currentIndex)",
-        "lineNumber": 6,
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        },
-        "name": "callback"
-      },
-      {
-        "title": "param",
-        "description": "Value to use as the first argument to the first call of the callback.",
-        "lineNumber": 7,
-        "type": {
-          "type": "OptionalType",
-          "expression": {
-            "type": "AllLiteral"
-          }
-        },
-        "name": "initialValue"
-      },
-      {
-        "title": "returns",
-        "description": "The value that results from the reduction.",
-        "lineNumber": 8,
-        "type": {
-          "type": "AllLiteral"
-        }
-      },
-      {
-        "title": "example",
-        "description": "var geojson = turf.featureCollection([\n    turf.point([0, 0]),\n    turf.point([2, 4]),\n    turf.point([3, 6]),\n    turf.point([5, 1]),\n    turf.point([4, 2])\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Iterate over each cluster and perform a calculation\nvar initialValue = 0\nturf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue, currentIndex) {\n    //=previousValue\n    //=cluster\n    //=clusterValue\n    //=currentIndex\n    return previousValue++;\n}, initialValue);\n\n// Calculate the total number of clusters\nvar total = turf.clusterReduce(clustered, 'cluster', function (previousValue) {\n    return previousValue++;\n}, 0);\n\n// Create an Array of all the values retrieved from the 'cluster' property\nvar values = turf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue) {\n    return previousValue.push(clusterValue);\n}, []);",
-        "lineNumber": 9
-      }
-    ],
-    "loc": {
-      "start": {
-        "line": 137,
-        "column": 0
-      },
-      "end": {
-        "line": 177,
-        "column": 3
-      }
-    },
-    "context": {
-      "loc": {
-        "start": {
-          "line": 178,
-          "column": 0
-        },
-        "end": {
-          "line": 185,
-          "column": 1
-        }
-      },
-      "file": "/Users/mac/Github/turf-www/turf/packages/turf-clusters/index.js"
-    },
-    "augments": [],
-    "examples": [
-      {
-        "description": "var geojson = turf.featureCollection([\n    turf.point([0, 0]),\n    turf.point([2, 4]),\n    turf.point([3, 6]),\n    turf.point([5, 1]),\n    turf.point([4, 2])\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Iterate over each cluster and perform a calculation\nvar initialValue = 0\nturf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue, currentIndex) {\n    //=previousValue\n    //=cluster\n    //=clusterValue\n    //=currentIndex\n    return previousValue++;\n}, initialValue);\n\n// Calculate the total number of clusters\nvar total = turf.clusterReduce(clustered, 'cluster', function (previousValue) {\n    return previousValue++;\n}, 0);\n\n// Create an Array of all the values retrieved from the 'cluster' property\nvar values = turf.clusterReduce(clustered, 'cluster', function (previousValue, cluster, clusterValue) {\n    return previousValue.push(clusterValue);\n}, []);"
-      }
-    ],
-    "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 4,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "GeoJSON Features",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 17,
-                      "offset": 16
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 17,
-                  "offset": 16
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 17,
-              "offset": 16
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "FeatureCollection"
-        }
-      },
-      {
-        "title": "param",
-        "name": "property",
-        "lineNumber": 5,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "GeoJSON property key/value used to create clusters",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 51,
-                      "offset": 50
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 51,
-                  "offset": 50
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 51,
-              "offset": 50
-            }
-          }
-        },
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "string"
-            },
-            {
-              "type": "NameExpression",
-              "name": "number"
-            }
-          ]
-        }
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 6,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "a method that takes (previousValue, cluster, clusterValue, currentIndex)",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 73,
-                      "offset": 72
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 73,
-                  "offset": 72
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 73,
-              "offset": 72
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        }
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 7,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "Value to use as the first argument to the first call of the callback.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 70,
-                      "offset": 69
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 70,
-                  "offset": 69
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 70,
-              "offset": 69
-            }
-          }
-        },
-        "type": {
-          "type": "OptionalType",
-          "expression": {
-            "type": "AllLiteral"
-          }
-        }
-      }
-    ],
-    "properties": [],
-    "returns": [
-      {
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "The value that results from the reduction.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 43,
-                      "offset": 42
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 43,
-                  "offset": 42
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 43,
-              "offset": 42
-            }
-          }
-        },
-        "title": "returns",
-        "type": {
-          "type": "AllLiteral"
-        }
-      }
-    ],
-    "sees": [],
-    "throws": [],
-    "todos": [],
-    "name": "clusterReduce",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
-    },
-    "path": [
-      {
-        "name": "clusterReduce"
-      }
-    ],
-    "namespace": "clusterReduce"
   },
   {
     "description": {
@@ -69353,324 +69353,6 @@
           "children": [
             {
               "type": "text",
-              "value": "Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 2,
-                  "column": 98,
-                  "offset": 182
-                },
-                "indent": [
-                  1
-                ]
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 2,
-              "column": 98,
-              "offset": 182
-            },
-            "indent": [
-              1
-            ]
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 1,
-          "offset": 0
-        },
-        "end": {
-          "line": 2,
-          "column": 98,
-          "offset": 182
-        }
-      }
-    },
-    "tags": [
-      {
-        "title": "param",
-        "description": "any GeoJSON",
-        "lineNumber": 4,
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "FeatureCollection"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Feature"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Geometry"
-            }
-          ]
-        },
-        "name": "geojson"
-      },
-      {
-        "title": "param",
-        "description": "a method that takes (currentSegment, featureIndex, featureSubIndex)",
-        "lineNumber": 5,
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        },
-        "name": "callback"
-      },
-      {
-        "title": "returns",
-        "description": null,
-        "lineNumber": 6,
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      },
-      {
-        "title": "example",
-        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
-        "lineNumber": 7
-      }
-    ],
-    "loc": {
-      "start": {
-        "line": 653,
-        "column": 0
-      },
-      "end": {
-        "line": 676,
-        "column": 3
-      }
-    },
-    "context": {
-      "loc": {
-        "start": {
-          "line": 677,
-          "column": 0
-        },
-        "end": {
-          "line": 694,
-          "column": 1
-        }
-      },
-      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
-    },
-    "augments": [],
-    "examples": [
-      {
-        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);"
-      }
-    ],
-    "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 4,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "any GeoJSON",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 12,
-                      "offset": 11
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 12,
-                  "offset": 11
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 12,
-              "offset": 11
-            }
-          }
-        },
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "FeatureCollection"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Feature"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Geometry"
-            }
-          ]
-        }
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 5,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "a method that takes (currentSegment, featureIndex, featureSubIndex)",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 68,
-                      "offset": 67
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 68,
-                  "offset": 67
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 68,
-              "offset": 67
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        }
-      }
-    ],
-    "properties": [],
-    "returns": [
-      {
-        "description": {
-          "type": "root",
-          "children": [],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            }
-          }
-        },
-        "title": "returns",
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      }
-    ],
-    "sees": [],
-    "throws": [],
-    "todos": [],
-    "name": "segmentEach",
-    "kind": "function",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
-    },
-    "path": [
-      {
-        "name": "segmentEach",
-        "kind": "function"
-      }
-    ],
-    "namespace": "segmentEach"
-  },
-  {
-    "description": {
-      "type": "root",
-      "children": [
-        {
-          "type": "paragraph",
-          "children": [
-            {
-              "type": "text",
               "value": "Callback for segmentEach",
               "position": {
                 "start": {
@@ -70042,6 +69724,324 @@
       }
     ],
     "namespace": "segmentEachCallback"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 2,
+                  "column": 98,
+                  "offset": 182
+                },
+                "indent": [
+                  1
+                ]
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 98,
+              "offset": 182
+            },
+            "indent": [
+              1
+            ]
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 98,
+          "offset": 182
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "param",
+        "description": "any GeoJSON",
+        "lineNumber": 4,
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "FeatureCollection"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Feature"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Geometry"
+            }
+          ]
+        },
+        "name": "geojson"
+      },
+      {
+        "title": "param",
+        "description": "a method that takes (currentSegment, featureIndex, featureSubIndex)",
+        "lineNumber": 5,
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        },
+        "name": "callback"
+      },
+      {
+        "title": "returns",
+        "description": null,
+        "lineNumber": 6,
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      },
+      {
+        "title": "example",
+        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
+        "lineNumber": 7
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 653,
+        "column": 0
+      },
+      "end": {
+        "line": 676,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 677,
+          "column": 0
+        },
+        "end": {
+          "line": 694,
+          "column": 1
+        }
+      },
+      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
+    },
+    "augments": [],
+    "examples": [
+      {
+        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);"
+      }
+    ],
+    "params": [
+      {
+        "title": "param",
+        "name": "geojson",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "any GeoJSON",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 12,
+                      "offset": 11
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 12,
+                  "offset": 11
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 12,
+              "offset": 11
+            }
+          }
+        },
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "FeatureCollection"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Feature"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Geometry"
+            }
+          ]
+        }
+      },
+      {
+        "title": "param",
+        "name": "callback",
+        "lineNumber": 5,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a method that takes (currentSegment, featureIndex, featureSubIndex)",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 68,
+                      "offset": 67
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 68,
+                  "offset": 67
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 68,
+              "offset": 67
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        }
+      }
+    ],
+    "properties": [],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            }
+          }
+        },
+        "title": "returns",
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      }
+    ],
+    "sees": [],
+    "throws": [],
+    "todos": [],
+    "name": "segmentEach",
+    "kind": "function",
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "segmentEach",
+        "kind": "function"
+      }
+    ],
+    "namespace": "segmentEach"
   },
   {
     "description": {

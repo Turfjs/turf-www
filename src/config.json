@@ -677,12 +677,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "clusterReduceCallback",
+			"name": "clusterReduce",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "clusterReduce",
+			"name": "clusterReduceCallback",
 			"hidden": false
 		},
 		{
@@ -757,12 +757,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "segmentEach",
+			"name": "segmentEachCallback",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "segmentEachCallback",
+			"name": "segmentEach",
 			"hidden": false
 		},
 		{
@@ -4397,39 +4397,6 @@
 			"throws": []
 		},
 		{
-			"name": "clusterReduceCallback",
-			"description": "Callback for clusterReduce",
-			"parent": null,
-			"snippet": false,
-			"example": false,
-			"hasMap": false,
-			"npmName": "cluster-reduce-callback",
-			"returns": [],
-			"params": [
-				{
-					"Argument": "previousValue",
-					"Type": "Optional: undefined",
-					"Description": "The accumulated value previously returned in the last invocation\nof the callback, or initialValue, if supplied."
-				},
-				{
-					"Argument": "cluster",
-					"Type": "Optional: FeatureCollection",
-					"Description": "The current cluster being processed."
-				},
-				{
-					"Argument": "clusterValue",
-					"Type": "Optional: undefined",
-					"Description": "Value used to create cluster being processed."
-				},
-				{
-					"Argument": "currentIndex",
-					"Type": "Optional: number",
-					"Description": "The index of the current element being processed in the\narray. Starts at index 0, if an initialValue is provided, and at index 1 otherwise."
-				}
-			],
-			"throws": []
-		},
-		{
 			"name": "clusterReduce",
 			"description": "Reduce clusters in GeoJSON Features, similar to Array.reduce()",
 			"parent": null,
@@ -4462,6 +4429,39 @@
 					"Argument": "initialValue",
 					"Type": "Optional: undefined",
 					"Description": "Value to use as the first argument to the first call of the callback."
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "clusterReduceCallback",
+			"description": "Callback for clusterReduce",
+			"parent": null,
+			"snippet": false,
+			"example": false,
+			"hasMap": false,
+			"npmName": "cluster-reduce-callback",
+			"returns": [],
+			"params": [
+				{
+					"Argument": "previousValue",
+					"Type": "Optional: undefined",
+					"Description": "The accumulated value previously returned in the last invocation\nof the callback, or initialValue, if supplied."
+				},
+				{
+					"Argument": "cluster",
+					"Type": "Optional: FeatureCollection",
+					"Description": "The current cluster being processed."
+				},
+				{
+					"Argument": "clusterValue",
+					"Type": "Optional: undefined",
+					"Description": "Value used to create cluster being processed."
+				},
+				{
+					"Argument": "currentIndex",
+					"Type": "Optional: number",
+					"Description": "The index of the current element being processed in the\narray. Starts at index 0, if an initialValue is provided, and at index 1 otherwise."
 				}
 			],
 			"throws": []
@@ -4852,31 +4852,6 @@
 			"throws": []
 		},
 		{
-			"name": "segmentEach",
-			"description": "Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
-			"parent": "meta",
-			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
-			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
-			"hasMap": false,
-			"npmName": "meta",
-			"returns": [
-				false
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
-					"Description": "any GeoJSON"
-				},
-				{
-					"Argument": "callback",
-					"Type": "Function",
-					"Description": "a method that takes (currentSegment, featureIndex, featureSubIndex)"
-				}
-			],
-			"throws": []
-		},
-		{
 			"name": "segmentEachCallback",
 			"description": "Callback for segmentEach",
 			"parent": "meta",
@@ -4902,6 +4877,31 @@
 					"Argument": "featureSubIndex",
 					"Type": "number",
 					"Description": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment."
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "segmentEach",
+			"description": "Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
+			"parent": "meta",
+			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
+			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex) {\n  //= currentSegment\n  //= featureIndex\n  //= featureSubIndex\n});\n\n// Calculate the total number of segments\nvar total = 0;\nvar initialValue = 0;\nturf.segmentEach(polygon, function () {\n    total++;\n}, initialValue);",
+			"hasMap": false,
+			"npmName": "meta",
+			"returns": [
+				false
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Description": "any GeoJSON"
+				},
+				{
+					"Argument": "callback",
+					"Type": "Function",
+					"Description": "a method that takes (currentSegment, featureIndex, featureSubIndex)"
 				}
 			],
 			"throws": []

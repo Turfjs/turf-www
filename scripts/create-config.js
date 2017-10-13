@@ -7,9 +7,8 @@ const write = require('write-json-file')
 const moduleSidebarList = []
 const completeModules = []
 
-const documentationPath = path.join(__dirname, '..', 'configs', 'config-documentation.json')
-const configPath = path.join(__dirname, '..', 'configs', 'config.json')
-const templatePath = path.join(__dirname, '..', 'template', 'turf-template', 'src', 'assets', 'config.json')
+const documentationPath = path.join(__dirname, '..', 'src', 'config-documentation.json')
+const configPath = path.join(__dirname, '..', 'src', 'config.json')
 
 load.sync(documentationPath).forEach(metadata => {
   const isHeading = metadata.kind === 'note'
@@ -40,8 +39,6 @@ const config = {
   modules: completeModules
 }
 write.sync(configPath, config)
-write.sync(templatePath, config)
-console.log('Done compiling the config file')
 
 function getParent (filePath) {
   if (filePath.includes('turf-helpers')) return 'helpers'

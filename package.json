@@ -4,10 +4,10 @@
   "version": "5.0.0",
   "description": "Turf.js documentation",
   "scripts": {
-    "preconfig": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > configs/config-documentation.json",
-    "config": "node scripts/create-config.js",
-    "build": "npm run config && webpack --progress --hide-modules",
-    "start": "npm run config && webpack-dev-server --open --hot",
+    "prebuild": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > src/config-documentation.json",
+    "build": "node scripts/create-config.js",
+    "postbuild": "webpack --progress --hide-modules",
+    "start": "webpack-dev-server --open --hot",
     "lint": "eslint --ext .js,.vue src"
   },
   "repository": {
@@ -38,6 +38,7 @@
   "dependencies": {
     "@turf/buffer": "^4.7.4",
     "@turf/centroid": "^4.7.3",
+    "@turf/helpers": "^5.0.0",
     "@turf/tin": "^4.7.3",
     "iview": "^2.4.0",
     "mapbox.js": "^3.1.1",
