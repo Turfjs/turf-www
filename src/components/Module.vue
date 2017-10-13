@@ -36,7 +36,7 @@
 <script>
 import leafletMap from './Map.vue'
 import {Row, Col} from 'iview/src/components/grid'
-import {Table} from 'iview/src/components/table'
+import Table from 'iview/src/components/table'
 
 export default {
   name: 'Module',
@@ -93,7 +93,7 @@ export default {
     font-size: 0.9rem;
     font-weight: 300;
     font-family: 'Montserrat', sans-serif;
-  } 
+  }
   .hasParent{
     background-color: transparentize($blue, 0.3);
     padding: 15px;

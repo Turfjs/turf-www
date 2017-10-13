@@ -10,7 +10,7 @@
         <ul class="turfModules">
           <li v-for="module in displayedModules"
             class="menuItem"
-            v-bind:class="{heading: module.isHeading}" 
+            v-bind:class="{heading: module.isHeading}"
             v-on:click="clickModule"
             >{{module.name}}</li>
         </ul>
@@ -90,7 +90,7 @@ export default {
           transition: 0.3s;
           &:focus {
             outline: none;
-            border: solid 3px #cccccc;      
+            border: solid 3px #cccccc;
           }
         }
     }

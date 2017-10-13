@@ -2,12 +2,21 @@
   {
     "name": "Measurement",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -15,6 +24,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Measurement"
   },
   {
@@ -595,7 +611,11 @@
     "throws": [],
     "todos": [],
     "name": "along",
-    "kind": "function",
+    "path": [
+      {
+        "name": "along"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -603,12 +623,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "along",
-        "kind": "function"
-      }
-    ],
     "namespace": "along"
   },
   {
@@ -890,7 +904,11 @@
     "throws": [],
     "todos": [],
     "name": "area",
-    "kind": "function",
+    "path": [
+      {
+        "name": "area"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -898,12 +916,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "area",
-        "kind": "function"
-      }
-    ],
     "namespace": "area"
   },
   {
@@ -1257,7 +1269,6 @@
     "throws": [],
     "todos": [],
     "name": "bbox",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -1267,8 +1278,7 @@
     },
     "path": [
       {
-        "name": "bbox",
-        "kind": "function"
+        "name": "bbox"
       }
     ],
     "namespace": "bbox"
@@ -1648,7 +1658,11 @@
     "throws": [],
     "todos": [],
     "name": "bboxPolygon",
-    "kind": "function",
+    "path": [
+      {
+        "name": "bboxPolygon"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -1656,12 +1670,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "bboxPolygon",
-        "kind": "function"
-      }
-    ],
     "namespace": "bboxPolygon"
   },
   {
@@ -2224,7 +2232,11 @@
     "throws": [],
     "todos": [],
     "name": "bearing",
-    "kind": "function",
+    "path": [
+      {
+        "name": "bearing"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -2232,12 +2244,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "bearing",
-        "kind": "function"
-      }
-    ],
     "namespace": "bearing"
   },
   {
@@ -2704,7 +2710,11 @@
     "throws": [],
     "todos": [],
     "name": "center",
-    "kind": "function",
+    "path": [
+      {
+        "name": "center"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -2712,12 +2722,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "center",
-        "kind": "function"
-      }
-    ],
     "namespace": "center"
   },
   {
@@ -3292,7 +3296,11 @@
     "throws": [],
     "todos": [],
     "name": "centerOfMass",
-    "kind": "function",
+    "path": [
+      {
+        "name": "centerOfMass"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -3300,12 +3308,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "centerOfMass",
-        "kind": "function"
-      }
-    ],
     "namespace": "centerOfMass"
   },
   {
@@ -3692,7 +3694,11 @@
     "throws": [],
     "todos": [],
     "name": "centroid",
-    "kind": "function",
+    "path": [
+      {
+        "name": "centroid"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -3700,12 +3706,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "centroid",
-        "kind": "function"
-      }
-    ],
     "namespace": "centroid"
   },
   {
@@ -4345,7 +4345,11 @@
     "throws": [],
     "todos": [],
     "name": "destination",
-    "kind": "function",
+    "path": [
+      {
+        "name": "destination"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -4353,12 +4357,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "destination",
-        "kind": "function"
-      }
-    ],
     "namespace": "destination"
   },
   {
@@ -4980,7 +4978,11 @@
     "throws": [],
     "todos": [],
     "name": "distance",
-    "kind": "function",
+    "path": [
+      {
+        "name": "distance"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -4988,12 +4990,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "distance",
-        "kind": "function"
-      }
-    ],
     "namespace": "distance"
   },
   {
@@ -5335,7 +5331,11 @@
     "throws": [],
     "todos": [],
     "name": "envelope",
-    "kind": "function",
+    "path": [
+      {
+        "name": "envelope"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -5343,12 +5343,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "envelope",
-        "kind": "function"
-      }
-    ],
     "namespace": "envelope"
   },
   {
@@ -5780,7 +5774,11 @@
     "throws": [],
     "todos": [],
     "name": "lineDistance",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineDistance"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -5788,12 +5786,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineDistance",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineDistance"
   },
   {
@@ -6349,7 +6341,11 @@
     "throws": [],
     "todos": [],
     "name": "midpoint",
-    "kind": "function",
+    "path": [
+      {
+        "name": "midpoint"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -6357,12 +6353,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "midpoint",
-        "kind": "function"
-      }
-    ],
     "namespace": "midpoint"
   },
   {
@@ -6995,6 +6985,12 @@
     "todos": [],
     "name": "pointOnSurface",
     "kind": "function",
+    "path": [
+      {
+        "name": "pointOnSurface",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -7002,12 +6998,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "pointOnSurface",
-        "kind": "function"
-      }
-    ],
     "namespace": "pointOnSurface"
   },
   {
@@ -7480,7 +7470,11 @@
     "throws": [],
     "todos": [],
     "name": "polygonTangents",
-    "kind": "function",
+    "path": [
+      {
+        "name": "polygonTangents"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -7488,12 +7482,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "polygonTangents",
-        "kind": "function"
-      }
-    ],
     "namespace": "polygonTangents"
   },
   {
@@ -8056,7 +8044,11 @@
     "throws": [],
     "todos": [],
     "name": "rhumbBearing",
-    "kind": "function",
+    "path": [
+      {
+        "name": "rhumbBearing"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -8064,12 +8056,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "rhumbBearing",
-        "kind": "function"
-      }
-    ],
     "namespace": "rhumbBearing"
   },
   {
@@ -8659,7 +8645,11 @@
     "throws": [],
     "todos": [],
     "name": "rhumbDestination",
-    "kind": "function",
+    "path": [
+      {
+        "name": "rhumbDestination"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -8667,12 +8657,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "rhumbDestination",
-        "kind": "function"
-      }
-    ],
     "namespace": "rhumbDestination"
   },
   {
@@ -9235,7 +9219,11 @@
     "throws": [],
     "todos": [],
     "name": "rhumbDistance",
-    "kind": "function",
+    "path": [
+      {
+        "name": "rhumbDistance"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -9243,12 +9231,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "rhumbDistance",
-        "kind": "function"
-      }
-    ],
     "namespace": "rhumbDistance"
   },
   {
@@ -9605,7 +9587,11 @@
     "throws": [],
     "todos": [],
     "name": "square",
-    "kind": "function",
+    "path": [
+      {
+        "name": "square"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -9613,12 +9599,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "square",
-        "kind": "function"
-      }
-    ],
     "namespace": "square"
   },
   {
@@ -10334,7 +10314,11 @@
     "throws": [],
     "todos": [],
     "name": "greatCircle",
-    "kind": "function",
+    "path": [
+      {
+        "name": "greatCircle"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -10342,23 +10326,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "greatCircle",
-        "kind": "function"
-      }
-    ],
     "namespace": "greatCircle"
   },
   {
     "name": "Coordinate Mutation",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -10366,6 +10353,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Coordinate Mutation"
   },
   {
@@ -10861,7 +10855,11 @@
     "throws": [],
     "todos": [],
     "name": "flip",
-    "kind": "function",
+    "path": [
+      {
+        "name": "flip"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -10869,12 +10867,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "flip",
-        "kind": "function"
-      }
-    ],
     "namespace": "flip"
   },
   {
@@ -11554,7 +11546,11 @@
     "throws": [],
     "todos": [],
     "name": "rewind",
-    "kind": "function",
+    "path": [
+      {
+        "name": "rewind"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -11562,12 +11558,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "rewind",
-        "kind": "function"
-      }
-    ],
     "namespace": "rewind"
   },
   {
@@ -11884,6 +11874,12 @@
     "todos": [],
     "name": "round",
     "kind": "function",
+    "path": [
+      {
+        "name": "round",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -11891,12 +11887,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "round",
-        "kind": "function"
-      }
-    ],
     "namespace": "round"
   },
   {
@@ -12442,7 +12432,11 @@
     "throws": [],
     "todos": [],
     "name": "truncate",
-    "kind": "function",
+    "path": [
+      {
+        "name": "truncate"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -12450,23 +12444,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "truncate",
-        "kind": "function"
-      }
-    ],
     "namespace": "truncate"
   },
   {
     "name": "Transformation",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -12474,6 +12471,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Transformation"
   },
   {
@@ -13066,7 +13070,11 @@
     "throws": [],
     "todos": [],
     "name": "bboxClip",
-    "kind": "function",
+    "path": [
+      {
+        "name": "bboxClip"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -13074,12 +13082,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "bboxClip",
-        "kind": "function"
-      }
-    ],
     "namespace": "bboxClip"
   },
   {
@@ -13705,7 +13707,11 @@
     "throws": [],
     "todos": [],
     "name": "bezier",
-    "kind": "function",
+    "path": [
+      {
+        "name": "bezier"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -13713,12 +13719,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "bezier",
-        "kind": "function"
-      }
-    ],
     "namespace": "bezier"
   },
   {
@@ -14336,7 +14336,11 @@
     "throws": [],
     "todos": [],
     "name": "buffer",
-    "kind": "function",
+    "path": [
+      {
+        "name": "buffer"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -14344,12 +14348,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "buffer",
-        "kind": "function"
-      }
-    ],
     "namespace": "buffer"
   },
   {
@@ -15008,7 +15006,11 @@
     "throws": [],
     "todos": [],
     "name": "circle",
-    "kind": "function",
+    "path": [
+      {
+        "name": "circle"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -15016,12 +15018,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "circle",
-        "kind": "function"
-      }
-    ],
     "namespace": "circle"
   },
   {
@@ -15613,6 +15609,12 @@
     "todos": [],
     "name": "concave",
     "kind": "function",
+    "path": [
+      {
+        "name": "concave",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -15620,12 +15622,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "concave",
-        "kind": "function"
-      }
-    ],
     "namespace": "concave"
   },
   {
@@ -16183,7 +16179,11 @@
     "throws": [],
     "todos": [],
     "name": "convex",
-    "kind": "function",
+    "path": [
+      {
+        "name": "convex"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -16191,12 +16191,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "convex",
-        "kind": "function"
-      }
-    ],
     "namespace": "convex"
   },
   {
@@ -16781,7 +16775,11 @@
     "throws": [],
     "todos": [],
     "name": "difference",
-    "kind": "function",
+    "path": [
+      {
+        "name": "difference"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -16789,12 +16787,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "difference",
-        "kind": "function"
-      }
-    ],
     "namespace": "difference"
   },
   {
@@ -17153,7 +17145,11 @@
     "throws": [],
     "todos": [],
     "name": "dissolve",
-    "kind": "function",
+    "path": [
+      {
+        "name": "dissolve"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -17161,12 +17157,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "dissolve",
-        "kind": "function"
-      }
-    ],
     "namespace": "dissolve"
   },
   {
@@ -17863,7 +17853,11 @@
     "throws": [],
     "todos": [],
     "name": "intersect",
-    "kind": "function",
+    "path": [
+      {
+        "name": "intersect"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -17871,12 +17865,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "intersect",
-        "kind": "function"
-      }
-    ],
     "namespace": "intersect"
   },
   {
@@ -18443,7 +18431,11 @@
     "throws": [],
     "todos": [],
     "name": "lineOffset",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineOffset"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -18451,12 +18443,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineOffset",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineOffset"
   },
   {
@@ -19152,7 +19138,11 @@
     "throws": [],
     "todos": [],
     "name": "simplify",
-    "kind": "function",
+    "path": [
+      {
+        "name": "simplify"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -19160,12 +19150,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "simplify",
-        "kind": "function"
-      }
-    ],
     "namespace": "simplify"
   },
   {
@@ -19589,7 +19573,11 @@
     "throws": [],
     "todos": [],
     "name": "tesselate",
-    "kind": "function",
+    "path": [
+      {
+        "name": "tesselate"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -19597,12 +19585,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "tesselate",
-        "kind": "function"
-      }
-    ],
     "namespace": "tesselate"
   },
   {
@@ -20076,7 +20058,11 @@
     "throws": [],
     "todos": [],
     "name": "union",
-    "kind": "function",
+    "path": [
+      {
+        "name": "union"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -20084,23 +20070,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "union",
-        "kind": "function"
-      }
-    ],
     "namespace": "union"
   },
   {
     "name": "Feature Conversion",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -20108,6 +20097,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Feature Conversion"
   },
   {
@@ -20739,7 +20735,11 @@
     "throws": [],
     "todos": [],
     "name": "combine",
-    "kind": "function",
+    "path": [
+      {
+        "name": "combine"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -20747,12 +20747,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "combine",
-        "kind": "function"
-      }
-    ],
     "namespace": "combine"
   },
   {
@@ -21162,7 +21156,11 @@
     ],
     "todos": [],
     "name": "explode",
-    "kind": "function",
+    "path": [
+      {
+        "name": "explode"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -21170,12 +21168,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "explode",
-        "kind": "function"
-      }
-    ],
     "namespace": "explode"
   },
   {
@@ -21621,7 +21613,11 @@
     "throws": [],
     "todos": [],
     "name": "flatten",
-    "kind": "function",
+    "path": [
+      {
+        "name": "flatten"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -21629,12 +21625,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "flatten",
-        "kind": "function"
-      }
-    ],
     "namespace": "flatten"
   },
   {
@@ -22199,7 +22189,11 @@
     "throws": [],
     "todos": [],
     "name": "lineStringToPolygon",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineStringToPolygon"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -22207,12 +22201,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineStringToPolygon",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineStringToPolygon"
   },
   {
@@ -22957,7 +22945,11 @@
     ],
     "todos": [],
     "name": "polygonize",
-    "kind": "function",
+    "path": [
+      {
+        "name": "polygonize"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -22965,12 +22957,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "polygonize",
-        "kind": "function"
-      }
-    ],
     "namespace": "polygonize"
   },
   {
@@ -23593,7 +23579,11 @@
     "throws": [],
     "todos": [],
     "name": "polygonToLineString",
-    "kind": "function",
+    "path": [
+      {
+        "name": "polygonToLineString"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -23601,23 +23591,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "polygonToLineString",
-        "kind": "function"
-      }
-    ],
     "namespace": "polygonToLineString"
   },
   {
     "name": "Misc",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -23625,6 +23618,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Misc"
   },
   {
@@ -24150,7 +24150,11 @@
     "throws": [],
     "todos": [],
     "name": "kinks",
-    "kind": "function",
+    "path": [
+      {
+        "name": "kinks"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -24158,12 +24162,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "kinks",
-        "kind": "function"
-      }
-    ],
     "namespace": "kinks"
   },
   {
@@ -24814,7 +24812,11 @@
     "throws": [],
     "todos": [],
     "name": "lineArc",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineArc"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -24822,12 +24824,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineArc",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineArc"
   },
   {
@@ -25422,7 +25418,11 @@
     "throws": [],
     "todos": [],
     "name": "lineChunk",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineChunk"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -25430,12 +25430,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineChunk",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineChunk"
   },
   {
@@ -25926,7 +25920,11 @@
     "throws": [],
     "todos": [],
     "name": "lineIntersect",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineIntersect"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -25934,12 +25932,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineIntersect",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineIntersect"
   },
   {
@@ -26414,7 +26406,11 @@
     "throws": [],
     "todos": [],
     "name": "lineOverlap",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineOverlap"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -26422,12 +26418,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineOverlap",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineOverlap"
   },
   {
@@ -26937,7 +26927,11 @@
     "throws": [],
     "todos": [],
     "name": "lineSegment",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineSegment"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -26945,12 +26939,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineSegment",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineSegment"
   },
   {
@@ -27553,7 +27541,11 @@
     "throws": [],
     "todos": [],
     "name": "lineSlice",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineSlice"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -27561,12 +27553,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineSlice",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineSlice"
   },
   {
@@ -28209,7 +28195,11 @@
     "throws": [],
     "todos": [],
     "name": "lineSliceAlong",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineSliceAlong"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -28217,12 +28207,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineSliceAlong",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineSliceAlong"
   },
   {
@@ -28643,7 +28627,11 @@
     "throws": [],
     "todos": [],
     "name": "lineSplit",
-    "kind": "function",
+    "path": [
+      {
+        "name": "lineSplit"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -28651,12 +28639,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "lineSplit",
-        "kind": "function"
-      }
-    ],
     "namespace": "lineSplit"
   },
   {
@@ -29153,7 +29135,11 @@
     "throws": [],
     "todos": [],
     "name": "mask",
-    "kind": "function",
+    "path": [
+      {
+        "name": "mask"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -29161,12 +29147,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "mask",
-        "kind": "function"
-      }
-    ],
     "namespace": "mask"
   },
   {
@@ -29947,7 +29927,11 @@
     "throws": [],
     "todos": [],
     "name": "pointOnLine",
-    "kind": "function",
+    "path": [
+      {
+        "name": "pointOnLine"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -29955,12 +29939,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "pointOnLine",
-        "kind": "function"
-      }
-    ],
     "namespace": "pointOnLine"
   },
   {
@@ -30653,7 +30631,11 @@
     "throws": [],
     "todos": [],
     "name": "sector",
-    "kind": "function",
+    "path": [
+      {
+        "name": "sector"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -30661,12 +30643,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "sector",
-        "kind": "function"
-      }
-    ],
     "namespace": "sector"
   },
   {
@@ -31042,7 +31018,11 @@
     "throws": [],
     "todos": [],
     "name": "unkinkPolygon",
-    "kind": "function",
+    "path": [
+      {
+        "name": "unkinkPolygon"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -31050,23 +31030,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "unkinkPolygon",
-        "kind": "function"
-      }
-    ],
     "namespace": "unkinkPolygon"
   },
   {
     "name": "Helper",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -31074,6 +31057,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Helper"
   },
   {
@@ -31421,7 +31411,11 @@
     "throws": [],
     "todos": [],
     "name": "featureCollection",
-    "kind": "function",
+    "path": [
+      {
+        "name": "featureCollection"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -31429,12 +31423,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "featureCollection",
-        "kind": "function"
-      }
-    ],
     "namespace": "featureCollection"
   },
   {
@@ -31835,7 +31823,6 @@
     "throws": [],
     "todos": [],
     "name": "feature",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -31845,8 +31832,7 @@
     },
     "path": [
       {
-        "name": "feature",
-        "kind": "function"
+        "name": "feature"
       }
     ],
     "namespace": "feature"
@@ -32265,7 +32251,11 @@
     "throws": [],
     "todos": [],
     "name": "geometryCollection",
-    "kind": "function",
+    "path": [
+      {
+        "name": "geometryCollection"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -32273,12 +32263,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "geometryCollection",
-        "kind": "function"
-      }
-    ],
     "namespace": "geometryCollection"
   },
   {
@@ -32769,7 +32753,6 @@
     ],
     "todos": [],
     "name": "lineString",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -32779,8 +32762,7 @@
     },
     "path": [
       {
-        "name": "lineString",
-        "kind": "function"
+        "name": "lineString"
       }
     ],
     "namespace": "lineString"
@@ -33291,7 +33273,11 @@
     ],
     "todos": [],
     "name": "multiLineString",
-    "kind": "function",
+    "path": [
+      {
+        "name": "multiLineString"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -33299,12 +33285,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "multiLineString",
-        "kind": "function"
-      }
-    ],
     "namespace": "multiLineString"
   },
   {
@@ -33795,7 +33775,11 @@
     ],
     "todos": [],
     "name": "multiPoint",
-    "kind": "function",
+    "path": [
+      {
+        "name": "multiPoint"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -33803,12 +33787,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "multiPoint",
-        "kind": "function"
-      }
-    ],
     "namespace": "multiPoint"
   },
   {
@@ -34335,7 +34313,11 @@
     ],
     "todos": [],
     "name": "multiPolygon",
-    "kind": "function",
+    "path": [
+      {
+        "name": "multiPolygon"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -34343,12 +34325,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "multiPolygon",
-        "kind": "function"
-      }
-    ],
     "namespace": "multiPolygon"
   },
   {
@@ -34795,7 +34771,11 @@
     "throws": [],
     "todos": [],
     "name": "point",
-    "kind": "function",
+    "path": [
+      {
+        "name": "point"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -34803,12 +34783,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "point",
-        "kind": "function"
-      }
-    ],
     "namespace": "point"
   },
   {
@@ -35359,7 +35333,11 @@
     ],
     "todos": [],
     "name": "polygon",
-    "kind": "function",
+    "path": [
+      {
+        "name": "polygon"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -35367,23 +35345,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "polygon",
-        "kind": "function"
-      }
-    ],
     "namespace": "polygon"
   },
   {
     "name": "Data",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -35391,6 +35372,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Data"
   },
   {
@@ -36262,7 +36250,11 @@
     "throws": [],
     "todos": [],
     "name": "random",
-    "kind": "function",
+    "path": [
+      {
+        "name": "random"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -36270,12 +36262,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "random",
-        "kind": "function"
-      }
-    ],
     "namespace": "random"
   },
   {
@@ -36710,7 +36696,11 @@
     "throws": [],
     "todos": [],
     "name": "sample",
-    "kind": "function",
+    "path": [
+      {
+        "name": "sample"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -36718,23 +36708,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "sample",
-        "kind": "function"
-      }
-    ],
     "namespace": "sample"
   },
   {
     "name": "Interpolation",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -36742,6 +36735,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Interpolation"
   },
   {
@@ -37600,7 +37600,11 @@
     "throws": [],
     "todos": [],
     "name": "isobands",
-    "kind": "function",
+    "path": [
+      {
+        "name": "isobands"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -37608,12 +37612,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "isobands",
-        "kind": "function"
-      }
-    ],
     "namespace": "isobands"
   },
   {
@@ -38486,7 +38484,11 @@
     "throws": [],
     "todos": [],
     "name": "isolines",
-    "kind": "function",
+    "path": [
+      {
+        "name": "isolines"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -38494,12 +38496,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "isolines",
-        "kind": "function"
-      }
-    ],
     "namespace": "isolines"
   },
   {
@@ -39131,7 +39127,11 @@
     "throws": [],
     "todos": [],
     "name": "planepoint",
-    "kind": "function",
+    "path": [
+      {
+        "name": "planepoint"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -39139,12 +39139,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "planepoint",
-        "kind": "function"
-      }
-    ],
     "namespace": "planepoint"
   },
   {
@@ -39756,7 +39750,11 @@
     "throws": [],
     "todos": [],
     "name": "tin",
-    "kind": "function",
+    "path": [
+      {
+        "name": "tin"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -39764,12 +39762,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "tin",
-        "kind": "function"
-      }
-    ],
     "namespace": "tin"
   },
   {
@@ -40356,7 +40348,11 @@
     "throws": [],
     "todos": [],
     "name": "idw",
-    "kind": "function",
+    "path": [
+      {
+        "name": "idw"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -40364,23 +40360,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "idw",
-        "kind": "function"
-      }
-    ],
     "namespace": "idw"
   },
   {
     "name": "Joins",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -40388,6 +40387,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Joins"
   },
   {
@@ -41015,7 +41021,11 @@
     "throws": [],
     "todos": [],
     "name": "inside",
-    "kind": "function",
+    "path": [
+      {
+        "name": "inside"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -41023,12 +41033,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "inside",
-        "kind": "function"
-      }
-    ],
     "namespace": "inside"
   },
   {
@@ -41483,7 +41487,11 @@
     "throws": [],
     "todos": [],
     "name": "within",
-    "kind": "function",
+    "path": [
+      {
+        "name": "within"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -41491,12 +41499,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "within",
-        "kind": "function"
-      }
-    ],
     "namespace": "within"
   },
   {
@@ -42263,7 +42265,11 @@
     "throws": [],
     "todos": [],
     "name": "tag",
-    "kind": "function",
+    "path": [
+      {
+        "name": "tag"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -42271,23 +42277,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "tag",
-        "kind": "function"
-      }
-    ],
     "namespace": "tag"
   },
   {
     "name": "Grids",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -42295,6 +42304,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Grids"
   },
   {
@@ -42998,7 +43014,11 @@
     "throws": [],
     "todos": [],
     "name": "hexGrid",
-    "kind": "function",
+    "path": [
+      {
+        "name": "hexGrid"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -43006,12 +43026,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "hexGrid",
-        "kind": "function"
-      }
-    ],
     "namespace": "hexGrid"
   },
   {
@@ -43872,7 +43886,11 @@
     "throws": [],
     "todos": [],
     "name": "pointGrid",
-    "kind": "function",
+    "path": [
+      {
+        "name": "pointGrid"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -43880,12 +43898,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "pointGrid",
-        "kind": "function"
-      }
-    ],
     "namespace": "pointGrid"
   },
   {
@@ -44572,7 +44584,11 @@
     "throws": [],
     "todos": [],
     "name": "squareGrid",
-    "kind": "function",
+    "path": [
+      {
+        "name": "squareGrid"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -44580,12 +44596,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "squareGrid",
-        "kind": "function"
-      }
-    ],
     "namespace": "squareGrid"
   },
   {
@@ -45110,7 +45120,11 @@
     "throws": [],
     "todos": [],
     "name": "triangleGrid",
-    "kind": "function",
+    "path": [
+      {
+        "name": "triangleGrid"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -45118,23 +45132,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "triangleGrid",
-        "kind": "function"
-      }
-    ],
     "namespace": "triangleGrid"
   },
   {
     "name": "Classification",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -45142,6 +45159,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Classification"
   },
   {
@@ -45606,7 +45630,11 @@
     "throws": [],
     "todos": [],
     "name": "nearest",
-    "kind": "function",
+    "path": [
+      {
+        "name": "nearest"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -45614,23 +45642,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "nearest",
-        "kind": "function"
-      }
-    ],
     "namespace": "nearest"
   },
   {
     "name": "Aggregation",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -45638,6 +45669,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Aggregation"
   },
   {
@@ -46315,7 +46353,11 @@
     "throws": [],
     "todos": [],
     "name": "collect",
-    "kind": "function",
+    "path": [
+      {
+        "name": "collect"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -46323,23 +46365,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "collect",
-        "kind": "function"
-      }
-    ],
     "namespace": "collect"
   },
   {
     "name": "Meta",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -46347,6 +46392,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Meta"
   },
   {
@@ -46654,7 +46706,11 @@
     "throws": [],
     "todos": [],
     "name": "coordAll",
-    "kind": "function",
+    "path": [
+      {
+        "name": "coordAll"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -46662,12 +46718,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "coordAll",
-        "kind": "function"
-      }
-    ],
     "namespace": "coordAll"
   },
   {
@@ -47017,7 +47067,11 @@
     "throws": [],
     "todos": [],
     "name": "coordEach",
-    "kind": "function",
+    "path": [
+      {
+        "name": "coordEach"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -47025,12 +47079,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "coordEach",
-        "kind": "function"
-      }
-    ],
     "namespace": "coordEach"
   },
   {
@@ -47522,7 +47570,11 @@
     "throws": [],
     "todos": [],
     "name": "coordReduce",
-    "kind": "function",
+    "path": [
+      {
+        "name": "coordReduce"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -47530,12 +47582,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "coordReduce",
-        "kind": "function"
-      }
-    ],
     "namespace": "coordReduce"
   },
   {
@@ -47813,7 +47859,11 @@
     "throws": [],
     "todos": [],
     "name": "featureEach",
-    "kind": "function",
+    "path": [
+      {
+        "name": "featureEach"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -47821,12 +47871,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "featureEach",
-        "kind": "function"
-      }
-    ],
     "namespace": "featureEach"
   },
   {
@@ -48242,7 +48286,11 @@
     "throws": [],
     "todos": [],
     "name": "featureReduce",
-    "kind": "function",
+    "path": [
+      {
+        "name": "featureReduce"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -48250,12 +48298,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "featureReduce",
-        "kind": "function"
-      }
-    ],
     "namespace": "featureReduce"
   },
   {
@@ -48533,7 +48575,11 @@
     "throws": [],
     "todos": [],
     "name": "flattenEach",
-    "kind": "function",
+    "path": [
+      {
+        "name": "flattenEach"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -48541,12 +48587,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "flattenEach",
-        "kind": "function"
-      }
-    ],
     "namespace": "flattenEach"
   },
   {
@@ -48962,7 +49002,11 @@
     "throws": [],
     "todos": [],
     "name": "flattenReduce",
-    "kind": "function",
+    "path": [
+      {
+        "name": "flattenReduce"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -48970,12 +49014,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "flattenReduce",
-        "kind": "function"
-      }
-    ],
     "namespace": "flattenReduce"
   },
   {
@@ -49319,7 +49357,11 @@
     "throws": [],
     "todos": [],
     "name": "getCoord",
-    "kind": "function",
+    "path": [
+      {
+        "name": "getCoord"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -49327,12 +49369,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "getCoord",
-        "kind": "function"
-      }
-    ],
     "namespace": "getCoord"
   },
   {
@@ -49640,7 +49676,11 @@
     "throws": [],
     "todos": [],
     "name": "getCoords",
-    "kind": "function",
+    "path": [
+      {
+        "name": "getCoords"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -49648,12 +49688,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "getCoords",
-        "kind": "function"
-      }
-    ],
     "namespace": "getCoords"
   },
   {
@@ -49996,6 +50030,12 @@
     "todos": [],
     "name": "getGeom",
     "kind": "function",
+    "path": [
+      {
+        "name": "getGeom",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -50003,12 +50043,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "getGeom",
-        "kind": "function"
-      }
-    ],
     "namespace": "getGeom"
   },
   {
@@ -50335,6 +50369,12 @@
     "todos": [],
     "name": "getGeomType",
     "kind": "function",
+    "path": [
+      {
+        "name": "getGeomType",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -50342,12 +50382,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "getGeomType",
-        "kind": "function"
-      }
-    ],
     "namespace": "getGeomType"
   },
   {
@@ -50621,7 +50655,11 @@
     "throws": [],
     "todos": [],
     "name": "geomEach",
-    "kind": "function",
+    "path": [
+      {
+        "name": "geomEach"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -50629,12 +50667,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "geomEach",
-        "kind": "function"
-      }
-    ],
     "namespace": "geomEach"
   },
   {
@@ -51050,7 +51082,11 @@
     "throws": [],
     "todos": [],
     "name": "geomReduce",
-    "kind": "function",
+    "path": [
+      {
+        "name": "geomReduce"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -51058,12 +51094,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "geomReduce",
-        "kind": "function"
-      }
-    ],
     "namespace": "geomReduce"
   },
   {
@@ -51329,7 +51359,11 @@
     "throws": [],
     "todos": [],
     "name": "propEach",
-    "kind": "function",
+    "path": [
+      {
+        "name": "propEach"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -51337,12 +51371,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "propEach",
-        "kind": "function"
-      }
-    ],
     "namespace": "propEach"
   },
   {
@@ -51756,7 +51784,11 @@
     "throws": [],
     "todos": [],
     "name": "propReduce",
-    "kind": "function",
+    "path": [
+      {
+        "name": "propReduce"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -51764,23 +51796,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "propReduce",
-        "kind": "function"
-      }
-    ],
     "namespace": "propReduce"
   },
   {
     "name": "Assertions",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -51788,6 +51823,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Assertions"
   },
   {
@@ -52253,7 +52295,11 @@
     ],
     "todos": [],
     "name": "collectionOf",
-    "kind": "function",
+    "path": [
+      {
+        "name": "collectionOf"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -52261,12 +52307,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "collectionOf",
-        "kind": "function"
-      }
-    ],
     "namespace": "collectionOf"
   },
   {
@@ -52521,7 +52561,11 @@
     "throws": [],
     "todos": [],
     "name": "containsNumber",
-    "kind": "function",
+    "path": [
+      {
+        "name": "containsNumber"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -52529,12 +52573,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "containsNumber",
-        "kind": "function"
-      }
-    ],
     "namespace": "containsNumber"
   },
   {
@@ -52912,7 +52950,11 @@
     ],
     "todos": [],
     "name": "geojsonType",
-    "kind": "function",
+    "path": [
+      {
+        "name": "geojsonType"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -52920,12 +52962,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "geojsonType",
-        "kind": "function"
-      }
-    ],
     "namespace": "geojsonType"
   },
   {
@@ -53391,7 +53427,11 @@
     ],
     "todos": [],
     "name": "featureOf",
-    "kind": "function",
+    "path": [
+      {
+        "name": "featureOf"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -53399,23 +53439,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "featureOf",
-        "kind": "function"
-      }
-    ],
     "namespace": "featureOf"
   },
   {
     "name": "Booleans",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -53423,6 +53466,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Booleans"
   },
   {
@@ -53748,7 +53798,11 @@
     "throws": [],
     "todos": [],
     "name": "booleanClockwise",
-    "kind": "function",
+    "path": [
+      {
+        "name": "booleanClockwise"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -53756,12 +53810,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "booleanClockwise",
-        "kind": "function"
-      }
-    ],
     "namespace": "booleanClockwise"
   },
   {
@@ -54192,7 +54240,11 @@
     "throws": [],
     "todos": [],
     "name": "booleanContains",
-    "kind": "function",
+    "path": [
+      {
+        "name": "booleanContains"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -54200,12 +54252,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "booleanContains",
-        "kind": "function"
-      }
-    ],
     "namespace": "booleanContains"
   },
   {
@@ -54635,7 +54681,11 @@
     "throws": [],
     "todos": [],
     "name": "booleanCrosses",
-    "kind": "function",
+    "path": [
+      {
+        "name": "booleanCrosses"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -54643,12 +54693,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "booleanCrosses",
-        "kind": "function"
-      }
-    ],
     "namespace": "booleanCrosses"
   },
   {
@@ -55037,7 +55081,11 @@
     "throws": [],
     "todos": [],
     "name": "booleanDisjoint",
-    "kind": "function",
+    "path": [
+      {
+        "name": "booleanDisjoint"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -55045,23 +55093,26 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "booleanDisjoint",
-        "kind": "function"
-      }
-    ],
     "namespace": "booleanDisjoint"
   },
   {
     "name": "Unit Conversion",
     "kind": "note",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
+    "description": {
+      "type": "root",
+      "children": [],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        }
+      }
     },
     "path": [
       {
@@ -55069,6 +55120,13 @@
         "kind": "note"
       }
     ],
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
     "namespace": "Unit Conversion"
   },
   {
@@ -55309,7 +55367,11 @@
     "throws": [],
     "todos": [],
     "name": "bearingToAngle",
-    "kind": "function",
+    "path": [
+      {
+        "name": "bearingToAngle"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -55317,12 +55379,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "bearingToAngle",
-        "kind": "function"
-      }
-    ],
     "namespace": "bearingToAngle"
   },
   {
@@ -55705,6 +55761,12 @@
     "todos": [],
     "name": "convertDistance",
     "kind": "function",
+    "path": [
+      {
+        "name": "convertDistance",
+        "kind": "function"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -55712,12 +55774,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "convertDistance",
-        "kind": "function"
-      }
-    ],
     "namespace": "convertDistance"
   },
   {
@@ -55954,7 +56010,11 @@
     "throws": [],
     "todos": [],
     "name": "degrees2radians",
-    "kind": "function",
+    "path": [
+      {
+        "name": "degrees2radians"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -55962,12 +56022,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "degrees2radians",
-        "kind": "function"
-      }
-    ],
     "namespace": "degrees2radians"
   },
   {
@@ -56284,7 +56338,11 @@
     "throws": [],
     "todos": [],
     "name": "distanceToRadians",
-    "kind": "function",
+    "path": [
+      {
+        "name": "distanceToRadians"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -56292,12 +56350,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "distanceToRadians",
-        "kind": "function"
-      }
-    ],
     "namespace": "distanceToRadians"
   },
   {
@@ -56614,7 +56666,11 @@
     "throws": [],
     "todos": [],
     "name": "distanceToDegrees",
-    "kind": "function",
+    "path": [
+      {
+        "name": "distanceToDegrees"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -56622,12 +56678,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "distanceToDegrees",
-        "kind": "function"
-      }
-    ],
     "namespace": "distanceToDegrees"
   },
   {
@@ -56944,7 +56994,11 @@
     "throws": [],
     "todos": [],
     "name": "radiansToDistance",
-    "kind": "function",
+    "path": [
+      {
+        "name": "radiansToDistance"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -56952,12 +57006,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "radiansToDistance",
-        "kind": "function"
-      }
-    ],
     "namespace": "radiansToDistance"
   },
   {
@@ -57194,7 +57242,11 @@
     "throws": [],
     "todos": [],
     "name": "radians2degrees",
-    "kind": "function",
+    "path": [
+      {
+        "name": "radians2degrees"
+      }
+    ],
     "members": {
       "global": [],
       "inner": [],
@@ -57202,12 +57254,6 @@
       "events": [],
       "static": []
     },
-    "path": [
-      {
-        "name": "radians2degrees",
-        "kind": "function"
-      }
-    ],
     "namespace": "radians2degrees"
   },
   {
@@ -57670,7 +57716,6 @@
     "throws": [],
     "todos": [],
     "name": "booleanOverlap",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -57680,8 +57725,7 @@
     },
     "path": [
       {
-        "name": "booleanOverlap",
-        "kind": "function"
+        "name": "booleanOverlap"
       }
     ],
     "namespace": "booleanOverlap"
@@ -58148,7 +58192,6 @@
     "throws": [],
     "todos": [],
     "name": "booleanPointOnLine",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -58158,8 +58201,7 @@
     },
     "path": [
       {
-        "name": "booleanPointOnLine",
-        "kind": "function"
+        "name": "booleanPointOnLine"
       }
     ],
     "namespace": "booleanPointOnLine"
@@ -58558,7 +58600,6 @@
     "throws": [],
     "todos": [],
     "name": "clone",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -58568,8 +58609,7 @@
     },
     "path": [
       {
-        "name": "clone",
-        "kind": "function"
+        "name": "clone"
       }
     ],
     "namespace": "clone"
@@ -59331,7 +59371,6 @@
     "throws": [],
     "todos": [],
     "name": "clustersDbscan",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -59341,8 +59380,7 @@
     },
     "path": [
       {
-        "name": "clustersDbscan",
-        "kind": "function"
+        "name": "clustersDbscan"
       }
     ],
     "namespace": "clustersDbscan"
@@ -60085,7 +60123,6 @@
     "throws": [],
     "todos": [],
     "name": "clustersKmeans",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -60095,8 +60132,7 @@
     },
     "path": [
       {
-        "name": "clustersKmeans",
-        "kind": "function"
+        "name": "clustersKmeans"
       }
     ],
     "namespace": "clustersKmeans"
@@ -60556,21 +60592,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 94
-      },
-      {
-        "title": "param",
-        "name": "property",
-        "lineNumber": 94
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 94
-      },
       {
         "title": "param",
         "name": "cluster",
@@ -61703,26 +61724,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 178
-      },
-      {
-        "title": "param",
-        "name": "property",
-        "lineNumber": 178
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 178
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 178
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -62486,7 +62487,6 @@
     "throws": [],
     "todos": [],
     "name": "clusterReduce",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -62496,8 +62496,7 @@
     },
     "path": [
       {
-        "name": "clusterReduce",
-        "kind": "function"
+        "name": "clusterReduce"
       }
     ],
     "namespace": "clusterReduce"
@@ -63994,7 +63993,6 @@
     "throws": [],
     "todos": [],
     "name": "interpolate",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -64004,8 +64002,7 @@
     },
     "path": [
       {
-        "name": "interpolate",
-        "kind": "function"
+        "name": "interpolate"
       }
     ],
     "namespace": "interpolate"
@@ -64288,21 +64285,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 28
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 28
-      },
-      {
-        "title": "param",
-        "name": "excludeWrapCoord",
-        "lineNumber": 28
-      },
       {
         "title": "param",
         "name": "currentCoord",
@@ -64966,26 +64948,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 155
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 155
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 155
-      },
-      {
-        "title": "param",
-        "name": "excludeWrapCoord",
-        "lineNumber": 155
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -65316,16 +65278,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 190
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 190
-      },
       {
         "title": "param",
         "name": "currentProperties",
@@ -65970,21 +65922,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 250
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 250
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 250
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -66314,16 +66251,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 286
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 286
-      },
       {
         "title": "param",
         "name": "currentFeature",
@@ -66978,21 +66905,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 339
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 339
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 339
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -67324,16 +67236,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 399
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 399
-      },
       {
         "title": "param",
         "name": "currentGeometry",
@@ -68050,21 +67952,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 509
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 509
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 509
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -68457,16 +68344,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 548
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 548
-      },
       {
         "title": "param",
         "name": "currentFeature",
@@ -69187,21 +69064,6 @@
     "params": [
       {
         "title": "param",
-        "name": "geojson",
-        "lineNumber": 633
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 633
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 633
-      },
-      {
-        "title": "param",
         "name": "previousValue",
         "lineNumber": 15,
         "description": {
@@ -69481,397 +69343,6 @@
       }
     ],
     "namespace": "flattenReduceCallback"
-  },
-  {
-    "description": {
-      "type": "root",
-      "children": [
-        {
-          "type": "paragraph",
-          "children": [
-            {
-              "type": "text",
-              "value": "Callback for segmentEach",
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 25,
-                  "offset": 24
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 25,
-              "offset": 24
-            },
-            "indent": []
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 1,
-          "offset": 0
-        },
-        "end": {
-          "line": 1,
-          "column": 25,
-          "offset": 24
-        }
-      }
-    },
-    "tags": [
-      {
-        "title": "callback",
-        "description": "segmentEachCallback",
-        "lineNumber": 3
-      },
-      {
-        "title": "param",
-        "description": "The current segment being processed.",
-        "lineNumber": 4,
-        "type": {
-          "type": "TypeApplication",
-          "expression": {
-            "type": "NameExpression",
-            "name": "Feature"
-          },
-          "applications": [
-            {
-              "type": "NameExpression",
-              "name": "LineString"
-            }
-          ]
-        },
-        "name": "currentSegment"
-      },
-      {
-        "title": "param",
-        "description": "The index of the current element being processed in the array, starts at index 0.",
-        "lineNumber": 5,
-        "type": {
-          "type": "NameExpression",
-          "name": "number"
-        },
-        "name": "featureIndex"
-      },
-      {
-        "title": "param",
-        "description": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment.",
-        "lineNumber": 6,
-        "type": {
-          "type": "NameExpression",
-          "name": "number"
-        },
-        "name": "featureSubIndex"
-      },
-      {
-        "title": "returns",
-        "description": null,
-        "lineNumber": 8,
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      }
-    ],
-    "loc": {
-      "start": {
-        "line": 642,
-        "column": 0
-      },
-      "end": {
-        "line": 651,
-        "column": 3
-      }
-    },
-    "context": {
-      "loc": {
-        "start": {
-          "line": 677,
-          "column": 0
-        },
-        "end": {
-          "line": 694,
-          "column": 1
-        }
-      },
-      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
-    },
-    "augments": [],
-    "examples": [],
-    "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 677
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 677
-      },
-      {
-        "title": "param",
-        "name": "currentSegment",
-        "lineNumber": 4,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "The current segment being processed.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 37,
-                      "offset": 36
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 37,
-                  "offset": 36
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 37,
-              "offset": 36
-            }
-          }
-        },
-        "type": {
-          "type": "TypeApplication",
-          "expression": {
-            "type": "NameExpression",
-            "name": "Feature"
-          },
-          "applications": [
-            {
-              "type": "NameExpression",
-              "name": "LineString"
-            }
-          ]
-        }
-      },
-      {
-        "title": "param",
-        "name": "featureIndex",
-        "lineNumber": 5,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "The index of the current element being processed in the array, starts at index 0.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 82,
-                      "offset": 81
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 82,
-                  "offset": 81
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 82,
-              "offset": 81
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "number"
-        }
-      },
-      {
-        "title": "param",
-        "name": "featureSubIndex",
-        "lineNumber": 6,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 72,
-                      "offset": 130
-                    },
-                    "indent": [
-                      1
-                    ]
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 2,
-                  "column": 72,
-                  "offset": 130
-                },
-                "indent": [
-                  1
-                ]
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 2,
-              "column": 72,
-              "offset": 130
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "number"
-        }
-      }
-    ],
-    "properties": [],
-    "returns": [
-      {
-        "description": {
-          "type": "root",
-          "children": [],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            }
-          }
-        },
-        "title": "returns",
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      }
-    ],
-    "sees": [],
-    "throws": [],
-    "todos": [],
-    "kind": "typedef",
-    "name": "segmentEachCallback",
-    "type": {
-      "type": "NameExpression",
-      "name": "Function"
-    },
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
-    },
-    "path": [
-      {
-        "name": "segmentEachCallback",
-        "kind": "typedef"
-      }
-    ],
-    "namespace": "segmentEachCallback"
   },
   {
     "description": {
@@ -70190,6 +69661,387 @@
       }
     ],
     "namespace": "segmentEach"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Callback for segmentEach",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 25,
+                  "offset": 24
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 25,
+              "offset": 24
+            },
+            "indent": []
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 25,
+          "offset": 24
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "callback",
+        "description": "segmentEachCallback",
+        "lineNumber": 3
+      },
+      {
+        "title": "param",
+        "description": "The current segment being processed.",
+        "lineNumber": 4,
+        "type": {
+          "type": "TypeApplication",
+          "expression": {
+            "type": "NameExpression",
+            "name": "Feature"
+          },
+          "applications": [
+            {
+              "type": "NameExpression",
+              "name": "LineString"
+            }
+          ]
+        },
+        "name": "currentSegment"
+      },
+      {
+        "title": "param",
+        "description": "The index of the current element being processed in the array, starts at index 0.",
+        "lineNumber": 5,
+        "type": {
+          "type": "NameExpression",
+          "name": "number"
+        },
+        "name": "featureIndex"
+      },
+      {
+        "title": "param",
+        "description": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment.",
+        "lineNumber": 6,
+        "type": {
+          "type": "NameExpression",
+          "name": "number"
+        },
+        "name": "featureSubIndex"
+      },
+      {
+        "title": "returns",
+        "description": null,
+        "lineNumber": 8,
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 642,
+        "column": 0
+      },
+      "end": {
+        "line": 651,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 677,
+          "column": 0
+        },
+        "end": {
+          "line": 694,
+          "column": 1
+        }
+      },
+      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
+    },
+    "augments": [],
+    "examples": [],
+    "params": [
+      {
+        "title": "param",
+        "name": "currentSegment",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The current segment being processed.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 37,
+                      "offset": 36
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 37,
+                  "offset": 36
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 37,
+              "offset": 36
+            }
+          }
+        },
+        "type": {
+          "type": "TypeApplication",
+          "expression": {
+            "type": "NameExpression",
+            "name": "Feature"
+          },
+          "applications": [
+            {
+              "type": "NameExpression",
+              "name": "LineString"
+            }
+          ]
+        }
+      },
+      {
+        "title": "param",
+        "name": "featureIndex",
+        "lineNumber": 5,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The index of the current element being processed in the array, starts at index 0.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 82,
+                      "offset": 81
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 82,
+                  "offset": 81
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 82,
+              "offset": 81
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "number"
+        }
+      },
+      {
+        "title": "param",
+        "name": "featureSubIndex",
+        "lineNumber": 6,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 72,
+                      "offset": 130
+                    },
+                    "indent": [
+                      1
+                    ]
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 2,
+                  "column": 72,
+                  "offset": 130
+                },
+                "indent": [
+                  1
+                ]
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 72,
+              "offset": 130
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "number"
+        }
+      }
+    ],
+    "properties": [],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            }
+          }
+        },
+        "title": "returns",
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      }
+    ],
+    "sees": [],
+    "throws": [],
+    "todos": [],
+    "kind": "typedef",
+    "name": "segmentEachCallback",
+    "type": {
+      "type": "NameExpression",
+      "name": "Function"
+    },
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "segmentEachCallback",
+        "kind": "typedef"
+      }
+    ],
+    "namespace": "segmentEachCallback"
   },
   {
     "description": {
@@ -70712,21 +70564,6 @@
     "augments": [],
     "examples": [],
     "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 747
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 747
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 747
-      },
       {
         "title": "param",
         "name": "previousValue",
@@ -72060,7 +71897,6 @@
     "throws": [],
     "todos": [],
     "name": "transformRotate",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -72070,8 +71906,7 @@
     },
     "path": [
       {
-        "name": "transformRotate",
-        "kind": "function"
+        "name": "transformRotate"
       }
     ],
     "namespace": "transformRotate"
@@ -72616,7 +72451,6 @@
     "throws": [],
     "todos": [],
     "name": "transformScale",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -72626,8 +72460,7 @@
     },
     "path": [
       {
-        "name": "transformScale",
-        "kind": "function"
+        "name": "transformScale"
       }
     ],
     "namespace": "transformScale"
@@ -73283,7 +73116,6 @@
     "throws": [],
     "todos": [],
     "name": "transformTranslate",
-    "kind": "function",
     "members": {
       "global": [],
       "inner": [],
@@ -73293,8 +73125,7 @@
     },
     "path": [
       {
-        "name": "transformTranslate",
-        "kind": "function"
+        "name": "transformTranslate"
       }
     ],
     "namespace": "transformTranslate"

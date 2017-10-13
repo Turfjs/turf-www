@@ -39,7 +39,10 @@
 import {Row, Col} from 'iview/src/components/grid'
 import {Select, Option} from 'iview/src/components/select'
 
-var L = require('mapbox.js')
+import L from 'mapbox.js'
+import tin from '@turf/tin'
+import buffer from '@turf/buffer'
+import centroid from '@turf/centroid'
 import { points } from '../assets/points'
 L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
 var map1 = null
@@ -64,9 +67,9 @@ export default {
     changeOperation (e) {
       outLayer.clearLayers()
       var geojson = null
-      if (e === 'tin') geojson = turf.tin(points, 'price')
-      if (e === 'buffer') geojson = turf.buffer(points, 200, 'meters')
-      if (e === 'centroid') geojson = turf.centroid(points)
+      if (e === 'tin') geojson = tin(points, 'price')
+      if (e === 'buffer') geojson = buffer(points, 200, 'meters')
+      if (e === 'centroid') geojson = centroid(points)
       outLayer = L.geoJson(geojson, geojsonOptions).addTo(map2)
     }
   },
@@ -76,7 +79,7 @@ export default {
     map2 = L.mapbox.map('outMap', 'tmcw.kncfa9dj', mapOptions)
 
     var pointsLayer1 = L.geoJson(points, geojsonOptions).addTo(map1)
-    outLayer = L.geoJson(turf.tin(points, 'price'), geojsonOptions).addTo(map2) //eslint-disable-line
+    outLayer = L.geoJson(tin(points, 'price'), geojsonOptions).addTo(map2) //eslint-disable-line
     map1.fitBounds(pointsLayer1.getBounds())
     map2.fitBounds(outLayer.getBounds())
   }

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-var L = require('mapbox.js')
+import L from 'mapbox.js'
 L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
 var turfMap = null
 var fg = null
@@ -22,7 +22,7 @@ export default {
       var zoomText = this.getLayersAndZoom(this.code)
       return eval(this.code + zoomText) //eslint-disable-line
     },
-    getLayersAndZoom: function (codeText) {
+    getLayersAndZoom: function () {
       return `
       addToMap.forEach(function (geojson) {
         var geojsonLayer = L.mapbox.featureLayer(geojson);
