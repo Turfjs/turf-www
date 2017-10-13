@@ -1,44 +1,73 @@
 #!/usr/bin/env node
 
+const fs = require('fs')
+const d3 = require('d3-queue')
 const path = require('path')
+const glob = require('glob')
+const yaml = require('js-yaml')
 const load = require('load-json-file')
 const write = require('write-json-file')
+const documentation = require('documentation')
+
+const documentationConfig = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'documentation.yml'), 'utf8'))
+const paths = documentationConfig.paths
+const configPath = path.join(__dirname, '..', 'src', 'config.json')
+const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 'turf-*', 'package.json'))
 
 const moduleSidebarList = []
 const completeModules = []
+const q = d3.queue()
 
-const documentationPath = path.join(__dirname, '..', 'src', 'config-documentation.json')
-const configPath = path.join(__dirname, '..', 'src', 'config.json')
+packagesPath.forEach(packagePath => {
+  const directory = path.parse(packagePath).dir
+  const indexPath = path.join(directory, 'index.js')
+  const pckg = load.sync(packagePath)
+  const name = pckg.name
 
-load.sync(documentationPath).forEach(metadata => {
-  const isHeading = metadata.kind === 'note'
-  moduleSidebarList.push({
-    isHeading: isHeading,
-    name: metadata.name,
-    hidden: false
-  })
-  if (!isHeading) {
-    const parent = getParent(metadata.context.file)
-    completeModules.push({
-      name: metadata.name,
-      description: getDescription(metadata),
-      parent: parent,
-      snippet: getSnippet(metadata),
-      example: getExample(metadata),
-      hasMap: hasMap(metadata),
-      npmName: getNpmName(metadata, parent),
-      returns: getReturns(metadata),
-      params: getParams(metadata),
-      throws: getThrows(metadata)
+  // Build Documentation
+  q.defer(callback => {
+    documentation.build(indexPath, {shallow: true}).then(res => {
+      if (res === undefined) return console.warning(packagePath);
+      console.log('Building Docs: ' + name);
+
+      // Format JSON
+      documentation.formats.json(res, {paths}).then(metadata => {
+        metadata = JSON.parse(metadata)[0]
+        const isHeading = metadata.kind === 'note'
+        moduleSidebarList.push({
+          isHeading: isHeading,
+          name: metadata.name,
+          hidden: false
+        })
+        if (!isHeading) {
+          // const parent = getParent(metadata.context.file)
+          completeModules.push({
+            name: metadata.name,
+            description: getDescription(metadata),
+            // parent: parent,
+            snippet: getSnippet(metadata),
+            example: getExample(metadata),
+            hasMap: hasMap(metadata),
+            // npmName: getNpmName(metadata, parent),
+            returns: getReturns(metadata),
+            params: getParams(metadata),
+            throws: getThrows(metadata)
+          })
+        }
+        callback(null)
+      })
     })
-  }
+  })
 })
 
-const config = {
-  sidebar: moduleSidebarList,
-  modules: completeModules
-}
-write.sync(configPath, config)
+q.awaitAll(() => {
+  const config = {
+    sidebar: moduleSidebarList,
+    modules: completeModules
+  }
+  write.sync(configPath, config)
+  console.log('Saved Config:', configPath)
+})
 
 function getParent (filePath) {
   if (filePath.includes('turf-helpers')) return 'helpers'

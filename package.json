@@ -4,7 +4,6 @@
   "version": "5.0.0",
   "description": "Turf.js documentation",
   "scripts": {
-    "prebuild": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > src/config-documentation.json",
     "build": "node scripts/create-config.js",
     "postbuild": "webpack --progress --hide-modules",
     "start": "webpack-dev-server --open --hot",
@@ -50,9 +49,14 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "css-loader": "^0.28.7",
+    "d3-queue": "^3.0.7",
+    "documentation": "^5.3.3",
     "eslint": "^4.8.0",
     "eslint-plugin-vue": "^3.13.1",
     "file-loader": "^1.1.4",
+    "glob": "^7.1.2",
+    "js-yaml": "^3.10.0",
+    "load-json-file": "^3.0.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
@@ -60,7 +64,8 @@
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
-    "webpack-dev-server": "^2.9.1"
+    "webpack-dev-server": "^2.9.1",
+    "write-json-file": "^2.3.0"
   },
   "engines": {
     "node": ">= 6.0.0"
