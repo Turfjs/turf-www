@@ -7,7 +7,11 @@
     "preconfig": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > configs/config-documentation.json",
     "config": "node scripts/create-config.js",
     "build": "echo 'to implement'",
-    "start": "npm run config && npm run build && http-server"
+    "start": "npm run config && npm run build && http-server",
+    "dev": "node build/dev-server.js",
+    "start": "node build/dev-server.js",
+    "build": "node build/build.js",
+    "lint": "eslint --ext .js,.vue src"
   },
   "repository": {
     "type": "git",
