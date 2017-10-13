@@ -70200,399 +70200,6 @@
           "children": [
             {
               "type": "text",
-              "value": "Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 2,
-                  "column": 98,
-                  "offset": 175
-                },
-                "indent": [
-                  1
-                ]
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 2,
-              "column": 98,
-              "offset": 175
-            },
-            "indent": [
-              1
-            ]
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 1,
-          "offset": 0
-        },
-        "end": {
-          "line": 2,
-          "column": 98,
-          "offset": 175
-        }
-      }
-    },
-    "tags": [
-      {
-        "title": "param",
-        "description": "any GeoJSON",
-        "lineNumber": 4,
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "FeatureCollection"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Feature"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Geometry"
-            }
-          ]
-        },
-        "name": "geojson"
-      },
-      {
-        "title": "param",
-        "description": "a method that takes (previousValue, currentSegment, currentIndex)",
-        "lineNumber": 5,
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        },
-        "name": "callback"
-      },
-      {
-        "title": "param",
-        "description": "Value to use as the first argument to the first call of the callback.",
-        "lineNumber": 6,
-        "type": {
-          "type": "OptionalType",
-          "expression": {
-            "type": "AllLiteral"
-          }
-        },
-        "name": "initialValue"
-      },
-      {
-        "title": "returns",
-        "description": null,
-        "lineNumber": 7,
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      },
-      {
-        "title": "example",
-        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
-        "lineNumber": 8
-      }
-    ],
-    "loc": {
-      "start": {
-        "line": 720,
-        "column": 0
-      },
-      "end": {
-        "line": 746,
-        "column": 3
-      }
-    },
-    "context": {
-      "loc": {
-        "start": {
-          "line": 747,
-          "column": 0
-        },
-        "end": {
-          "line": 754,
-          "column": 1
-        }
-      },
-      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
-    },
-    "augments": [],
-    "examples": [
-      {
-        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);"
-      }
-    ],
-    "params": [
-      {
-        "title": "param",
-        "name": "geojson",
-        "lineNumber": 4,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "any GeoJSON",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 12,
-                      "offset": 11
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 12,
-                  "offset": 11
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 12,
-              "offset": 11
-            }
-          }
-        },
-        "type": {
-          "type": "UnionType",
-          "elements": [
-            {
-              "type": "NameExpression",
-              "name": "FeatureCollection"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Feature"
-            },
-            {
-              "type": "NameExpression",
-              "name": "Geometry"
-            }
-          ]
-        }
-      },
-      {
-        "title": "param",
-        "name": "callback",
-        "lineNumber": 5,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "a method that takes (previousValue, currentSegment, currentIndex)",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 66,
-                      "offset": 65
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 66,
-                  "offset": 65
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 66,
-              "offset": 65
-            }
-          }
-        },
-        "type": {
-          "type": "NameExpression",
-          "name": "Function"
-        }
-      },
-      {
-        "title": "param",
-        "name": "initialValue",
-        "lineNumber": 6,
-        "description": {
-          "type": "root",
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "Value to use as the first argument to the first call of the callback.",
-                  "position": {
-                    "start": {
-                      "line": 1,
-                      "column": 1,
-                      "offset": 0
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 70,
-                      "offset": 69
-                    },
-                    "indent": []
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 1,
-                  "column": 1,
-                  "offset": 0
-                },
-                "end": {
-                  "line": 1,
-                  "column": 70,
-                  "offset": 69
-                },
-                "indent": []
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 70,
-              "offset": 69
-            }
-          }
-        },
-        "type": {
-          "type": "OptionalType",
-          "expression": {
-            "type": "AllLiteral"
-          }
-        }
-      }
-    ],
-    "properties": [],
-    "returns": [
-      {
-        "description": {
-          "type": "root",
-          "children": [],
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            },
-            "end": {
-              "line": 1,
-              "column": 1,
-              "offset": 0
-            }
-          }
-        },
-        "title": "returns",
-        "type": {
-          "type": "NameExpression",
-          "name": "void"
-        }
-      }
-    ],
-    "sees": [],
-    "throws": [],
-    "todos": [],
-    "name": "segmentReduce",
-    "kind": "function",
-    "members": {
-      "global": [],
-      "inner": [],
-      "instance": [],
-      "events": [],
-      "static": []
-    },
-    "path": [
-      {
-        "name": "segmentReduce",
-        "kind": "function"
-      }
-    ],
-    "namespace": "segmentReduce"
-  },
-  {
-    "description": {
-      "type": "root",
-      "children": [
-        {
-          "type": "paragraph",
-          "children": [
-            {
-              "type": "text",
               "value": "Callback for segmentReduce",
               "position": {
                 "start": {
@@ -71422,6 +71029,399 @@
       }
     ],
     "namespace": "segmentReduceCallback"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 2,
+                  "column": 98,
+                  "offset": 175
+                },
+                "indent": [
+                  1
+                ]
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 98,
+              "offset": 175
+            },
+            "indent": [
+              1
+            ]
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 98,
+          "offset": 175
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "param",
+        "description": "any GeoJSON",
+        "lineNumber": 4,
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "FeatureCollection"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Feature"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Geometry"
+            }
+          ]
+        },
+        "name": "geojson"
+      },
+      {
+        "title": "param",
+        "description": "a method that takes (previousValue, currentSegment, currentIndex)",
+        "lineNumber": 5,
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        },
+        "name": "callback"
+      },
+      {
+        "title": "param",
+        "description": "Value to use as the first argument to the first call of the callback.",
+        "lineNumber": 6,
+        "type": {
+          "type": "OptionalType",
+          "expression": {
+            "type": "AllLiteral"
+          }
+        },
+        "name": "initialValue"
+      },
+      {
+        "title": "returns",
+        "description": null,
+        "lineNumber": 7,
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      },
+      {
+        "title": "example",
+        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
+        "lineNumber": 8
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 720,
+        "column": 0
+      },
+      "end": {
+        "line": 746,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 747,
+          "column": 0
+        },
+        "end": {
+          "line": 754,
+          "column": 1
+        }
+      },
+      "file": "/Users/mac/Github/turf-www/turf/packages/turf-meta/index.js"
+    },
+    "augments": [],
+    "examples": [
+      {
+        "description": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);"
+      }
+    ],
+    "params": [
+      {
+        "title": "param",
+        "name": "geojson",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "any GeoJSON",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 12,
+                      "offset": 11
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 12,
+                  "offset": 11
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 12,
+              "offset": 11
+            }
+          }
+        },
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "FeatureCollection"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Feature"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Geometry"
+            }
+          ]
+        }
+      },
+      {
+        "title": "param",
+        "name": "callback",
+        "lineNumber": 5,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a method that takes (previousValue, currentSegment, currentIndex)",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 66,
+                      "offset": 65
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 66,
+                  "offset": 65
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 66,
+              "offset": 65
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "Function"
+        }
+      },
+      {
+        "title": "param",
+        "name": "initialValue",
+        "lineNumber": 6,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Value to use as the first argument to the first call of the callback.",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 70,
+                      "offset": 69
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 70,
+                  "offset": 69
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 70,
+              "offset": 69
+            }
+          }
+        },
+        "type": {
+          "type": "OptionalType",
+          "expression": {
+            "type": "AllLiteral"
+          }
+        }
+      }
+    ],
+    "properties": [],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            }
+          }
+        },
+        "title": "returns",
+        "type": {
+          "type": "NameExpression",
+          "name": "void"
+        }
+      }
+    ],
+    "sees": [],
+    "throws": [],
+    "todos": [],
+    "name": "segmentReduce",
+    "kind": "function",
+    "members": {
+      "global": [],
+      "inner": [],
+      "instance": [],
+      "events": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "segmentReduce",
+        "kind": "function"
+      }
+    ],
+    "namespace": "segmentReduce"
   },
   {
     "description": {

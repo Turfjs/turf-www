@@ -767,12 +767,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "segmentReduce",
+			"name": "segmentReduceCallback",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "segmentReduceCallback",
+			"name": "segmentReduce",
 			"hidden": false
 		},
 		{
@@ -4907,36 +4907,6 @@
 			"throws": []
 		},
 		{
-			"name": "segmentReduce",
-			"description": "Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
-			"parent": "meta",
-			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
-			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
-			"hasMap": false,
-			"npmName": "meta",
-			"returns": [
-				false
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
-					"Description": "any GeoJSON"
-				},
-				{
-					"Argument": "callback",
-					"Type": "Function",
-					"Description": "a method that takes (previousValue, currentSegment, currentIndex)"
-				},
-				{
-					"Argument": "initialValue",
-					"Type": "Optional: undefined",
-					"Description": "Value to use as the first argument to the first call of the callback."
-				}
-			],
-			"throws": []
-		},
-		{
 			"name": "segmentReduceCallback",
 			"description": "Callback for segmentReduce",
 			"parent": "meta",
@@ -4965,6 +4935,36 @@
 					"Argument": "currentSubIndex",
 					"Type": "Optional: number",
 					"Description": "The subindex of the current element being processed in the\narray. Starts at index 0 and increases for each iterating line segment."
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "segmentReduce",
+			"description": "Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()\n(Multi)Point geometries do not contain segments therefore they are ignored during this operation.",
+			"parent": "meta",
+			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
+			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\n\n// Iterate over GeoJSON by 2-vertex segments\nturf.segmentReduce(polygon, function (previousSegment, currentSegment, currentIndex, currentSubIndex) {\n  //= previousSegment\n  //= currentSegment\n  //= currentIndex\n  //= currentSubIndex\n  return currentSegment\n});\n\n// Calculate the total number of segments\nvar initialValue = 0\nvar total = turf.segmentReduce(polygon, function (previousValue) {\n    previousValue++;\n    return previousValue;\n}, initialValue);",
+			"hasMap": false,
+			"npmName": "meta",
+			"returns": [
+				false
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Description": "any GeoJSON"
+				},
+				{
+					"Argument": "callback",
+					"Type": "Function",
+					"Description": "a method that takes (previousValue, currentSegment, currentIndex)"
+				},
+				{
+					"Argument": "initialValue",
+					"Type": "Optional: undefined",
+					"Description": "Value to use as the first argument to the first call of the callback."
 				}
 			],
 			"throws": []

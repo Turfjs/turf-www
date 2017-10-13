@@ -4,10 +4,10 @@
   "description": "create the turf website and online documentation",
   "main": "index.js",
   "scripts": {
-    "config": "node scripts/parseJson",
-    "start": "npm run generateJson && npm run config && cd template/turf-template && npm run build && node scripts/deploy",
-    "generateJson": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > configs/config-documentation.json",
-    "serveStatic": "node scripts/serve-static"
+    "preconfig": "documentation build -c documentation.yml turf/packages/turf-*/index.js -f json > configs/config-documentation.json",
+    "config": "node scripts/create-config.js",
+    "build": "echo 'to implement'",
+    "start": "npm run config && npm run build && http-server"
   },
   "repository": {
     "type": "git",
