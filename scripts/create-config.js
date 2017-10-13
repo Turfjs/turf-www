@@ -1,18 +1,25 @@
+#!/usr/bin/env node
+
 const path = require('path')
 const load = require('load-json-file')
 const write = require('write-json-file')
 
-var moduleSidebarList = []
-var completeModules = []
-load.sync(path.join(__dirname, '..', 'configs', 'config-documentation.json')).forEach(metadata => {
-  var isHeading = metadata.kind === 'note'
+const moduleSidebarList = []
+const completeModules = []
+
+const documentationPath = path.join(__dirname, '..', 'configs', 'config-documentation.json')
+const configPath = path.join(__dirname, '..', 'configs', 'config.json')
+const templatePath = path.join(__dirname, '..', 'template', 'turf-template', 'src', 'assets', 'config.json')
+
+load.sync(documentationPath).forEach(metadata => {
+  const isHeading = metadata.kind === 'note'
   moduleSidebarList.push({
     isHeading: isHeading,
     name: metadata.name,
     hidden: false
   })
   if (!isHeading) {
-    var parent = getParent(metadata.context.file)
+    const parent = getParent(metadata.context.file)
     completeModules.push({
       name: metadata.name,
       description: getDescription(metadata),
@@ -28,12 +35,12 @@ load.sync(path.join(__dirname, '..', 'configs', 'config-documentation.json')).fo
   }
 })
 
-var config = {
+const config = {
   sidebar: moduleSidebarList,
   modules: completeModules
 }
-write.sync(path.join(__dirname, '..', 'configs', 'config.json'), config)
-write.sync(path.join(__dirname, '..', 'template', 'turf-template', 'src', 'assets', 'config.json'), config)
+write.sync(configPath, config)
+write.sync(templatePath, config)
 console.log('Done compiling the config file')
 
 function getParent (filePath) {
@@ -91,7 +98,7 @@ function getThrows (metadata) {
 }
 
 function getParams (metadata) {
-  var outParams = metadata.params.map(param => {
+  let outParams = metadata.params.map(param => {
     if (!param.type) return { type: null }
     if (!param.description.children.length) return false
     return {
@@ -104,7 +111,7 @@ function getParams (metadata) {
   outParams = outParams.filter(function (param) {
     return param.type !== null
   })
-  var finalOut = outParams.sort(function (a, b) {
+  const finalOut = outParams.sort(function (a, b) {
     return a._lineNum - b._lineNum
   })
   finalOut.forEach(function (param) {
@@ -114,10 +121,10 @@ function getParams (metadata) {
 }
 
 function concatTags (inNode, addLink) {
-  var outDescr = inNode.map(function (node) {
+  const outDescr = inNode.map(function (node) {
     if (node.children) {
       if (!addLink) return node.children[0].value
-      var link = getLink(node.children[0].value)
+      let link = getLink(node.children[0].value)
       if (link === null || !node.jsdoc) link = node.url
       return '<a target="_blank" href="' + link + '">' + node.children[0].value + '</a>'
     }
