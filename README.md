@@ -8,8 +8,8 @@ turf-www is the website for [Turf](http://github.com/turfjs/turf). It lives at h
 The main sections of turf-www are:
 
 - [homepage](http://turfjs.org)
-- [API docs](http://turfjs.org/docs)
-- [examples and tutorials](http://turfjs.org/examples.html)
+- [API Docs](http://turfjs.org/docs)
+- [Getting Started](http://turfjs.org/getting-started)
 
 ## Contributing
 

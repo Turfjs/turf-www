@@ -38,9 +38,6 @@ toc:
   - lineOffset
   - simplify
   - tesselate
-  - transformRotate
-  - transformTranslate
-  - transformScale
   - union
   - name: Feature Conversion
   - combine
