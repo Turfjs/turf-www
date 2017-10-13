@@ -1,76 +1,74 @@
-const loadJsonFile = require('load-json-file');
-const writeJsonFile = require('write-json-file');
+const path = require('path')
+const load = require('load-json-file')
+const write = require('write-json-file')
 
-loadJsonFile('./scripts/tempConfig.json').then(json => {
-	var moduleSidebarList = []
-	var completeModules = []
-
-    json.forEach(function (module) {
-      var isHeading = module.kind === 'note'
-      moduleSidebarList.push({
-        isHeading: isHeading,
-        name: module.name,
-        hidden: false
-      })
-      if (!isHeading) {
-        var parent = getParent(module.context.file)
-	      completeModules.push({
-	      	name: module.name,
-          description: concatTags(module.description.children[0].children, true),
-	      	parent: parent,
-	      	snippet: getSnippet(module.examples[0]),
-	      	example: getExample(module.examples[0]),
-	      	hasMap: hasMap(module.examples[0]),
-	      	npmName: getNpmName(module.name, parent),
-	      	returns: getReturns(module.returns),
-	      	params: getParams(module.params),
-	      	throws: getThrows(module.throws)
-	      })
-      }
-	
-	})
-	var config = {
-    	sidebar: moduleSidebarList,
-    	modules: completeModules
-    }
-  writeJsonFile('./template/turf-template/src/assets/config.json', config).then(() => {
-    	console.log('Done compiling the config file');
-	});
+var moduleSidebarList = []
+var completeModules = []
+load.sync(path.join(__dirname, 'tempConfig.json')).forEach(module => {
+  var isHeading = module.kind === 'note'
+  moduleSidebarList.push({
+    isHeading: isHeading,
+    name: module.name,
+    hidden: false
+  })
+  if (!isHeading) {
+    var parent = getParent(module.context.file)
+    completeModules.push({
+      name: module.name,
+      description: concatTags(module.description.children[0].children, true),
+      parent: parent,
+      snippet: getSnippet(module.examples[0]),
+      example: getExample(module.examples[0]),
+      hasMap: hasMap(module.examples[0]),
+      npmName: getNpmName(module.name, parent),
+      returns: getReturns(module.returns),
+      params: getParams(module.params),
+      throws: getThrows(module.throws)
+    })
+  }
 })
 
+var config = {
+  sidebar: moduleSidebarList,
+  modules: completeModules
+}
+write.sync(path.join(__dirname, '..', 'template', 'turf-template', 'src', 'assets', 'config.json'), config)
+console.log('Done compiling the config file')
+
 function getParent (filePath) {
-	if (filePath.includes('turf-helpers')) return 'helpers'
+  if (filePath.includes('turf-helpers')) return 'helpers'
   if (filePath.includes('turf-meta')) return 'meta'
   if (filePath.includes('turf-invariant')) return 'invariant'
   return null
 }
 
 function getSnippet (example) {
-	if (example) return example.description.split('\r\n//addToMap')[0]
-	return false
+  if (example) return example.description.split('\r\n//addToMap')[0]
+  return false
 }
 
 function getExample (example) {
-	if (example) return example.description
-	return false
+  if (example) return example.description
+  return false
 }
 
 function hasMap (example) {
-    if (example) return example.description.indexOf('//addToMap') !== -1
-    return false
+  if (example) return example.description.indexOf('//addToMap') !== -1
+  return false
 }
+
 function getNpmName (moduleName, parent) {
-    if (parent !== null) return parent
-    return moduleName.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();})
+  if (parent !== null) return parent
+  return moduleName.replace(/([A-Z])/g, word => '-' + word.toLowerCase())
 }
 
 function getReturns (returns) {
-	return returns.map(function (result) {
-		return {
-	 		type: getType(result.type),
-			desc: concatTags(result.description.children[0].children, false)
-		}
-	})	
+  return returns.map(function (result) {
+    return {
+      type: getType(result.type),
+      desc: concatTags(result.description.children[0].children, false)
+    }
+  })
 }
 
 function getThrows (throws) {
@@ -84,9 +82,8 @@ function getThrows (throws) {
 
 function getParams (params) {
   var outParams = params.map(function (param) {
-    if (param.type === undefined) return {
-      type: null
-    }
+    if (!param.type) return { type: null }
+
     return {
       Argument: param.name,
       Type: getType(param.type),
@@ -98,7 +95,7 @@ function getParams (params) {
     return param.type !== null
   })
   var finalOut = outParams.sort(function (a, b) {
-    return a._lineNum - b._lineNum;
+    return a._lineNum - b._lineNum
   })
   finalOut.forEach(function (param) {
     delete param._lineNum
@@ -135,7 +132,7 @@ function getType (inNode) {
   }
 }
 
-function getLink (name) { //eslint-disable-line
+function getLink (name) {
   switch (name.toUpperCase()) {
     case 'POINT':
     case 'POINTS':
