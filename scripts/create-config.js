@@ -16,44 +16,45 @@ const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 't
 
 const moduleSidebarList = []
 const completeModules = []
-const q = d3.queue()
+const q = d3.queue(1)
 
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
   const indexPath = path.join(directory, 'index.js')
   const pckg = load.sync(packagePath)
-  const name = pckg.name
 
   // Build Documentation
   q.defer(callback => {
+    console.log('Parsing Docs:', pckg.name)
     documentation.build(indexPath, {shallow: true}).then(res => {
       if (res === undefined) return console.warning(packagePath);
-      console.log('Building Docs: ' + name);
+
       // Format JSON
-      documentation.formats.json(res, {paths}).then(metadata => {
-        metadata = JSON.parse(metadata)[0]
-        const isHeading = metadata.kind === 'note'
-        moduleSidebarList.push({
-          isHeading: isHeading,
-          name: metadata.name,
-          hidden: false
-        })
-        if (!isHeading) {
-          const parent = getParent(metadata.context.file)
-          completeModules.push({
+      documentation.formats.json(res, {paths}).then(docs => {
+        docs = JSON.parse(docs)
+        docs.forEach(metadata => {
+          const isHeading = metadata.kind === 'note'
+          moduleSidebarList.push({
+            isHeading: isHeading,
             name: metadata.name,
-            description: getDescription(metadata),
-            parent: parent,
-            snippet: getSnippet(metadata),
-            example: getExample(metadata),
-            hasMap: hasMap(metadata),
-            npmName: getNpmName(metadata, parent),
-            returns: getReturns(metadata),
-            params: getParams(metadata),
-            options: getOptions(metadata),
-            throws: getThrows(metadata)
+            hidden: false
           })
-        }
+          if (!isHeading) {
+            completeModules.push({
+              name: metadata.name,
+              description: getDescription(metadata),
+              parent: (docs.length > 1) ? metadata.name : null,
+              snippet: getSnippet(metadata),
+              example: getExample(metadata),
+              hasMap: hasMap(metadata),
+              npmName: pckg.name,
+              returns: getReturns(metadata),
+              params: getParams(metadata),
+              options: getOptions(metadata),
+              throws: getThrows(metadata)
+            })
+          }
+        })
         callback(null)
       })
     })
@@ -82,7 +83,7 @@ function getDescription (metadata) {
 
 function getSnippet (metadata) {
   const example = metadata.examples[0]
-  if (example) return example.description.split('\r\n//addToMap')[0]
+  if (example) return example.description.split(/\n\/\/addToMap/)[0]
   return false
 }
 
