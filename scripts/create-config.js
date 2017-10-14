@@ -18,6 +18,7 @@ const q = d3.queue(1)
 
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
+  const directoryName = directory.split(path.sep).slice(-1)[0].replace('turf-', '')
   const indexPath = path.join(directory, 'index.js')
   const pckg = load.sync(packagePath)
 
@@ -30,18 +31,29 @@ packagesPath.forEach(packagePath => {
       // Format JSON
       documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
+        const parent = (docs.length > 1) ? pckg.name : null
+        if (parent) {
+          // Parent Module
+          moduleSidebarList.push({
+            isHeading: true,
+            name: directoryName,
+            hidden: false
+          })
+        }
         docs.forEach(metadata => {
           const isHeading = metadata.kind === 'note'
+          // Side Bar
           moduleSidebarList.push({
             isHeading: isHeading,
             name: metadata.name,
             hidden: false
           })
+          // Module
           if (!isHeading) {
             completeModules.push({
+              parent: parent,
               name: metadata.name,
               description: getDescription(metadata),
-              parent: (docs.length > 1) ? metadata.name : null,
               snippet: getSnippet(metadata),
               example: getExample(metadata),
               hasMap: hasMap(metadata),
