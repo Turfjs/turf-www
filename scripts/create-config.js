@@ -118,6 +118,7 @@ function getNpmName (metadata, parent) {
 }
 
 function getReturns (metadata) {
+  if (!metadata.returns) return false
   return metadata.returns.map(result => {
     if (!result.description.children.length) return false
     return {
@@ -128,6 +129,7 @@ function getReturns (metadata) {
 }
 
 function getThrows (metadata) {
+  if (!metadata.throws) return false
   return metadata.throws.map(result => {
     if (!result.description.children.length) return false
     return {
@@ -138,6 +140,7 @@ function getThrows (metadata) {
 }
 
 function getParams (metadata) {
+  if (!metadata.params) return false
   let outParams = metadata.params.map(param => {
     if (!param.type) return { type: null }
     if (!param.description.children.length) return false
@@ -161,8 +164,9 @@ function getParams (metadata) {
 }
 
 function getOptions (metadata) {
-  let options = metadata.params.filter(param => {
-    return param.name === 'options'
+  if (!metadata.params) return false
+  let options = metadata.params.filter(({name}) => {
+    return name === 'options'
   })
   if (options.length === 0) return null
   let outProperties = options[0].properties.map(prop => {
@@ -179,7 +183,8 @@ function getOptions (metadata) {
 }
 
 function concatTags (inNode, addLink) {
-  const outDescr = inNode.map(function (node) {
+  if (!inNode) return false
+  const outDescr = inNode.map(node => {
     if (node.children) {
       if (!addLink) return node.children[0].value
       let link = getLink(node.children[0].value)
@@ -192,8 +197,9 @@ function concatTags (inNode, addLink) {
 }
 
 function getType (inNode) {
+  if (!inNode) return false
   if (inNode.type === 'UnionType') {
-    return '( ' + inNode.elements.map(function (node) {
+    return '( ' + inNode.elements.map(node => {
       return getType(node)
     }).join(' | ') + ' )'
   }
@@ -201,7 +207,7 @@ function getType (inNode) {
   if (typeof inNode.type === 'object') return inNode.name
   if (inNode.type === 'NameExpression') return inNode.name
   if (inNode.type === 'TypeApplication') {
-    return inNode.expression.name + ' 〈' + inNode.applications.map(function (node) {
+    return inNode.expression.name + ' 〈' + inNode.applications.map(node => {
       return node.name
     }) + '〉'
   }
