@@ -3,7 +3,10 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/recommended'
   ],
-  env : {
-    node : true,
+  env: {
+    node: true,
   },
+  rules: {
+  	'no-console': 'allow'
+  }
 }

@@ -29,7 +29,6 @@ packagesPath.forEach(packagePath => {
     documentation.build(indexPath, {shallow: true}).then(res => {
       if (res === undefined) return console.warning(packagePath);
       console.log('Building Docs: ' + name);
-
       // Format JSON
       documentation.formats.json(res, {paths}).then(metadata => {
         metadata = JSON.parse(metadata)[0]
@@ -40,17 +39,18 @@ packagesPath.forEach(packagePath => {
           hidden: false
         })
         if (!isHeading) {
-          // const parent = getParent(metadata.context.file)
+          const parent = getParent(metadata.context.file)
           completeModules.push({
             name: metadata.name,
             description: getDescription(metadata),
-            // parent: parent,
+            parent: parent,
             snippet: getSnippet(metadata),
             example: getExample(metadata),
             hasMap: hasMap(metadata),
-            // npmName: getNpmName(metadata, parent),
+            npmName: getNpmName(metadata, parent),
             returns: getReturns(metadata),
             params: getParams(metadata),
+            options: getOptions(metadata),
             throws: getThrows(metadata)
           })
         }
@@ -144,6 +144,24 @@ function getParams (metadata) {
     delete param._lineNum
   })
   return finalOut
+}
+
+function getOptions (metadata) {
+  let options = metadata.params.filter(param => {
+    return param.name === 'options'
+  })
+  if (options.length === 0) return null
+  let outProperties = options[0].properties.map(prop => {
+    let defaultVal = null
+    if (prop.default) defaultVal = prop.default.replace('\\','')
+    return {
+      Prop: prop.name.replace('options.',''),
+      Type: getType(prop.type),
+      Default: defaultVal,
+      Description: concatTags(prop.description.children[0].children, false),
+    }
+  })
+  return outProperties
 }
 
 function concatTags (inNode, addLink) {

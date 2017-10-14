@@ -1,5 +1,6 @@
 <template>
   <Row>
+    <github-icon></github-icon>
     <Col span="22" offset="1" class="mainContentArea">
       <Row>
         <router-view :module="selectedModule"></router-view>
@@ -10,13 +11,14 @@
 
 <script>
 import {Row, Col} from 'iview/src/components/grid'
-
+import GithubIcon from './Github.vue'
 export default {
   name: 'MainContent',
   props: ['selectedModule'],
   components: {
     Row,
-    Col
+    Col,
+    GithubIcon
   }
 }
 </script>

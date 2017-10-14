@@ -7,12 +7,17 @@
 		},
 		{
 			"isHeading": false,
+			"name": "bboxClip",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
 			"name": "area",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "bboxClip",
+			"name": "bbox",
 			"hidden": false
 		},
 		{
@@ -22,7 +27,7 @@
 		},
 		{
 			"isHeading": false,
-			"name": "bbox",
+			"name": "booleanClockwise",
 			"hidden": false
 		},
 		{
@@ -37,7 +42,7 @@
 		},
 		{
 			"isHeading": false,
-			"name": "booleanClockwise",
+			"name": "booleanContains",
 			"hidden": false
 		},
 		{
@@ -47,12 +52,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "booleanContains",
+			"name": "booleanDisjoint",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "booleanDisjoint",
+			"name": "booleanEqual",
 			"hidden": false
 		},
 		{
@@ -63,6 +68,16 @@
 		{
 			"isHeading": false,
 			"name": "booleanPointOnLine",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "booleanParallel",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "booleanWithin",
 			"hidden": false
 		},
 		{
@@ -87,12 +102,17 @@
 		},
 		{
 			"isHeading": false,
-			"name": "circle",
+			"name": "cleanCoords",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
 			"name": "clone",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "circle",
 			"hidden": false
 		},
 		{
@@ -122,11 +142,6 @@
 		},
 		{
 			"isHeading": false,
-			"name": "concave",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
 			"name": "convex",
 			"hidden": false
 		},
@@ -137,7 +152,7 @@
 		},
 		{
 			"isHeading": false,
-			"name": "difference",
+			"name": "concave",
 			"hidden": false
 		},
 		{
@@ -147,12 +162,17 @@
 		},
 		{
 			"isHeading": false,
-			"name": "distance",
+			"name": "difference",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
 			"name": "envelope",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "distance",
 			"hidden": false
 		},
 		{
@@ -177,7 +197,7 @@
 		},
 		{
 			"isHeading": false,
-			"name": "feature",
+			"name": "earthRadius",
 			"hidden": false
 		},
 		{
@@ -187,12 +207,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "idw",
+			"name": "inside",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "inside",
+			"name": "idw",
 			"hidden": false
 		},
 		{
@@ -267,12 +287,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "lineSlice",
+			"name": "lineSplit",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "lineSplit",
+			"name": "lineSlice",
 			"hidden": false
 		},
 		{
@@ -293,6 +313,11 @@
 		{
 			"isHeading": false,
 			"name": "midpoint",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "nearestPointToLine",
 			"hidden": false
 		},
 		{
@@ -322,6 +347,11 @@
 		},
 		{
 			"isHeading": false,
+			"name": "pointToLineDistance",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
 			"name": "polygonTangents",
 			"hidden": false
 		},
@@ -337,17 +367,22 @@
 		},
 		{
 			"isHeading": false,
-			"name": "random",
+			"name": "toMercator",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "rewind",
+			"name": "randomPosition",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
 			"name": "rhumbBearing",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "rewind",
 			"hidden": false
 		},
 		{
@@ -407,12 +442,12 @@
 		},
 		{
 			"isHeading": false,
-			"name": "transformTranslate",
+			"name": "transformScale",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "transformScale",
+			"name": "transformTranslate",
 			"hidden": false
 		},
 		{
@@ -445,9 +480,11 @@
 		{
 			"name": "along",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>  at a specified distance along the line.",
-			"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\n\nvar along = turf.along(line, 200, 'miles');\n\n//addToMap\nvar addToMap = [along, line]",
-			"example": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\n\nvar along = turf.along(line, 200, 'miles');\n\n//addToMap\nvar addToMap = [along, line]",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\r\nvar options = {units: 'miles'};\r\n\r\nvar along = turf.along(line, 200, options);\r\n",
+			"example": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\r\nvar options = {units: 'miles'};\r\n\r\nvar along = turf.along(line, 200, options);\r\n\r\n//addToMap\r\nvar addToMap = [along, line]",
 			"hasMap": true,
+			"npmName": "along",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -466,30 +503,17 @@
 					"Description": "distance along the line"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "\"kilometers\"",
 					"Description": "can be degrees, radians, miles, or kilometers"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "area",
-			"description": "Takes one or more features and returns their area in square meters.",
-			"snippet": "var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);\n\nvar area = turf.area(polygon);\n\n//addToMap\nvar addToMap = [polygon]\npolygon.properties.area = area",
-			"example": "var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);\n\nvar area = turf.area(polygon);\n\n//addToMap\nvar addToMap = [polygon]\npolygon.properties.area = area",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "number",
-					"desc": "area in square meters"
-				}
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
-					"Description": "input GeoJSON feature(s)"
 				}
 			],
 			"throws": []
@@ -497,9 +521,11 @@
 		{
 			"name": "bboxClip",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  and a bbox and clips the feature to the bbox using  <a target=\"_blank\" href=\"https://github.com/mapbox/lineclip\">lineclip</a>.\nMay result in degenerate edges when clipping Polygons.",
-			"snippet": "var bbox = [0, 0, 10, 10];\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\n\nvar clipped = turf.bboxClip(poly, bbox);\n\n//addToMap\nvar addToMap = [bbox, poly, clipped]",
-			"example": "var bbox = [0, 0, 10, 10];\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\n\nvar clipped = turf.bboxClip(poly, bbox);\n\n//addToMap\nvar addToMap = [bbox, poly, clipped]",
+			"parent": null,
+			"snippet": "var bbox = [0, 0, 10, 10];\r\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\r\n\r\nvar clipped = turf.bboxClip(poly, bbox);\r\n",
+			"example": "var bbox = [0, 0, 10, 10];\r\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\r\n\r\nvar clipped = turf.bboxClip(poly, bbox);\r\n\r\n//addToMap\r\nvar addToMap = [bbox, poly, clipped]",
 			"hasMap": true,
+			"npmName": "bbox-clip",
 			"returns": [
 				{
 					"type": "Feature 〈〉",
@@ -518,35 +544,41 @@
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
-			"name": "bboxPolygon",
-			"description": "Takes a bbox and returns an equivalent  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
-			"snippet": "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n\n//addToMap\nvar addToMap = [poly]",
-			"example": "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n\n//addToMap\nvar addToMap = [poly]",
+			"name": "area",
+			"description": "Takes one or more features and returns their area in square meters.",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);\r\n\r\nvar area = turf.area(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);\r\n\r\nvar area = turf.area(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon]\r\npolygon.properties.area = area",
 			"hasMap": true,
+			"npmName": "area",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
-					"desc": "a Polygon representation of the bounding box"
+					"type": "number",
+					"desc": "area in square meters"
 				}
 			],
 			"params": [
 				{
-					"Argument": "bbox",
-					"Type": "Array 〈number〉",
-					"Description": "extent in  minX, minY, maxX, maxY  order"
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "input GeoJSON feature(s)"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "bbox",
 			"description": "Takes a set of features, calculates the bbox of all input features, and returns a bounding box.",
-			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\nvar bbox = turf.bbox(line);\nvar bboxPolygon = turf.bboxPolygon(bbox);\n\n//addToMap\nvar addToMap = [line, bboxPolygon]",
-			"example": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\nvar bbox = turf.bbox(line);\nvar bboxPolygon = turf.bboxPolygon(bbox);\n\n//addToMap\nvar addToMap = [line, bboxPolygon]",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\r\nvar bbox = turf.bbox(line);\r\nvar bboxPolygon = turf.bboxPolygon(bbox);\r\n",
+			"example": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\r\nvar bbox = turf.bbox(line);\r\nvar bboxPolygon = turf.bboxPolygon(bbox);\r\n\r\n//addToMap\r\nvar addToMap = [line, bboxPolygon]",
 			"hasMap": true,
+			"npmName": "bbox",
 			"returns": [
 				{
 					"type": "Array 〈number〉",
@@ -560,14 +592,65 @@
 					"Description": "input features"
 				}
 			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "bboxPolygon",
+			"description": "Takes a bbox and returns an equivalent  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
+			"parent": null,
+			"snippet": "var bbox = [0, 0, 10, 10];\r\n\r\nvar poly = turf.bboxPolygon(bbox);\r\n",
+			"example": "var bbox = [0, 0, 10, 10];\r\n\r\nvar poly = turf.bboxPolygon(bbox);\r\n\r\n//addToMap\r\nvar addToMap = [poly]",
+			"hasMap": true,
+			"npmName": "bbox-polygon",
+			"returns": [
+				{
+					"type": "Feature 〈Polygon〉",
+					"desc": "a Polygon representation of the bounding box"
+				}
+			],
+			"params": [
+				{
+					"Argument": "bbox",
+					"Type": "Array 〈number〉",
+					"Description": "extent in  minX, minY, maxX, maxY  order"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "booleanClockwise",
+			"description": "Takes a ring and return true or false whether or not the ring is clockwise or counter-clockwise.",
+			"parent": null,
+			"snippet": "var clockwiseRing = turf.lineString([[0,0],[1,1],[1,0],[0,0]]);\r\nvar counterClockwiseRing = turf.lineString([[0,0],[1,0],[1,1],[0,0]]);\r\n\r\nturf.booleanClockwise(clockwiseRing)\r\n//=true\r\nturf.booleanClockwise(counterClockwiseRing)\r\n//=false",
+			"example": "var clockwiseRing = turf.lineString([[0,0],[1,1],[1,0],[0,0]]);\r\nvar counterClockwiseRing = turf.lineString([[0,0],[1,0],[1,1],[0,0]]);\r\n\r\nturf.booleanClockwise(clockwiseRing)\r\n//=true\r\nturf.booleanClockwise(counterClockwiseRing)\r\n//=false",
+			"hasMap": false,
+			"npmName": "boolean-clockwise",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "line",
+					"Type": "( Geometry | Feature 〈LineString〉 | Array 〈〉 )",
+					"Description": "to be evaluated"
+				}
+			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "bearing",
 			"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and finds the geographic bearing between them,\ni.e. the angle measured in degrees from the north line (0 degrees)",
-			"snippet": "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\n\nvar bearing = turf.bearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2]\npoint1.properties['marker-color'] = '#f00'\npoint2.properties['marker-color'] = '#0f0'\npoint1.properties.bearing = bearing",
-			"example": "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\n\nvar bearing = turf.bearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2]\npoint1.properties['marker-color'] = '#f00'\npoint2.properties['marker-color'] = '#0f0'\npoint1.properties.bearing = bearing",
+			"parent": null,
+			"snippet": "var point1 = turf.point([-75.343, 39.984]);\r\nvar point2 = turf.point([-75.534, 39.123]);\r\n\r\nvar bearing = turf.bearing(point1, point2);\r\n",
+			"example": "var point1 = turf.point([-75.343, 39.984]);\r\nvar point2 = turf.point([-75.534, 39.123]);\r\n\r\nvar bearing = turf.bearing(point1, point2);\r\n\r\n//addToMap\r\nvar addToMap = [point1, point2]\r\npoint1.properties['marker-color'] = '#f00'\r\npoint2.properties['marker-color'] = '#0f0'\r\npoint1.properties.bearing = bearing",
 			"hasMap": true,
+			"npmName": "bearing",
 			"returns": [
 				{
 					"type": "number",
@@ -586,8 +669,16 @@
 					"Description": "ending Point"
 				},
 				{
-					"Argument": "final",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "final",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "calculates the final bearing if true"
 				}
 			],
@@ -596,9 +687,11 @@
 		{
 			"name": "bezier",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  and returns a curved version\nby applying a  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/B%C3%A9zier_spline\">Bezier spline</a> \nalgorithm.",
-			"snippet": "var line = turf.lineString([\n  [-76.091308, 18.427501],\n  [-76.695556, 18.729501],\n  [-76.552734, 19.40443],\n  [-74.61914, 19.134789],\n  [-73.652343, 20.07657],\n  [-73.157958, 20.210656]\n]);\n\nvar curved = turf.bezier(line);\n\n//addToMap\nvar addToMap = [line, curved]\ncurved.properties = { stroke: '#0F0' };",
-			"example": "var line = turf.lineString([\n  [-76.091308, 18.427501],\n  [-76.695556, 18.729501],\n  [-76.552734, 19.40443],\n  [-74.61914, 19.134789],\n  [-73.652343, 20.07657],\n  [-73.157958, 20.210656]\n]);\n\nvar curved = turf.bezier(line);\n\n//addToMap\nvar addToMap = [line, curved]\ncurved.properties = { stroke: '#0F0' };",
+			"parent": null,
+			"snippet": "var line = turf.lineString([\r\n  [-76.091308, 18.427501],\r\n  [-76.695556, 18.729501],\r\n  [-76.552734, 19.40443],\r\n  [-74.61914, 19.134789],\r\n  [-73.652343, 20.07657],\r\n  [-73.157958, 20.210656]\r\n]);\r\n\r\nvar curved = turf.bezier(line);\r\n",
+			"example": "var line = turf.lineString([\r\n  [-76.091308, 18.427501],\r\n  [-76.695556, 18.729501],\r\n  [-76.552734, 19.40443],\r\n  [-74.61914, 19.134789],\r\n  [-73.652343, 20.07657],\r\n  [-73.157958, 20.210656]\r\n]);\r\n\r\nvar curved = turf.bezier(line);\r\n\r\n//addToMap\r\nvar addToMap = [line, curved]\r\ncurved.properties = { stroke: '#0F0' };",
 			"hasMap": true,
+			"npmName": "bezier",
 			"returns": [
 				{
 					"type": "Feature 〈LineString〉",
@@ -608,65 +701,27 @@
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "Feature 〈LineString〉",
+					"Type": "( Geometry | Feature 〈LineString〉 )",
 					"Description": "input LineString"
 				},
 				{
-					"Argument": "resolution",
+					"Argument": "options",
+					"Type": "Optional: object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "resolution",
 					"Type": "number",
+					"Default": "10000",
 					"Description": "time in milliseconds between points"
 				},
 				{
-					"Argument": "sharpness",
+					"Prop": "sharpness",
 					"Type": "number",
+					"Default": "0.85",
 					"Description": "a measure of how curvy the path should be between splines"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "booleanClockwise",
-			"description": "Takes a ring and return true or false whether or not the ring is clockwise or counter-clockwise.",
-			"snippet": "var clockwiseRing = turf.lineString([[0,0],[1,1],[1,0],[0,0]]);\nvar counterClockwiseRing = turf.lineString([[0,0],[1,0],[1,1],[0,0]]);\n\nturf.booleanClockwise(clockwiseRing)\n//=true\nturf.booleanClockwise(counterClockwiseRing)\n//=false",
-			"example": "var clockwiseRing = turf.lineString([[0,0],[1,1],[1,0],[0,0]]);\nvar counterClockwiseRing = turf.lineString([[0,0],[1,0],[1,1],[0,0]]);\n\nturf.booleanClockwise(clockwiseRing)\n//=true\nturf.booleanClockwise(counterClockwiseRing)\n//=false",
-			"hasMap": false,
-			"returns": [
-				{
-					"type": "Boolean",
-					"desc": "true/false"
-				}
-			],
-			"params": [
-				{
-					"Argument": "line",
-					"Type": "( Geometry | Feature 〈LineString〉 | Array 〈〉 )",
-					"Description": "to be evaluated"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "booleanCrosses",
-			"description": "Boolean-Crosses returns True if the intersection results in a geometry whose dimension is one less than\nthe maximum dimension of the two source geometries and the intersection set is interior to\nboth source geometries.",
-			"snippet": "var line1 = turf.lineString([[-2, 2], [4, 2]]);\nvar line2 = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nvar cross = turf.booleanCrosses(line1, line2);\n//=true",
-			"example": "var line1 = turf.lineString([[-2, 2], [4, 2]]);\nvar line2 = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nvar cross = turf.booleanCrosses(line1, line2);\n//=true",
-			"hasMap": false,
-			"returns": [
-				{
-					"type": "boolean",
-					"desc": "true/false"
-				}
-			],
-			"params": [
-				{
-					"Argument": "feature1",
-					"Type": "( Geometry | Feature 〈any〉 )",
-					"Description": "GeoJSON Feature or Geometry"
-				},
-				{
-					"Argument": "feature2",
-					"Type": "( Geometry | Feature 〈any〉 )",
-					"Description": "GeoJSON Feature or Geometry"
 				}
 			],
 			"throws": []
@@ -674,9 +729,11 @@
 		{
 			"name": "booleanContains",
 			"description": "Boolean-contains returns True if the second geometry is completely contained by the first geometry.\nThe interiors of both geometries must intersect and, the interior and boundary of the secondary (geometry b)\nmust not intersect the exterior of the primary (geometry a).\nBoolean-contains returns the exact opposite result of the  @turf/boolean-within.",
-			"snippet": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\nconst point = turf.point([1, 2]);\n\nturf.booleanContains(line, point);\n//=true",
-			"example": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\nconst point = turf.point([1, 2]);\n\nturf.booleanContains(line, point);\n//=true",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nvar point = turf.point([1, 2]);\r\n\r\nturf.booleanContains(line, point);\r\n//=true",
+			"example": "var line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nvar point = turf.point([1, 2]);\r\n\r\nturf.booleanContains(line, point);\r\n//=true",
 			"hasMap": false,
+			"npmName": "boolean-contains",
 			"returns": [
 				{
 					"type": "boolean",
@@ -695,17 +752,49 @@
 					"Description": "GeoJSON Feature or Geometry"
 				}
 			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "booleanCrosses",
+			"description": "Boolean-Crosses returns True if the intersection results in a geometry whose dimension is one less than\nthe maximum dimension of the two source geometries and the intersection set is interior to\nboth source geometries.",
+			"parent": null,
+			"snippet": "var line1 = turf.lineString([[-2, 2], [4, 2]]);\r\nvar line2 = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\n\r\nvar cross = turf.booleanCrosses(line1, line2);\r\n//=true",
+			"example": "var line1 = turf.lineString([[-2, 2], [4, 2]]);\r\nvar line2 = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\n\r\nvar cross = turf.booleanCrosses(line1, line2);\r\n//=true",
+			"hasMap": false,
+			"npmName": "boolean-crosses",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "feature1",
+					"Type": "( Geometry | Feature 〈any〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "feature2",
+					"Type": "( Geometry | Feature 〈any〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				}
+			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "booleanDisjoint",
 			"description": "Boolean-disjoint returns (TRUE) if the intersection of the two geometries is an empty set.",
-			"snippet": "const point = turf.point([2, 2]);\nconst line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nturf.booleanDisjoint(line, point);\n//=true",
-			"example": "const point = turf.point([2, 2]);\nconst line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nturf.booleanDisjoint(line, point);\n//=true",
+			"parent": null,
+			"snippet": "const point = turf.point([2, 2]);\r\nconst line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\n\r\nturf.booleanDisjoint(line, point);\r\n//=true",
+			"example": "const point = turf.point([2, 2]);\r\nconst line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\n\r\nturf.booleanDisjoint(line, point);\r\n//=true",
 			"hasMap": false,
+			"npmName": "boolean-disjoint",
 			"returns": [
 				{
-					"type": "Boolean",
+					"type": "boolean",
 					"desc": "true/false"
 				}
 			],
@@ -721,14 +810,46 @@
 					"Description": "GeoJSON Feature or Geometry"
 				}
 			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "booleanEqual",
+			"description": "Determine whether two geometries of the same type have identical X,Y coordinate values.\nSee  <a target=\"_blank\" href=\"http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm\">http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm</a>",
+			"parent": null,
+			"snippet": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0, 0]);\r\nvar pt3 = turf.point([1, 1]);\r\n\r\nturf.booleanEqual(pt1, pt2);\r\n//= true\r\nturf.booleanEqual(pt2, pt3);\r\n//= false",
+			"example": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0, 0]);\r\nvar pt3 = turf.point([1, 1]);\r\n\r\nturf.booleanEqual(pt1, pt2);\r\n//= true\r\nturf.booleanEqual(pt2, pt3);\r\n//= false",
+			"hasMap": false,
+			"npmName": "boolean-equal",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true if the objects are equal, false otherwise"
+				}
+			],
+			"params": [
+				{
+					"Argument": "feature1",
+					"Type": "( Geometry | Feature )",
+					"Description": "GeoJSON input"
+				},
+				{
+					"Argument": "feature2",
+					"Type": "( Geometry | Feature )",
+					"Description": "GeoJSON input"
+				}
+			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "booleanOverlap",
 			"description": "Compares two geometries of the same dimension and returns true if their intersection set results in a geometry\ndifferent from both but of the same dimension. It applies to Polygon/Polygon, LineString/LineString,\nMultipoint/Multipoint, MultiLineString/MultiLineString and MultiPolygon/MultiPolygon.",
-			"snippet": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\n\nturf.booleanOverlap(poly1, poly2)\n//=true\nturf.booleanOverlap(poly2, poly3)\n//=false",
-			"example": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\n\nturf.booleanOverlap(poly1, poly2)\n//=true\nturf.booleanOverlap(poly2, poly3)\n//=false",
+			"parent": null,
+			"snippet": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\r\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\r\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\r\n\r\nturf.booleanOverlap(poly1, poly2)\r\n//=true\r\nturf.booleanOverlap(poly2, poly3)\r\n//=false",
+			"example": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\r\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\r\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\r\n\r\nturf.booleanOverlap(poly1, poly2)\r\n//=true\r\nturf.booleanOverlap(poly2, poly3)\r\n//=false",
 			"hasMap": false,
+			"npmName": "boolean-overlap",
 			"returns": [
 				{
 					"type": "boolean",
@@ -747,14 +868,17 @@
 					"Description": "input"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "booleanPointOnLine",
 			"description": "Returns true if a point is on a line. Accepts a optional parameter to ignore the start and end vertices of the linestring.",
-			"snippet": "var pt = turf.point([0, 0]);\nvar line = turf.lineString([[-1, -1],[1, 1],[1.5, 2.2]]);\nvar isPointOnLine = turf.booleanPointOnLine(pt, line);\n//=true",
-			"example": "var pt = turf.point([0, 0]);\nvar line = turf.lineString([[-1, -1],[1, 1],[1.5, 2.2]]);\nvar isPointOnLine = turf.booleanPointOnLine(pt, line);\n//=true",
+			"parent": null,
+			"snippet": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[-1, -1],[1, 1],[1.5, 2.2]]);\r\nvar isPointOnLine = turf.booleanPointOnLine(pt, line);\r\n//=true",
+			"example": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[-1, -1],[1, 1],[1.5, 2.2]]);\r\nvar isPointOnLine = turf.booleanPointOnLine(pt, line);\r\n//=true",
 			"hasMap": false,
+			"npmName": "boolean-point-on-line",
 			"returns": [
 				{
 					"type": "boolean",
@@ -773,19 +897,87 @@
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
-					"Argument": "ignoreEndVertices",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "ignoreEndVertices",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "whether to ignore the start and end vertices."
 				}
 			],
 			"throws": []
 		},
 		{
+			"name": "booleanParallel",
+			"description": "Boolean-Parallel returns True if each segment of  line1  is parallel to the correspondent segment of  line2",
+			"parent": null,
+			"snippet": "var line1 = turf.lineString([[0, 0], [0, 1]]);\r\nvar line2 = turf.lineString([[1, 0], [1, 1]]);\r\n\r\nturf.booleanParallel(line1, line2);\r\n//=true",
+			"example": "var line1 = turf.lineString([[0, 0], [0, 1]]);\r\nvar line2 = turf.lineString([[1, 0], [1, 1]]);\r\n\r\nturf.booleanParallel(line1, line2);\r\n//=true",
+			"hasMap": false,
+			"npmName": "boolean-parallel",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true/false if the lines are parallel"
+				}
+			],
+			"params": [
+				{
+					"Argument": "line1",
+					"Type": "( Geometry | Feature 〈LineString〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "line2",
+					"Type": "( Geometry | Feature 〈LineString〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "booleanWithin",
+			"description": "Boolean-within returns true if the first geometry is completely within the second geometry.\nThe interiors of both geometries must intersect and, the interior and boundary of the primary (geometry a)\nmust not intersect the exterior of the secondary (geometry b).\nBoolean-within returns the exact opposite result of the  @turf/boolean-contains.",
+			"parent": null,
+			"snippet": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nconst point = turf.point([1, 2]);\r\n\r\nturf.booleanWithin(point, line);\r\n//=true",
+			"example": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nconst point = turf.point([1, 2]);\r\n\r\nturf.booleanWithin(point, line);\r\n//=true",
+			"hasMap": false,
+			"npmName": "boolean-within",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "feature1",
+					"Type": "( Geometry | Feature 〈any〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "feature2",
+					"Type": "( Geometry | Feature 〈any〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
 			"name": "buffer",
 			"description": "Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.",
-			"snippet": "var point = turf.point([-90.548630, 14.616599]);\nvar buffered = turf.buffer(point, 500, 'miles');\n\n//addToMap\nvar addToMap = [point, buffered]",
-			"example": "var point = turf.point([-90.548630, 14.616599]);\nvar buffered = turf.buffer(point, 500, 'miles');\n\n//addToMap\nvar addToMap = [point, buffered]",
+			"parent": null,
+			"snippet": "var point = turf.point([-90.548630, 14.616599]);\r\nvar buffered = turf.buffer(point, 500, {units: 'miles'});\r\n",
+			"example": "var point = turf.point([-90.548630, 14.616599]);\r\nvar buffered = turf.buffer(point, 500, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [point, buffered]",
 			"hasMap": true,
+			"npmName": "buffer",
 			"returns": [
 				{
 					"type": "( FeatureCollection | Feature 〈〉 |  )",
@@ -804,13 +996,22 @@
 					"Description": "distance to draw the buffer (negative values are allowed)"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "\"kilometers\"",
 					"Description": "any of the options supported by turf units"
 				},
 				{
-					"Argument": "steps",
+					"Prop": "steps",
 					"Type": "number",
+					"Default": "64",
 					"Description": "number of steps"
 				}
 			],
@@ -819,9 +1020,11 @@
 		{
 			"name": "centerOfMass",
 			"description": "Takes any  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns its  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Center_of_mass\">center of mass</a>  using this formula:  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon\">Centroid of Polygon</a>.",
-			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar center = turf.centerOfMass(polygon);\n\n//addToMap\nvar addToMap = [polygon, center]",
-			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar center = turf.centerOfMass(polygon);\n\n//addToMap\nvar addToMap = [polygon, center]",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar center = turf.centerOfMass(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar center = turf.centerOfMass(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon, center]",
 			"hasMap": true,
+			"npmName": "center-of-mass",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -836,18 +1039,21 @@
 				},
 				{
 					"Argument": "properties",
-					"Type": "Optional: Object",
+					"Type": "Object",
 					"Description": "an Object that is used as the  Feature 's properties"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "center",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns the absolute center point of all features.",
-			"snippet": "var features = turf.featureCollection([\n  turf.point( [-97.522259, 35.4691]),\n  turf.point( [-97.502754, 35.463455]),\n  turf.point( [-97.508269, 35.463245])\n]);\n\nvar center = turf.center(features);\n\n//addToMap\nvar addToMap = [features, center]\ncenter.properties['marker-size'] = 'large';\ncenter.properties['marker-color'] = '#000';",
-			"example": "var features = turf.featureCollection([\n  turf.point( [-97.522259, 35.4691]),\n  turf.point( [-97.502754, 35.463455]),\n  turf.point( [-97.508269, 35.463245])\n]);\n\nvar center = turf.center(features);\n\n//addToMap\nvar addToMap = [features, center]\ncenter.properties['marker-size'] = 'large';\ncenter.properties['marker-color'] = '#000';",
+			"parent": null,
+			"snippet": "var features = turf.featureCollection([\r\n  turf.point( [-97.522259, 35.4691]),\r\n  turf.point( [-97.502754, 35.463455]),\r\n  turf.point( [-97.508269, 35.463245])\r\n]);\r\n\r\nvar center = turf.center(features);\r\n",
+			"example": "var features = turf.featureCollection([\r\n  turf.point( [-97.522259, 35.4691]),\r\n  turf.point( [-97.502754, 35.463455]),\r\n  turf.point( [-97.508269, 35.463245])\r\n]);\r\n\r\nvar center = turf.center(features);\r\n\r\n//addToMap\r\nvar addToMap = [features, center]\r\ncenter.properties['marker-size'] = 'large';\r\ncenter.properties['marker-color'] = '#000';",
 			"hasMap": true,
+			"npmName": "center",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -862,18 +1068,21 @@
 				},
 				{
 					"Argument": "properties",
-					"Type": "Optional: Object",
+					"Type": "Object",
 					"Description": "an Object that is used as the  Feature 's properties"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "centroid",
 			"description": "Takes one or more features and calculates the centroid using the mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating the centroid of a set of polygons.",
-			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar centroid = turf.centroid(polygon);\n\n//addToMap\nvar addToMap = [polygon, centroid]",
-			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar centroid = turf.centroid(polygon);\n\n//addToMap\nvar addToMap = [polygon, centroid]",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar centroid = turf.centroid(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar centroid = turf.centroid(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon, centroid]",
 			"hasMap": true,
+			"npmName": "centroid",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -888,18 +1097,81 @@
 				},
 				{
 					"Argument": "properties",
-					"Type": "Optional: Object",
+					"Type": "Object",
 					"Description": "an Object that is used as the  Feature 's properties"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "cleanCoords",
+			"description": "Removes redundant coordinates from any GeoJSON Geometry.",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[0, 0], [0, 2], [0, 5], [0, 8], [0, 8], [0, 10]]);\r\nvar multiPoint = turf.multiPoint([[0, 0], [0, 0], [2, 2]]);\r\n\r\nturf.cleanCoords(line).geometry.coordinates;\r\n//= [[0, 0], [0, 10]]\r\n\r\nturf.cleanCoords(multiPoint).geometry.coordinates;\r\n//= [[0, 0], [2, 2]]",
+			"example": "var line = turf.lineString([[0, 0], [0, 2], [0, 5], [0, 8], [0, 8], [0, 10]]);\r\nvar multiPoint = turf.multiPoint([[0, 0], [0, 0], [2, 2]]);\r\n\r\nturf.cleanCoords(line).geometry.coordinates;\r\n//= [[0, 0], [0, 10]]\r\n\r\nturf.cleanCoords(multiPoint).geometry.coordinates;\r\n//= [[0, 0], [2, 2]]",
+			"hasMap": false,
+			"npmName": "clean-coords",
+			"returns": [
+				{
+					"type": "( Geometry | Feature )",
+					"desc": "the cleaned input Feature/Geometry"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "( Geometry | Feature )",
+					"Description": "Feature or Geometry"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated"
 				}
 			],
 			"throws": []
 		},
 		{
+			"name": "clone",
+			"description": "Returns a cloned copy of the passed GeoJSON Object, including possible 'Foreign Members'.\n~3-5x faster than the common JSON.parse + JSON.stringify combo method.",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]], {color: 'red'});\r\n\r\nvar lineCloned = turf.clone(line);",
+			"example": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]], {color: 'red'});\r\n\r\nvar lineCloned = turf.clone(line);",
+			"hasMap": false,
+			"npmName": "clone",
+			"returns": [
+				{
+					"type": "GeoJSON",
+					"desc": "cloned GeoJSON Object"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "GeoJSON Object"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
 			"name": "circle",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.",
-			"snippet": "var center = [-75.343, 39.984];\nvar radius = 5;\nvar steps = 10;\nvar units = 'kilometers';\nvar properties = {foo: 'bar'};\n\nvar circle = turf.circle(center, radius, steps, units, properties);\n\n//addToMap\nvar addToMap = [turf.point(center), circle]",
-			"example": "var center = [-75.343, 39.984];\nvar radius = 5;\nvar steps = 10;\nvar units = 'kilometers';\nvar properties = {foo: 'bar'};\n\nvar circle = turf.circle(center, radius, steps, units, properties);\n\n//addToMap\nvar addToMap = [turf.point(center), circle]",
+			"parent": null,
+			"snippet": "var center = [-75.343, 39.984];\r\nvar radius = 5;\r\nvar options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};\r\nvar circle = turf.circle(center, radius, options);\r\n",
+			"example": "var center = [-75.343, 39.984];\r\nvar radius = 5;\r\nvar options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};\r\nvar circle = turf.circle(center, radius, options);\r\n\r\n//addToMap\r\nvar addToMap = [turf.point(center), circle]",
 			"hasMap": true,
+			"npmName": "circle",
 			"returns": [
 				{
 					"type": "Feature 〈Polygon〉",
@@ -918,45 +1190,29 @@
 					"Description": "radius of the circle"
 				},
 				{
-					"Argument": "steps",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "steps",
 					"Type": "number",
+					"Default": "64",
 					"Description": "number of steps"
 				},
 				{
-					"Argument": "units",
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "miles, kilometers, degrees, or radians"
 				},
 				{
-					"Argument": "properties",
+					"Prop": "properties",
 					"Type": "Object",
+					"Default": "{}",
 					"Description": "properties"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "clone",
-			"description": "Returns a cloned copy of the passed GeoJSON Object.\nBy default it duplicates only the standard GeoJSON fields of the object; if  cloneAll  is set to  true  all\nfields of the Object, thus including 'Foreign Members', will be cloned (3-20x slower).",
-			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\n\nvar lineCloned = turf.clone(line);",
-			"example": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\n\nvar lineCloned = turf.clone(line);",
-			"hasMap": false,
-			"returns": [
-				{
-					"type": "GeoJSON",
-					"desc": "cloned GeoJSON Object"
-				}
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "GeoJSON",
-					"Description": "GeoJSON Object"
-				},
-				{
-					"Argument": "cloneAll",
-					"Type": "Boolean",
-					"Description": "clones entire GeoJSON object, using JSON.parse(JSON.stringify(geojson))"
 				}
 			],
 			"throws": []
@@ -964,9 +1220,11 @@
 		{
 			"name": "clustersDbscan",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters according to  <a target=\"_blank\" href=\"DBSCAN's\">https://en.wikipedia.org/wiki/DBSCAN</a>  data clustering algorithm.",
-			"snippet": "// create random points with random z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nvar distance = 100;\nvar clustered = turf.clustersDbscan(points, distance);\n\n//addToMap\nvar addToMap = [clustered];",
-			"example": "// create random points with random z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nvar distance = 100;\nvar clustered = turf.clustersDbscan(points, distance);\n\n//addToMap\nvar addToMap = [clustered];",
+			"parent": null,
+			"snippet": "// create random points with random z-values in their properties\r\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\r\nvar maxDistance = 100;\r\nvar clustered = turf.clustersDbscan(points, maxDistance);\r\n",
+			"example": "// create random points with random z-values in their properties\r\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\r\nvar maxDistance = 100;\r\nvar clustered = turf.clustersDbscan(points, maxDistance);\r\n\r\n//addToMap\r\nvar addToMap = [clustered];",
 			"hasMap": true,
+			"npmName": "clusters-dbscan",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -985,13 +1243,22 @@
 					"Description": "Maximum Distance between any point of the cluster to generate the clusters (kilometers only)"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "kilometers",
 					"Description": "in which  maxDistance  is expressed, can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "minPoints",
+					"Prop": "minPoints",
 					"Type": "number",
+					"Default": "3",
 					"Description": "Minimum number of points to generate a single cluster,\npoints which do not meet this requirement will be classified as an 'edge' or 'noise'."
 				}
 			],
@@ -1000,9 +1267,11 @@
 		{
 			"name": "clustersKmeans",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters using the k-mean.\nIt uses the  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/K-means_clustering\">k-means algorithm</a>",
-			"snippet": "// create random points with random z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nvar numberOfClusters = 7;\nvar clustered = turf.clustersKmeans(points, numberOfClusters);\n\n//addToMap\nvar addToMap = [clustered];",
-			"example": "// create random points with random z-values in their properties\nvar points = turf.random('point', 100, {\n  bbox: [0, 30, 20, 50]\n});\nvar numberOfClusters = 7;\nvar clustered = turf.clustersKmeans(points, numberOfClusters);\n\n//addToMap\nvar addToMap = [clustered];",
+			"parent": null,
+			"snippet": "// create random points with random z-values in their properties\r\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\r\nvar options = {numberOfClusters: 7};\r\nvar clustered = turf.clustersKmeans(points, options);\r\n",
+			"example": "// create random points with random z-values in their properties\r\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\r\nvar options = {numberOfClusters: 7};\r\nvar clustered = turf.clustersKmeans(points, options);\r\n\r\n//addToMap\r\nvar addToMap = [clustered];",
 			"hasMap": true,
+			"npmName": "clusters-kmeans",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -1016,13 +1285,22 @@
 					"Description": "to be clustered"
 				},
 				{
-					"Argument": "numberOfClusters",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "numberOfClusters",
 					"Type": "number",
+					"Default": "Math.sqrt(numberOfPoints/2)",
 					"Description": "numberOfClusters that will be generated"
 				},
 				{
-					"Argument": "mutate",
+					"Prop": "mutate",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
@@ -1031,9 +1309,11 @@
 		{
 			"name": "getCluster",
 			"description": "Get Cluster",
-			"snippet": "var geojson = turf.featureCollection([\n    turf.point([0, 0], {'marker-symbol': 'circle'}),\n    turf.point([2, 4], {'marker-symbol': 'star'}),\n    turf.point([3, 6], {'marker-symbol': 'star'}),\n    turf.point([5, 1], {'marker-symbol': 'square'}),\n    turf.point([4, 2], {'marker-symbol': 'circle'})\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Retrieve first cluster (0)\nvar cluster = turf.getCluster(clustered, {cluster: 0});\n//= cluster\n\n// Retrieve cluster based on custom properties\nturf.getCluster(clustered, {'marker-symbol': 'circle'}).length;\n//= 2\nturf.getCluster(clustered, {'marker-symbol': 'square'}).length;\n//= 1",
-			"example": "var geojson = turf.featureCollection([\n    turf.point([0, 0], {'marker-symbol': 'circle'}),\n    turf.point([2, 4], {'marker-symbol': 'star'}),\n    turf.point([3, 6], {'marker-symbol': 'star'}),\n    turf.point([5, 1], {'marker-symbol': 'square'}),\n    turf.point([4, 2], {'marker-symbol': 'circle'})\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Retrieve first cluster (0)\nvar cluster = turf.getCluster(clustered, {cluster: 0});\n//= cluster\n\n// Retrieve cluster based on custom properties\nturf.getCluster(clustered, {'marker-symbol': 'circle'}).length;\n//= 2\nturf.getCluster(clustered, {'marker-symbol': 'square'}).length;\n//= 1",
+			"parent": null,
+			"snippet": "var geojson = turf.featureCollection([\r\n    turf.point([0, 0], {'marker-symbol': 'circle'}),\r\n    turf.point([2, 4], {'marker-symbol': 'star'}),\r\n    turf.point([3, 6], {'marker-symbol': 'star'}),\r\n    turf.point([5, 1], {'marker-symbol': 'square'}),\r\n    turf.point([4, 2], {'marker-symbol': 'circle'})\r\n]);\r\n\r\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\r\nvar clustered = turf.clustersKmeans(geojson);\r\n\r\n// Retrieve first cluster (0)\r\nvar cluster = turf.getCluster(clustered, {cluster: 0});\r\n//= cluster\r\n\r\n// Retrieve cluster based on custom properties\r\nturf.getCluster(clustered, {'marker-symbol': 'circle'}).length;\r\n//= 2\r\nturf.getCluster(clustered, {'marker-symbol': 'square'}).length;\r\n//= 1",
+			"example": "var geojson = turf.featureCollection([\r\n    turf.point([0, 0], {'marker-symbol': 'circle'}),\r\n    turf.point([2, 4], {'marker-symbol': 'star'}),\r\n    turf.point([3, 6], {'marker-symbol': 'star'}),\r\n    turf.point([5, 1], {'marker-symbol': 'square'}),\r\n    turf.point([4, 2], {'marker-symbol': 'circle'})\r\n]);\r\n\r\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\r\nvar clustered = turf.clustersKmeans(geojson);\r\n\r\n// Retrieve first cluster (0)\r\nvar cluster = turf.getCluster(clustered, {cluster: 0});\r\n//= cluster\r\n\r\n// Retrieve cluster based on custom properties\r\nturf.getCluster(clustered, {'marker-symbol': 'circle'}).length;\r\n//= 2\r\nturf.getCluster(clustered, {'marker-symbol': 'square'}).length;\r\n//= 1",
 			"hasMap": false,
+			"npmName": "get-cluster",
 			"returns": [
 				{
 					"type": "FeatureCollection",
@@ -1051,14 +1331,17 @@
 					"Description": "Filter used on GeoJSON properties to get Cluster"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "collect",
 			"description": "Merges a specified property from a FeatureCollection of points into a\nFeatureCollection of polygons. Given an  inProperty  on points and an  outProperty \nfor polygons, this finds every point that lies within each polygon, collects the\n inProperty  values from those points, and adds them as an array to  outProperty \non the polygon.",
-			"snippet": "var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);\nvar poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);\nvar polyFC = turf.featureCollection([poly1, poly2]);\nvar pt1 = turf.point([5,5], {population: 200});\nvar pt2 = turf.point([1,3], {population: 600});\nvar pt3 = turf.point([14,2], {population: 100});\nvar pt4 = turf.point([13,1], {population: 200});\nvar pt5 = turf.point([19,7], {population: 300});\nvar pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);\nvar collected = turf.collect(polyFC, pointFC, 'population', 'values');\nvar values = collected.features[0].properties.values\n//=values => [200, 600]\n\n//addToMap\nvar addToMap = [pointFC, collected]",
-			"example": "var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);\nvar poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);\nvar polyFC = turf.featureCollection([poly1, poly2]);\nvar pt1 = turf.point([5,5], {population: 200});\nvar pt2 = turf.point([1,3], {population: 600});\nvar pt3 = turf.point([14,2], {population: 100});\nvar pt4 = turf.point([13,1], {population: 200});\nvar pt5 = turf.point([19,7], {population: 300});\nvar pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);\nvar collected = turf.collect(polyFC, pointFC, 'population', 'values');\nvar values = collected.features[0].properties.values\n//=values => [200, 600]\n\n//addToMap\nvar addToMap = [pointFC, collected]",
+			"parent": null,
+			"snippet": "var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);\r\nvar poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);\r\nvar polyFC = turf.featureCollection([poly1, poly2]);\r\nvar pt1 = turf.point([5,5], {population: 200});\r\nvar pt2 = turf.point([1,3], {population: 600});\r\nvar pt3 = turf.point([14,2], {population: 100});\r\nvar pt4 = turf.point([13,1], {population: 200});\r\nvar pt5 = turf.point([19,7], {population: 300});\r\nvar pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);\r\nvar collected = turf.collect(polyFC, pointFC, 'population', 'values');\r\nvar values = collected.features[0].properties.values\r\n//=values => [200, 600]\r\n",
+			"example": "var poly1 = turf.polygon([[[0,0],[10,0],[10,10],[0,10],[0,0]]]);\r\nvar poly2 = turf.polygon([[[10,0],[20,10],[20,20],[20,0],[10,0]]]);\r\nvar polyFC = turf.featureCollection([poly1, poly2]);\r\nvar pt1 = turf.point([5,5], {population: 200});\r\nvar pt2 = turf.point([1,3], {population: 600});\r\nvar pt3 = turf.point([14,2], {population: 100});\r\nvar pt4 = turf.point([13,1], {population: 200});\r\nvar pt5 = turf.point([19,7], {population: 300});\r\nvar pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);\r\nvar collected = turf.collect(polyFC, pointFC, 'population', 'values');\r\nvar values = collected.features[0].properties.values\r\n//=values => [200, 600]\r\n\r\n//addToMap\r\nvar addToMap = [pointFC, collected]",
 			"hasMap": true,
+			"npmName": "collect",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -1087,14 +1370,17 @@
 					"Description": "property to be nested into"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "combine",
 			"description": "Combines a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  features\ninto  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipoint\">MultiPoint</a> ,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multilinestring\">MultiLineString</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  features.",
-			"snippet": "var fc = turf.featureCollection([\n  turf.point([19.026432, 47.49134]),\n  turf.point([19.074497, 47.509548])\n]);\n\nvar combined = turf.combine(fc);\n\n//addToMap\nvar addToMap = [combined]",
-			"example": "var fc = turf.featureCollection([\n  turf.point([19.026432, 47.49134]),\n  turf.point([19.074497, 47.509548])\n]);\n\nvar combined = turf.combine(fc);\n\n//addToMap\nvar addToMap = [combined]",
+			"parent": null,
+			"snippet": "var fc = turf.featureCollection([\r\n  turf.point([19.026432, 47.49134]),\r\n  turf.point([19.074497, 47.509548])\r\n]);\r\n\r\nvar combined = turf.combine(fc);\r\n",
+			"example": "var fc = turf.featureCollection([\r\n  turf.point([19.026432, 47.49134]),\r\n  turf.point([19.074497, 47.509548])\r\n]);\r\n\r\nvar combined = turf.combine(fc);\r\n\r\n//addToMap\r\nvar addToMap = [combined]",
 			"hasMap": true,
+			"npmName": "combine",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈〉",
@@ -1108,50 +1394,17 @@
 					"Description": "a FeatureCollection of any type"
 				}
 			],
+			"options": null,
 			"throws": []
-		},
-		{
-			"name": "concave",
-			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and returns a concave hull polygon.\nInternally, this uses  <a target=\"_blank\" href=\"https://github.com/Turfjs/turf-tin\">turf-tin</a>  to generate geometries.",
-			"snippet": "var points = turf.featureCollection([\n  turf.point([-63.601226, 44.642643]),\n  turf.point([-63.591442, 44.651436]),\n  turf.point([-63.580799, 44.648749]),\n  turf.point([-63.573589, 44.641788]),\n  turf.point([-63.587665, 44.64533]),\n  turf.point([-63.595218, 44.64765])\n]);\n\nvar hull = turf.concave(points, 1, 'miles');\n\n//addToMap\nvar addToMap = [points, hull]",
-			"example": "var points = turf.featureCollection([\n  turf.point([-63.601226, 44.642643]),\n  turf.point([-63.591442, 44.651436]),\n  turf.point([-63.580799, 44.648749]),\n  turf.point([-63.573589, 44.641788]),\n  turf.point([-63.587665, 44.64533]),\n  turf.point([-63.595218, 44.64765])\n]);\n\nvar hull = turf.concave(points, 1, 'miles');\n\n//addToMap\nvar addToMap = [points, hull]",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "Feature 〈Polygon〉",
-					"desc": "a concave hull"
-				}
-			],
-			"params": [
-				{
-					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
-					"Description": "input points"
-				},
-				{
-					"Argument": "maxEdge",
-					"Type": "number",
-					"Description": "the size of an edge necessary for part of the hull to become concave (in miles)"
-				},
-				{
-					"Argument": "units",
-					"Type": "string",
-					"Description": "can be degrees, radians, miles, or kilometers"
-				}
-			],
-			"throws": [
-				{
-					"type": "Error",
-					"desc": "if maxEdge parameter is missing or unable to compute hull"
-				}
-			]
 		},
 		{
 			"name": "convex",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns a convex hull  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>.",
-			"snippet": "var points = turf.featureCollection([\n  turf.point([10.195312, 43.755225]),\n  turf.point([10.404052, 43.8424511]),\n  turf.point([10.579833, 43.659924]),\n  turf.point([10.360107, 43.516688]),\n  turf.point([10.14038, 43.588348]),\n  turf.point([10.195312, 43.755225])\n]);\n\nvar hull = turf.convex(points);\n\n//addToMap\nvar addToMap = [points, hull]",
-			"example": "var points = turf.featureCollection([\n  turf.point([10.195312, 43.755225]),\n  turf.point([10.404052, 43.8424511]),\n  turf.point([10.579833, 43.659924]),\n  turf.point([10.360107, 43.516688]),\n  turf.point([10.14038, 43.588348]),\n  turf.point([10.195312, 43.755225])\n]);\n\nvar hull = turf.convex(points);\n\n//addToMap\nvar addToMap = [points, hull]",
+			"parent": null,
+			"snippet": "var points = turf.featureCollection([\r\n  turf.point([10.195312, 43.755225]),\r\n  turf.point([10.404052, 43.8424511]),\r\n  turf.point([10.579833, 43.659924]),\r\n  turf.point([10.360107, 43.516688]),\r\n  turf.point([10.14038, 43.588348]),\r\n  turf.point([10.195312, 43.755225])\r\n]);\r\n\r\nvar hull = turf.convex(points);\r\n",
+			"example": "var points = turf.featureCollection([\r\n  turf.point([10.195312, 43.755225]),\r\n  turf.point([10.404052, 43.8424511]),\r\n  turf.point([10.579833, 43.659924]),\r\n  turf.point([10.360107, 43.516688]),\r\n  turf.point([10.14038, 43.588348]),\r\n  turf.point([10.195312, 43.755225])\r\n]);\r\n\r\nvar hull = turf.convex(points);\r\n\r\n//addToMap\r\nvar addToMap = [points, hull]",
 			"hasMap": true,
+			"npmName": "convex",
 			"returns": [
 				{
 					"type": "Feature 〈Polygon〉",
@@ -1160,19 +1413,22 @@
 			],
 			"params": [
 				{
-					"Argument": "feature",
-					"Type": "( Feature | FeatureCollection )",
+					"Argument": "geojson",
+					"Type": "GeoJSON",
 					"Description": "input Feature or FeatureCollection"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "destination",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a>  to account for global curvature.",
-			"snippet": "var point = turf.point([-75.343, 39.984]);\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point, distance, bearing, units);\n\n//addToMap\nvar addToMap = [point, destination]\ndestination.properties['marker-color'] = '#f00';\npoint.properties['marker-color'] = '#0f0';",
-			"example": "var point = turf.point([-75.343, 39.984]);\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.destination(point, distance, bearing, units);\n\n//addToMap\nvar addToMap = [point, destination]\ndestination.properties['marker-color'] = '#f00';\npoint.properties['marker-color'] = '#0f0';",
+			"parent": null,
+			"snippet": "var point = turf.point([-75.343, 39.984]);\r\nvar distance = 50;\r\nvar bearing = 90;\r\nvar options = {units: 'miles'};\r\n\r\nvar destination = turf.destination(point, distance, bearing, options);\r\n",
+			"example": "var point = turf.point([-75.343, 39.984]);\r\nvar distance = 50;\r\nvar bearing = 90;\r\nvar options = {units: 'miles'};\r\n\r\nvar destination = turf.destination(point, distance, bearing, options);\r\n\r\n//addToMap\r\nvar addToMap = [point, destination]\r\ndestination.properties['marker-color'] = '#f00';\r\npoint.properties['marker-color'] = '#0f0';",
 			"hasMap": true,
+			"npmName": "destination",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -1196,9 +1452,95 @@
 					"Description": "ranging from -180 to 180"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "miles, kilometers, degrees, or radians"
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "concave",
+			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and returns a concave hull Polygon or MultiPolygon.\nInternally, this uses  <a target=\"_blank\" href=\"https://github.com/Turfjs/turf-tin\">turf-tin</a>  to generate geometries.",
+			"parent": null,
+			"snippet": "var points = turf.featureCollection([\r\n  turf.point([-63.601226, 44.642643]),\r\n  turf.point([-63.591442, 44.651436]),\r\n  turf.point([-63.580799, 44.648749]),\r\n  turf.point([-63.573589, 44.641788]),\r\n  turf.point([-63.587665, 44.64533]),\r\n  turf.point([-63.595218, 44.64765])\r\n]);\r\nvar options = {units: 'miles', maxEdge: 1};\r\n\r\nvar hull = turf.concave(points, options);\r\n",
+			"example": "var points = turf.featureCollection([\r\n  turf.point([-63.601226, 44.642643]),\r\n  turf.point([-63.591442, 44.651436]),\r\n  turf.point([-63.580799, 44.648749]),\r\n  turf.point([-63.573589, 44.641788]),\r\n  turf.point([-63.587665, 44.64533]),\r\n  turf.point([-63.595218, 44.64765])\r\n]);\r\nvar options = {units: 'miles', maxEdge: 1};\r\n\r\nvar hull = turf.concave(points, options);\r\n\r\n//addToMap\r\nvar addToMap = [points, hull]",
+			"hasMap": true,
+			"npmName": "concave",
+			"returns": [
+				{
+					"type": "( Feature 〈〉 |  )",
+					"desc": "a concave hull (null value is returned if unable to compute hull)"
+				}
+			],
+			"params": [
+				{
+					"Argument": "points",
+					"Type": "FeatureCollection 〈Point〉",
+					"Description": "input points"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "maxEdge",
+					"Type": "number",
+					"Default": "Infinity",
+					"Description": "the length (in 'units') of an edge necessary for part of the hull to become concave."
+				},
+				{
+					"Prop": "units",
+					"Type": "string",
+					"Default": "'kilometers'",
+					"Description": "can be degrees, radians, miles, or kilometers"
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "dissolve",
+			"description": "Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported",
+			"parent": null,
+			"snippet": "var features = turf.featureCollection([\r\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {\"combine\": \"yes\"}),\r\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {\"combine\": \"yes\"}),\r\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {\"combine\": \"no\"}),\r\n]);\r\nvar options = {propertyName: 'combine'};\r\n\r\nvar dissolved = turf.dissolve(features, options);\r\n",
+			"example": "var features = turf.featureCollection([\r\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {\"combine\": \"yes\"}),\r\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {\"combine\": \"yes\"}),\r\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {\"combine\": \"no\"}),\r\n]);\r\nvar options = {propertyName: 'combine'};\r\n\r\nvar dissolved = turf.dissolve(features, options);\r\n\r\n//addToMap\r\nvar addToMap = [features, dissolved]",
+			"hasMap": true,
+			"npmName": "dissolve",
+			"returns": [
+				{
+					"type": "FeatureCollection 〈Polygon〉",
+					"desc": "a FeatureCollection containing the dissolved polygons"
+				}
+			],
+			"params": [
+				{
+					"Argument": "featureCollection",
+					"Type": "FeatureCollection 〈Polygon〉",
+					"Description": "input feature collection to be dissolved"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "propertyName",
+					"Type": "Optional: string",
+					"Default": null,
+					"Description": "property name on which to dissolve features"
 				}
 			],
 			"throws": []
@@ -1206,13 +1548,15 @@
 		{
 			"name": "difference",
 			"description": "Finds the difference between two  <a target=\"_blank\" href=\"Polygon\">polygons</a>  by clipping the second polygon from the first.",
-			"snippet": "var polygon1 = turf.polygon([[\n  [-46.738586, -23.596711],\n  [-46.738586, -23.458207],\n  [-46.560058, -23.458207],\n  [-46.560058, -23.596711],\n  [-46.738586, -23.596711]\n]], {\n  \"fill\": \"#F00\",\n  \"fill-opacity\": 0.1\n});\nvar polygon2 = turf.polygon([[\n  [126, -28],\n  [140, -28],\n  [140, -20],\n  [126, -20],\n  [126, -28]\n]], {\n  \"fill\": \"#00F\",\n  \"fill-opacity\": 0.1\n});\n\nvar difference = turf.difference(polygon1, polygon2);\n\n//addToMap\nvar addToMap = [polygon1, polygon2, difference];",
-			"example": "var polygon1 = turf.polygon([[\n  [-46.738586, -23.596711],\n  [-46.738586, -23.458207],\n  [-46.560058, -23.458207],\n  [-46.560058, -23.596711],\n  [-46.738586, -23.596711]\n]], {\n  \"fill\": \"#F00\",\n  \"fill-opacity\": 0.1\n});\nvar polygon2 = turf.polygon([[\n  [126, -28],\n  [140, -28],\n  [140, -20],\n  [126, -20],\n  [126, -28]\n]], {\n  \"fill\": \"#00F\",\n  \"fill-opacity\": 0.1\n});\n\nvar difference = turf.difference(polygon1, polygon2);\n\n//addToMap\nvar addToMap = [polygon1, polygon2, difference];",
+			"parent": null,
+			"snippet": "var polygon1 = turf.polygon([[\r\n  [128, -26],\r\n  [141, -26],\r\n  [141, -21],\r\n  [128, -21],\r\n  [128, -26]\r\n]], {\r\n  \"fill\": \"#F00\",\r\n  \"fill-opacity\": 0.1\r\n});\r\nvar polygon2 = turf.polygon([[\r\n  [126, -28],\r\n  [140, -28],\r\n  [140, -20],\r\n  [126, -20],\r\n  [126, -28]\r\n]], {\r\n  \"fill\": \"#00F\",\r\n  \"fill-opacity\": 0.1\r\n});\r\n\r\nvar difference = turf.difference(polygon1, polygon2);\r\n",
+			"example": "var polygon1 = turf.polygon([[\r\n  [128, -26],\r\n  [141, -26],\r\n  [141, -21],\r\n  [128, -21],\r\n  [128, -26]\r\n]], {\r\n  \"fill\": \"#F00\",\r\n  \"fill-opacity\": 0.1\r\n});\r\nvar polygon2 = turf.polygon([[\r\n  [126, -28],\r\n  [140, -28],\r\n  [140, -20],\r\n  [126, -20],\r\n  [126, -28]\r\n]], {\r\n  \"fill\": \"#00F\",\r\n  \"fill-opacity\": 0.1\r\n});\r\n\r\nvar difference = turf.difference(polygon1, polygon2);\r\n\r\n//addToMap\r\nvar addToMap = [polygon1, polygon2, difference];",
 			"hasMap": true,
+			"npmName": "difference",
 			"returns": [
 				{
 					"type": "( Feature 〈〉 |  )",
-					"desc": "a Polygon or MultiPolygon feature showing the area of  polygon1  excluding the area of  polygon2  (if empty returns  undefined )"
+					"desc": "a Polygon or MultiPolygon feature showing the area of  polygon1  excluding the area of  polygon2  (if empty returns  null )"
 				}
 			],
 			"params": [
@@ -1227,40 +1571,41 @@
 					"Description": "Polygon feature to difference from polygon1"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
-			"name": "dissolve",
-			"description": "Dissolves a FeatureCollection of polygons based on a property. Note that multipart features within the collection are not supported",
-			"snippet": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {\"combine\": \"yes\"}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {\"combine\": \"yes\"}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {\"combine\": \"no\"}),\n]);\n\nvar dissolved = turf.dissolve(features, 'combine');\n\n//addToMap\nvar addToMap = [features, dissolved]",
-			"example": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {\"combine\": \"yes\"}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {\"combine\": \"yes\"}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {\"combine\": \"no\"}),\n]);\n\nvar dissolved = turf.dissolve(features, 'combine');\n\n//addToMap\nvar addToMap = [features, dissolved]",
+			"name": "envelope",
+			"description": "Takes any number of features and returns a rectangular  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  that encompasses all vertices.",
+			"parent": null,
+			"snippet": "var features = turf.featureCollection([\r\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\r\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\r\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\r\n]);\r\n\r\nvar enveloped = turf.envelope(features);\r\n",
+			"example": "var features = turf.featureCollection([\r\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\r\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\r\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\r\n]);\r\n\r\nvar enveloped = turf.envelope(features);\r\n\r\n//addToMap\r\nvar addToMap = [features, enveloped];",
 			"hasMap": true,
+			"npmName": "envelope",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
-					"desc": "a FeatureCollection containing the dissolved polygons"
+					"type": "Feature 〈Polygon〉",
+					"desc": "a rectangular Polygon feature that encompasses all vertices"
 				}
 			],
 			"params": [
 				{
-					"Argument": "featureCollection",
-					"Type": "FeatureCollection 〈Polygon〉",
-					"Description": "input feature collection to be dissolved"
-				},
-				{
-					"Argument": "propertyName",
-					"Type": "Optional: string",
-					"Description": "property name on which to dissolve features"
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "input features"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "distance",
 			"description": "Calculates the distance between two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  in degrees, radians,\nmiles, or kilometers. This uses the\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a> \nto account for global curvature.",
-			"snippet": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\n\nvar distance = turf.distance(from, to, \"miles\");\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
-			"example": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\n\nvar distance = turf.distance(from, to, \"miles\");\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
+			"parent": null,
+			"snippet": "var from = turf.point([-75.343, 39.984]);\r\nvar to = turf.point([-75.534, 39.123]);\r\nvar options = {units: 'miles'};\r\n\r\nvar distance = turf.distance(from, to, options);\r\n",
+			"example": "var from = turf.point([-75.343, 39.984]);\r\nvar to = turf.point([-75.534, 39.123]);\r\nvar options = {units: 'miles'};\r\n\r\nvar distance = turf.distance(from, to, options);\r\n\r\n//addToMap\r\nvar addToMap = [from, to];\r\nfrom.properties.distance = distance;\r\nto.properties.distance = distance;",
 			"hasMap": true,
+			"npmName": "distance",
 			"returns": [
 				{
 					"type": "number",
@@ -1279,30 +1624,17 @@
 					"Description": "destination point"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "can be degrees, radians, miles, or kilometers"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "envelope",
-			"description": "Takes any number of features and returns a rectangular  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  that encompasses all vertices.",
-			"snippet": "var features = turf.featureCollection([\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\n]);\n\nvar enveloped = turf.envelope(features);\n\n//addToMap\nvar addToMap = [features, enveloped];",
-			"example": "var features = turf.featureCollection([\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\n]);\n\nvar enveloped = turf.envelope(features);\n\n//addToMap\nvar addToMap = [features, enveloped];",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "Feature 〈Polygon〉",
-					"desc": "a rectangular Polygon feature that encompasses all vertices"
-				}
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
-					"Description": "input features"
 				}
 			],
 			"throws": []
@@ -1310,9 +1642,11 @@
 		{
 			"name": "explode",
 			"description": "Takes a feature or set of features and returns all positions as  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>.",
-			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar explode = turf.explode(polygon);\n\n//addToMap\nvar addToMap = [polygon, explode]",
-			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar explode = turf.explode(polygon);\n\n//addToMap\nvar addToMap = [polygon, explode]",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar explode = turf.explode(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\r\n\r\nvar explode = turf.explode(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon, explode]",
 			"hasMap": true,
+			"npmName": "explode",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈point〉",
@@ -1322,10 +1656,11 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
+					"Type": "GeoJSON",
 					"Description": "input features"
 				}
 			],
+			"options": null,
 			"throws": [
 				{
 					"type": "Error",
@@ -1336,9 +1671,11 @@
 		{
 			"name": "flatten",
 			"description": "Flattens any  <a target=\"_blank\" href=\"GeoJSON\">GeoJSON</a>  to a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  inspired by  <a target=\"_blank\" href=\"https://github.com/tmcw/geojson-flatten\">geojson-flatten</a>.",
-			"snippet": "var multiGeometry = turf.multiPolygon([\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\n]);\n\nvar flatten = turf.flatten(multiGeometry);\n\n//addToMap\nvar addToMap = [flatten]",
-			"example": "var multiGeometry = turf.multiPolygon([\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\n]);\n\nvar flatten = turf.flatten(multiGeometry);\n\n//addToMap\nvar addToMap = [flatten]",
+			"parent": null,
+			"snippet": "var multiGeometry = turf.multiPolygon([\r\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\r\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\r\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\r\n]);\r\n\r\nvar flatten = turf.flatten(multiGeometry);\r\n",
+			"example": "var multiGeometry = turf.multiPolygon([\r\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\r\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\r\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\r\n]);\r\n\r\nvar flatten = turf.flatten(multiGeometry);\r\n\r\n//addToMap\r\nvar addToMap = [flatten]",
 			"hasMap": true,
+			"npmName": "flatten",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈any〉",
@@ -1348,33 +1685,44 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature 〈any〉 )",
+					"Type": "GeoJSON",
 					"Description": "any valid GeoJSON Object"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "flip",
 			"description": "Takes input features and flips all of their coordinates from  [x, y]  to  [y, x].",
-			"snippet": "var serbia = turf.point([20.566406, 43.421008]);\n\nvar saudiArabia = turf.flip(serbia);\n\n//addToMap\nvar addToMap = [serbia, saudiArabia];",
-			"example": "var serbia = turf.point([20.566406, 43.421008]);\n\nvar saudiArabia = turf.flip(serbia);\n\n//addToMap\nvar addToMap = [serbia, saudiArabia];",
+			"parent": null,
+			"snippet": "var serbia = turf.point([20.566406, 43.421008]);\r\n\r\nvar saudiArabia = turf.flip(serbia);\r\n",
+			"example": "var serbia = turf.point([20.566406, 43.421008]);\r\n\r\nvar saudiArabia = turf.flip(serbia);\r\n\r\n//addToMap\r\nvar addToMap = [serbia, saudiArabia];",
 			"hasMap": true,
+			"npmName": "flip",
 			"returns": [
 				{
-					"type": "( FeatureCollection | Feature 〈any〉 )",
+					"type": "GeoJSON",
 					"desc": "a feature or set of features of the same type as  input  with flipped coordinates"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
+					"Type": "GeoJSON",
 					"Description": "input features"
 				},
 				{
-					"Argument": "mutate",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "mutate",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
@@ -1383,9 +1731,11 @@
 		{
 			"name": "greatCircle",
 			"description": "Calculate great circles routes as  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>",
-			"snippet": "var start = turf.point([-122, 48]);\nvar end = turf.point([-77, 39]);\n\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\n\n//addToMap\nvar addToMap = [start, end, greatCircle]",
-			"example": "var start = turf.point([-122, 48]);\nvar end = turf.point([-77, 39]);\n\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\n\n//addToMap\nvar addToMap = [start, end, greatCircle]",
+			"parent": null,
+			"snippet": "var start = turf.point([-122, 48]);\r\nvar end = turf.point([-77, 39]);\r\n\r\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\r\n",
+			"example": "var start = turf.point([-122, 48]);\r\nvar end = turf.point([-77, 39]);\r\n\r\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\r\n\r\n//addToMap\r\nvar addToMap = [start, end, greatCircle]",
 			"hasMap": true,
+			"npmName": "great-circle",
 			"returns": [
 				{
 					"type": "Feature 〈LineString〉",
@@ -1404,55 +1754,54 @@
 					"Description": "destination point feature"
 				},
 				{
-					"Argument": "properties",
+					"Argument": "options",
 					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "properties",
+					"Type": "Object",
+					"Default": "{}",
 					"Description": "line feature properties"
 				},
 				{
-					"Argument": "npoints",
+					"Prop": "npoints",
 					"Type": "number",
+					"Default": "100",
 					"Description": "number of points"
 				},
 				{
-					"Argument": "offset",
+					"Prop": "offset",
 					"Type": "number",
+					"Default": "10",
 					"Description": "offset controls the likelyhood that lines will\nbe split which cross the dateline. The higher the number the more likely."
 				}
 			],
 			"throws": []
 		},
 		{
-			"name": "feature",
-			"description": "Wraps a GeoJSON  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geometry\">Geometry</a>  in a GeoJSON  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>.",
-			"snippet": "var geometry = {\n  \"type\": \"Point\",\n  \"coordinates\": [110, 50]\n};\n\nvar feature = turf.feature(geometry);\n\n//=feature",
-			"example": "var geometry = {\n  \"type\": \"Point\",\n  \"coordinates\": [110, 50]\n};\n\nvar feature = turf.feature(geometry);\n\n//=feature",
+			"name": "earthRadius",
+			"description": "Earth Radius used with the Harvesine formula and approximates using a spherical (non-ellipsoid) Earth.",
+			"parent": "helpers",
+			"snippet": false,
+			"example": false,
 			"hasMap": false,
-			"returns": [
-				{
-					"type": "Feature",
-					"desc": "a GeoJSON Feature"
-				}
-			],
-			"params": [
-				{
-					"Argument": "geometry",
-					"Type": "Geometry",
-					"Description": "input geometry"
-				},
-				{
-					"Argument": "properties",
-					"Type": "Object",
-					"Description": "properties"
-				}
-			],
+			"npmName": "helpers",
+			"returns": [],
+			"params": [],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "hexGrid",
 			"description": "Takes a bounding box and the diameter of the cell and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of flat-topped\nhexagons or triangles ( <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  features) aligned in an \"odd-q\" vertical grid as\ndescribed in  <a target=\"_blank\" href=\"http://www.redblobgames.com/grids/hexagons/\">Hexagonal Grids</a>.",
-			"snippet": "var bbox = [-96,31,-84,40];\nvar cellDiameter = 50;\nvar units = 'miles';\n\nvar hexgrid = turf.hexGrid(bbox, cellDiameter, units);\n\n//addToMap\nvar addToMap = [hexgrid];",
-			"example": "var bbox = [-96,31,-84,40];\nvar cellDiameter = 50;\nvar units = 'miles';\n\nvar hexgrid = turf.hexGrid(bbox, cellDiameter, units);\n\n//addToMap\nvar addToMap = [hexgrid];",
+			"parent": null,
+			"snippet": "var bbox = [-96,31,-84,40];\r\nvar cellDiameter = 50;\r\n\r\nvar hexgrid = turf.hexGrid(bbox, cellDiameter, {units: 'miles'});\r\n",
+			"example": "var bbox = [-96,31,-84,40];\r\nvar cellDiameter = 50;\r\n\r\nvar hexgrid = turf.hexGrid(bbox, cellDiameter, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [hexgrid];",
 			"hasMap": true,
+			"npmName": "hex-grid",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -1471,55 +1820,23 @@
 					"Description": "diameter of the circumcircle of the hexagons, in specified units"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "used in calculating cell size, can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "triangles",
+					"Prop": "triangles",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "whether to return as triangles instead of hexagons"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "idw",
-			"description": "Takes a FeatureCollection of points with known value, a power parameter, a cell depth, a unit of measurement\nand returns a FeatureCollection of polygons in a square-grid with an interpolated value property \"IDW\" for each grid cell.\nIt finds application when in need of creating a continuous surface (i.e. rainfall, temperature, chemical dispersion surface...)\nfrom a set of spatially scattered points.",
-			"snippet": false,
-			"example": false,
-			"hasMap": false,
-			"returns": [
-				{
-					"type": "FeatureCollection 〈Polygon〉",
-					"desc": "grid A grid of polygons with a property field named as  valueField"
-				}
-			],
-			"params": [
-				{
-					"Argument": "controlPoints",
-					"Type": "FeatureCollection 〈Point〉",
-					"Description": "Sampled points with known value"
-				},
-				{
-					"Argument": "valueField",
-					"Type": "string",
-					"Description": "GeoJSON field containing the known value to interpolate on"
-				},
-				{
-					"Argument": "weight",
-					"Type": "number",
-					"Description": "Exponent regulating the distance-decay weighting"
-				},
-				{
-					"Argument": "cellWidth",
-					"Type": "number",
-					"Description": "The distance across each cell"
-				},
-				{
-					"Argument": "units",
-					"Type": "string",
-					"Description": "used in calculating cellSize, can be degrees, radians, miles, or kilometers"
 				}
 			],
 			"throws": []
@@ -1527,9 +1844,11 @@
 		{
 			"name": "inside",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  and determines if the point resides inside the polygon. The polygon can\nbe convex or concave. The function accounts for holes.",
-			"snippet": "var pt = turf.point([-77, 44]);\nvar poly = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]]);\n\nturf.inside(pt, poly);\n//= true",
-			"example": "var pt = turf.point([-77, 44]);\nvar poly = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]]);\n\nturf.inside(pt, poly);\n//= true",
+			"parent": null,
+			"snippet": "var pt = turf.point([-77, 44]);\r\nvar poly = turf.polygon([[\r\n  [-81, 41],\r\n  [-81, 47],\r\n  [-72, 47],\r\n  [-72, 41],\r\n  [-81, 41]\r\n]]);\r\n\r\nturf.inside(pt, poly);\r\n//= true",
+			"example": "var pt = turf.point([-77, 44]);\r\nvar poly = turf.polygon([[\r\n  [-81, 41],\r\n  [-81, 47],\r\n  [-72, 47],\r\n  [-72, 41],\r\n  [-81, 41]\r\n]]);\r\n\r\nturf.inside(pt, poly);\r\n//= true",
 			"hasMap": false,
+			"npmName": "inside",
 			"returns": [
 				{
 					"type": "boolean",
@@ -1548,19 +1867,42 @@
 					"Description": "input polygon or multipolygon"
 				},
 				{
-					"Argument": "ignoreBoundary",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "ignoreBoundary",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "True if polygon boundary should be ignored when determining if the point is inside the polygon otherwise false."
 				}
 			],
 			"throws": []
 		},
 		{
+			"name": "idw",
+			"description": "Module deprecated in favor of @turf/interpolate",
+			"parent": null,
+			"snippet": false,
+			"example": false,
+			"hasMap": false,
+			"npmName": "idw",
+			"returns": [],
+			"params": [],
+			"options": null,
+			"throws": []
+		},
+		{
 			"name": "interpolate",
 			"description": "Takes a set of points and estimates their 'property' values on a grid using the  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Inverse_distance_weighting\">Inverse Distance Weighting (IDW) method</a>.",
-			"snippet": "var points = turf.random('points', 30, {\n    bbox: [50, 30, 70, 50]\n});\n// add a random property to each point\nturf.featureEach(points, function(point) {\n    point.properties.solRad = Math.random() * 50;\n});\nvar grid = turf.interpolate(points, 100, 'points', 'solRad', 'miles');\n\n//addToMap\nvar addToMap = [grid];",
-			"example": "var points = turf.random('points', 30, {\n    bbox: [50, 30, 70, 50]\n});\n// add a random property to each point\nturf.featureEach(points, function(point) {\n    point.properties.solRad = Math.random() * 50;\n});\nvar grid = turf.interpolate(points, 100, 'points', 'solRad', 'miles');\n\n//addToMap\nvar addToMap = [grid];",
+			"parent": null,
+			"snippet": "var points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\r\n\r\n// add a random property to each point\r\nturf.featureEach(points, function(point) {\r\n    point.properties.solRad = Math.random() * 50;\r\n});\r\nvar options = {gridType: 'points', property: 'solRad', units: 'miles'};\r\nvar grid = turf.interpolate(points, 100, options);\r\n",
+			"example": "var points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\r\n\r\n// add a random property to each point\r\nturf.featureEach(points, function(point) {\r\n    point.properties.solRad = Math.random() * 50;\r\n});\r\nvar options = {gridType: 'points', property: 'solRad', units: 'miles'};\r\nvar grid = turf.interpolate(points, 100, options);\r\n\r\n//addToMap\r\nvar addToMap = [grid];",
 			"hasMap": true,
+			"npmName": "interpolate",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈〉",
@@ -1579,23 +1921,34 @@
 					"Description": "the distance across each grid point"
 				},
 				{
-					"Argument": "gridType",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "gridType",
 					"Type": "string",
+					"Default": "'square'",
 					"Description": "defines the output format based on a Grid Type (options: 'square' | 'point' | 'hex' | 'triangle')"
 				},
 				{
-					"Argument": "property",
+					"Prop": "property",
 					"Type": "string",
+					"Default": "'elevation'",
 					"Description": "the property name in  points  from which z-values will be pulled, zValue fallbacks to 3rd coordinate if no property exists."
 				},
 				{
-					"Argument": "units",
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "used in calculating cellSize, can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "weight",
+					"Prop": "weight",
 					"Type": "number",
+					"Default": "1",
 					"Description": "exponent regulating the distance-decay weighting"
 				}
 			],
@@ -1604,13 +1957,15 @@
 		{
 			"name": "intersect",
 			"description": "Takes two  <a target=\"_blank\" href=\"Polygon\">polygons</a>  and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.",
-			"snippet": "var poly1 = turf.polygon([[\n  [-122.801742, 45.48565],\n  [-122.801742, 45.60491],\n  [-122.584762, 45.60491],\n  [-122.584762, 45.48565],\n  [-122.801742, 45.48565]\n]]);\n\nvar poly2 = turf.polygon([[\n  [-122.520217, 45.535693],\n  [-122.64038, 45.553967],\n  [-122.720031, 45.526554],\n  [-122.669906, 45.507309],\n  [-122.723464, 45.446643],\n  [-122.532577, 45.408574],\n  [-122.487258, 45.477466],\n  [-122.520217, 45.535693]\n]]);\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, intersection];",
-			"example": "var poly1 = turf.polygon([[\n  [-122.801742, 45.48565],\n  [-122.801742, 45.60491],\n  [-122.584762, 45.60491],\n  [-122.584762, 45.48565],\n  [-122.801742, 45.48565]\n]]);\n\nvar poly2 = turf.polygon([[\n  [-122.520217, 45.535693],\n  [-122.64038, 45.553967],\n  [-122.720031, 45.526554],\n  [-122.669906, 45.507309],\n  [-122.723464, 45.446643],\n  [-122.532577, 45.408574],\n  [-122.487258, 45.477466],\n  [-122.520217, 45.535693]\n]]);\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, intersection];",
+			"parent": null,
+			"snippet": "var poly1 = turf.polygon([[\r\n  [-122.801742, 45.48565],\r\n  [-122.801742, 45.60491],\r\n  [-122.584762, 45.60491],\r\n  [-122.584762, 45.48565],\r\n  [-122.801742, 45.48565]\r\n]]);\r\n\r\nvar poly2 = turf.polygon([[\r\n  [-122.520217, 45.535693],\r\n  [-122.64038, 45.553967],\r\n  [-122.720031, 45.526554],\r\n  [-122.669906, 45.507309],\r\n  [-122.723464, 45.446643],\r\n  [-122.532577, 45.408574],\r\n  [-122.487258, 45.477466],\r\n  [-122.520217, 45.535693]\r\n]]);\r\n\r\nvar intersection = turf.intersect(poly1, poly2);\r\n",
+			"example": "var poly1 = turf.polygon([[\r\n  [-122.801742, 45.48565],\r\n  [-122.801742, 45.60491],\r\n  [-122.584762, 45.60491],\r\n  [-122.584762, 45.48565],\r\n  [-122.801742, 45.48565]\r\n]]);\r\n\r\nvar poly2 = turf.polygon([[\r\n  [-122.520217, 45.535693],\r\n  [-122.64038, 45.553967],\r\n  [-122.720031, 45.526554],\r\n  [-122.669906, 45.507309],\r\n  [-122.723464, 45.446643],\r\n  [-122.532577, 45.408574],\r\n  [-122.487258, 45.477466],\r\n  [-122.520217, 45.535693]\r\n]]);\r\n\r\nvar intersection = turf.intersect(poly1, poly2);\r\n\r\n//addToMap\r\nvar addToMap = [poly1, poly2, intersection];",
 			"hasMap": true,
+			"npmName": "intersect",
 			"returns": [
 				{
 					"type": "( Feature |  )",
-					"desc": "returns a feature representing the point(s) they share (in case of a  Point   or  MultiPoint ), the borders they share (in case of a  LineString  or a  MultiLineString ), the area they share (in case of  Polygon  or  MultiPolygon ). If they do not share any point, returns  undefined."
+					"desc": "returns a feature representing the point(s) they share (in case of a  Point   or  MultiPoint ), the borders they share (in case of a  LineString  or a  MultiLineString ), the area they share (in case of  Polygon  or  MultiPolygon ). If they do not share any point, returns  null."
 				}
 			],
 			"params": [
@@ -1625,14 +1980,17 @@
 					"Description": "the second polygon"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "getCoord",
 			"description": "Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.",
-			"snippet": "var pt = turf.point([10, 10]);\n\nvar coord = turf.getCoord(pt);\n//= [10, 10]",
-			"example": "var pt = turf.point([10, 10]);\n\nvar coord = turf.getCoord(pt);\n//= [10, 10]",
+			"parent": "invariant",
+			"snippet": "var pt = turf.point([10, 10]);\r\n\r\nvar coord = turf.getCoord(pt);\r\n//= [10, 10]",
+			"example": "var pt = turf.point([10, 10]);\r\n\r\nvar coord = turf.getCoord(pt);\r\n//= [10, 10]",
 			"hasMap": false,
+			"npmName": "invariant",
 			"returns": [
 				{
 					"type": "Array 〈number〉",
@@ -1646,14 +2004,17 @@
 					"Description": "Object"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "isobands",
 			"description": "Takes a grid  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  features with z-values and an array of\nvalue breaks and generates filled contour isobands.",
-			"snippet": "// create a grid of points with random z-values in their properties\nvar extent = [-70.823364, -33.553984, -69.823364, -32.553984];\nvar cellWidth = 5;\nvar units = 'miles';\nvar pointGrid = turf.pointGrid(extent, cellWidth, units);\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.elevation = Math.random() * 10;\n}\nvar breaks = [0, 5, 8.5];\n\nvar isobands = turf.isobands(pointGrid, breaks);\n\n//addToMap\nvar addToMap = [isobands];",
-			"example": "// create a grid of points with random z-values in their properties\nvar extent = [-70.823364, -33.553984, -69.823364, -32.553984];\nvar cellWidth = 5;\nvar units = 'miles';\nvar pointGrid = turf.pointGrid(extent, cellWidth, units);\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.elevation = Math.random() * 10;\n}\nvar breaks = [0, 5, 8.5];\n\nvar isobands = turf.isobands(pointGrid, breaks);\n\n//addToMap\nvar addToMap = [isobands];",
+			"parent": null,
+			"snippet": "// create a grid of points with random z-values in their properties\r\nvar extent = [-70.823364, -33.553984, -69.823364, -32.553984];\r\nvar cellWidth = 5;\r\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\r\nfor (var i = 0; i < pointGrid.features.length; i++) {\r\n    pointGrid.features[i].properties.elevation = Math.random() * 10;\r\n}\r\nvar breaks = [0, 5, 8.5];\r\n\r\nvar isobands = turf.isobands(pointGrid, breaks);\r\n",
+			"example": "// create a grid of points with random z-values in their properties\r\nvar extent = [-70.823364, -33.553984, -69.823364, -32.553984];\r\nvar cellWidth = 5;\r\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\r\nfor (var i = 0; i < pointGrid.features.length; i++) {\r\n    pointGrid.features[i].properties.elevation = Math.random() * 10;\r\n}\r\nvar breaks = [0, 5, 8.5];\r\n\r\nvar isobands = turf.isobands(pointGrid, breaks);\r\n\r\n//addToMap\r\nvar addToMap = [isobands];",
 			"hasMap": true,
+			"npmName": "isobands",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈MultiPolygon〉",
@@ -1672,14 +2033,29 @@
 					"Description": "where to draw contours"
 				},
 				{
-					"Argument": "zProperty",
-					"Type": "string",
-					"Description": "the property name in  points  from which z-values will be pulled"
-				},
-				{
 					"Argument": "options",
 					"Type": "Object",
 					"Description": "options on output"
+				}
+			],
+			"options": [
+				{
+					"Prop": "zProperty",
+					"Type": "string",
+					"Default": "'elevation'",
+					"Description": "the property name in  points  from which z-values will be pulled"
+				},
+				{
+					"Prop": "commonProperties",
+					"Type": "Object",
+					"Default": "{}",
+					"Description": "GeoJSON properties passed to ALL isobands"
+				},
+				{
+					"Prop": "breaksProperties",
+					"Type": "Array 〈Object〉",
+					"Default": "[]",
+					"Description": "GeoJSON properties passed, in order, to the correspondent isoband (order defined by breaks)"
 				}
 			],
 			"throws": []
@@ -1687,9 +2063,11 @@
 		{
 			"name": "isolines",
 			"description": "Takes a grid  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  features with z-values and an array of\nvalue breaks and generates  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Isoline\">isolines</a>.",
-			"snippet": "// create a grid of points with random z-values in their properties\nvar extent = [0, 30, 20, 50];\nvar cellWidth = 100;\nvar units = 'miles';\nvar pointGrid = turf.pointGrid(extent, cellWidth, units);\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\nvar isolines = turf.isolines(pointGrid, breaks, 'temperature');\n\n//addToMap\nvar addToMap = [isolines];",
-			"example": "// create a grid of points with random z-values in their properties\nvar extent = [0, 30, 20, 50];\nvar cellWidth = 100;\nvar units = 'miles';\nvar pointGrid = turf.pointGrid(extent, cellWidth, units);\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\nvar isolines = turf.isolines(pointGrid, breaks, 'temperature');\n\n//addToMap\nvar addToMap = [isolines];",
+			"parent": null,
+			"snippet": "// create a grid of points with random z-values in their properties\r\nvar extent = [0, 30, 20, 50];\r\nvar cellWidth = 100;\r\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\r\nfor (var i = 0; i < pointGrid.features.length; i++) {\r\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\r\n}\r\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\r\n\r\nvar isolines = turf.isolines(pointGrid, breaks, {zProperty: 'temperature'});\r\n",
+			"example": "// create a grid of points with random z-values in their properties\r\nvar extent = [0, 30, 20, 50];\r\nvar cellWidth = 100;\r\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\r\nfor (var i = 0; i < pointGrid.features.length; i++) {\r\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\r\n}\r\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\r\n\r\nvar isolines = turf.isolines(pointGrid, breaks, {zProperty: 'temperature'});\r\n\r\n//addToMap\r\nvar addToMap = [isolines];",
 			"hasMap": true,
+			"npmName": "isolines",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈MultiLineString〉",
@@ -1708,18 +2086,28 @@
 					"Description": "values of  zProperty  where to draw isolines"
 				},
 				{
-					"Argument": "zProperty",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "zProperty",
 					"Type": "string",
+					"Default": "'elevation'",
 					"Description": "the property name in  points  from which z-values will be pulled"
 				},
 				{
-					"Argument": "propertiesToAllIsolines",
+					"Prop": "commonProperties",
 					"Type": "Object",
+					"Default": "{}",
 					"Description": "GeoJSON properties passed to ALL isolines"
 				},
 				{
-					"Argument": "propertiesPerIsoline",
+					"Prop": "breaksProperties",
 					"Type": "Array 〈Object〉",
+					"Default": "[]",
 					"Description": "GeoJSON properties passed, in order, to the correspondent isoline;\nthe breaks array will define the order in which the isolines are created"
 				}
 			],
@@ -1728,9 +2116,11 @@
 		{
 			"name": "kinks",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">linestring</a> ,  <a target=\"_blank\" href=\"MultiLineString\">multi-linestring</a> ,  <a target=\"_blank\" href=\"MultiPolygon\">multi-polygon</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  and returns  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  at all self-intersections.",
-			"snippet": "var poly = turf.polygon([[\n  [-12.034835, 8.901183],\n  [-12.060413, 8.899826],\n  [-12.03638, 8.873199],\n  [-12.059383, 8.871418],\n  [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n\n//addToMap\nvar addToMap = [poly, kinks]",
-			"example": "var poly = turf.polygon([[\n  [-12.034835, 8.901183],\n  [-12.060413, 8.899826],\n  [-12.03638, 8.873199],\n  [-12.059383, 8.871418],\n  [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n\n//addToMap\nvar addToMap = [poly, kinks]",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[\r\n  [-12.034835, 8.901183],\r\n  [-12.060413, 8.899826],\r\n  [-12.03638, 8.873199],\r\n  [-12.059383, 8.871418],\r\n  [-12.034835, 8.901183]\r\n]]);\r\n\r\nvar kinks = turf.kinks(poly);\r\n",
+			"example": "var poly = turf.polygon([[\r\n  [-12.034835, 8.901183],\r\n  [-12.060413, 8.899826],\r\n  [-12.03638, 8.873199],\r\n  [-12.059383, 8.871418],\r\n  [-12.034835, 8.901183]\r\n]]);\r\n\r\nvar kinks = turf.kinks(poly);\r\n\r\n//addToMap\r\nvar addToMap = [poly, kinks]",
 			"hasMap": true,
+			"npmName": "kinks",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -1744,14 +2134,17 @@
 					"Description": "input feature"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "lineArc",
 			"description": "Creates a circular arc, of a circle of the given radius and center point, between bearing1 and bearing2;\n0 bearing is North of center point, positive clockwise.",
-			"snippet": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 47;\n\nvar arc = turf.lineArc(center, radius, bearing1, bearing2);\n\n//addToMap\nvar addToMap = [center, arc]",
-			"example": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 47;\n\nvar arc = turf.lineArc(center, radius, bearing1, bearing2);\n\n//addToMap\nvar addToMap = [center, arc]",
+			"parent": null,
+			"snippet": "var center = turf.point([-75, 40]);\r\nvar radius = 5;\r\nvar bearing1 = 25;\r\nvar bearing2 = 47;\r\n\r\nvar arc = turf.lineArc(center, radius, bearing1, bearing2);\r\n",
+			"example": "var center = turf.point([-75, 40]);\r\nvar radius = 5;\r\nvar bearing1 = 25;\r\nvar bearing2 = 47;\r\n\r\nvar arc = turf.lineArc(center, radius, bearing1, bearing2);\r\n\r\n//addToMap\r\nvar addToMap = [center, arc]",
 			"hasMap": true,
+			"npmName": "line-arc",
 			"returns": [
 				{
 					"type": "Feature 〈LineString〉",
@@ -1780,13 +2173,22 @@
 					"Description": "angle, in decimal degrees, of the second radius of the arc"
 				},
 				{
-					"Argument": "steps",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "steps",
 					"Type": "number",
+					"Default": "64",
 					"Description": "number of steps"
 				},
 				{
-					"Argument": "units",
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "miles, kilometers, degrees, or radians"
 				}
 			],
@@ -1795,9 +2197,11 @@
 		{
 			"name": "lineDistance",
 			"description": "Takes a  <a target=\"_blank\" href=\"GeoJSON\">GeoJSON</a>  and measures its length in the specified units,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> 's distance are ignored.",
-			"snippet": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\nvar length = turf.lineDistance(line, 'miles');\n\n//addToMap\nvar addToMap = [line];\nline.properties.distance = length;",
-			"example": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\nvar length = turf.lineDistance(line, 'miles');\n\n//addToMap\nvar addToMap = [line];\nline.properties.distance = length;",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\r\nvar length = turf.lineDistance(line, {units: 'miles'});\r\n",
+			"example": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\r\nvar length = turf.lineDistance(line, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [line];\r\nline.properties.distance = length;",
 			"hasMap": true,
+			"npmName": "line-distance",
 			"returns": [
 				{
 					"type": "number",
@@ -1807,12 +2211,20 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "GeoJSON",
 					"Description": "GeoJSON to measure"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "kilometers",
 					"Description": "can be degrees, radians, miles, or kilometers"
 				}
 			],
@@ -1821,9 +2233,11 @@
 		{
 			"name": "lineChunk",
 			"description": "Divides a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  into chunks of a specified length.\nIf the line is shorter than the segment length then the original line is returned.",
-			"snippet": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\n\nvar chunk = turf.lineChunk(line, 15, 'miles');\n\n//addToMap\nvar addToMap = [chunk];",
-			"example": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\n\nvar chunk = turf.lineChunk(line, 15, 'miles');\n\n//addToMap\nvar addToMap = [chunk];",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\r\n\r\nvar chunk = turf.lineChunk(line, 15, {units: 'miles'});\r\n",
+			"example": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\r\n\r\nvar chunk = turf.lineChunk(line, 15, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [chunk];",
 			"hasMap": true,
+			"npmName": "line-chunk",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈LineString〉",
@@ -1842,13 +2256,22 @@
 					"Description": "how long to make each segment"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "units can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "reverse",
+					"Prop": "reverse",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "reverses coordinates to start the first chunked segment at the end"
 				}
 			],
@@ -1857,9 +2280,11 @@
 		{
 			"name": "lineIntersect",
 			"description": "Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).",
-			"snippet": "var line1 = turf.lineString([[126, -11], [129, -21]]);\nvar line2 = turf.lineString([[123, -18], [131, -14]]);\nvar intersects = turf.lineIntersect(line1, line2);\n\n//addToMap\nvar addToMap = [line1, line2, intersects]",
-			"example": "var line1 = turf.lineString([[126, -11], [129, -21]]);\nvar line2 = turf.lineString([[123, -18], [131, -14]]);\nvar intersects = turf.lineIntersect(line1, line2);\n\n//addToMap\nvar addToMap = [line1, line2, intersects]",
+			"parent": null,
+			"snippet": "var line1 = turf.lineString([[126, -11], [129, -21]]);\r\nvar line2 = turf.lineString([[123, -18], [131, -14]]);\r\nvar intersects = turf.lineIntersect(line1, line2);\r\n",
+			"example": "var line1 = turf.lineString([[126, -11], [129, -21]]);\r\nvar line2 = turf.lineString([[123, -18], [131, -14]]);\r\nvar intersects = turf.lineIntersect(line1, line2);\r\n\r\n//addToMap\r\nvar addToMap = [line1, line2, intersects]",
 			"hasMap": true,
+			"npmName": "line-intersect",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -1878,14 +2303,17 @@
 					"Description": "any LineString or Polygon"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "lineOffset",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  at offset by the specified distance.",
-			"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]], { \"stroke\": \"#F00\" });\n\nvar offsetLine = turf.lineOffset(line, 2, \"miles\");\n\n//addToMap\nvar addToMap = [offsetLine, line]\noffsetLine.properties.stroke = \"#00F\"",
-			"example": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]], { \"stroke\": \"#F00\" });\n\nvar offsetLine = turf.lineOffset(line, 2, \"miles\");\n\n//addToMap\nvar addToMap = [offsetLine, line]\noffsetLine.properties.stroke = \"#00F\"",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]], { \"stroke\": \"#F00\" });\r\n\r\nvar offsetLine = turf.lineOffset(line, 2, {units: 'miles'});\r\n",
+			"example": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]], { \"stroke\": \"#F00\" });\r\n\r\nvar offsetLine = turf.lineOffset(line, 2, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [offsetLine, line]\r\noffsetLine.properties.stroke = \"#00F\"",
 			"hasMap": true,
+			"npmName": "line-offset",
 			"returns": [
 				{
 					"type": "Feature 〈〉",
@@ -1904,8 +2332,16 @@
 					"Description": "distance to offset the line (can be of negative value)"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "can be degrees, radians, miles, kilometers, inches, yards, meters"
 				}
 			],
@@ -1914,9 +2350,11 @@
 		{
 			"name": "lineOverlap",
 			"description": "Takes any LineString or Polygon and returns the overlapping lines between both features.",
-			"snippet": "var line1 = turf.lineString([[115, -35], [125, -30], [135, -30], [145, -35]]);\nvar line2 = turf.lineString([[115, -25], [125, -30], [135, -30], [145, -25]]);\n\nvar overlapping = turf.lineOverlap(line1, line2);\n\n//addToMap\nvar addToMap = [line1, line2, overlapping]",
-			"example": "var line1 = turf.lineString([[115, -35], [125, -30], [135, -30], [145, -35]]);\nvar line2 = turf.lineString([[115, -25], [125, -30], [135, -30], [145, -25]]);\n\nvar overlapping = turf.lineOverlap(line1, line2);\n\n//addToMap\nvar addToMap = [line1, line2, overlapping]",
+			"parent": null,
+			"snippet": "var line1 = turf.lineString([[115, -35], [125, -30], [135, -30], [145, -35]]);\r\nvar line2 = turf.lineString([[115, -25], [125, -30], [135, -30], [145, -25]]);\r\n\r\nvar overlapping = turf.lineOverlap(line1, line2);\r\n",
+			"example": "var line1 = turf.lineString([[115, -35], [125, -30], [135, -30], [145, -35]]);\r\nvar line2 = turf.lineString([[115, -25], [125, -30], [135, -30], [145, -25]]);\r\n\r\nvar overlapping = turf.lineOverlap(line1, line2);\r\n\r\n//addToMap\r\nvar addToMap = [line1, line2, overlapping]",
 			"hasMap": true,
+			"npmName": "line-overlap",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈LineString〉",
@@ -1933,6 +2371,19 @@
 					"Argument": "line2",
 					"Type": "( Geometry | Feature 〈〉 )",
 					"Description": "any LineString or Polygon"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "tolerance",
+					"Type": "number",
+					"Default": "0",
+					"Description": "Tolerance distance to match overlapping line segments (in kilometers)"
 				}
 			],
 			"throws": []
@@ -1940,9 +2391,11 @@
 		{
 			"name": "lineSegment",
 			"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of 2-vertex  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  segments from a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>.",
-			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\nvar segments = turf.lineSegment(polygon);\n\n//addToMap\nvar addToMap = [polygon, segments]",
-			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\nvar segments = turf.lineSegment(polygon);\n\n//addToMap\nvar addToMap = [polygon, segments]",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\r\nvar segments = turf.lineSegment(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\r\nvar segments = turf.lineSegment(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon, segments]",
 			"hasMap": true,
+			"npmName": "line-segment",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈LineString〉",
@@ -1956,14 +2409,17 @@
 					"Description": "GeoJSON Polygon or LineString"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "lineSliceAlong",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a> , a specified distance along the line to a start  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,\nand a specified  distance along the line to a stop point\nand returns a subsection of the line in-between those points.",
-			"snippet": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\nvar start = 12.5;\nvar stop = 25;\nvar sliced = turf.lineSliceAlong(line, start, stop, 'miles');\n\n//addToMap\nvar addToMap = [line, start, stop, sliced]",
-			"example": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\nvar start = 12.5;\nvar stop = 25;\nvar sliced = turf.lineSliceAlong(line, start, stop, 'miles');\n\n//addToMap\nvar addToMap = [line, start, stop, sliced]",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\r\nvar start = 12.5;\r\nvar stop = 25;\r\nvar sliced = turf.lineSliceAlong(line, start, stop, {units: 'miles'});\r\n",
+			"example": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\r\nvar start = 12.5;\r\nvar stop = 25;\r\nvar sliced = turf.lineSliceAlong(line, start, stop, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [line, start, stop, sliced]",
 			"hasMap": true,
+			"npmName": "line-slice-along",
 			"returns": [
 				{
 					"type": "Feature 〈LineString〉",
@@ -1987,19 +2443,58 @@
 					"Description": "distance along the line to ending point"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "can be degrees, radians, miles, or kilometers"
 				}
 			],
 			"throws": []
 		},
 		{
+			"name": "lineSplit",
+			"description": "Split a LineString by another GeoJSON Feature.",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[120, -25], [145, -25]]);\r\nvar splitter = turf.lineString([[130, -15], [130, -35]]);\r\n\r\nvar split = turf.lineSplit(line, splitter);\r\n",
+			"example": "var line = turf.lineString([[120, -25], [145, -25]]);\r\nvar splitter = turf.lineString([[130, -15], [130, -35]]);\r\n\r\nvar split = turf.lineSplit(line, splitter);\r\n\r\n//addToMap\r\nvar addToMap = [line, splitter]",
+			"hasMap": true,
+			"npmName": "line-split",
+			"returns": [
+				{
+					"type": "FeatureCollection 〈LineString〉",
+					"desc": "Split LineStrings"
+				}
+			],
+			"params": [
+				{
+					"Argument": "line",
+					"Type": "Feature 〈LineString〉",
+					"Description": "LineString Feature to split"
+				},
+				{
+					"Argument": "splitter",
+					"Type": "Feature",
+					"Description": "Feature used to split line"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
 			"name": "lineSlice",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a> , a start  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> , and a stop point\nand returns a subsection of the line in-between those points.\nThe start & stop points don't need to fall exactly on the line.",
-			"snippet": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar start = turf.point([-77.029609, 38.881946]);\nvar stop = turf.point([-77.021884, 38.889563]);\n\nvar sliced = turf.lineSlice(start, stop, line);\n\n//addToMap\nvar addToMap = [start, stop, line]",
-			"example": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar start = turf.point([-77.029609, 38.881946]);\nvar stop = turf.point([-77.021884, 38.889563]);\n\nvar sliced = turf.lineSlice(start, stop, line);\n\n//addToMap\nvar addToMap = [start, stop, line]",
+			"parent": null,
+			"snippet": "var line = turf.lineString([\r\n    [-77.031669, 38.878605],\r\n    [-77.029609, 38.881946],\r\n    [-77.020339, 38.884084],\r\n    [-77.025661, 38.885821],\r\n    [-77.021884, 38.889563],\r\n    [-77.019824, 38.892368]\r\n]);\r\nvar start = turf.point([-77.029609, 38.881946]);\r\nvar stop = turf.point([-77.021884, 38.889563]);\r\n\r\nvar sliced = turf.lineSlice(start, stop, line);\r\n",
+			"example": "var line = turf.lineString([\r\n    [-77.031669, 38.878605],\r\n    [-77.029609, 38.881946],\r\n    [-77.020339, 38.884084],\r\n    [-77.025661, 38.885821],\r\n    [-77.021884, 38.889563],\r\n    [-77.019824, 38.892368]\r\n]);\r\nvar start = turf.point([-77.029609, 38.881946]);\r\nvar stop = turf.point([-77.021884, 38.889563]);\r\n\r\nvar sliced = turf.lineSlice(start, stop, line);\r\n\r\n//addToMap\r\nvar addToMap = [start, stop, line]",
 			"hasMap": true,
+			"npmName": "line-slice",
 			"returns": [
 				{
 					"type": "Feature 〈LineString〉",
@@ -2023,40 +2518,17 @@
 					"Description": "line to slice"
 				}
 			],
-			"throws": []
-		},
-		{
-			"name": "lineSplit",
-			"description": "Split a LineString by another GeoJSON Feature.",
-			"snippet": "var line = turf.lineString([[120, -25], [145, -25]]);\nvar splitter = turf.lineString([[130, -15], [130, -35]]);\n\nvar split = turf.lineSplit(line, splitter);\n\n//addToMap\nvar addToMap = [line, splitter]",
-			"example": "var line = turf.lineString([[120, -25], [145, -25]]);\nvar splitter = turf.lineString([[130, -15], [130, -35]]);\n\nvar split = turf.lineSplit(line, splitter);\n\n//addToMap\nvar addToMap = [line, splitter]",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "FeatureCollection 〈LineString〉",
-					"desc": "Split LineStrings"
-				}
-			],
-			"params": [
-				{
-					"Argument": "line",
-					"Type": "Feature 〈LineString〉",
-					"Description": "LineString Feature to split"
-				},
-				{
-					"Argument": "splitter",
-					"Type": "Feature 〈〉",
-					"Description": "Feature used to split line"
-				}
-			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "lineStringToPolygon",
 			"description": "Converts (Multi)LineString(s) to Polygon(s).",
-			"snippet": "var line = turf.lineString([[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]);\n\nvar polygon = turf.lineStringToPolygon(line);\n\n//addToMap\nvar addToMap = [polygon];",
-			"example": "var line = turf.lineString([[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]);\n\nvar polygon = turf.lineStringToPolygon(line);\n\n//addToMap\nvar addToMap = [polygon];",
+			"parent": null,
+			"snippet": "var line = turf.lineString([[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]);\r\n\r\nvar polygon = turf.lineStringToPolygon(line);\r\n",
+			"example": "var line = turf.lineString([[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]);\r\n\r\nvar polygon = turf.lineStringToPolygon(line);\r\n\r\n//addToMap\r\nvar addToMap = [polygon];",
 			"hasMap": true,
+			"npmName": "line-string-to-polygon",
 			"returns": [
 				{
 					"type": "Feature 〈〉",
@@ -2070,18 +2542,28 @@
 					"Description": "Features to convert"
 				},
 				{
-					"Argument": "properties",
-					"Type": "Optional: Object",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "properties",
+					"Type": "Object",
+					"Default": "{}",
 					"Description": "translates GeoJSON properties to Feature"
 				},
 				{
-					"Argument": "autoComplete",
+					"Prop": "autoComplete",
 					"Type": "boolean",
+					"Default": "true",
 					"Description": "auto complete linestrings (matches first & last coordinates)"
 				},
 				{
-					"Argument": "orderCoords",
+					"Prop": "orderCoords",
 					"Type": "boolean",
+					"Default": "true",
 					"Description": "sorts linestrings to place outer ring at the first position of the coordinates"
 				}
 			],
@@ -2090,9 +2572,11 @@
 		{
 			"name": "mask",
 			"description": "Takes any type of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  and an optional mask and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  exterior ring with holes.",
-			"snippet": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\n\nvar masked = turf.mask(polygon, mask);\n\n//addToMap\nvar addToMap = [masked]",
-			"example": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\n\nvar masked = turf.mask(polygon, mask);\n\n//addToMap\nvar addToMap = [masked]",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\r\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\r\n\r\nvar masked = turf.mask(polygon, mask);\r\n",
+			"example": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\r\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\r\n\r\nvar masked = turf.mask(polygon, mask);\r\n\r\n//addToMap\r\nvar addToMap = [masked]",
 			"hasMap": true,
+			"npmName": "mask",
 			"returns": [
 				{
 					"type": "Feature 〈Polygon〉",
@@ -2111,35 +2595,51 @@
 					"Description": "GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used)"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "coordEachCallback",
 			"description": "Callback for coordEach",
+			"parent": "meta",
 			"snippet": false,
 			"example": false,
 			"hasMap": false,
+			"npmName": "meta",
 			"returns": [],
 			"params": [
 				{
 					"Argument": "currentCoord",
 					"Type": "Array 〈number〉",
-					"Description": "The current coordinates being processed."
+					"Description": "The current coordinate being processed."
 				},
 				{
 					"Argument": "coordIndex",
 					"Type": "number",
-					"Description": "The index of the current element being processed in the\narray.Starts at index 0, if an initialValue is provided, and at index 1 otherwise."
+					"Description": "The current index of the coordinate being processed.\nStarts at index 0."
+				},
+				{
+					"Argument": "featureIndex",
+					"Type": "number",
+					"Description": "The current index of the feature being processed."
+				},
+				{
+					"Argument": "featureSubIndex",
+					"Type": "number",
+					"Description": "The current subIndex of the feature being processed."
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "midpoint",
 			"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and returns a point midway between them.\nThe midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.",
-			"snippet": "var point1 = turf.point([144.834823, -37.771257]);\nvar point2 = turf.point([145.14244, -37.830937]);\n\nvar midpoint = turf.midpoint(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2, midpoint];\nmidpoint.properties['marker-color'] = '#f00';",
-			"example": "var point1 = turf.point([144.834823, -37.771257]);\nvar point2 = turf.point([145.14244, -37.830937]);\n\nvar midpoint = turf.midpoint(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2, midpoint];\nmidpoint.properties['marker-color'] = '#f00';",
+			"parent": null,
+			"snippet": "var point1 = turf.point([144.834823, -37.771257]);\r\nvar point2 = turf.point([145.14244, -37.830937]);\r\n\r\nvar midpoint = turf.midpoint(point1, point2);\r\n",
+			"example": "var point1 = turf.point([144.834823, -37.771257]);\r\nvar point2 = turf.point([145.14244, -37.830937]);\r\n\r\nvar midpoint = turf.midpoint(point1, point2);\r\n\r\n//addToMap\r\nvar addToMap = [point1, point2, midpoint];\r\nmidpoint.properties['marker-color'] = '#f00';",
 			"hasMap": true,
+			"npmName": "midpoint",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -2158,14 +2658,58 @@
 					"Description": "second point"
 				}
 			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "nearestPointToLine",
+			"description": "Returns the closest  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a> , of a  <a target=\"_blank\" href=\"FeatureCollection\">collection</a>  of points, to a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>.\nThe returned point has a  dist  property indicating its distance to the line.",
+			"parent": null,
+			"snippet": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0.5, 0.5]);\r\nvar points = turf.featureCollection([pt1, pt2]);\r\nvar line = turf.lineString([[1,1], [-1,1]]);\r\n\r\nvar nearest = turf.nearestPointToLine(points, line);\r\n",
+			"example": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0.5, 0.5]);\r\nvar points = turf.featureCollection([pt1, pt2]);\r\nvar line = turf.lineString([[1,1], [-1,1]]);\r\n\r\nvar nearest = turf.nearestPointToLine(points, line);\r\n\r\n//addToMap\r\nvar addToMap = [nearest, line];",
+			"hasMap": true,
+			"npmName": "nearest-point-to-line",
+			"returns": [
+				{
+					"type": "Feature 〈Point〉",
+					"desc": "the closest point"
+				}
+			],
+			"params": [
+				{
+					"Argument": "points",
+					"Type": "( FeatureCollection | GeometryCollection 〈Point〉 )",
+					"Description": "Point Collection"
+				},
+				{
+					"Argument": "line",
+					"Type": "( Feature | Geometry 〈LineString〉 )",
+					"Description": "Line Feature"
+				},
+				{
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
+					"Type": "string",
+					"Default": "kilometers",
+					"Description": "unit of the output distance property, can be degrees, radians, miles, or kilometer"
+				}
+			],
 			"throws": []
 		},
 		{
 			"name": "nearest",
 			"description": "Takes a reference  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>  and a FeatureCollection of Features\nwith Point geometries and returns the\npoint from the FeatureCollection closest to the reference. This calculation\nis geodesic.",
-			"snippet": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\nvar points = turf.featureCollection([\n    turf.point([28.973865, 41.011122]),\n    turf.point([28.948459, 41.024204]),\n    turf.point([28.938674, 41.013324])\n]);\n\nvar nearest = turf.nearest(targetPoint, points);\n\n//addToMap\nvar addToMap = [targetPoint, points, nearest];\nnearest.properties['marker-color'] = '#F00';",
-			"example": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\nvar points = turf.featureCollection([\n    turf.point([28.973865, 41.011122]),\n    turf.point([28.948459, 41.024204]),\n    turf.point([28.938674, 41.013324])\n]);\n\nvar nearest = turf.nearest(targetPoint, points);\n\n//addToMap\nvar addToMap = [targetPoint, points, nearest];\nnearest.properties['marker-color'] = '#F00';",
+			"parent": null,
+			"snippet": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\r\nvar points = turf.featureCollection([\r\n    turf.point([28.973865, 41.011122]),\r\n    turf.point([28.948459, 41.024204]),\r\n    turf.point([28.938674, 41.013324])\r\n]);\r\n\r\nvar nearest = turf.nearest(targetPoint, points);\r\n",
+			"example": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\r\nvar points = turf.featureCollection([\r\n    turf.point([28.973865, 41.011122]),\r\n    turf.point([28.948459, 41.024204]),\r\n    turf.point([28.938674, 41.013324])\r\n]);\r\n\r\nvar nearest = turf.nearest(targetPoint, points);\r\n\r\n//addToMap\r\nvar addToMap = [targetPoint, points, nearest];\r\nnearest.properties['marker-color'] = '#F00';",
 			"hasMap": true,
+			"npmName": "nearest",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -2184,14 +2728,17 @@
 					"Description": "against input point set"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "planepoint",
 			"description": "Takes a triangular plane as a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a> \nand a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  within that triangle and returns the z-value\nat that point. The Polygon should have properties  a ,  b , and  c \nthat define the values at its three corners. Alternatively, the z-values\nof each triangle point can be provided by their respective 3rd coordinate\nif their values are not provided as properties.",
-			"snippet": "var point = turf.point([-75.3221, 39.529]);\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\nvar triangle = turf.polygon([[\n  [-75.1221, 39.57],\n  [-75.58, 39.18],\n  [-75.97, 39.86],\n  [-75.1221, 39.57]\n]], {\n  \"a\": 11,\n  \"b\": 122,\n  \"c\": 44\n});\n\nvar zValue = turf.planepoint(point, triangle);\npoint.properties.zValue = zValue;\n\n//addToMap\nvar addToMap = [triangle, point];",
-			"example": "var point = turf.point([-75.3221, 39.529]);\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\nvar triangle = turf.polygon([[\n  [-75.1221, 39.57],\n  [-75.58, 39.18],\n  [-75.97, 39.86],\n  [-75.1221, 39.57]\n]], {\n  \"a\": 11,\n  \"b\": 122,\n  \"c\": 44\n});\n\nvar zValue = turf.planepoint(point, triangle);\npoint.properties.zValue = zValue;\n\n//addToMap\nvar addToMap = [triangle, point];",
+			"parent": null,
+			"snippet": "var point = turf.point([-75.3221, 39.529]);\r\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\r\nvar triangle = turf.polygon([[\r\n  [-75.1221, 39.57],\r\n  [-75.58, 39.18],\r\n  [-75.97, 39.86],\r\n  [-75.1221, 39.57]\r\n]], {\r\n  \"a\": 11,\r\n  \"b\": 122,\r\n  \"c\": 44\r\n});\r\n\r\nvar zValue = turf.planepoint(point, triangle);\r\npoint.properties.zValue = zValue;\r\n",
+			"example": "var point = turf.point([-75.3221, 39.529]);\r\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\r\nvar triangle = turf.polygon([[\r\n  [-75.1221, 39.57],\r\n  [-75.58, 39.18],\r\n  [-75.97, 39.86],\r\n  [-75.1221, 39.57]\r\n]], {\r\n  \"a\": 11,\r\n  \"b\": 122,\r\n  \"c\": 44\r\n});\r\n\r\nvar zValue = turf.planepoint(point, triangle);\r\npoint.properties.zValue = zValue;\r\n\r\n//addToMap\r\nvar addToMap = [triangle, point];",
 			"hasMap": true,
+			"npmName": "planepoint",
 			"returns": [
 				{
 					"type": "number",
@@ -2210,14 +2757,17 @@
 					"Description": "a Polygon feature with three vertices"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "pointGrid",
 			"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  grid from a bounding box,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>.",
-			"snippet": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellSide = 3;\nvar units = 'miles';\n\nvar grid = turf.pointGrid(extent, cellSide, units);\n\n//addToMap\nvar addToMap = [grid];",
-			"example": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellSide = 3;\nvar units = 'miles';\n\nvar grid = turf.pointGrid(extent, cellSide, units);\n\n//addToMap\nvar addToMap = [grid];",
+			"parent": null,
+			"snippet": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\r\nvar cellSide = 3;\r\n\r\nvar grid = turf.pointGrid(extent, cellSide, {units: 'miles'});\r\n",
+			"example": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\r\nvar cellSide = 3;\r\n\r\nvar grid = turf.pointGrid(extent, cellSide, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [grid];",
 			"hasMap": true,
+			"npmName": "point-grid",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -2227,7 +2777,7 @@
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "( Array 〈number〉 | FeatureCollection | Feature 〈any〉 )",
+					"Type": "( BBox | GeoJSON )",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				},
 				{
@@ -2236,19 +2786,29 @@
 					"Description": "the distance between points"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "\"kilometers\"",
 					"Description": "used in calculating cellSide, can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "centered",
-					"Type": "boolean",
-					"Description": "adjust points position to center the grid into bbox.  This parameter is going to be removed  in the next major release, having the output always centered into bbox."
+					"Prop": "bboxIsMask",
+					"Type": "number",
+					"Default": "false",
+					"Description": "if true, and bbox is a Polygon or MultiPolygon, the grid Point will be created"
 				},
 				{
-					"Argument": "bboxIsMask",
-					"Type": "boolean",
-					"Description": "if true, and bbox is a Polygon or MultiPolygon, the grid Point will be created\nonly if inside the bbox Polygon(s)"
+					"Prop": "properties",
+					"Type": "Object",
+					"Default": "{}",
+					"Description": "passed to each point of the grid"
 				}
 			],
 			"throws": []
@@ -2256,9 +2816,11 @@
 		{
 			"name": "pointOnLine",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  and calculates the closest Point on the (Multi)LineString.",
-			"snippet": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar pt = turf.point([-77.037076, 38.884017]);\n\nvar snapped = turf.pointOnLine(line, pt, 'miles');\n\n//addToMap\nvar addToMap = [line, pt, snapped];\nsnapped.properties['marker-color'] = '#00f';",
-			"example": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar pt = turf.point([-77.037076, 38.884017]);\n\nvar snapped = turf.pointOnLine(line, pt, 'miles');\n\n//addToMap\nvar addToMap = [line, pt, snapped];\nsnapped.properties['marker-color'] = '#00f';",
+			"parent": null,
+			"snippet": "var line = turf.lineString([\r\n    [-77.031669, 38.878605],\r\n    [-77.029609, 38.881946],\r\n    [-77.020339, 38.884084],\r\n    [-77.025661, 38.885821],\r\n    [-77.021884, 38.889563],\r\n    [-77.019824, 38.892368]\r\n]);\r\nvar pt = turf.point([-77.037076, 38.884017]);\r\n\r\nvar snapped = turf.pointOnLine(line, pt, {units: 'miles'});\r\n",
+			"example": "var line = turf.lineString([\r\n    [-77.031669, 38.878605],\r\n    [-77.029609, 38.881946],\r\n    [-77.020339, 38.884084],\r\n    [-77.025661, 38.885821],\r\n    [-77.021884, 38.889563],\r\n    [-77.019824, 38.892368]\r\n]);\r\nvar pt = turf.point([-77.037076, 38.884017]);\r\n\r\nvar snapped = turf.pointOnLine(line, pt, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [line, pt, snapped];\r\nsnapped.properties['marker-color'] = '#00f';",
 			"hasMap": true,
+			"npmName": "point-on-line",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -2277,8 +2839,16 @@
 					"Description": "point to snap from"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "can be degrees, radians, miles, or kilometers"
 				}
 			],
@@ -2287,9 +2857,11 @@
 		{
 			"name": "pointOnSurface",
 			"description": "Takes a feature and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  guaranteed to be on the surface of the feature.",
-			"snippet": "// create a random polygon\nvar polygon = turf.random('polygon');\n\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\n//addToMap\nvar addToMap = [polygon, pointOnPolygon];",
-			"example": "// create a random polygon\nvar polygon = turf.random('polygon');\n\nvar pointOnPolygon = turf.pointOnSurface(polygon);\n\n//addToMap\nvar addToMap = [polygon, pointOnPolygon];",
+			"parent": null,
+			"snippet": "// create a random polygon\r\nvar polygon = turf.randomPolygon();\r\n\r\nvar pointOnPolygon = turf.pointOnSurface(polygon);\r\n",
+			"example": "// create a random polygon\r\nvar polygon = turf.randomPolygon();\r\n\r\nvar pointOnPolygon = turf.pointOnSurface(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [polygon, pointOnPolygon];",
 			"hasMap": true,
+			"npmName": "point-on-surface",
 			"returns": [
 				{
 					"type": "Feature",
@@ -2303,14 +2875,64 @@
 					"Description": "any feature or set of features"
 				}
 			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"name": "pointToLineDistance",
+			"description": "Returns the minimum distance between a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a> , being the distance from a line the\nminimum distance between the point and any segment of the  LineString.",
+			"parent": null,
+			"snippet": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[1, 1],[-1, 1]]);\r\n\r\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\r\n//=69.11854715938406",
+			"example": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[1, 1],[-1, 1]]);\r\n\r\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\r\n//=69.11854715938406",
+			"hasMap": false,
+			"npmName": "point-to-line-distance",
+			"returns": [
+				{
+					"type": "number",
+					"desc": "distance between point and line"
+				}
+			],
+			"params": [
+				{
+					"Argument": "pt",
+					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Description": "Feature or Geometry"
+				},
+				{
+					"Argument": "line",
+					"Type": "( Geometry | Feature 〈LineString〉 | Array 〈〉 )",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
+					"Type": "string",
+					"Default": "'kilometers'",
+					"Description": "can be degrees, radians, miles, or kilometers"
+				},
+				{
+					"Prop": "mercator",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "if distance should be on Mercator or WGS84 projection"
+				}
+			],
 			"throws": []
 		},
 		{
 			"name": "polygonTangents",
 			"description": "Finds the tangents of a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>  from a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>.",
-			"snippet": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar point = turf.point([61, 5]);\n\nvar tangents = turf.polygonTangents(point, polygon)\n\n//addToMap\nvar addToMap = [tangents, point, polygon];",
-			"example": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar point = turf.point([61, 5]);\n\nvar tangents = turf.polygonTangents(point, polygon)\n\n//addToMap\nvar addToMap = [tangents, point, polygon];",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\r\nvar point = turf.point([61, 5]);\r\n\r\nvar tangents = turf.polygonTangents(point, polygon)\r\n",
+			"example": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\r\nvar point = turf.point([61, 5]);\r\n\r\nvar tangents = turf.polygonTangents(point, polygon)\r\n\r\n//addToMap\r\nvar addToMap = [tangents, point, polygon];",
 			"hasMap": true,
+			"npmName": "polygon-tangents",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -2319,7 +2941,7 @@
 			],
 			"params": [
 				{
-					"Argument": "point",
+					"Argument": "pt",
 					"Type": "Feature 〈Point〉",
 					"Description": "to calculate the tangent points from"
 				},
@@ -2329,14 +2951,17 @@
 					"Description": "to get tangents from"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "polygonToLineString",
 			"description": "Converts a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  to  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  to a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>.",
-			"snippet": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\n\nvar line = turf.polygonToLineString(poly);\n\n//addToMap\nvar addToMap = [line];",
-			"example": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\n\nvar line = turf.polygonToLineString(poly);\n\n//addToMap\nvar addToMap = [line];",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\r\n\r\nvar line = turf.polygonToLineString(poly);\r\n",
+			"example": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\r\n\r\nvar line = turf.polygonToLineString(poly);\r\n\r\n//addToMap\r\nvar addToMap = [line];",
 			"hasMap": true,
+			"npmName": "polygon-to-line-string",
 			"returns": [
 				{
 					"type": "( FeatureCollection | Feature 〈〉 )",
@@ -2350,8 +2975,16 @@
 					"Description": "Feature to convert"
 				},
 				{
-					"Argument": "properties",
-					"Type": "Optional: Object",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "properties",
+					"Type": "Object",
+					"Default": "{}",
 					"Description": "translates GeoJSON properties to Feature"
 				}
 			],
@@ -2360,9 +2993,11 @@
 		{
 			"name": "polygonize",
 			"description": "Polygonizes  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString(s)</a>  into  <a target=\"_blank\" href=\"Polygons\">Polygons</a>.",
+			"parent": null,
 			"snippet": false,
 			"example": false,
 			"hasMap": false,
+			"npmName": "polygonize",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -2376,6 +3011,7 @@
 					"Description": "Lines in order to polygonize"
 				}
 			],
+			"options": null,
 			"throws": [
 				{
 					"type": "Error",
@@ -2384,73 +3020,73 @@
 			]
 		},
 		{
-			"name": "random",
-			"description": "Generates random  <a target=\"_blank\" href=\"GeoJSON\">GeoJSON</a>  data, including  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Points</a>  and  <a target=\"_blank\" href=\"Polygon\">Polygons</a> , for testing\nand experimentation.",
-			"snippet": "var points = turf.random('points', 100, {\n  bbox: [-70, 40, -60, 60]\n});\n\nvar polygons = turf.random('polygons', 4, {\n  bbox: [-70, 40, -60, 60]\n});\n\n//addToMap\nvar addToMap = [points, polygons]",
-			"example": "var points = turf.random('points', 100, {\n  bbox: [-70, 40, -60, 60]\n});\n\nvar polygons = turf.random('polygons', 4, {\n  bbox: [-70, 40, -60, 60]\n});\n\n//addToMap\nvar addToMap = [points, polygons]",
+			"name": "toMercator",
+			"description": "Converts a WGS84 GeoJSON object into Mercator (EPSG:900913) projection",
+			"parent": null,
+			"snippet": "var pt = turf.point([-71,41]);\r\nvar converted = turf.toMercator(pt);\r\n",
+			"example": "var pt = turf.point([-71,41]);\r\nvar converted = turf.toMercator(pt);\r\n\r\n//addToMap\r\nvar addToMap = [pt, converted];",
 			"hasMap": true,
+			"npmName": "to-mercator",
 			"returns": [
 				{
-					"type": "FeatureCollection",
-					"desc": "generated random features"
-				}
-			],
-			"params": [
-				{
-					"Argument": "type",
-					"Type": "string",
-					"Description": "type of features desired: 'points' or 'polygons'"
-				},
-				{
-					"Argument": "count",
-					"Type": "number",
-					"Description": "how many geometries should be generated."
-				},
-				{
-					"Argument": "options",
-					"Type": "Object",
-					"Description": "options relevant to the feature desired. Can include:"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "rewind",
-			"description": "Rewind  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>  outer ring counterclockwise and inner rings clockwise (Uses  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Shoelace_formula\">Shoelace Formula</a> ).",
-			"snippet": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\n\nvar rewind = turf.rewind(polygon);\n\n//addToMap\nvar addToMap = [rewind];",
-			"example": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\n\nvar rewind = turf.rewind(polygon);\n\n//addToMap\nvar addToMap = [rewind];",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "( FeatureCollection | Geometry | Feature 〈〉 )",
-					"desc": "rewind Polygon"
+					"type": "GeoJSON",
+					"desc": "true/false"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature 〈〉 )",
-					"Description": "input GeoJSON Polygon"
+					"Type": "( GeoJSON | Position )",
+					"Description": "WGS84 GeoJSON object"
 				},
 				{
-					"Argument": "reverse",
-					"Type": "Boolean",
-					"Description": "enable reverse winding"
-				},
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
 				{
-					"Argument": "mutate",
+					"Prop": "mutate",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
 			"throws": []
 		},
 		{
+			"name": "randomPosition",
+			"description": "Random Position",
+			"parent": null,
+			"snippet": "var position = turf.randomPosition([-180, -90, 180, 90])\r\n//=position",
+			"example": "var position = turf.randomPosition([-180, -90, 180, 90])\r\n//=position",
+			"hasMap": false,
+			"npmName": "random-position",
+			"returns": [
+				{
+					"type": "Array 〈number〉",
+					"desc": "Position  longitude, latitude"
+				}
+			],
+			"params": [
+				{
+					"Argument": "bbox",
+					"Type": "Array 〈number〉",
+					"Description": "a bounding box inside of which positions are placed."
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
 			"name": "rhumbBearing",
 			"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and finds the bearing angle between them along a Rhumb line\ni.e. the angle measured in degrees start the north line (0 degrees)",
-			"snippet": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\n\nvar bearing = turf.rhumbBearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2]\npoint1.properties.bearing = bearing\npoint2.properties.bearing = bearing",
-			"example": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\n\nvar bearing = turf.rhumbBearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2]\npoint1.properties.bearing = bearing\npoint2.properties.bearing = bearing",
+			"parent": null,
+			"snippet": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\r\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\r\n\r\nvar bearing = turf.rhumbBearing(point1, point2);\r\n",
+			"example": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\r\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\r\n\r\nvar bearing = turf.rhumbBearing(point1, point2);\r\n\r\n//addToMap\r\nvar addToMap = [point1, point2];\r\npoint1.properties.bearing = bearing;\r\npoint2.properties.bearing = bearing;",
 			"hasMap": true,
+			"npmName": "rhumb-bearing",
 			"returns": [
 				{
 					"type": "number",
@@ -2460,28 +3096,80 @@
 			"params": [
 				{
 					"Argument": "start",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
 					"Description": "starting Point"
 				},
 				{
 					"Argument": "end",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
 					"Description": "ending Point"
 				},
 				{
-					"Argument": "final",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "final",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "calculates the final bearing if true"
 				}
 			],
 			"throws": []
 		},
 		{
-			"name": "rhumbDestination",
-			"description": "Returns the destination  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  having travelled the given distance along a Rhumb line from the\norigin Point with the (constant) given bearing.",
-			"snippet": "var point = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.rhumbDestination(point, distance, bearing, units);\n\n//addToMap\nvar addToMap = [point, destination]\ndestination.properties['marker-color'] = '#00F';",
-			"example": "var point = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\nvar distance = 50;\nvar bearing = 90;\nvar units = 'miles';\n\nvar destination = turf.rhumbDestination(point, distance, bearing, units);\n\n//addToMap\nvar addToMap = [point, destination]\ndestination.properties['marker-color'] = '#00F';",
+			"name": "rewind",
+			"description": "Rewind  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>  outer ring counterclockwise and inner rings clockwise (Uses  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Shoelace_formula\">Shoelace Formula</a> ).",
+			"parent": null,
+			"snippet": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\r\n\r\nvar rewind = turf.rewind(polygon);\r\n",
+			"example": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\r\n\r\nvar rewind = turf.rewind(polygon);\r\n\r\n//addToMap\r\nvar addToMap = [rewind];",
 			"hasMap": true,
+			"npmName": "rewind",
+			"returns": [
+				{
+					"type": "GeoJSON",
+					"desc": "rewind Polygon"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "input GeoJSON Polygon"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "reverse",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "enable reverse winding"
+				},
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "rhumbDestination",
+			"description": "Returns the destination  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  having travelled the given distance along a Rhumb line from the\norigin Point with the (varant) given bearing.",
+			"parent": null,
+			"snippet": "var pt = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\r\nvar distance = 50;\r\nvar bearing = 90;\r\nvar options = {units: 'miles'};\r\n\r\nvar destination = turf.rhumbDestination(pt, distance, bearing, options);\r\n",
+			"example": "var pt = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\r\nvar distance = 50;\r\nvar bearing = 90;\r\nvar options = {units: 'miles'};\r\n\r\nvar destination = turf.rhumbDestination(pt, distance, bearing, options);\r\n\r\n//addToMap\r\nvar addToMap = [pt, destination]\r\ndestination.properties['marker-color'] = '#00F';",
+			"hasMap": true,
+			"npmName": "rhumb-destination",
 			"returns": [
 				{
 					"type": "Feature 〈Point〉",
@@ -2491,7 +3179,7 @@
 			"params": [
 				{
 					"Argument": "origin",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
 					"Description": "starting point"
 				},
 				{
@@ -2502,12 +3190,26 @@
 				{
 					"Argument": "bearing",
 					"Type": "number",
-					"Description": "constant bearing angle ranging from -180 to 180 degrees from north"
+					"Description": "varant bearing angle ranging from -180 to 180 degrees from north"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
-					"Description": "miles, kilometers, degrees, or radians"
+					"Default": "'kilometers'",
+					"Description": "can be degrees, radians, miles, or kilometers"
+				},
+				{
+					"Prop": "properties",
+					"Type": "Object",
+					"Default": "{}",
+					"Description": "translate properties to destination point"
 				}
 			],
 			"throws": []
@@ -2515,9 +3217,11 @@
 		{
 			"name": "rhumbDistance",
 			"description": "Calculates the distance along a rhumb line between two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  in degrees, radians,\nmiles, or kilometers.",
-			"snippet": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\n\nvar distance = turf.rhumbDistance(from, to, \"miles\");\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
-			"example": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\n\nvar distance = turf.rhumbDistance(from, to, \"miles\");\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
+			"parent": null,
+			"snippet": "var from = turf.point([-75.343, 39.984]);\r\nvar to = turf.point([-75.534, 39.123]);\r\nvar options = {units: 'miles'};\r\n\r\nvar distance = turf.rhumbDistance(from, to, options);\r\n",
+			"example": "var from = turf.point([-75.343, 39.984]);\r\nvar to = turf.point([-75.534, 39.123]);\r\nvar options = {units: 'miles'};\r\n\r\nvar distance = turf.rhumbDistance(from, to, options);\r\n\r\n//addToMap\r\nvar addToMap = [from, to];\r\nfrom.properties.distance = distance;\r\nto.properties.distance = distance;",
 			"hasMap": true,
+			"npmName": "rhumb-distance",
 			"returns": [
 				{
 					"type": "number",
@@ -2527,17 +3231,25 @@
 			"params": [
 				{
 					"Argument": "from",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
 					"Description": "origin point"
 				},
 				{
 					"Argument": "to",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
 					"Description": "destination point"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "\"kilometers\"",
 					"Description": "can be degrees, radians, miles, or kilometers"
 				}
 			],
@@ -2546,9 +3258,11 @@
 		{
 			"name": "sample",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns a FeatureCollection with given number of  <a target=\"_blank\" href=\"Feature\">features</a>  at random.",
-			"snippet": "var points = turf.random('points', 1000);\n\nvar sample = turf.sample(points, 10);\n\n//addToMap\nvar addToMap = [points, sample]\nturf.featureEach(sample, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
-			"example": "var points = turf.random('points', 1000);\n\nvar sample = turf.sample(points, 10);\n\n//addToMap\nvar addToMap = [points, sample]\nturf.featureEach(sample, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
+			"parent": null,
+			"snippet": "var points = turf.randomPoint(100, {bbox: [-80, 30, -60, 60]});\r\n\r\nvar sample = turf.sample(points, 5);\r\n",
+			"example": "var points = turf.randomPoint(100, {bbox: [-80, 30, -60, 60]});\r\n\r\nvar sample = turf.sample(points, 5);\r\n\r\n//addToMap\r\nvar addToMap = [points, sample]\r\nturf.featureEach(sample, function (currentFeature) {\r\n  currentFeature.properties['marker-size'] = 'large';\r\n  currentFeature.properties['marker-color'] = '#000';\r\n});",
 			"hasMap": true,
+			"npmName": "sample",
 			"returns": [
 				{
 					"type": "FeatureCollection",
@@ -2567,14 +3281,17 @@
 					"Description": "number of features to select"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "sector",
 			"description": "Creates a circular sector of a circle of given radius and center  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,\nbetween (clockwise) bearing1 and bearing2; 0 bearing is North of center point, positive clockwise.",
-			"snippet": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 45;\n\nvar sector = turf.sector(center, radius, bearing1, bearing2);\n\n//addToMap\nvar addToMap = [center, sector];",
-			"example": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 45;\n\nvar sector = turf.sector(center, radius, bearing1, bearing2);\n\n//addToMap\nvar addToMap = [center, sector];",
+			"parent": null,
+			"snippet": "var center = turf.point([-75, 40]);\r\nvar radius = 5;\r\nvar bearing1 = 25;\r\nvar bearing2 = 45;\r\n\r\nvar sector = turf.sector(center, radius, bearing1, bearing2);\r\n",
+			"example": "var center = turf.point([-75, 40]);\r\nvar radius = 5;\r\nvar bearing1 = 25;\r\nvar bearing2 = 45;\r\n\r\nvar sector = turf.sector(center, radius, bearing1, bearing2);\r\n\r\n//addToMap\r\nvar addToMap = [center, sector];",
 			"hasMap": true,
+			"npmName": "sector",
 			"returns": [
 				{
 					"type": "Feature 〈Polygon〉",
@@ -2603,45 +3320,71 @@
 					"Description": "angle, in decimal degrees, of the second radius of the sector"
 				},
 				{
-					"Argument": "steps",
-					"Type": "number",
-					"Description": "number of steps"
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
+					"Type": "string",
+					"Default": "'kilometers'",
+					"Description": "miles, kilometers, degrees, or radians"
 				},
 				{
-					"Argument": "units",
-					"Type": "string",
-					"Description": "miles, kilometers, degrees, or radians"
+					"Prop": "steps",
+					"Type": "number",
+					"Default": "64",
+					"Description": "number of steps"
 				}
 			],
 			"throws": []
 		},
 		{
 			"name": "simplify",
-			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  and returns a simplified version. Internally uses  <a target=\"_blank\" href=\"http://mourner.github.io/simplify-js/\">simplify-js</a>  to perform simplification.",
-			"snippet": "var feature = turf.polygon([[\n  [-70.603637, -33.399918],\n  [-70.614624, -33.395332],\n  [-70.639343, -33.392466],\n  [-70.659942, -33.394759],\n  [-70.683975, -33.404504],\n  [-70.697021, -33.419406],\n  [-70.701141, -33.434306],\n  [-70.700454, -33.446339],\n  [-70.694274, -33.458369],\n  [-70.682601, -33.465816],\n  [-70.668869, -33.472117],\n  [-70.646209, -33.473835],\n  [-70.624923, -33.472117],\n  [-70.609817, -33.468107],\n  [-70.595397, -33.458369],\n  [-70.587158, -33.442901],\n  [-70.587158, -33.426283],\n  [-70.590591, -33.414248],\n  [-70.594711, -33.406224],\n  [-70.603637, -33.399918]\n]]);\nvar tolerance = 0.01;\n\nvar simplified = turf.simplify(feature, tolerance, false);\n\n//addToMap\nvar addToMap = [feature, simplified]",
-			"example": "var feature = turf.polygon([[\n  [-70.603637, -33.399918],\n  [-70.614624, -33.395332],\n  [-70.639343, -33.392466],\n  [-70.659942, -33.394759],\n  [-70.683975, -33.404504],\n  [-70.697021, -33.419406],\n  [-70.701141, -33.434306],\n  [-70.700454, -33.446339],\n  [-70.694274, -33.458369],\n  [-70.682601, -33.465816],\n  [-70.668869, -33.472117],\n  [-70.646209, -33.473835],\n  [-70.624923, -33.472117],\n  [-70.609817, -33.468107],\n  [-70.595397, -33.458369],\n  [-70.587158, -33.442901],\n  [-70.587158, -33.426283],\n  [-70.590591, -33.414248],\n  [-70.594711, -33.406224],\n  [-70.603637, -33.399918]\n]]);\nvar tolerance = 0.01;\n\nvar simplified = turf.simplify(feature, tolerance, false);\n\n//addToMap\nvar addToMap = [feature, simplified]",
+			"description": "Takes a  <a target=\"_blank\" href=\"GeoJSON\">GeoJSON</a>  object and returns a simplified version. Internally uses\n <a target=\"_blank\" href=\"http://mourner.github.io/simplify-js/\">simplify-js</a>  to perform simplification.",
+			"parent": null,
+			"snippet": "var geojson = turf.polygon([[\r\n  [-70.603637, -33.399918],\r\n  [-70.614624, -33.395332],\r\n  [-70.639343, -33.392466],\r\n  [-70.659942, -33.394759],\r\n  [-70.683975, -33.404504],\r\n  [-70.697021, -33.419406],\r\n  [-70.701141, -33.434306],\r\n  [-70.700454, -33.446339],\r\n  [-70.694274, -33.458369],\r\n  [-70.682601, -33.465816],\r\n  [-70.668869, -33.472117],\r\n  [-70.646209, -33.473835],\r\n  [-70.624923, -33.472117],\r\n  [-70.609817, -33.468107],\r\n  [-70.595397, -33.458369],\r\n  [-70.587158, -33.442901],\r\n  [-70.587158, -33.426283],\r\n  [-70.590591, -33.414248],\r\n  [-70.594711, -33.406224],\r\n  [-70.603637, -33.399918]\r\n]]);\r\nvar options = {tolerance: 0.01, highQuality: false};\r\nvar simplified = turf.simplify(geojson, options);\r\n",
+			"example": "var geojson = turf.polygon([[\r\n  [-70.603637, -33.399918],\r\n  [-70.614624, -33.395332],\r\n  [-70.639343, -33.392466],\r\n  [-70.659942, -33.394759],\r\n  [-70.683975, -33.404504],\r\n  [-70.697021, -33.419406],\r\n  [-70.701141, -33.434306],\r\n  [-70.700454, -33.446339],\r\n  [-70.694274, -33.458369],\r\n  [-70.682601, -33.465816],\r\n  [-70.668869, -33.472117],\r\n  [-70.646209, -33.473835],\r\n  [-70.624923, -33.472117],\r\n  [-70.609817, -33.468107],\r\n  [-70.595397, -33.458369],\r\n  [-70.587158, -33.442901],\r\n  [-70.587158, -33.426283],\r\n  [-70.590591, -33.414248],\r\n  [-70.594711, -33.406224],\r\n  [-70.603637, -33.399918]\r\n]]);\r\nvar options = {tolerance: 0.01, highQuality: false};\r\nvar simplified = turf.simplify(geojson, options);\r\n\r\n//addToMap\r\nvar addToMap = [geojson, simplified]",
 			"hasMap": true,
+			"npmName": "simplify",
 			"returns": [
 				{
-					"type": "( Feature 〈〉 | FeatureCollection | GeometryCollection )",
-					"desc": "a simplified feature"
+					"type": "GeoJSON",
+					"desc": "a simplified GeoJSON"
 				}
 			],
 			"params": [
 				{
-					"Argument": "feature",
-					"Type": "( Feature 〈〉 | FeatureCollection | GeometryCollection )",
-					"Description": "feature to be simplified"
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "object to be simplified"
 				},
 				{
-					"Argument": "tolerance",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "tolerance",
 					"Type": "number",
+					"Default": "1",
 					"Description": "simplification tolerance"
 				},
 				{
-					"Argument": "highQuality",
+					"Prop": "highQuality",
 					"Type": "boolean",
-					"Description": "whether or not to spend more time to create\na higher-quality simplification with a different algorithm"
+					"Default": "false",
+					"Description": "whether or not to spend more time to create a higher-quality simplification with a different algorithm"
+				},
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
 			"throws": []
@@ -2649,9 +3392,11 @@
 		{
 			"name": "squareGrid",
 			"description": "Creates a square grid from a bounding box,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>.",
-			"snippet": "var bbox = [-95, 30 ,-85, 40];\nvar cellSize = 50;\nvar units = 'miles';\n\nvar squareGrid = turf.squareGrid(bbox, cellSize, units);\n\n//addToMap\nvar addToMap = [squareGrid]",
-			"example": "var bbox = [-95, 30 ,-85, 40];\nvar cellSize = 50;\nvar units = 'miles';\n\nvar squareGrid = turf.squareGrid(bbox, cellSize, units);\n\n//addToMap\nvar addToMap = [squareGrid]",
+			"parent": null,
+			"snippet": "var bbox = [-95, 30 ,-85, 40];\r\nvar cellSize = 50;\r\n\r\nvar squareGrid = turf.squareGrid(bbox, cellSize, {units: 'miles'});\r\n",
+			"example": "var bbox = [-95, 30 ,-85, 40];\r\nvar cellSize = 50;\r\n\r\nvar squareGrid = turf.squareGrid(bbox, cellSize, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [squareGrid]",
 			"hasMap": true,
+			"npmName": "square-grid",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -2670,13 +3415,22 @@
 					"Description": "width of each cell"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "used in calculating cellSize, can be degrees, radians, miles, or kilometers"
 				},
 				{
-					"Argument": "completelyWithin",
+					"Prop": "completelyWithin",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "adjust width & height cellSize to fit exactly within bbox"
 				}
 			],
@@ -2685,9 +3439,11 @@
 		{
 			"name": "square",
 			"description": "Takes a bounding box and calculates the minimum square bounding box that\nwould contain the input.",
-			"snippet": "var bbox = [-20,-20,-15,0];\nvar squared = turf.square(bbox);\nvar features = turf.featureCollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(squared)\n]);\n\n//addToMap\nvar addToMap = [features]",
-			"example": "var bbox = [-20,-20,-15,0];\nvar squared = turf.square(bbox);\nvar features = turf.featureCollection([\n  turf.bboxPolygon(bbox),\n  turf.bboxPolygon(squared)\n]);\n\n//addToMap\nvar addToMap = [features]",
+			"parent": null,
+			"snippet": "var bbox = [-20,-20,-15,0];\r\nvar squared = turf.square(bbox);\r\nvar features = turf.featureCollection([\r\n  turf.bboxPolygon(bbox),\r\n  turf.bboxPolygon(squared)\r\n]);\r\n",
+			"example": "var bbox = [-20,-20,-15,0];\r\nvar squared = turf.square(bbox);\r\nvar features = turf.featureCollection([\r\n  turf.bboxPolygon(bbox),\r\n  turf.bboxPolygon(squared)\r\n]);\r\n\r\n//addToMap\r\nvar addToMap = [features]",
 			"hasMap": true,
+			"npmName": "square",
 			"returns": [
 				{
 					"type": "Array 〈number〉",
@@ -2701,14 +3457,17 @@
 					"Description": "extent in  west, south, east, north  order"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "tag",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and a set of  <a target=\"_blank\" href=\"Polygon\">polygons</a>  and performs a spatial join.",
-			"snippet": "var pt1 = turf.point([-77, 44]);\nvar pt2 = turf.point([-77, 38]);\nvar poly1 = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]], {pop: 3000});\nvar poly2 = turf.polygon([[\n  [-81, 35],\n  [-81, 41],\n  [-72, 41],\n  [-72, 35],\n  [-81, 35]\n]], {pop: 1000});\n\nvar points = turf.featureCollection([pt1, pt2]);\nvar polygons = turf.featureCollection([poly1, poly2]);\n\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\n\n//addToMap\nvar addToMap = [tagged, polygons]",
-			"example": "var pt1 = turf.point([-77, 44]);\nvar pt2 = turf.point([-77, 38]);\nvar poly1 = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]], {pop: 3000});\nvar poly2 = turf.polygon([[\n  [-81, 35],\n  [-81, 41],\n  [-72, 41],\n  [-72, 35],\n  [-81, 35]\n]], {pop: 1000});\n\nvar points = turf.featureCollection([pt1, pt2]);\nvar polygons = turf.featureCollection([poly1, poly2]);\n\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\n\n//addToMap\nvar addToMap = [tagged, polygons]",
+			"parent": null,
+			"snippet": "var pt1 = turf.point([-77, 44]);\r\nvar pt2 = turf.point([-77, 38]);\r\nvar poly1 = turf.polygon([[\r\n  [-81, 41],\r\n  [-81, 47],\r\n  [-72, 47],\r\n  [-72, 41],\r\n  [-81, 41]\r\n]], {pop: 3000});\r\nvar poly2 = turf.polygon([[\r\n  [-81, 35],\r\n  [-81, 41],\r\n  [-72, 41],\r\n  [-72, 35],\r\n  [-81, 35]\r\n]], {pop: 1000});\r\n\r\nvar points = turf.featureCollection([pt1, pt2]);\r\nvar polygons = turf.featureCollection([poly1, poly2]);\r\n\r\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\r\n",
+			"example": "var pt1 = turf.point([-77, 44]);\r\nvar pt2 = turf.point([-77, 38]);\r\nvar poly1 = turf.polygon([[\r\n  [-81, 41],\r\n  [-81, 47],\r\n  [-72, 47],\r\n  [-72, 41],\r\n  [-81, 41]\r\n]], {pop: 3000});\r\nvar poly2 = turf.polygon([[\r\n  [-81, 35],\r\n  [-81, 41],\r\n  [-72, 41],\r\n  [-72, 35],\r\n  [-81, 35]\r\n]], {pop: 1000});\r\n\r\nvar points = turf.featureCollection([pt1, pt2]);\r\nvar polygons = turf.featureCollection([poly1, poly2]);\r\n\r\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\r\n\r\n//addToMap\r\nvar addToMap = [tagged, polygons]",
 			"hasMap": true,
+			"npmName": "tag",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -2737,14 +3496,17 @@
 					"Description": "property in  points  in which to store joined property from  polygons"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "tesselate",
 			"description": "Tesselates a  <a target=\"_blank\" href=\"Feature<Polygon>\">Feature<Polygon></a>  into a  <a target=\"_blank\" href=\"FeatureCollection<Polygon>\">FeatureCollection<Polygon></a>  of triangles\nusing  <a target=\"_blank\" href=\"https://github.com/mapbox/earcut\">earcut</a>.",
-			"snippet": "var poly = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar triangles = turf.tesselate(poly);\n\n//addToMap\nvar addToMap = [poly, triangles]",
-			"example": "var poly = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar triangles = turf.tesselate(poly);\n\n//addToMap\nvar addToMap = [poly, triangles]",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\r\nvar triangles = turf.tesselate(poly);\r\n",
+			"example": "var poly = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\r\nvar triangles = turf.tesselate(poly);\r\n\r\n//addToMap\r\nvar addToMap = [poly, triangles]",
 			"hasMap": true,
+			"npmName": "tesselate",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -2758,14 +3520,17 @@
 					"Description": "the polygon to tesselate"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "tin",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and creates a\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Triangulated_irregular_network\">Triangulated Irregular Network</a> ,\nor a TIN for short, returned as a collection of Polygons. These are often used\nfor developing elevation contour maps or stepped heat visualizations.",
-			"snippet": "// generate some random point data\nvar points = turf.random('points', 30, {\n  bbox: [50, 30, 70, 50]\n});\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z');\n\n//addToMap\nvar addToMap = [tin, points]\nfor (var i = 0; i < tin.features.length; i++) {\n  var properties  = tin.features[i].properties;\n  properties.fill = '#' + properties.a + properties.b + properties.c;\n}",
-			"example": "// generate some random point data\nvar points = turf.random('points', 30, {\n  bbox: [50, 30, 70, 50]\n});\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z');\n\n//addToMap\nvar addToMap = [tin, points]\nfor (var i = 0; i < tin.features.length; i++) {\n  var properties  = tin.features[i].properties;\n  properties.fill = '#' + properties.a + properties.b + properties.c;\n}",
+			"parent": null,
+			"snippet": "// generate some random point data\r\nvar points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\r\n\r\n// add a random property to each point between 0 and 9\r\nfor (var i = 0; i < points.features.length; i++) {\r\n  points.features[i].properties.z = ~~(Math.random() * 9);\r\n}\r\nvar tin = turf.tin(points, 'z');\r\n",
+			"example": "// generate some random point data\r\nvar points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\r\n\r\n// add a random property to each point between 0 and 9\r\nfor (var i = 0; i < points.features.length; i++) {\r\n  points.features[i].properties.z = ~~(Math.random() * 9);\r\n}\r\nvar tin = turf.tin(points, 'z');\r\n\r\n//addToMap\r\nvar addToMap = [tin, points]\r\nfor (var i = 0; i < tin.features.length; i++) {\r\n  var properties  = tin.features[i].properties;\r\n  properties.fill = '#' + properties.a + properties.b + properties.c;\r\n}",
 			"hasMap": true,
+			"npmName": "tin",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -2784,14 +3549,17 @@
 					"Description": "name of the property from which to pull z values\nThis is optional: if not given, then there will be no extra data added to the derived triangles."
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "transformRotate",
 			"description": "Rotates any geojson Feature or Geometry of a specified angle, around its  centroid  or a given  pivot  point;\nall rotations follow the right-hand rule:  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Right-hand_rule\">https://en.wikipedia.org/wiki/Right-hand_rule</a>",
-			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar rotatedPoly = turf.transformRotate(poly, 100, [15, 15]);\n\n//addToMap\nvar addToMap = [poly, rotatedPoly];\nrotatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
-			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar rotatedPoly = turf.transformRotate(poly, 100, [15, 15]);\n\n//addToMap\nvar addToMap = [poly, rotatedPoly];\nrotatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar options = {pivot: [0, 25]};\r\nvar rotatedPoly = turf.transformRotate(poly, 10, options);\r\n",
+			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar options = {pivot: [0, 25]};\r\nvar rotatedPoly = turf.transformRotate(poly, 10, options);\r\n\r\n//addToMap\r\nvar addToMap = [poly, rotatedPoly];\r\nrotatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
 			"hasMap": true,
+			"npmName": "transform-rotate",
 			"returns": [
 				{
 					"type": "GeoJSON",
@@ -2810,13 +3578,69 @@
 					"Description": "of rotation (along the vertical axis), from North in decimal degrees, negative clockwise"
 				},
 				{
-					"Argument": "pivot",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "pivot",
 					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Default": "'centroid'",
 					"Description": "point around which the rotation will be performed"
 				},
 				{
-					"Argument": "mutate",
+					"Prop": "mutate",
 					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
+				}
+			],
+			"throws": []
+		},
+		{
+			"name": "transformScale",
+			"description": "Scale a GeoJSON from a given point by a factor of scaling (ex: factor=2 would make the GeoJSON 200% larger).\nIf a FeatureCollection is provided, the origin point will be calculated based on each individual Feature.",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar scaledPoly = turf.transformScale(poly, 3);\r\n",
+			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar scaledPoly = turf.transformScale(poly, 3);\r\n\r\n//addToMap\r\nvar addToMap = [poly, scaledPoly];\r\nscaledPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
+			"hasMap": true,
+			"npmName": "transform-scale",
+			"returns": [
+				{
+					"type": "GeoJSON",
+					"desc": "scaled GeoJSON"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "GeoJSON",
+					"Description": "GeoJSON to be scaled"
+				},
+				{
+					"Argument": "factor",
+					"Type": "number",
+					"Description": "of scaling, positive or negative values greater than 0"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "origin",
+					"Type": "( string | Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Default": "'centroid'",
+					"Description": "Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid)"
+				},
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
@@ -2825,9 +3649,11 @@
 		{
 			"name": "transformTranslate",
 			"description": "Moves any geojson Feature or Geometry of a specified distance along a Rhumb Line\non the provided direction angle.",
-			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar translatedPoly = turf.transformTranslate(poly, 100, 35);\n\n//addToMap\nvar addToMap = [poly, translatedPoly];\ntranslatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
-			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar translatedPoly = turf.transformTranslate(poly, 100, 35);\n\n//addToMap\nvar addToMap = [poly, translatedPoly];\ntranslatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar translatedPoly = turf.transformTranslate(poly, 100, 35);\r\n",
+			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\r\nvar translatedPoly = turf.transformTranslate(poly, 100, 35);\r\n\r\n//addToMap\r\nvar addToMap = [poly, translatedPoly];\r\ntranslatedPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
 			"hasMap": true,
+			"npmName": "transform-translate",
 			"returns": [
 				{
 					"type": "GeoJSON",
@@ -2851,54 +3677,28 @@
 					"Description": "of the motion; angle from North in decimal degrees, positive clockwise"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "in which  distance  will be express; miles, kilometers, degrees, or radians"
 				},
 				{
-					"Argument": "zTranslation",
+					"Prop": "zTranslation",
 					"Type": "number",
+					"Default": "0",
 					"Description": "length of the vertical motion, same unit of distance"
 				},
 				{
-					"Argument": "mutate",
+					"Prop": "mutate",
 					"Type": "boolean",
-					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
-				}
-			],
-			"throws": []
-		},
-		{
-			"name": "transformScale",
-			"description": "Scale a GeoJSON from a given point by a factor of scaling (ex: factor=2 would make the GeoJSON 200% larger).\nIf a FeatureCollection is provided, the origin point will be calculated based on each individual Feature.",
-			"snippet": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar scaledPoly = turf.transformScale(poly, 3);\n\n//addToMap\nvar addToMap = [poly, scaledPoly];\nscaledPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
-			"example": "var poly = turf.polygon([[[0,29],[3.5,29],[2.5,32],[0,29]]]);\nvar scaledPoly = turf.transformScale(poly, 3);\n\n//addToMap\nvar addToMap = [poly, scaledPoly];\nscaledPoly.properties = {stroke: '#F00', 'stroke-width': 4};",
-			"hasMap": true,
-			"returns": [
-				{
-					"type": "GeoJSON",
-					"desc": "scaled GeoJSON"
-				}
-			],
-			"params": [
-				{
-					"Argument": "geojson",
-					"Type": "GeoJSON",
-					"Description": "GeoJSON to be scaled"
-				},
-				{
-					"Argument": "factor",
-					"Type": "number",
-					"Description": "of scaling, positive or negative values greater than 0"
-				},
-				{
-					"Argument": "origin",
-					"Type": "( string | Geometry | Feature 〈Point〉 | Array 〈number〉 )",
-					"Description": "Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid)"
-				},
-				{
-					"Argument": "mutate",
-					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
@@ -2907,9 +3707,11 @@
 		{
 			"name": "triangleGrid",
 			"description": "Takes a bounding box and a cell depth and returns a set of triangular  <a target=\"_blank\" href=\"Polygon\">polygons</a>  in a grid.",
-			"snippet": "var bbox = [-96,31,-84,40]\nvar cellSize = 10;\nvar units = 'miles';\n\nvar triangleGrid = turf.triangleGrid(bbox, cellSize, units);\n\n//addToMap\nvar addToMap = [triangleGrid];",
-			"example": "var bbox = [-96,31,-84,40]\nvar cellSize = 10;\nvar units = 'miles';\n\nvar triangleGrid = turf.triangleGrid(bbox, cellSize, units);\n\n//addToMap\nvar addToMap = [triangleGrid];",
+			"parent": null,
+			"snippet": "var bbox = [-95, 30 ,-85, 40];\r\nvar cellSize = 50;\r\n\r\nvar triangleGrid = turf.triangleGrid(bbox, cellSize, {units: 'miles'});\r\n",
+			"example": "var bbox = [-95, 30 ,-85, 40];\r\nvar cellSize = 50;\r\n\r\nvar triangleGrid = turf.triangleGrid(bbox, cellSize, {units: 'miles'});\r\n\r\n//addToMap\r\nvar addToMap = [triangleGrid];",
 			"hasMap": true,
+			"npmName": "triangle-grid",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -2928,8 +3730,16 @@
 					"Description": "dimension of each cell"
 				},
 				{
-					"Argument": "units",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
 					"Type": "string",
+					"Default": "'kilometers'",
 					"Description": "used in calculating cellSize, can be degrees, radians, miles, or kilometers"
 				}
 			],
@@ -2938,9 +3748,11 @@
 		{
 			"name": "truncate",
 			"description": "Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the geometry.",
-			"snippet": "var point = turf.point([\n    70.46923055566859,\n    58.11088890802906,\n    1508\n]);\n\nvar truncated = turf.truncate(point);\n\n//addToMap\nvar addToMap = [truncated];",
-			"example": "var point = turf.point([\n    70.46923055566859,\n    58.11088890802906,\n    1508\n]);\n\nvar truncated = turf.truncate(point);\n\n//addToMap\nvar addToMap = [truncated];",
+			"parent": null,
+			"snippet": "var point = turf.point([\r\n    70.46923055566859,\r\n    58.11088890802906,\r\n    1508\r\n]);\r\n\r\nvar truncated = turf.truncate(point);\r\n",
+			"example": "var point = turf.point([\r\n    70.46923055566859,\r\n    58.11088890802906,\r\n    1508\r\n]);\r\n\r\nvar truncated = turf.truncate(point);\r\n\r\n//addToMap\r\nvar addToMap = [truncated];",
 			"hasMap": true,
+			"npmName": "truncate",
 			"returns": [
 				{
 					"type": "( FeatureCollection | Feature 〈any〉 )",
@@ -2954,18 +3766,28 @@
 					"Description": "any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection."
 				},
 				{
-					"Argument": "precision",
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters"
+				}
+			],
+			"options": [
+				{
+					"Prop": "precision",
 					"Type": "number",
+					"Default": "6",
 					"Description": "coordinate decimal precision"
 				},
 				{
-					"Argument": "coordinates",
+					"Prop": "coordinates",
 					"Type": "number",
+					"Default": "3",
 					"Description": "maximum number of coordinates (primarly used to remove z coordinates)"
 				},
 				{
-					"Argument": "mutate",
+					"Prop": "mutate",
 					"Type": "boolean",
+					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
 				}
 			],
@@ -2974,9 +3796,11 @@
 		{
 			"name": "union",
 			"description": "Takes two or more  <a target=\"_blank\" href=\"Polygon\">polygons</a>  and returns a combined polygon. If the input polygons are not contiguous, this function returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  feature.",
-			"snippet": "var poly1 = turf.polygon([[\n    [-82.574787, 35.594087],\n    [-82.574787, 35.615581],\n    [-82.545261, 35.615581],\n    [-82.545261, 35.594087],\n    [-82.574787, 35.594087]\n]], {\"fill\": \"#0f0\"});\nvar poly2 = turf.polygon([[\n    [-82.560024, 35.585153],\n    [-82.560024, 35.602602],\n    [-82.52964, 35.602602],\n    [-82.52964, 35.585153],\n    [-82.560024, 35.585153]\n]], {\"fill\": \"#00f\"});\n\nvar union = turf.union(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, union];",
-			"example": "var poly1 = turf.polygon([[\n    [-82.574787, 35.594087],\n    [-82.574787, 35.615581],\n    [-82.545261, 35.615581],\n    [-82.545261, 35.594087],\n    [-82.574787, 35.594087]\n]], {\"fill\": \"#0f0\"});\nvar poly2 = turf.polygon([[\n    [-82.560024, 35.585153],\n    [-82.560024, 35.602602],\n    [-82.52964, 35.602602],\n    [-82.52964, 35.585153],\n    [-82.560024, 35.585153]\n]], {\"fill\": \"#00f\"});\n\nvar union = turf.union(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, union];",
+			"parent": null,
+			"snippet": "var poly1 = turf.polygon([[\r\n    [-82.574787, 35.594087],\r\n    [-82.574787, 35.615581],\r\n    [-82.545261, 35.615581],\r\n    [-82.545261, 35.594087],\r\n    [-82.574787, 35.594087]\r\n]], {\"fill\": \"#0f0\"});\r\nvar poly2 = turf.polygon([[\r\n    [-82.560024, 35.585153],\r\n    [-82.560024, 35.602602],\r\n    [-82.52964, 35.602602],\r\n    [-82.52964, 35.585153],\r\n    [-82.560024, 35.585153]\r\n]], {\"fill\": \"#00f\"});\r\n\r\nvar union = turf.union(poly1, poly2);\r\n",
+			"example": "var poly1 = turf.polygon([[\r\n    [-82.574787, 35.594087],\r\n    [-82.574787, 35.615581],\r\n    [-82.545261, 35.615581],\r\n    [-82.545261, 35.594087],\r\n    [-82.574787, 35.594087]\r\n]], {\"fill\": \"#0f0\"});\r\nvar poly2 = turf.polygon([[\r\n    [-82.560024, 35.585153],\r\n    [-82.560024, 35.602602],\r\n    [-82.52964, 35.602602],\r\n    [-82.52964, 35.585153],\r\n    [-82.560024, 35.585153]\r\n]], {\"fill\": \"#00f\"});\r\n\r\nvar union = turf.union(poly1, poly2);\r\n\r\n//addToMap\r\nvar addToMap = [poly1, poly2, union];",
 			"hasMap": true,
+			"npmName": "union",
 			"returns": [
 				{
 					"type": "Feature 〈〉",
@@ -2989,14 +3813,17 @@
 					"Description": "polygon to combine"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "unkinkPolygon",
 			"description": "Takes a kinked polygon and returns a feature collection of polygons that have no kinks.\nUses  <a target=\"_blank\" href=\"https://github.com/mclaeysb/simplepolygon\">simplepolygon</a>  internally.",
-			"snippet": "var poly = turf.polygon([[[0, 0], [2, 0], [0, 2], [2, 2], [0, 0]]]);\n\nvar result = turf.unkinkPolygon(poly);\n\n//addToMap\nvar addToMap = [poly, result]",
-			"example": "var poly = turf.polygon([[[0, 0], [2, 0], [0, 2], [2, 2], [0, 0]]]);\n\nvar result = turf.unkinkPolygon(poly);\n\n//addToMap\nvar addToMap = [poly, result]",
+			"parent": null,
+			"snippet": "var poly = turf.polygon([[[0, 0], [2, 0], [0, 2], [2, 2], [0, 0]]]);\r\n\r\nvar result = turf.unkinkPolygon(poly);\r\n",
+			"example": "var poly = turf.polygon([[[0, 0], [2, 0], [0, 2], [2, 2], [0, 0]]]);\r\n\r\nvar result = turf.unkinkPolygon(poly);\r\n\r\n//addToMap\r\nvar addToMap = [poly, result]",
 			"hasMap": true,
+			"npmName": "unkink-polygon",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Polygon〉",
@@ -3010,14 +3837,17 @@
 					"Description": "GeoJSON Polygon or MultiPolygon"
 				}
 			],
+			"options": null,
 			"throws": []
 		},
 		{
 			"name": "within",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and a set of  <a target=\"_blank\" href=\"Polygon\">polygons</a>  and returns the points that fall within the polygons.",
-			"snippet": "var searchWithin = turf.featureCollection([\n    turf.polygon([[\n        [-46.653,-23.543],\n        [-46.634,-23.5346],\n        [-46.613,-23.543],\n        [-46.614,-23.559],\n        [-46.631,-23.567],\n        [-46.653,-23.560],\n        [-46.653,-23.543]\n    ]])\n]);\nvar points = turf.featureCollection([\n    turf.point([-46.6318, -23.5523]),\n    turf.point([-46.6246, -23.5325]),\n    turf.point([-46.6062, -23.5513]),\n    turf.point([-46.663, -23.554]),\n    turf.point([-46.643, -23.557])\n]);\n\nvar ptsWithin = turf.within(points, searchWithin);\n\n//addToMap\nvar addToMap = [points, searchWithin, ptsWithin]\nturf.featureEach(ptsWithin, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
-			"example": "var searchWithin = turf.featureCollection([\n    turf.polygon([[\n        [-46.653,-23.543],\n        [-46.634,-23.5346],\n        [-46.613,-23.543],\n        [-46.614,-23.559],\n        [-46.631,-23.567],\n        [-46.653,-23.560],\n        [-46.653,-23.543]\n    ]])\n]);\nvar points = turf.featureCollection([\n    turf.point([-46.6318, -23.5523]),\n    turf.point([-46.6246, -23.5325]),\n    turf.point([-46.6062, -23.5513]),\n    turf.point([-46.663, -23.554]),\n    turf.point([-46.643, -23.557])\n]);\n\nvar ptsWithin = turf.within(points, searchWithin);\n\n//addToMap\nvar addToMap = [points, searchWithin, ptsWithin]\nturf.featureEach(ptsWithin, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
+			"parent": null,
+			"snippet": "var searchWithin = turf.featureCollection([\r\n    turf.polygon([[\r\n        [-46.653,-23.543],\r\n        [-46.634,-23.5346],\r\n        [-46.613,-23.543],\r\n        [-46.614,-23.559],\r\n        [-46.631,-23.567],\r\n        [-46.653,-23.560],\r\n        [-46.653,-23.543]\r\n    ]])\r\n]);\r\nvar points = turf.featureCollection([\r\n    turf.point([-46.6318, -23.5523]),\r\n    turf.point([-46.6246, -23.5325]),\r\n    turf.point([-46.6062, -23.5513]),\r\n    turf.point([-46.663, -23.554]),\r\n    turf.point([-46.643, -23.557])\r\n]);\r\n\r\nvar ptsWithin = turf.within(points, searchWithin);\r\n",
+			"example": "var searchWithin = turf.featureCollection([\r\n    turf.polygon([[\r\n        [-46.653,-23.543],\r\n        [-46.634,-23.5346],\r\n        [-46.613,-23.543],\r\n        [-46.614,-23.559],\r\n        [-46.631,-23.567],\r\n        [-46.653,-23.560],\r\n        [-46.653,-23.543]\r\n    ]])\r\n]);\r\nvar points = turf.featureCollection([\r\n    turf.point([-46.6318, -23.5523]),\r\n    turf.point([-46.6246, -23.5325]),\r\n    turf.point([-46.6062, -23.5513]),\r\n    turf.point([-46.663, -23.554]),\r\n    turf.point([-46.643, -23.557])\r\n]);\r\n\r\nvar ptsWithin = turf.within(points, searchWithin);\r\n\r\n//addToMap\r\nvar addToMap = [points, searchWithin, ptsWithin]\r\nturf.featureEach(ptsWithin, function (currentFeature) {\r\n  currentFeature.properties['marker-size'] = 'large';\r\n  currentFeature.properties['marker-color'] = '#000';\r\n});",
 			"hasMap": true,
+			"npmName": "within",
 			"returns": [
 				{
 					"type": "FeatureCollection 〈Point〉",
@@ -3036,6 +3866,7 @@
 					"Description": "input polygons"
 				}
 			],
+			"options": null,
 			"throws": []
 		}
 	]

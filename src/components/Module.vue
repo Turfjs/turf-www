@@ -7,9 +7,13 @@
       <div>
         <Table :columns="cols" :data="module.params" :stripe='true' size='small' :disabled-hover='true'></Table>
       </div>
-      <br>
+      <div v-if="module.options !== null">
+        <h4>Options</h4>
+        <Table :columns="optionsCols" :data="module.options" :stripe='true' size='small' :disabled-hover='true'></Table>
+      </div>
       <div v-if="module.returns.length > 0">
-        <p><strong>Returns:</strong> {{module.returns[0].type}} - {{module.returns[0].desc}}</p>
+        <h4>Returns</h4>
+        <p>{{module.returns[0].type}} - {{module.returns[0].desc}}</p>
       </div>
       <div v-if="module.throws.length > 0">
         <p><strong>Throws:</strong> {{module.throws[0].type}} - {{module.throws[0].desc}}</p>
@@ -53,6 +57,27 @@ export default {
           title: 'Type',
           key: 'Type',
           width: 200
+        },
+        {
+          title: 'Description',
+          key: 'Description'
+        }
+      ],
+      optionsCols: [
+        {
+          title: 'Prop',
+          key: 'Prop',
+          width: 105
+        },
+        {
+          title: 'Type',
+          key: 'Type',
+          width: 90
+        },
+        {
+          title: 'Default',
+          key: 'Default',
+          width: 110
         },
         {
           title: 'Description',
