@@ -118,7 +118,7 @@
 		{
 			"isHeading": false,
 			"name": "clusterEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -128,7 +128,7 @@
 		{
 			"isHeading": false,
 			"name": "clusterReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -448,7 +448,7 @@
 		{
 			"isHeading": false,
 			"name": "coordEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -463,7 +463,7 @@
 		{
 			"isHeading": false,
 			"name": "coordReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -473,7 +473,7 @@
 		{
 			"isHeading": false,
 			"name": "propEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -483,7 +483,7 @@
 		{
 			"isHeading": false,
 			"name": "propReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -493,12 +493,12 @@
 		{
 			"isHeading": false,
 			"name": "featureEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
 			"name": "featureReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -513,7 +513,7 @@
 		{
 			"isHeading": false,
 			"name": "geomEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -523,7 +523,7 @@
 		{
 			"isHeading": false,
 			"name": "geomReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -533,7 +533,7 @@
 		{
 			"isHeading": false,
 			"name": "flattenEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -543,7 +543,7 @@
 		{
 			"isHeading": false,
 			"name": "flattenReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -553,7 +553,7 @@
 		{
 			"isHeading": false,
 			"name": "segmentEachCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,
@@ -563,7 +563,7 @@
 		{
 			"isHeading": false,
 			"name": "segmentReduceCallback",
-			"hidden": false
+			"hidden": true
 		},
 		{
 			"isHeading": false,

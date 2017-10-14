@@ -27,7 +27,6 @@ packagesPath.forEach(packagePath => {
     console.log('Parsing Docs:', pckg.name)
     documentation.build(indexPath, {shallow: true}).then(res => {
       if (res === undefined) return console.warning(packagePath);
-
       // Format JSON
       documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
@@ -42,11 +41,12 @@ packagesPath.forEach(packagePath => {
         }
         docs.forEach(metadata => {
           const isHeading = metadata.kind === 'note'
+          const isCallback = metadata.name.includes('Callback')
           // Side Bar
           moduleSidebarList.push({
             isHeading: isHeading,
             name: metadata.name,
-            hidden: false
+            hidden: isCallback
           })
           // Module
           if (!isHeading) {
