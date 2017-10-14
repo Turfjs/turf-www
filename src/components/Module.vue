@@ -30,7 +30,10 @@
       <p class="npmBadge">npm install {{module.npmName}}</p>
 
       <div v-if="module.parent !== null">
-        <p class="hasParent" ><strong>Note:</strong> {{module.name}} is part of the {{module.npmName}} module.<br><br>To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.</p>
+        <p class="hasParent" >
+          <strong>Note:</strong> {{module.name}} is part of the {{module.npmName}} module.<br><br>
+          To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.
+        </p>
       </div>
 
     </Col>
