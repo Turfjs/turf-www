@@ -27,10 +27,10 @@
       <div v-if="module.hasMap">
         <leaflet-map :code="module.example"></leaflet-map>
       </div>
-      <p class="npmBadge">npm install @turf/{{module.npmName}}</p>
+      <p class="npmBadge">npm install {{module.npmName}}</p>
 
       <div v-if="module.parent !== null">
-        <p class="hasParent" ><strong>Note:</strong> {{module.name}} is part of the @turf/{{module.parent}} module.<br><br>To use it as a stand-alone module will need to import @turf/{{module.parent}} and call the {{module.name}} method.</p>
+        <p class="hasParent" ><strong>Note:</strong> {{module.name}} is part of the {{module.npmName}} module.<br><br>To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.</p>
       </div>
 
     </Col>
