@@ -9,8 +9,6 @@ const load = require('load-json-file')
 const write = require('write-json-file')
 const documentation = require('documentation')
 
-const documentationConfig = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'documentation.yml'), 'utf8'))
-const paths = documentationConfig.paths
 const configPath = path.join(__dirname, '..', 'src', 'config.json')
 const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 'turf-*', 'package.json'))
 
@@ -30,7 +28,7 @@ packagesPath.forEach(packagePath => {
       if (res === undefined) return console.warning(packagePath);
 
       // Format JSON
-      documentation.formats.json(res, {paths}).then(docs => {
+      documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
         docs.forEach(metadata => {
           const isHeading = metadata.kind === 'note'
