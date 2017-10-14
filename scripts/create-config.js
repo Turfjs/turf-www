@@ -42,6 +42,8 @@ packagesPath.forEach(packagePath => {
         docs.forEach(metadata => {
           const isHeading = metadata.kind === 'note'
           const isCallback = metadata.name.includes('Callback')
+          const category = getCategory(metadata)
+
           // Side Bar
           moduleSidebarList.push({
             isHeading: isHeading,
@@ -51,7 +53,8 @@ packagesPath.forEach(packagePath => {
           // Module
           if (!isHeading) {
             completeModules.push({
-              parent: parent,
+              parent,
+              category,
               name: metadata.name,
               description: getDescription(metadata),
               snippet: getSnippet(metadata),
@@ -80,10 +83,10 @@ q.awaitAll(() => {
   console.log('Saved Config:', configPath)
 })
 
-function getParent (filePath) {
-  if (filePath.includes('turf-helpers')) return 'helpers'
-  if (filePath.includes('turf-meta')) return 'meta'
-  if (filePath.includes('turf-invariant')) return 'invariant'
+function getCategory (metadata) {
+  for (const {title, description} of metadata.tags) {
+    if (title === 'category') return description
+  }
   return null
 }
 
