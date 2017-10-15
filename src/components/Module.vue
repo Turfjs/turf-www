@@ -20,7 +20,7 @@
       </div>
       <div v-if="module.snippet !== false">
         <h4>Example</h4>
-        <pre>{{module.snippet}}</pre>
+        <pre><code class="language-js">{{module.snippet}}</code></pre>
       </div>
     </Col>
     <Col span="7" offset="1">
