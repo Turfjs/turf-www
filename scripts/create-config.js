@@ -4,7 +4,7 @@ const fs = require('fs')
 const d3 = require('d3-queue')
 const path = require('path')
 const glob = require('glob')
-const yaml = require('js-yaml')
+const yaml = require('yamljs')
 const load = require('load-json-file')
 const write = require('write-json-file')
 const documentation = require('documentation')
@@ -16,42 +16,39 @@ const moduleSidebarList = []
 const completeModules = []
 const q = d3.queue(1)
 
+var out = yaml.load(path.join(__dirname, '..', 'documentation.yml'))
+out.toc.forEach(tocItem => {
+  moduleSidebarList.push({
+    isHeading: tocItem.name ? true : false,
+    name: tocItem.name ? tocItem.name : tocItem,
+    hidden: false
+  })
+})
+
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
-  const directoryName = directory.split(path.sep).slice(-1)[0].replace('turf-', '')
+  const directoryName = path.basename(directory).replace('turf-', '')
   const indexPath = path.join(directory, 'index.js')
   const pckg = load.sync(packagePath)
 
   // Build Documentation
   q.defer(callback => {
     console.log('Parsing Docs:', pckg.name)
-    documentation.build(indexPath, {shallow: true}).then(res => {
+    documentation.build(indexPath, {
+      shallow: true
+    }).then(res => {
       if (res === undefined) return console.warning(packagePath);
       // Format JSON
       documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
         const parent = (docs.length > 1) ? pckg.name : null
-        if (parent) {
-          // Parent Module
-          moduleSidebarList.push({
-            isHeading: true,
-            name: directoryName,
-            hidden: false
-          })
-        }
+
         docs.forEach(metadata => {
-          const isHeading = metadata.kind === 'note'
-          const isCallback = metadata.name.includes('Callback')
+
           const category = getCategory(metadata)
 
-          // Side Bar
-          moduleSidebarList.push({
-            isHeading: isHeading,
-            name: metadata.name,
-            hidden: isCallback
-          })
           // Module
-          if (!isHeading) {
+          if (isModuleInSidebar(metadata.name)) {
             completeModules.push({
               parent,
               category,
@@ -82,6 +79,13 @@ q.awaitAll(() => {
   write.sync(configPath, config)
   console.log('Saved Config:', configPath)
 })
+
+function isModuleInSidebar (moduleName) {
+  const matches = moduleSidebarList.filter(mod => {
+    return mod.name === moduleName
+  })
+  return matches.length > 0
+}
 
 function getCategory (metadata) {
   for (const {title, description} of metadata.tags) {

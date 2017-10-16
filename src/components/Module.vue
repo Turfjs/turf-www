@@ -16,11 +16,12 @@
         <p>{{module.returns[0].type}} - {{module.returns[0].desc}}</p>
       </div>
       <div v-if="module.throws.length > 0">
-        <p><strong>Throws:</strong> {{module.throws[0].type}} - {{module.throws[0].desc}}</p>
+        <h4>Throws</h4>
+        <p>{{module.throws[0].type}} - {{module.throws[0].desc}}</p>
       </div>
       <div v-if="module.snippet !== false">
         <h4>Example</h4>
-        <pre><code class="language-js">{{module.snippet}}</code></pre>
+          <prism language="javascript">{{module.snippet}}</prism>
       </div>
     </Col>
     <Col span="7" offset="1">
@@ -35,7 +36,6 @@
           To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.
         </p>
       </div>
-
     </Col>
   </Row>
 </template>
@@ -44,6 +44,7 @@
 import leafletMap from './Map.vue'
 import {Row, Col} from 'iview/src/components/grid'
 import Table from 'iview/src/components/table'
+import Prism from 'vue-prism-component'
 
 export default {
   name: 'Module',
@@ -93,7 +94,8 @@ export default {
     leafletMap,
     Row,
     Col,
-    Table
+    Table,
+    Prism
   }
 }
 </script>

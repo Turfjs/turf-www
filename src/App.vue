@@ -110,7 +110,7 @@ export default {
     float: right;
     pre {
       background-color: $lightGrey;
-      padding: 20px;
+      padding: 20px 20px 0px;
       border: 2px solid $grey;
       overflow-x: auto;
     }
