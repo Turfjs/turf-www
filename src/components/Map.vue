@@ -7,7 +7,8 @@ import L from 'mapbox.js'
 L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
 var turfMap = null
 var fg = null
-
+var control = null
+var layerArray = null
 export default {
   name: 'Map',
   props: ['code'],
@@ -18,13 +19,19 @@ export default {
   },
   methods: {
     moveMapToExample () {
+      fg.eachLayer(function (layer) {
+        control.removeLayer(layer)
+      })
       fg.clearLayers()
-      var zoomText = this.getLayersAndZoom(this.code)
+      layerArray = this.code.split(/\n\/\/addToMap/)[1]
+      layerArray = layerArray.match(/\[.*]/)[0]
+      layerArray = layerArray.replace('[', '').replace(']', '').split(',')
+      var zoomText = this.getLayersAndZoom()
       return eval(this.code + zoomText) //eslint-disable-line
     },
-    getLayersAndZoom: function () {
+    getLayersAndZoom: function (layerArray) {
       return `
-      addToMap.forEach(function (geojson) {
+      addToMap.forEach(function (geojson, index) {
         var geojsonLayer = L.mapbox.featureLayer(geojson);
         geojsonLayer.eachLayer(function (layer) {
           if (layer.feature.properties){
@@ -33,6 +40,7 @@ export default {
             }
           }
         });
+        control.addOverlay(geojsonLayer, layerArray[index])
         fg.addLayer(geojsonLayer)
       })
       turfMap.fitBounds(fg.getBounds(), {padding: [30,30]})`
@@ -41,6 +49,7 @@ export default {
   mounted: function () {
     turfMap = L.mapbox.map('turfMap', 'mapbox.streets')
     turfMap.scrollWheelZoom.disable()
+    control = L.control.layers([], []).addTo(turfMap);
     fg = L.featureGroup([]).addTo(turfMap)
     this.moveMapToExample()
   }
