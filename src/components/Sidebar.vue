@@ -77,6 +77,24 @@ export default {
             letter-spacing: 0.4rem;
             padding-top: 30px;
             font-weight: 600;
+             &:before {
+              content: '<';
+              opacity: 0;
+              transition: 0.3s;
+            }
+            &:after {
+              content: '>';
+              transition: 0.3s;
+              opacity: 0;
+            }
+            &:hover {
+              &:before {
+                opacity: 1;
+              }
+              &:after {
+                opacity: 1;
+              }
+            }
           }
         }
 
