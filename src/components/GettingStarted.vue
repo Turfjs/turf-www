@@ -13,9 +13,10 @@
       <h4>Using in Node or with a build tool</h4>
       <p>If you're working in Node or with build tool (such as webpack, browserify or rollup) you can include individual turf modules in your project.</p>
       <prism language="javascript">// Import your module of interest
-const turfCollect = require('@turf/collect');
+var collect = require('@turf/collect');
 // And then use it
-turfCollect(points, polys, 'population', 'populationValues')</prism>
+collect(points, polys, 'population', 'populationValues')
+</prism>
 
       <h4>Creating custom builds for use in the browser</h4>
       <p><strong>Step 1</strong> Create a folder and install whatever modules you are interested in via npm</p>
