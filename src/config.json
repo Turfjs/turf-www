@@ -22,11 +22,6 @@
 		},
 		{
 			"isHeading": false,
-			"name": "bboxClip",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
 			"name": "bboxPolygon",
 			"hidden": false
 		},
@@ -87,6 +82,11 @@
 		},
 		{
 			"isHeading": false,
+			"name": "pointToLineDistance",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
 			"name": "rhumbBearing",
 			"hidden": false
 		},
@@ -113,6 +113,11 @@
 		{
 			"isHeading": true,
 			"name": "Coordinate Mutation",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "cleanCoords",
 			"hidden": false
 		},
 		{
@@ -662,12 +667,22 @@
 		},
 		{
 			"isHeading": false,
+			"name": "booleanEqual",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
 			"name": "booleanOverlap",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
 			"name": "booleanPointOnLine",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "booleanWithin",
 			"hidden": false
 		},
 		{
@@ -714,6 +729,16 @@
 			"isHeading": false,
 			"name": "radians2degrees",
 			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "toMercator",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "toWgs84",
+			"hidden": false
 		}
 	],
 	"modules": [
@@ -728,14 +753,14 @@
 			"npmName": "@turf/along",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "Point  distance   units  along the line"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "Feature 〈LineString〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>",
 					"Description": "input line"
 				},
 				{
@@ -746,7 +771,7 @@
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -795,19 +820,19 @@
 			"npmName": "@turf/bbox-clip",
 			"returns": [
 				{
-					"type": "Feature 〈〉",
+					"type": "Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>",
 					"desc": "clipped Feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "feature",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>",
 					"Description": "feature to clip to the bbox"
 				},
 				{
 					"Argument": "bbox",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				}
 			],
@@ -825,14 +850,14 @@
 			"npmName": "@turf/bbox-polygon",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "a Polygon representation of the bounding box"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				}
 			],
@@ -850,14 +875,14 @@
 			"npmName": "@turf/bbox",
 			"returns": [
 				{
-					"type": "Array 〈number〉",
+					"type": "Array <number>",
 					"desc": "bbox extent in  minX, minY, maxX, maxY  order"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
+					"Type": "(FeatureCollection | Feature <any>)",
 					"Description": "input features"
 				}
 			],
@@ -882,18 +907,18 @@
 			"params": [
 				{
 					"Argument": "start",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "starting Point"
 				},
 				{
 					"Argument": "end",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "ending Point"
 				},
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -917,20 +942,20 @@
 			"npmName": "@turf/bezier",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "curved line"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "( Geometry | Feature 〈LineString〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>)",
 					"Description": "input LineString"
 				},
 				{
 					"Argument": "options",
 					"Type": "Optional: object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -967,7 +992,7 @@
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "( Geometry | Feature 〈LineString〉 | Array 〈〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <number>>)",
 					"Description": "to be evaluated"
 				}
 			],
@@ -992,12 +1017,12 @@
 			"params": [
 				{
 					"Argument": "feature1",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
 					"Argument": "feature2",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
 				}
 			],
@@ -1022,12 +1047,12 @@
 			"params": [
 				{
 					"Argument": "feature1",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
 					"Argument": "feature2",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
 				}
 			],
@@ -1052,13 +1077,43 @@
 			"params": [
 				{
 					"Argument": "feature1",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
 					"Argument": "feature2",
-					"Type": "( Geometry | Feature 〈any〉 )",
+					"Type": "(Geometry | Feature <any>)",
 					"Description": "GeoJSON Feature or Geometry"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"parent": null,
+			"category": null,
+			"name": "booleanEqual",
+			"description": "Determine whether two geometries of the same type have identical X,Y coordinate values.\nSee  <a target=\"_blank\" href=\"http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm\">http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm</a>",
+			"snippet": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0, 0]);\r\nvar pt3 = turf.point([1, 1]);\r\n\r\nturf.booleanEqual(pt1, pt2);\r\n//= true\r\nturf.booleanEqual(pt2, pt3);\r\n//= false",
+			"example": "var pt1 = turf.point([0, 0]);\r\nvar pt2 = turf.point([0, 0]);\r\nvar pt3 = turf.point([1, 1]);\r\n\r\nturf.booleanEqual(pt1, pt2);\r\n//= true\r\nturf.booleanEqual(pt2, pt3);\r\n//= false",
+			"hasMap": false,
+			"npmName": "@turf/boolean-equal",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true if the objects are equal, false otherwise"
+				}
+			],
+			"params": [
+				{
+					"Argument": "feature1",
+					"Type": "(Geometry | Feature)",
+					"Description": "GeoJSON input"
+				},
+				{
+					"Argument": "feature2",
+					"Type": "(Geometry | Feature)",
+					"Description": "GeoJSON input"
 				}
 			],
 			"options": null,
@@ -1082,12 +1137,12 @@
 			"params": [
 				{
 					"Argument": "feature1",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "input"
 				},
 				{
 					"Argument": "feature2",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "input"
 				}
 			],
@@ -1112,18 +1167,18 @@
 			"params": [
 				{
 					"Argument": "point",
-					"Type": "( Geometry | Feature 〈Point〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
 					"Argument": "linestring",
-					"Type": "( Geometry | Feature 〈LineString〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>)",
 					"Description": "GeoJSON Feature or Geometry"
 				},
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1139,6 +1194,36 @@
 		{
 			"parent": null,
 			"category": null,
+			"name": "booleanWithin",
+			"description": "Boolean-within returns true if the first geometry is completely within the second geometry.\nThe interiors of both geometries must intersect and, the interior and boundary of the primary (geometry a)\nmust not intersect the exterior of the secondary (geometry b).\nBoolean-within returns the exact opposite result of the  @turf/boolean-contains.",
+			"snippet": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nconst point = turf.point([1, 2]);\r\n\r\nturf.booleanWithin(point, line);\r\n//=true",
+			"example": "const line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\r\nconst point = turf.point([1, 2]);\r\n\r\nturf.booleanWithin(point, line);\r\n//=true",
+			"hasMap": false,
+			"npmName": "@turf/boolean-within",
+			"returns": [
+				{
+					"type": "boolean",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "feature1",
+					"Type": "(Geometry | Feature <any>)",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "feature2",
+					"Type": "(Geometry | Feature <any>)",
+					"Description": "GeoJSON Feature or Geometry"
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"parent": null,
+			"category": null,
 			"name": "buffer",
 			"description": "Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.",
 			"snippet": "var point = turf.point([-90.548630, 14.616599]);\r\nvar buffered = turf.buffer(point, 500, {units: 'miles'});\r\n\r",
@@ -1147,14 +1232,14 @@
 			"npmName": "@turf/buffer",
 			"returns": [
 				{
-					"type": "( FeatureCollection | Feature 〈〉 |  )",
+					"type": "(FeatureCollection | Feature <(Polygon | MultiPolygon)> | )",
 					"desc": "buffered features"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature 〈any〉 )",
+					"Type": "(FeatureCollection | Geometry | Feature <any>)",
 					"Description": "input to be buffered"
 				},
 				{
@@ -1165,7 +1250,7 @@
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1195,7 +1280,7 @@
 			"npmName": "@turf/center-of-mass",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "the center of mass"
 				}
 			],
@@ -1225,7 +1310,7 @@
 			"npmName": "@turf/center",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "a Point feature at the absolute center point of all input features"
 				}
 			],
@@ -1255,7 +1340,7 @@
 			"npmName": "@turf/centroid",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "the centroid of the input features"
 				}
 			],
@@ -1285,14 +1370,14 @@
 			"npmName": "@turf/circle",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "circle polygon"
 				}
 			],
 			"params": [
 				{
 					"Argument": "center",
-					"Type": "( Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "center point"
 				},
 				{
@@ -1303,7 +1388,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1324,6 +1409,43 @@
 					"Type": "Object",
 					"Default": "{}",
 					"Description": "properties"
+				}
+			],
+			"throws": []
+		},
+		{
+			"parent": null,
+			"category": null,
+			"name": "cleanCoords",
+			"description": "Removes redundant coordinates from any GeoJSON Geometry.",
+			"snippet": "var line = turf.lineString([[0, 0], [0, 2], [0, 5], [0, 8], [0, 8], [0, 10]]);\r\nvar multiPoint = turf.multiPoint([[0, 0], [0, 0], [2, 2]]);\r\n\r\nturf.cleanCoords(line).geometry.coordinates;\r\n//= [[0, 0], [0, 10]]\r\n\r\nturf.cleanCoords(multiPoint).geometry.coordinates;\r\n//= [[0, 0], [2, 2]]",
+			"example": "var line = turf.lineString([[0, 0], [0, 2], [0, 5], [0, 8], [0, 8], [0, 10]]);\r\nvar multiPoint = turf.multiPoint([[0, 0], [0, 0], [2, 2]]);\r\n\r\nturf.cleanCoords(line).geometry.coordinates;\r\n//= [[0, 0], [0, 10]]\r\n\r\nturf.cleanCoords(multiPoint).geometry.coordinates;\r\n//= [[0, 0], [2, 2]]",
+			"hasMap": false,
+			"npmName": "@turf/clean-coords",
+			"returns": [
+				{
+					"type": "(Geometry | Feature)",
+					"desc": "the cleaned input Feature/Geometry"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "(Geometry | Feature)",
+					"Description": "Feature or Geometry"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated"
 				}
 			],
 			"throws": []
@@ -1364,14 +1486,14 @@
 			"npmName": "@turf/clusters-dbscan",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "Clustered Points with an additional two properties associated to each Feature:"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "to be clustered"
 				},
 				{
@@ -1382,7 +1504,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1412,20 +1534,20 @@
 			"npmName": "@turf/clusters-kmeans",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "Clustered Points with an additional two properties associated to each Feature:"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "to be clustered"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1493,7 +1615,7 @@
 				},
 				{
 					"Argument": "property",
-					"Type": "( string | number )",
+					"Type": "(string | number)",
 					"Description": "GeoJSON property key/value used to create clusters"
 				},
 				{
@@ -1527,7 +1649,7 @@
 				},
 				{
 					"Argument": "property",
-					"Type": "( string | number )",
+					"Type": "(string | number)",
 					"Description": "GeoJSON property key/value used to create clusters"
 				},
 				{
@@ -1555,19 +1677,19 @@
 			"npmName": "@turf/collect",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "polygons with properties listed based on  outField"
 				}
 			],
 			"params": [
 				{
 					"Argument": "polygons",
-					"Type": "FeatureCollection 〈Polygon〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "polygons with values on which to aggregate"
 				},
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "points to be aggregated"
 				},
 				{
@@ -1595,14 +1717,14 @@
 			"npmName": "@turf/combine",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈〉",
+					"type": "FeatureCollection <(MultiPoint | MultiLineString | MultiPolygon)>",
 					"desc": "a FeatureCollection of corresponding type to input"
 				}
 			],
 			"params": [
 				{
 					"Argument": "fc",
-					"Type": "FeatureCollection 〈〉",
+					"Type": "FeatureCollection <(Point | LineString | Polygon)>",
 					"Description": "a FeatureCollection of any type"
 				}
 			],
@@ -1620,20 +1742,20 @@
 			"npmName": "@turf/concave",
 			"returns": [
 				{
-					"type": "( Feature 〈〉 |  )",
+					"type": "(Feature <(Polygon | MultiPolygon)> | )",
 					"desc": "a concave hull (null value is returned if unable to compute hull)"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1663,7 +1785,7 @@
 			"npmName": "@turf/convex",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "a convex hull"
 				}
 			],
@@ -1688,14 +1810,14 @@
 			"npmName": "@turf/destination",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "destination point"
 				}
 			],
 			"params": [
 				{
 					"Argument": "origin",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "starting point"
 				},
 				{
@@ -1711,7 +1833,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1735,19 +1857,19 @@
 			"npmName": "@turf/difference",
 			"returns": [
 				{
-					"type": "( Feature 〈〉 |  )",
+					"type": "(Feature <(Polygon | MultiPolygon)> | )",
 					"desc": "a Polygon or MultiPolygon feature showing the area of  polygon1  excluding the area of  polygon2  (if empty returns  null )"
 				}
 			],
 			"params": [
 				{
 					"Argument": "polygon1",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(Polygon | MultiPolygon)>",
 					"Description": "input Polygon feature"
 				},
 				{
 					"Argument": "polygon2",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(Polygon | MultiPolygon)>",
 					"Description": "Polygon feature to difference from polygon1"
 				}
 			],
@@ -1765,20 +1887,20 @@
 			"npmName": "@turf/dissolve",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "a FeatureCollection containing the dissolved polygons"
 				}
 			],
 			"params": [
 				{
 					"Argument": "featureCollection",
-					"Type": "FeatureCollection 〈Polygon〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "input feature collection to be dissolved"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1809,18 +1931,18 @@
 			"params": [
 				{
 					"Argument": "from",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "origin point"
 				},
 				{
 					"Argument": "to",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "destination point"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1844,7 +1966,7 @@
 			"npmName": "@turf/envelope",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "a rectangular Polygon feature that encompasses all vertices"
 				}
 			],
@@ -1869,7 +1991,7 @@
 			"npmName": "@turf/explode",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈point〉",
+					"type": "FeatureCollection <point>",
 					"desc": "points representing the exploded input features"
 				}
 			],
@@ -1899,7 +2021,7 @@
 			"npmName": "@turf/flatten",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈any〉",
+					"type": "FeatureCollection <any>",
 					"desc": "all Multi-Geometries are flattened into single Features"
 				}
 			],
@@ -1937,7 +2059,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -1961,25 +2083,25 @@
 			"npmName": "@turf/great-circle",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "great circle line feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "start",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "source point feature"
 				},
 				{
 					"Argument": "end",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "destination point feature"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -2055,14 +2177,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "a Point feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "longitude, latitude position (each in decimal degrees)"
 				},
 				{
@@ -2095,14 +2217,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "a Polygon feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈〉",
+					"Type": "Array <Array <Array <number>>>",
 					"Description": "an array of LinearRings"
 				},
 				{
@@ -2140,14 +2262,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "a LineString feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈〉",
+					"Type": "Array <Array <number>>",
 					"Description": "an array of Positions"
 				},
 				{
@@ -2192,7 +2314,7 @@
 			"params": [
 				{
 					"Argument": "features",
-					"Type": "Array 〈Feature〉",
+					"Type": "Array <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>>",
 					"Description": "input features"
 				},
 				{
@@ -2220,14 +2342,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈MultiLineString〉",
+					"type": "Feature <MultiLineString>",
 					"desc": "a MultiLineString feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈〉",
+					"Type": "Array <Array <Array <number>>>",
 					"Description": "an array of LineStrings"
 				},
 				{
@@ -2265,14 +2387,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈MultiPoint〉",
+					"type": "Feature <MultiPoint>",
 					"desc": "a MultiPoint feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈〉",
+					"Type": "Array <Array <number>>",
 					"Description": "an array of Positions"
 				},
 				{
@@ -2310,14 +2432,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈MultiPolygon〉",
+					"type": "Feature <MultiPolygon>",
 					"desc": "a multipolygon feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈〉",
+					"Type": "Array <Array <Array <Array <number>>>>",
 					"Description": "an array of Polygons"
 				},
 				{
@@ -2355,14 +2477,14 @@
 			"npmName": "@turf/helpers",
 			"returns": [
 				{
-					"type": "Feature 〈GeometryCollection〉",
+					"type": "Feature <GeometryCollection>",
 					"desc": "a GeoJSON GeometryCollection Feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geometries",
-					"Type": "Array 〈Geometry〉",
+					"Type": "Array <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geometry\">Geometry</a>>",
 					"Description": "an array of GeoJSON Geometries"
 				},
 				{
@@ -2660,14 +2782,14 @@
 			"npmName": "@turf/hex-grid",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "a hexagonal grid"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				},
 				{
@@ -2678,7 +2800,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -2729,18 +2851,18 @@
 			"params": [
 				{
 					"Argument": "point",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input point"
 				},
 				{
 					"Argument": "polygon",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(Polygon | MultiPolygon)>",
 					"Description": "input polygon or multipolygon"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -2764,14 +2886,14 @@
 			"npmName": "@turf/interpolate",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈〉",
+					"type": "FeatureCollection <(Point | Polygon)>",
 					"desc": "grid of points or polygons with interpolated 'property'"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "with known value"
 				},
 				{
@@ -2782,7 +2904,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -2824,19 +2946,19 @@
 			"npmName": "@turf/intersect",
 			"returns": [
 				{
-					"type": "( Feature |  )",
+					"type": "(Feature | )",
 					"desc": "returns a feature representing the point(s) they share (in case of a  Point   or  MultiPoint ), the borders they share (in case of a  LineString  or a  MultiLineString ), the area they share (in case of  Polygon  or  MultiPolygon ). If they do not share any point, returns  null."
 				}
 			],
 			"params": [
 				{
 					"Argument": "poly1",
-					"Type": "Feature 〈Polygon〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "the first polygon"
 				},
 				{
 					"Argument": "poly2",
-					"Type": "Feature 〈Polygon〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "the second polygon"
 				}
 			],
@@ -2854,14 +2976,14 @@
 			"npmName": "@turf/invariant",
 			"returns": [
 				{
-					"type": "Array 〈number〉",
+					"type": "Array <number>",
 					"desc": "coordinates"
 				}
 			],
 			"params": [
 				{
 					"Argument": "obj",
-					"Type": "( Array 〈number〉 | Geometry 〈Point〉 | Feature 〈Point〉 )",
+					"Type": "(Array <number> | Geometry <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
 					"Description": "Object"
 				}
 			],
@@ -2879,14 +3001,14 @@
 			"npmName": "@turf/invariant",
 			"returns": [
 				{
-					"type": "Array 〈number〉",
+					"type": "Array <number>",
 					"desc": "coordinates"
 				}
 			],
 			"params": [
 				{
 					"Argument": "obj",
-					"Type": "( Array 〈number〉 | Geometry | Feature )",
+					"Type": "(Array <number> | Geometry | Feature)",
 					"Description": "Object"
 				}
 			],
@@ -2911,7 +3033,7 @@
 			"params": [
 				{
 					"Argument": "coordinates",
-					"Type": "Array 〈any〉",
+					"Type": "Array <any>",
 					"Description": "GeoJSON Coordinates"
 				}
 			],
@@ -3034,14 +3156,14 @@
 			"npmName": "@turf/invariant",
 			"returns": [
 				{
-					"type": "( Geometry |  )",
+					"type": "(Geometry | )",
 					"desc": "GeoJSON Geometry Object"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( Feature | Geometry )",
+					"Type": "(Feature | Geometry)",
 					"Description": "GeoJSON Feature or Geometry Object"
 				}
 			],
@@ -3083,19 +3205,19 @@
 			"npmName": "@turf/isobands",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈MultiPolygon〉",
+					"type": "FeatureCollection <MultiPolygon>",
 					"desc": "a FeatureCollection of  MultiPolygon  features representing isobands"
 				}
 			],
 			"params": [
 				{
 					"Argument": "pointGrid",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
 					"Argument": "breaks",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "where to draw contours"
 				},
 				{
@@ -3119,7 +3241,7 @@
 				},
 				{
 					"Prop": "breaksProperties",
-					"Type": "Array 〈Object〉",
+					"Type": "Array <Object>",
 					"Default": "[]",
 					"Description": "GeoJSON properties passed, in order, to the correspondent isoband (order defined by breaks)"
 				}
@@ -3137,25 +3259,25 @@
 			"npmName": "@turf/isolines",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈MultiLineString〉",
+					"type": "FeatureCollection <MultiLineString>",
 					"desc": "a FeatureCollection of  MultiLineString  features representing isolines"
 				}
 			],
 			"params": [
 				{
 					"Argument": "pointGrid",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
 					"Argument": "breaks",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "values of  zProperty  where to draw isolines"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3173,7 +3295,7 @@
 				},
 				{
 					"Prop": "breaksProperties",
-					"Type": "Array 〈Object〉",
+					"Type": "Array <Object>",
 					"Default": "[]",
 					"Description": "GeoJSON properties passed, in order, to the correspondent isoline;\nthe breaks array will define the order in which the isolines are created"
 				}
@@ -3191,14 +3313,14 @@
 			"npmName": "@turf/kinks",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "self-intersections"
 				}
 			],
 			"params": [
 				{
 					"Argument": "featureIn",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(LineString | MultiLineString | MultiPolygon | Polygon)>",
 					"Description": "input feature"
 				}
 			],
@@ -3216,14 +3338,14 @@
 			"npmName": "@turf/line-arc",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "line arc"
 				}
 			],
 			"params": [
 				{
 					"Argument": "center",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "center point"
 				},
 				{
@@ -3244,7 +3366,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3274,14 +3396,14 @@
 			"npmName": "@turf/line-chunk",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈LineString〉",
+					"type": "FeatureCollection <LineString>",
 					"desc": "collection of line segments"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature 〈〉 )",
+					"Type": "(FeatureCollection | Geometry | Feature <(LineString | MultiLineString)>)",
 					"Description": "the lines to split"
 				},
 				{
@@ -3292,7 +3414,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3335,7 +3457,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3359,19 +3481,19 @@
 			"npmName": "@turf/line-intersect",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "point(s) that intersect both"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line1",
-					"Type": "( Geometry | FeatureCollection | Feature 〈〉 )",
+					"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "any LineString or Polygon"
 				},
 				{
 					"Argument": "line2",
-					"Type": "( Geometry | FeatureCollection | Feature 〈〉 )",
+					"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "any LineString or Polygon"
 				}
 			],
@@ -3389,14 +3511,14 @@
 			"npmName": "@turf/line-offset",
 			"returns": [
 				{
-					"type": "Feature 〈〉",
+					"type": "Feature <(LineString | MultiLineString)>",
 					"desc": "Line offset from the input line"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString)>)",
 					"Description": "input GeoJSON"
 				},
 				{
@@ -3407,7 +3529,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3431,25 +3553,25 @@
 			"npmName": "@turf/line-overlap",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈LineString〉",
+					"type": "FeatureCollection <LineString>",
 					"desc": "lines(s) that are overlapping between both features"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line1",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "any LineString or Polygon"
 				},
 				{
 					"Argument": "line2",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
 					"Description": "any LineString or Polygon"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3473,14 +3595,14 @@
 			"npmName": "@turf/line-segment",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈LineString〉",
+					"type": "FeatureCollection <LineString>",
 					"desc": "2-vertex line segments"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( Geometry | FeatureCollection | Feature 〈〉 )",
+					"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | MultiPolygon | Polygon)>)",
 					"Description": "GeoJSON Polygon or LineString"
 				}
 			],
@@ -3498,14 +3620,14 @@
 			"npmName": "@turf/line-slice-along",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "sliced line"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "( Feature 〈LineString〉 | LineString )",
+					"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | LineString)",
 					"Description": "input line"
 				},
 				{
@@ -3521,7 +3643,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3545,24 +3667,24 @@
 			"npmName": "@turf/line-slice",
 			"returns": [
 				{
-					"type": "Feature 〈LineString〉",
+					"type": "Feature <LineString>",
 					"desc": "sliced line"
 				}
 			],
 			"params": [
 				{
 					"Argument": "startPt",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "starting point"
 				},
 				{
 					"Argument": "stopPt",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "stopping point"
 				},
 				{
 					"Argument": "line",
-					"Type": "( Feature 〈LineString〉 | LineString )",
+					"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | LineString)",
 					"Description": "line to slice"
 				}
 			],
@@ -3580,14 +3702,14 @@
 			"npmName": "@turf/line-split",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈LineString〉",
+					"type": "FeatureCollection <LineString>",
 					"desc": "Split LineStrings"
 				}
 			],
 			"params": [
 				{
 					"Argument": "line",
-					"Type": "Feature 〈LineString〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>",
 					"Description": "LineString Feature to split"
 				},
 				{
@@ -3610,20 +3732,20 @@
 			"npmName": "@turf/linestring-to-polygon",
 			"returns": [
 				{
-					"type": "Feature 〈〉",
+					"type": "Feature <(Polygon | MultiPolygon)>",
 					"desc": "converted to Polygons"
 				}
 			],
 			"params": [
 				{
 					"Argument": "lines",
-					"Type": "( FeatureCollection | Feature 〈〉 )",
+					"Type": "(FeatureCollection | Feature <(LineString | MultiLineString)>)",
 					"Description": "Features to convert"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -3659,14 +3781,14 @@
 			"npmName": "@turf/mask",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "Masked Polygon (exterior ring with holes)."
 				}
 			],
 			"params": [
 				{
 					"Argument": "polygon",
-					"Type": "( FeatureCollection | Feature 〈〉 )",
+					"Type": "(FeatureCollection | Feature <(Polygon | MultiPolygon)>)",
 					"Description": "GeoJSON Polygon used as interior rings or holes."
 				},
 				{
@@ -3691,7 +3813,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3725,7 +3847,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature )",
+					"Type": "(FeatureCollection | Geometry | Feature)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3760,7 +3882,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature )",
+					"Type": "(FeatureCollection | Feature)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3789,7 +3911,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature )",
+					"Type": "(FeatureCollection | Feature)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3819,7 +3941,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3848,7 +3970,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3876,14 +3998,14 @@
 			"npmName": "@turf/meta",
 			"returns": [
 				{
-					"type": "Array 〈〉",
+					"type": "Array <Array <number>>",
 					"desc": "coordinate position array"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				}
 			],
@@ -3903,7 +4025,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3932,7 +4054,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3962,7 +4084,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -3991,7 +4113,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON object"
 				},
 				{
@@ -4023,7 +4145,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON"
 				},
 				{
@@ -4050,7 +4172,7 @@
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature | Geometry )",
+					"Type": "(FeatureCollection | Feature | Geometry)",
 					"Description": "any GeoJSON"
 				},
 				{
@@ -4078,19 +4200,19 @@
 			"npmName": "@turf/midpoint",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "a point midway between  pt1  and  pt2"
 				}
 			],
 			"params": [
 				{
 					"Argument": "point1",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "first point"
 				},
 				{
 					"Argument": "point2",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "second point"
 				}
 			],
@@ -4108,19 +4230,19 @@
 			"npmName": "@turf/nearest",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "the closest point in the set to the reference point"
 				}
 			],
 			"params": [
 				{
 					"Argument": "targetPoint",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "the reference point"
 				},
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "against input point set"
 				}
 			],
@@ -4145,12 +4267,12 @@
 			"params": [
 				{
 					"Argument": "point",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "the Point for which a z-value will be calculated"
 				},
 				{
 					"Argument": "triangle",
-					"Type": "( Geometry | Feature 〈Polygon〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>)",
 					"Description": "a Polygon feature with three vertices"
 				}
 			],
@@ -4168,14 +4290,14 @@
 			"npmName": "@turf/point-grid",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "grid of points"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "( BBox | GeoJSON )",
+					"Type": "(BBox | GeoJSON)",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				},
 				{
@@ -4186,7 +4308,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4222,25 +4344,25 @@
 			"npmName": "@turf/point-on-line",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "closest point on the  line  to  point. The properties object will contain three values:  index : closest point was found on nth line part,  dist : distance between pt and the closest point,  location : distance along the line between start and the closest point."
 				}
 			],
 			"params": [
 				{
 					"Argument": "lines",
-					"Type": "( Geometry | Feature 〈〉 )",
+					"Type": "(Geometry | Feature <(LineString | MultiLineString)>)",
 					"Description": "lines to snap to"
 				},
 				{
 					"Argument": "pt",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
 					"Description": "point to snap from"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4271,11 +4393,59 @@
 			"params": [
 				{
 					"Argument": "fc",
-					"Type": "( Feature | FeatureCollection )",
+					"Type": "(Feature | FeatureCollection)",
 					"Description": "any feature or set of features"
 				}
 			],
 			"options": null,
+			"throws": []
+		},
+		{
+			"parent": null,
+			"category": null,
+			"name": "pointToLineDistance",
+			"description": "Returns the minimum distance between a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a> , being the distance from a line the\nminimum distance between the point and any segment of the  LineString.",
+			"snippet": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[1, 1],[-1, 1]]);\r\n\r\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\r\n//=69.11854715938406",
+			"example": "var pt = turf.point([0, 0]);\r\nvar line = turf.lineString([[1, 1],[-1, 1]]);\r\n\r\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\r\n//=69.11854715938406",
+			"hasMap": false,
+			"npmName": "@turf/point-to-line-distance",
+			"returns": [
+				{
+					"type": "number",
+					"desc": "distance between point and line"
+				}
+			],
+			"params": [
+				{
+					"Argument": "pt",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+					"Description": "Feature or Geometry"
+				},
+				{
+					"Argument": "line",
+					"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <number>>)",
+					"Description": "GeoJSON Feature or Geometry"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "units",
+					"Type": "string",
+					"Default": "'kilometers'",
+					"Description": "can be degrees, radians, miles, or kilometers"
+				},
+				{
+					"Prop": "mercator",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "if distance should be on Mercator or WGS84 projection"
+				}
+			],
 			"throws": []
 		},
 		{
@@ -4289,19 +4459,19 @@
 			"npmName": "@turf/polygon-tangents",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "Feature Collection containing the two tangent points"
 				}
 			],
 			"params": [
 				{
 					"Argument": "pt",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "to calculate the tangent points from"
 				},
 				{
 					"Argument": "polygon",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(Polygon | MultiPolygon)>",
 					"Description": "to get tangents from"
 				}
 			],
@@ -4319,20 +4489,20 @@
 			"npmName": "@turf/polygon-to-linestring",
 			"returns": [
 				{
-					"type": "( FeatureCollection | Feature 〈〉 )",
+					"type": "(FeatureCollection | Feature <(LineString | MultiLinestring)>)",
 					"desc": "converted (Multi)Polygon to (Multi)LineString"
 				}
 			],
 			"params": [
 				{
 					"Argument": "polygon",
-					"Type": "Feature 〈〉",
+					"Type": "Feature <(Polygon | MultiPolygon)>",
 					"Description": "Feature to convert"
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4356,14 +4526,14 @@
 			"npmName": "@turf/polygonize",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "Polygons created"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Geometry | Feature 〈〉 )",
+					"Type": "(FeatureCollection | Geometry | Feature <(LineString | MultiLineString)>)",
 					"Description": "Lines in order to polygonize"
 				}
 			],
@@ -4374,6 +4544,80 @@
 					"desc": "if GeoJSON is invalid."
 				}
 			]
+		},
+		{
+			"parent": "@turf/projection",
+			"category": null,
+			"name": "toMercator",
+			"description": "Converts a WGS84 GeoJSON object into Mercator (EPSG:900913) projection",
+			"snippet": "var pt = turf.point([-71,41]);\r\nvar converted = turf.toMercator(pt);\r\n\r",
+			"example": "var pt = turf.point([-71,41]);\r\nvar converted = turf.toMercator(pt);\r\n\r\n//addToMap\r\nvar addToMap = [pt, converted];",
+			"hasMap": true,
+			"npmName": "@turf/projection",
+			"returns": [
+				{
+					"type": "GeoJSON",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "(GeoJSON | Position)",
+					"Description": "WGS84 GeoJSON object"
+				},
+				{
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
+				}
+			],
+			"throws": []
+		},
+		{
+			"parent": "@turf/projection",
+			"category": null,
+			"name": "toWgs84",
+			"description": "Converts a Mercator (EPSG:900913) GeoJSON object into WGS84 projection",
+			"snippet": "var pt = turf.point([-7903683.846322424, 5012341.663847514]);\r\nvar converted = turf.toWgs84(pt);\r\n\r",
+			"example": "var pt = turf.point([-7903683.846322424, 5012341.663847514]);\r\nvar converted = turf.toWgs84(pt);\r\n\r\n//addToMap\r\nvar addToMap = [pt, converted];",
+			"hasMap": true,
+			"npmName": "@turf/projection",
+			"returns": [
+				{
+					"type": "GeoJSON",
+					"desc": "true/false"
+				}
+			],
+			"params": [
+				{
+					"Argument": "geojson",
+					"Type": "(GeoJSON | Position)",
+					"Description": "Mercator GeoJSON object"
+				},
+				{
+					"Argument": "options",
+					"Type": "Optional: Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "mutate",
+					"Type": "boolean",
+					"Default": "false",
+					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
+				}
+			],
+			"throws": []
 		},
 		{
 			"parent": null,
@@ -4399,7 +4643,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4436,18 +4680,18 @@
 			"params": [
 				{
 					"Argument": "start",
-					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
+					"Type": "((Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>) | Position)",
 					"Description": "starting Point"
 				},
 				{
 					"Argument": "end",
-					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
+					"Type": "((Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>) | Position)",
 					"Description": "ending Point"
 				},
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4471,14 +4715,14 @@
 			"npmName": "@turf/rhumb-destination",
 			"returns": [
 				{
-					"type": "Feature 〈Point〉",
+					"type": "Feature <Point>",
 					"desc": "Destination point."
 				}
 			],
 			"params": [
 				{
 					"Argument": "origin",
-					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
+					"Type": "((Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>) | Position)",
 					"Description": "starting point"
 				},
 				{
@@ -4494,7 +4738,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4531,18 +4775,18 @@
 			"params": [
 				{
 					"Argument": "from",
-					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
+					"Type": "((Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>) | Position)",
 					"Description": "origin point"
 				},
 				{
 					"Argument": "to",
-					"Type": "( ( Geometry | Feature 〈Point〉 ) | Position )",
+					"Type": "((Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>) | Position)",
 					"Description": "destination point"
 				},
 				{
 					"Argument": "options",
 					"Type": "Optional: Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4596,14 +4840,14 @@
 			"npmName": "@turf/sector",
 			"returns": [
 				{
-					"type": "Feature 〈Polygon〉",
+					"type": "Feature <Polygon>",
 					"desc": "sector polygon"
 				}
 			],
 			"params": [
 				{
 					"Argument": "center",
-					"Type": "Feature 〈Point〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "center point"
 				},
 				{
@@ -4624,7 +4868,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4667,7 +4911,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4703,14 +4947,14 @@
 			"npmName": "@turf/square-grid",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "grid a grid of polygons"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "( Array 〈number〉 | FeatureCollection | Feature 〈any〉 )",
+					"Type": "(Array <number> | FeatureCollection | Feature <any>)",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				},
 				{
@@ -4721,7 +4965,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -4751,14 +4995,14 @@
 			"npmName": "@turf/square",
 			"returns": [
 				{
-					"type": "Array 〈number〉",
+					"type": "Array <number>",
 					"desc": "a square surrounding  bbox"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "extent in  west, south, east, north  order"
 				}
 			],
@@ -4776,19 +5020,19 @@
 			"npmName": "@turf/tag",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "points with  containingPolyId  property containing values from  polyId"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
 					"Argument": "polygons",
-					"Type": "FeatureCollection 〈Polygon〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "input polygons"
 				},
 				{
@@ -4816,14 +5060,14 @@
 			"npmName": "@turf/tesselate",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "a geometrycollection feature"
 				}
 			],
 			"params": [
 				{
 					"Argument": "poly",
-					"Type": "Feature 〈Polygon〉",
+					"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "the polygon to tesselate"
 				}
 			],
@@ -4841,14 +5085,14 @@
 			"npmName": "@turf/tin",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "TIN output"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
@@ -4889,13 +5133,13 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
 				{
 					"Prop": "pivot",
-					"Type": "( Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(Geometry | Feature <Point> | Array <number>)",
 					"Default": "'centroid'",
 					"Description": "point around which the rotation will be performed"
 				},
@@ -4937,13 +5181,13 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
 				{
 					"Prop": "origin",
-					"Type": "( string | Geometry | Feature 〈Point〉 | Array 〈number〉 )",
+					"Type": "(string | Geometry | Feature <Point> | Array <number>)",
 					"Default": "'centroid'",
 					"Description": "Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid)"
 				},
@@ -4990,7 +5234,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -5026,14 +5270,14 @@
 			"npmName": "@turf/triangle-grid",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "grid of polygons"
 				}
 			],
 			"params": [
 				{
 					"Argument": "bbox",
-					"Type": "Array 〈number〉",
+					"Type": "Array <number>",
 					"Description": "extent in  minX, minY, maxX, maxY  order"
 				},
 				{
@@ -5044,7 +5288,7 @@
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -5068,20 +5312,20 @@
 			"npmName": "@turf/truncate",
 			"returns": [
 				{
-					"type": "( FeatureCollection | Feature 〈any〉 )",
+					"type": "(FeatureCollection | Feature <any>)",
 					"desc": "layer with truncated geometry"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈any〉 )",
+					"Type": "(FeatureCollection | Feature <any>)",
 					"Description": "any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection."
 				},
 				{
 					"Argument": "options",
 					"Type": "Object",
-					"Description": "Optional parameters"
+					"Description": "Optional parameters: see below"
 				}
 			],
 			"options": [
@@ -5117,7 +5361,7 @@
 			"npmName": "@turf/union",
 			"returns": [
 				{
-					"type": "Feature 〈〉",
+					"type": "Feature <(Polygon | MultiPolygon)>",
 					"desc": "a combined  Polygon  or  MultiPolygon  feature"
 				}
 			],
@@ -5141,14 +5385,14 @@
 			"npmName": "@turf/unkink-polygon",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Polygon〉",
+					"type": "FeatureCollection <Polygon>",
 					"desc": "Unkinked polygons"
 				}
 			],
 			"params": [
 				{
 					"Argument": "geojson",
-					"Type": "( FeatureCollection | Feature 〈〉 )",
+					"Type": "(FeatureCollection | Feature <(Polygon | MultiPolygon)>)",
 					"Description": "GeoJSON Polygon or MultiPolygon"
 				}
 			],
@@ -5166,19 +5410,19 @@
 			"npmName": "@turf/within",
 			"returns": [
 				{
-					"type": "FeatureCollection 〈Point〉",
+					"type": "FeatureCollection <Point>",
 					"desc": "points that land within at least one polygon"
 				}
 			],
 			"params": [
 				{
 					"Argument": "points",
-					"Type": "FeatureCollection 〈Point〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
 					"Description": "input points"
 				},
 				{
 					"Argument": "polygons",
-					"Type": "FeatureCollection 〈Polygon〉",
+					"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
 					"Description": "input polygons"
 				}
 			],

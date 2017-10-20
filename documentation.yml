@@ -3,7 +3,6 @@ toc:
   - along
   - area
   - bbox
-  - bboxClip
   - bboxPolygon
   - bearing
   - center
@@ -16,12 +15,14 @@ toc:
   - midpoint
   - pointOnSurface
   - polygonTangents
+  - pointToLineDistance
   - rhumbBearing
   - rhumbDestination
   - rhumbDistance
   - square
   - greatCircle
   - name: Coordinate Mutation
+  - cleanCoords
   - flip
   - rewind
   - round
@@ -131,8 +132,10 @@ toc:
   - booleanContains
   - booleanCrosses
   - booleanDisjoint
+  - booleanEqual
   - booleanOverlap
   - booleanPointOnLine
+  - booleanWithin
   - name: Unit Conversion
   - bearingToAngle
   - convertArea
@@ -142,6 +145,8 @@ toc:
   - distanceToDegrees
   - radiansToDistance
   - radians2degrees
+  - toMercator
+  - toWgs84
 paths:
     GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
     Point: "http://geojson.org/geojson-spec.html#point"

@@ -40,6 +40,7 @@
     "@turf/helpers": "^5.0.0",
     "@turf/tin": "^4.7.3",
     "iview": "^2.4.0",
+    "leaflet-fullscreen": "^1.0.2",
     "mapbox.js": "^3.1.1",
     "vue": "^2.4.2",
     "vue-prism-component": "^1.0.1",

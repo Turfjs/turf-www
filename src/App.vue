@@ -65,6 +65,7 @@ export default {
 
 <style lang="scss">
   @import "./../node_modules/mapbox.js/theme/style.css";
+  @import './../node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css';
   @import './../node_modules/iview/dist/styles/iview.css';
 
   @import url('https://fonts.googleapis.com/css?family=Montserrat:200,600');

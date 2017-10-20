@@ -4,6 +4,7 @@
 
 <script>
 import L from 'mapbox.js'
+require('leaflet-fullscreen')
 L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
 var turfMap = null
 var fg = null
@@ -49,15 +50,22 @@ export default {
   mounted: function () {
     turfMap = L.mapbox.map('turfMap', 'mapbox.streets')
     turfMap.scrollWheelZoom.disable()
-    control = L.control.layers([], []).addTo(turfMap);
+    control = L.control.layers([], []).addTo(turfMap)
+    turfMap.addControl(new L.Control.Fullscreen())
     fg = L.featureGroup([]).addTo(turfMap)
     this.moveMapToExample()
   }
 }
 </script>
 
-<style>
+<style lang="scss">
   #turfMap {
     margin-top: 30px;
   }
+  .leaflet-touch .leaflet-control-fullscreen a {
+  background-position: 0px 0px;
+}
+.leaflet-touch.leaflet-fullscreen-on .leaflet-control-fullscreen a {
+  background-position: 0px -26px;
+}
 </style>

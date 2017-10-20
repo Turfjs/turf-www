@@ -5,11 +5,30 @@
       <p v-html='module.description'></p>
       <h4>Arguments</h4>
       <div>
-        <Table :columns="cols" :data="module.params" :stripe='true' size='small' :disabled-hover='true'></Table>
+        <table>
+          <tr>
+            <th v-for="col in cols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
+          </tr>
+          <tr v-for="param in module.params">
+            <td>{{param.Argument}}</td>
+            <td v-html="param.Type"></td>
+            <td>{{param.Description}}</td>
+          </tr>
+        </table>
       </div>
       <div v-if="module.options !== null">
         <h4>Options</h4>
-        <Table :columns="optionsCols" :data="module.options" :stripe='true' size='small' :disabled-hover='true'></Table>
+        <table>
+          <tr>
+            <th v-for="col in optionsCols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
+          </tr>
+          <tr v-for="option in module.options">
+            <td>{{option.Prop}}</td>
+            <td>{{option.Type}}</td>
+            <td>{{option.Default}}</td>
+            <td>{{option.Description}}</td>
+          </tr>
+        </table>
       </div>
       <div v-if="module.returns.length > 0">
         <h4>Returns</h4>
@@ -43,7 +62,6 @@
 <script>
 import leafletMap from './Map.vue'
 import {Row, Col} from 'iview/src/components/grid'
-import Table from 'iview/src/components/table'
 import Prism from 'vue-prism-component'
 
 export default {
@@ -94,7 +112,6 @@ export default {
     leafletMap,
     Row,
     Col,
-    Table,
     Prism
   }
 }
@@ -109,10 +126,27 @@ export default {
     margin-bottom: 10px;
     margin-top: 0px;
   }
-  .ivu-table-cell {
+
+  table {
+    background-color: white;
     font-size: 0.9rem;
-    word-break: break-word;
+    border: 1px solid #dddee1;
+    width: 100%;
+    border-collapse: collapse;
+    tr {
+      th {
+        background-color: #F8F8F9;
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e9eaec;
+      }
+    }
+    td {
+      border-bottom: 1px solid #e9eaec;
+      padding: 10px 10px;
+    }
   }
+
 
   .npmBadge {
     background-color: transparentize($blue, 0.6);

@@ -150,8 +150,8 @@ function getParams (metadata) {
     if (!param.description.children.length) return false
     return {
       Argument: param.name,
-      Type: getType(param.type),
-      Description: concatTags(param.description.children[0].children, false),
+      Type: getType(param.type, true),
+      Description: concatTags(param.description.children[0].children),
       _lineNum: param.lineNumber
     }
   })
@@ -188,7 +188,7 @@ function getOptions (metadata) {
 
 function concatTags (inNode, addLink) {
   if (!inNode) return false
-  const outDescr = inNode.map(node => {
+  let outDescr = inNode.map(node => {
     if (node.children) {
       if (!addLink) return node.children[0].value
       let link = getLink(node.children[0].value)
@@ -197,23 +197,35 @@ function concatTags (inNode, addLink) {
     }
     return node.value
   })
-  return outDescr.join(' ').replace(' .', '.')
+  outDescr = outDescr.join(' ').replace(' .', '.')
+  if (outDescr === 'Optional parameters') outDescr = outDescr.concat(': see below')
+  return outDescr
 }
 
-function getType (inNode) {
+function getType (inNode, addLink) {
   if (!inNode) return false
   if (inNode.type === 'UnionType') {
-    return '( ' + inNode.elements.map(node => {
-      return getType(node)
-    }).join(' | ') + ' )'
+    return '(' + inNode.elements.map(node => {
+      return getType(node, addLink)
+    }).join(' | ') + ')'
   }
   if (inNode.type === 'OptionalType') return 'Optional: ' + inNode.expression.name
   if (typeof inNode.type === 'object') return inNode.name
   if (inNode.type === 'NameExpression') return inNode.name
   if (inNode.type === 'TypeApplication') {
-    return inNode.expression.name + ' 〈' + inNode.applications.map(node => {
-      return node.name
-    }) + '〉'
+    return inNode.expression.name + ' <' + inNode.applications.map(node => {
+      if (node.type === 'UnionType') {
+        return '(' + node.elements.map(node2 => {
+          return getType(node2, addLink)
+        }).join(' | ') + ')'
+      }
+      if (node.type === 'TypeApplication') {
+        return getType(node, addLink)
+      }
+      let link = getLink(node.name)
+      if (!addLink || link === null) return node.name
+      return '<a target="_blank" href="' + link + '">' + node.name + '</a>'
+    }) + '>'
   }
 }
 
