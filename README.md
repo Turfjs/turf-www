@@ -1,5 +1,4 @@
-turf-www
-========
+# turf-www
 
 turf-www is the website for [Turf](http://github.com/turfjs/turf). It lives at http://turfjs.org/.
 
@@ -19,7 +18,7 @@ To learn about contributing documentation, read [CONTRIBUTING.md](https://github
 
 ### Examples and Tutorials
 
-If you have examples or tutorials you have written, please open an issue and someone will add them to [examples.html](https://github.com/Turfjs/turf-www/blob/gh-pages/examples.html).
+If you have examples or tutorials you have written, please open an issue and someone will add them to the [examples page](https://github.com/Turfjs/turf-www/blob/gh-pages/examples).
 
 Our list of examples and tutorials will be growing and changing over time.
 
