@@ -258,6 +258,7 @@ function getLink (name) {
     case 'FEATURECOLLECTION':
       return 'http://geojson.org/geojson-spec.html#feature-collection-objects'
     case 'BBOX':
+    case 'BOUNDING BOX':
       return 'http://geojson.org/geojson-spec.html#bounding-boxes'
     default:
       return null

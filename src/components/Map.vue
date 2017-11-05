@@ -49,7 +49,6 @@ export default {
   },
   mounted: function () {
     turfMap = L.mapbox.map('turfMap', 'mapbox.streets')
-    turfMap.scrollWheelZoom.disable()
     control = L.control.layers([], []).addTo(turfMap)
     turfMap.addControl(new L.Control.Fullscreen())
     fg = L.featureGroup([]).addTo(turfMap)

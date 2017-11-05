@@ -137,7 +137,8 @@ export default {
       }
 
     .menuItem {
-      margin: 5px 0px;
+      margin: 2px 0px;
+      font-size: 0.9rem;
       color: #656565;
       text-decoration: none;
       cursor: pointer;
