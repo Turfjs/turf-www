@@ -12,23 +12,25 @@ toc:
   - destination
   - distance
   - envelope
-  - lineDistance
+  - length
   - midpoint
-  - pointOnSurface
+  - pointOnFeature
   - polygonTangents
+  - pointToLineDistance
   - rhumbBearing
   - rhumbDestination
   - rhumbDistance
   - square
   - greatCircle
   - name: Coordinate Mutation
+  - cleanCoords
   - flip
   - rewind
   - round
   - truncate
   - name: Transformation
   - bboxClip
-  - bezier
+  - bezierSpline
   - buffer
   - circle
   - clone
@@ -44,13 +46,14 @@ toc:
   - transformTranslate
   - transformScale
   - union
+  - voronoi
   - name: Feature Conversion
   - combine
   - explode
   - flatten
-  - lineStringToPolygon
+  - lineToPolygon
   - polygonize
-  - polygonToLineString
+  - polygonToLine
   - name: Misc
   - kinks
   - lineArc
@@ -62,8 +65,9 @@ toc:
   - lineSliceAlong
   - lineSplit
   - mask
-  - pointOnLine
+  - nearestPointOnLine
   - sector
+  - shortestPath
   - unkinkPolygon
   - name: Helper
   - featureCollection
@@ -84,10 +88,8 @@ toc:
   - isolines
   - planepoint
   - tin
-  - idw
   - name: Joins
-  - inside
-  - within
+  - pointsWithinPolygon
   - tag
   - name: Grids
   - hexGrid
@@ -95,7 +97,7 @@ toc:
   - squareGrid
   - triangleGrid
   - name: Classification
-  - nearest
+  - nearestPoint
   - name: Aggregation
   - collect
   - clustersDbscan
@@ -111,7 +113,7 @@ toc:
   - getCoord
   - getCoords
   - getGeom
-  - getGeomType
+  - getType
   - geomEach
   - geomReduce
   - propEach
@@ -131,17 +133,23 @@ toc:
   - booleanContains
   - booleanCrosses
   - booleanDisjoint
+  - booleanEqual
   - booleanOverlap
+  - booleanParallel
+  - booleanPointInPolygon
   - booleanPointOnLine
+  - booleanWithin
   - name: Unit Conversion
-  - bearingToAngle
+  - bearingToAzimuth
   - convertArea
-  - convertDistance
-  - degrees2radians
-  - distanceToRadians
-  - distanceToDegrees
-  - radiansToDistance
-  - radians2degrees
+  - convertLength
+  - degreesToRadians
+  - lengthToRadians
+  - lengthToDegrees
+  - radiansToLength
+  - radiansToDegrees
+  - toMercator
+  - toWgs84
 paths:
     GeometryCollection: "http://geojson.org/geojson-spec.html#geometrycollection"
     Point: "http://geojson.org/geojson-spec.html#point"
