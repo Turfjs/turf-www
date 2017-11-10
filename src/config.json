@@ -402,12 +402,32 @@
 		},
 		{
 			"isHeading": true,
-			"name": "Data",
+			"name": "Random",
 			"hidden": false
 		},
 		{
 			"isHeading": false,
-			"name": "random",
+			"name": "randomPosition",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "randomPoint",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "randomLineString",
+			"hidden": false
+		},
+		{
+			"isHeading": false,
+			"name": "randomPolygon",
+			"hidden": false
+		},
+		{
+			"isHeading": true,
+			"name": "Data",
 			"hidden": false
 		},
 		{
@@ -4686,6 +4706,172 @@
 					"Type": "boolean",
 					"Default": "false",
 					"Description": "allows GeoJSON input to be mutated (significant performance increase if true)"
+				}
+			],
+			"throws": []
+		},
+		{
+			"parent": "@turf/random",
+			"category": null,
+			"name": "randomPosition",
+			"description": "Returns a random position within a  <a target=\"_blank\" href=\"bounding\">box</a>.",
+			"snippet": "var position = turf.randomPosition([-180, -90, 180, 90])\n//=position",
+			"example": "var position = turf.randomPosition([-180, -90, 180, 90])\n//=position",
+			"hasMap": false,
+			"npmName": "@turf/random",
+			"returns": [
+				{
+					"type": "Array <number>",
+					"desc": "Position  longitude, latitude"
+				}
+			],
+			"params": [
+				{
+					"Argument": "bbox",
+					"Type": "Array <number>",
+					"Description": "a bounding box inside of which positions are placed."
+				}
+			],
+			"options": null,
+			"throws": []
+		},
+		{
+			"parent": "@turf/random",
+			"category": null,
+			"name": "randomPoint",
+			"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>.",
+			"snippet": "var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90]})\n//=points",
+			"example": "var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90]})\n//=points",
+			"hasMap": false,
+			"npmName": "@turf/random",
+			"returns": [
+				{
+					"type": "FeatureCollection <Point>",
+					"desc": "GeoJSON FeatureCollection of points"
+				}
+			],
+			"params": [
+				{
+					"Argument": "count",
+					"Type": "number",
+					"Description": "how many geometries will be generated"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "bbox",
+					"Type": "Array <number>",
+					"Default": "[-180,-90,180,90]",
+					"Description": "a bounding box inside of which geometries are placed."
+				}
+			],
+			"throws": []
+		},
+		{
+			"parent": "@turf/random",
+			"category": null,
+			"name": "randomPolygon",
+			"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
+			"snippet": "var polygons = turf.randomPolygon(25, {bbox: [-180, -90, 180, 90]})\n//=polygons",
+			"example": "var polygons = turf.randomPolygon(25, {bbox: [-180, -90, 180, 90]})\n//=polygons",
+			"hasMap": false,
+			"npmName": "@turf/random",
+			"returns": [
+				{
+					"type": "FeatureCollection <Point>",
+					"desc": "GeoJSON FeatureCollection of points"
+				}
+			],
+			"params": [
+				{
+					"Argument": "count",
+					"Type": "number",
+					"Description": "how many geometries will be generated"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "bbox",
+					"Type": "Array <number>",
+					"Default": "[-180,-90,180,90]",
+					"Description": "a bounding box inside of which geometries are placed."
+				},
+				{
+					"Prop": "num_vertices",
+					"Type": "number",
+					"Default": "10",
+					"Description": "is how many coordinates each LineString will contain."
+				},
+				{
+					"Prop": "max_radial_length",
+					"Type": "number",
+					"Default": "10",
+					"Description": "is the maximum number of decimal degrees latitude or longitude that a vertex can reach out of the center of the Polygon."
+				}
+			],
+			"throws": []
+		},
+		{
+			"parent": "@turf/random",
+			"category": null,
+			"name": "randomLineString",
+			"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">linestring</a>.",
+			"snippet": "var lineStrings = turf.randomLineString(25, {bbox: [-180, -90, 180, 90]})\n//=lineStrings",
+			"example": "var lineStrings = turf.randomLineString(25, {bbox: [-180, -90, 180, 90]})\n//=lineStrings",
+			"hasMap": false,
+			"npmName": "@turf/random",
+			"returns": [
+				{
+					"type": "FeatureCollection <Point>",
+					"desc": "GeoJSON FeatureCollection of points"
+				}
+			],
+			"params": [
+				{
+					"Argument": "count",
+					"Type": "number",
+					"Description": "how many geometries will be generated"
+				},
+				{
+					"Argument": "options",
+					"Type": "Object",
+					"Description": "Optional parameters: see below"
+				}
+			],
+			"options": [
+				{
+					"Prop": "bbox",
+					"Type": "Array <number>",
+					"Default": "[-180,-90,180,90]",
+					"Description": "a bounding box inside of which geometries are placed."
+				},
+				{
+					"Prop": "num_vertices",
+					"Type": "number",
+					"Default": "10",
+					"Description": "is how many coordinates each LineString will contain."
+				},
+				{
+					"Prop": "max_length",
+					"Type": "number",
+					"Default": "0.0001",
+					"Description": "is the maximum number of decimal degrees that a vertex can be from its predecessor"
+				},
+				{
+					"Prop": "max_rotation",
+					"Type": "number",
+					"Default": "Math.PI/8",
+					"Description": "is the maximum number of radians that a line segment can turn from the previous segment."
 				}
 			],
 			"throws": []
