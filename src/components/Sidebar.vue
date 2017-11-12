@@ -5,14 +5,17 @@
             <h1>TURF</h1>
           </div>
           <router-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</router-link>
-          <input id="sidebarFilter" placeholder="Search modules" v-on:keyup='filterList'>
+          <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
         </div>
         <ul class="turfModules">
-          <li v-for="module in displayedModules"
+          <div v-for="(category, name) in displayedModules">
+          <li class="menuItem heading">{{name}}</li>
+          <li v-for="module in category"
             class="menuItem"
             v-bind:class="{heading: module.isHeading}"
             v-on:click="clickModule"
             >{{module.name}}</li>
+            </div>
         </ul>
     </div>
 </template>
@@ -23,14 +26,36 @@ import {Col} from 'iview/src/components/grid'
 export default {
   name: 'Sidebar',
   props: ['modules'],
+    data () {
+      return {
+        filter: ""
+      }
+    },
   components: {
     Col
   },
   computed: {
     displayedModules: function () {
-      return this.modules.filter(function (module) {
-        return module.hidden === false
-      })
+      let temp = {};
+      for (let i=0;i<this.modules.length;i++) {
+        let m = this.modules[i];
+          if (this.filter == "" || m.name.toUpperCase().indexOf(this.filter.toUpperCase()) >= 0) {
+          if (!(m.category in temp)) {
+             temp[m.category] = [];
+          }
+          temp[m.category].push(m);
+        }
+      }
+      /* sorting modules per category */
+      for (let t in temp) {
+        console.log(t);
+        temp[t].sort(function(a, b){
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0;
+        });
+      }
+      return temp;
     }
   },
   methods: {
@@ -43,9 +68,6 @@ export default {
       window.scrollTo(0, 0)
       this.$emit('changeModule', e.target.innerText)
     },
-    filterList (e) {
-      this.$emit('filterChanged', e.target.value.toUpperCase())
-    }
   }
 }
 </script>

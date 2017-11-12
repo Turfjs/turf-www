@@ -1,785 +1,8 @@
 {
-	"sidebar": [
-		{
-			"isHeading": true,
-			"name": "Measurement",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "along",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "area",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bbox",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bboxClip",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bboxPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bearing",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "center",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "centerOfMass",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "centroid",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "destination",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "distance",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "envelope",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "length",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "midpoint",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "pointOnFeature",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "polygonTangents",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "pointToLineDistance",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "rhumbBearing",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "rhumbDestination",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "rhumbDistance",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "square",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "greatCircle",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Coordinate Mutation",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "cleanCoords",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "flip",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "rewind",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "round",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "truncate",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Transformation",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bboxClip",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bezierSpline",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "buffer",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "circle",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "clone",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "concave",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "convex",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "difference",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "dissolve",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "intersect",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineOffset",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "simplify",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "tesselate",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "transformRotate",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "transformTranslate",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "transformScale",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "union",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "voronoi",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Feature Conversion",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "combine",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "explode",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "flatten",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineToPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "polygonize",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "polygonToLine",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Misc",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "kinks",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineArc",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineChunk",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineIntersect",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineOverlap",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineSegment",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineSlice",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineSliceAlong",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineSplit",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "mask",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "nearestPointOnLine",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "sector",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "shortestPath",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "unkinkPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Helper",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "featureCollection",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "feature",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "geometryCollection",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lineString",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "multiLineString",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "multiPoint",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "multiPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "point",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "polygon",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Random",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "randomPosition",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "randomPoint",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "randomLineString",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "randomPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Data",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "sample",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Interpolation",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "interpolate",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "isobands",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "isolines",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "planepoint",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "tin",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Joins",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "pointsWithinPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "tag",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Grids",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "hexGrid",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "pointGrid",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "squareGrid",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "triangleGrid",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Classification",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "nearestPoint",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Aggregation",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "collect",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "clustersDbscan",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "clustersKmeans",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Meta",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "coordAll",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "coordEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "coordReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "featureEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "featureReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "flattenEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "flattenReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "getCoord",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "getCoords",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "getGeom",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "getType",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "geomEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "geomReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "propEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "propReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "segmentEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "segmentReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "getCluster",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "clusterEach",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "clusterReduce",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Assertions",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "collectionOf",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "containsNumber",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "geojsonType",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "featureOf",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Booleans",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanClockwise",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanContains",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanCrosses",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanDisjoint",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanEqual",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanOverlap",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanParallel",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanPointInPolygon",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanPointOnLine",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "booleanWithin",
-			"hidden": false
-		},
-		{
-			"isHeading": true,
-			"name": "Unit Conversion",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "bearingToAzimuth",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "convertArea",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "convertLength",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "degreesToRadians",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lengthToRadians",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "lengthToDegrees",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "radiansToLength",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "radiansToDegrees",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "toMercator",
-			"hidden": false
-		},
-		{
-			"isHeading": false,
-			"name": "toWgs84",
-			"hidden": false
-		}
-	],
 	"modules": [
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "along",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>  at a specified distance along the line.",
 			"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\nvar options = {units: 'miles'};\n\nvar along = turf.along(line, 200, options);\n",
@@ -821,7 +44,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "area",
 			"description": "Takes one or more features and returns their area in square meters.",
 			"snippet": "var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);\n\nvar area = turf.area(polygon);\n",
@@ -846,7 +69,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "bboxClip",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  and a bbox and clips the feature to the bbox using  <a target=\"_blank\" href=\"https://github.com/mapbox/lineclip\">lineclip</a>.\nMay result in degenerate edges when clipping Polygons.",
 			"snippet": "var bbox = [0, 0, 10, 10];\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\n\nvar clipped = turf.bboxClip(poly, bbox);\n",
@@ -876,7 +99,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "bboxPolygon",
 			"description": "Takes a bbox and returns an equivalent  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
 			"snippet": "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n",
@@ -901,7 +124,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "bbox",
 			"description": "Takes a set of features, calculates the bbox of all input features, and returns a bounding box.",
 			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);\nvar bbox = turf.bbox(line);\nvar bboxPolygon = turf.bboxPolygon(bbox);\n",
@@ -926,7 +149,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "bearing",
 			"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and finds the geographic bearing between them,\ni.e. the angle measured in degrees from the north line (0 degrees)",
 			"snippet": "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\n\nvar bearing = turf.bearing(point1, point2);\n",
@@ -968,7 +191,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "transformation",
 			"name": "bezierSpline",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">line</a>  and returns a curved version\nby applying a  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/B%C3%A9zier_spline\">Bezier spline</a> \nalgorithm.",
 			"snippet": "var line = turf.lineString([\n  [-76.091308, 18.427501],\n  [-76.695556, 18.729501],\n  [-76.552734, 19.40443],\n  [-74.61914, 19.134789],\n  [-73.652343, 20.07657],\n  [-73.157958, 20.210656]\n]);\n\nvar curved = turf.bezierSpline(line);\n",
@@ -1011,7 +234,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanClockwise",
 			"description": "Takes a ring and return true or false whether or not the ring is clockwise or counter-clockwise.",
 			"snippet": "var clockwiseRing = turf.lineString([[0,0],[1,1],[1,0],[0,0]]);\nvar counterClockwiseRing = turf.lineString([[0,0],[1,0],[1,1],[0,0]]);\n\nturf.booleanClockwise(clockwiseRing)\n//=true\nturf.booleanClockwise(counterClockwiseRing)\n//=false",
@@ -1036,7 +259,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanContains",
 			"description": "Boolean-contains returns True if the second geometry is completely contained by the first geometry.\nThe interiors of both geometries must intersect and, the interior and boundary of the secondary (geometry b)\nmust not intersect the exterior of the primary (geometry a).\nBoolean-contains returns the exact opposite result of the  @turf/boolean-within.",
 			"snippet": "var line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\nvar point = turf.point([1, 2]);\n\nturf.booleanContains(line, point);\n//=true",
@@ -1066,7 +289,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanCrosses",
 			"description": "Boolean-Crosses returns True if the intersection results in a geometry whose dimension is one less than\nthe maximum dimension of the two source geometries and the intersection set is interior to\nboth source geometries.",
 			"snippet": "var line1 = turf.lineString([[-2, 2], [4, 2]]);\nvar line2 = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nvar cross = turf.booleanCrosses(line1, line2);\n//=true",
@@ -1096,7 +319,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanDisjoint",
 			"description": "Boolean-disjoint returns (TRUE) if the intersection of the two geometries is an empty set.",
 			"snippet": "var point = turf.point([2, 2]);\nvar line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\n\nturf.booleanDisjoint(line, point);\n//=true",
@@ -1126,7 +349,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanEqual",
 			"description": "Determine whether two geometries of the same type have identical X,Y coordinate values.\nSee  <a target=\"_blank\" href=\"http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm\">http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm</a>",
 			"snippet": "var pt1 = turf.point([0, 0]);\nvar pt2 = turf.point([0, 0]);\nvar pt3 = turf.point([1, 1]);\n\nturf.booleanEqual(pt1, pt2);\n//= true\nturf.booleanEqual(pt2, pt3);\n//= false",
@@ -1156,7 +379,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanOverlap",
 			"description": "Compares two geometries of the same dimension and returns true if their intersection set results in a geometry\ndifferent from both but of the same dimension. It applies to Polygon/Polygon, LineString/LineString,\nMultipoint/Multipoint, MultiLineString/MultiLineString and MultiPolygon/MultiPolygon.",
 			"snippet": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\n\nturf.booleanOverlap(poly1, poly2)\n//=true\nturf.booleanOverlap(poly2, poly3)\n//=false",
@@ -1186,7 +409,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanParallel",
 			"description": "Boolean-Parallel returns True if each segment of  line1  is parallel to the correspondent segment of  line2",
 			"snippet": "var line1 = turf.lineString([[0, 0], [0, 1]]);\nvar line2 = turf.lineString([[1, 0], [1, 1]]);\n\nturf.booleanParallel(line1, line2);\n//=true",
@@ -1216,7 +439,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanPointInPolygon",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  and determines if the point resides inside the polygon. The polygon can\nbe convex or concave. The function accounts for holes.",
 			"snippet": "var pt = turf.point([-77, 44]);\nvar poly = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]]);\n\nturf.booleanPointInPolygon(pt, poly);\n//= true",
@@ -1258,7 +481,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanPointOnLine",
 			"description": "Returns true if a point is on a line. Accepts a optional parameter to ignore the start and end vertices of the linestring.",
 			"snippet": "var pt = turf.point([0, 0]);\nvar line = turf.lineString([[-1, -1],[1, 1],[1.5, 2.2]]);\nvar isPointOnLine = turf.booleanPointOnLine(pt, line);\n//=true",
@@ -1300,7 +523,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "boolean",
 			"name": "booleanWithin",
 			"description": "Boolean-within returns true if the first geometry is completely within the second geometry.\nThe interiors of both geometries must intersect and, the interior and boundary of the primary (geometry a)\nmust not intersect the exterior of the secondary (geometry b).\nBoolean-within returns the exact opposite result of the  @turf/boolean-contains.",
 			"snippet": "var line = turf.lineString([[1, 1], [1, 2], [1, 3], [1, 4]]);\nvar point = turf.point([1, 2]);\n\nturf.booleanWithin(point, line);\n//=true",
@@ -1330,7 +553,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "transformation",
 			"name": "buffer",
 			"description": "Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.",
 			"snippet": "var point = turf.point([-90.548630, 14.616599]);\nvar buffered = turf.buffer(point, 500, {units: 'miles'});\n",
@@ -1378,7 +601,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "centerOfMass",
 			"description": "Takes any  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns its  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Center_of_mass\">center of mass</a>  using this formula:  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon\">Centroid of Polygon</a>.",
 			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar center = turf.centerOfMass(polygon);\n",
@@ -1408,7 +631,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "center",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns the absolute center point of all features.",
 			"snippet": "var features = turf.featureCollection([\n  turf.point( [-97.522259, 35.4691]),\n  turf.point( [-97.502754, 35.463455]),\n  turf.point( [-97.508269, 35.463245])\n]);\n\nvar center = turf.center(features);\n",
@@ -1438,7 +661,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "measurement",
 			"name": "centroid",
 			"description": "Takes one or more features and calculates the centroid using the mean of all vertices.\nThis lessens the effect of small islands and artifacts when calculating the centroid of a set of polygons.",
 			"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar centroid = turf.centroid(polygon);\n",
@@ -1468,7 +691,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "transformation",
 			"name": "circle",
 			"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.",
 			"snippet": "var center = [-75.343, 39.984];\nvar radius = 5;\nvar options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};\nvar circle = turf.circle(center, radius, options);\n",
@@ -1522,7 +745,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "coordinate mutation",
 			"name": "cleanCoords",
 			"description": "Removes redundant coordinates from any GeoJSON Geometry.",
 			"snippet": "var line = turf.lineString([[0, 0], [0, 2], [0, 5], [0, 8], [0, 8], [0, 10]]);\nvar multiPoint = turf.multiPoint([[0, 0], [0, 0], [2, 2]]);\n\nturf.cleanCoords(line).geometry.coordinates;\n//= [[0, 0], [0, 10]]\n\nturf.cleanCoords(multiPoint).geometry.coordinates;\n//= [[0, 0], [2, 2]]",
@@ -1559,7 +782,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "transformation",
 			"name": "clone",
 			"description": "Returns a cloned copy of the passed GeoJSON Object, including possible 'Foreign Members'.\n~3-5x faster than the common JSON.parse + JSON.stringify combo method.",
 			"snippet": "var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]], {color: 'red'});\n\nvar lineCloned = turf.clone(line);",
@@ -1584,7 +807,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "aggregation",
 			"name": "clustersDbscan",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters according to  <a target=\"_blank\" href=\"DBSCAN's\">https://en.wikipedia.org/wiki/DBSCAN</a>  data clustering algorithm.",
 			"snippet": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar maxDistance = 100;\nvar clustered = turf.clustersDbscan(points, maxDistance);\n",
@@ -1632,7 +855,7 @@
 		},
 		{
 			"parent": null,
-			"category": null,
+			"category": "aggregation",
 			"name": "clustersKmeans",
 			"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters using the k-mean.\nIt uses the  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/K-means_clustering\">k-means algorithm</a>",
 			"snippet": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar options = {numberOfClusters: 7};\nvar clustered = turf.clustersKmeans(points, options);\n",
@@ -1675,7 +898,7 @@
 		},
 		{
 			"parent": "@turf/clusters",
-			"category": null,
+			"category": "meta",
 			"name": "getCluster",
 			"description": "Get Cluster",
 			"snippet": "var geojson = turf.featureCollection([\n    turf.point([0, 0], {'marker-symbol': 'circle'}),\n    turf.point([2, 4], {'marker-symbol': 'star'}),\n    turf.point([3, 6], {'marker-symbol': 'star'}),\n    turf.point([5, 1], {'marker-symbol': 'square'}),\n    turf.point([4, 2], {'marker-symbol': 'circle'})\n]);\n\n// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)\nvar clustered = turf.clustersKmeans(geojson);\n\n// Retrieve first cluster (0)\nvar cluster = turf.getCluster(clustered, {cluster: 0});\n//= cluster\n\n// Retrieve cluster based on custom properties\nturf.getCluster(clustered, {'marker-symbol': 'circle'}).length;\n//= 2\nturf.getCluster(clustered, {'marker-symbol': 'square'}).length;\n//= 1",
