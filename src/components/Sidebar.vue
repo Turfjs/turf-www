@@ -12,7 +12,6 @@
           <li class="menuItem heading">{{name}}</li>
           <li v-for="module in category"
             class="menuItem"
-            v-bind:class="{heading: module.isHeading}"
             v-on:click="clickModule"
             >{{module.name}}</li>
             </div>
@@ -46,9 +45,8 @@ export default {
           temp[m.category].push(m);
         }
       }
-      /* sorting modules per category */
+      /* sorting modules per category (could be put in a vue-filter)*/
       for (let t in temp) {
-        console.log(t);
         temp[t].sort(function(a, b){
             if(a.name < b.name) return -1;
             if(a.name > b.name) return 1;
