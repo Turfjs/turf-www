@@ -1,7 +1,7 @@
 <template>
   <Row id="app">
     <Col span="4">
-      <sidebar :modules="modulesList" v-on:changeModule="setModule" v-on:filterChanged="filterModules"></sidebar>
+      <sidebar :modules="modulesList" v-on:changeModule="setModule"></sidebar>
     </Col>
     <Col span="20" class="mainContent">
       <content-area :selectedModule="selectedModule"></content-area>
@@ -26,7 +26,7 @@ export default {
   data () {
     return {
       selectedModuleName: 'along',
-      modulesList: [],
+      modulesList: {},
       modules: config.modules
     }
   },
@@ -42,23 +42,16 @@ export default {
     setModule: function (newName) {
       location.hash = newName
       this.selectedModuleName = newName
-    },
-    filterModules: function (filter) {
-      this.modulesList.forEach(function (module) {
-        if (module.name.toUpperCase().indexOf(filter) === -1 && !module.isHeading) {
-          module.hidden = true
-        } else {
-          module.hidden = false
-        }
-      })
     }
   },
   created () {
+    this.modulesList = config.modules;
+      /*
     var potentialMod = location.hash.replace('#', '')
-    this.modulesList = config.sidebar
     config.sidebar.forEach(function (module) {
       if (potentialMod === module.name) this.selectedModuleName = potentialMod
     }, this)
+    */
   }
 }
 </script>
