@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
 const d3 = require('d3-queue')
 const path = require('path')
 const glob = require('glob')
@@ -9,25 +8,28 @@ const load = require('load-json-file')
 const write = require('write-json-file')
 const documentation = require('documentation')
 
-const configPath = path.join(__dirname, '..', 'src', 'config.json')
+const configPath = path.join(__dirname, '..', 'src', 'assets', 'config.json')
 const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 'turf-*', 'package.json'))
 
-const moduleSidebarList = []
-const completeModules = []
+const modules = []
 const q = d3.queue(1)
 
 var out = yaml.load(path.join(__dirname, '..', 'documentation.yml'))
+
 out.toc.forEach(tocItem => {
-  moduleSidebarList.push({
-    isHeading: tocItem.name ? true : false,
-    name: tocItem.name ? tocItem.name : tocItem,
+  if (tocItem.name) {
+    return modules.push({
+      group: tocItem.name,
+      modules: []
+    })
+  }
+  modules[modules.length - 1].modules.push({
+    name: tocItem,
     hidden: false
   })
 })
-
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
-  const directoryName = path.basename(directory).replace('turf-', '')
   const indexPath = path.join(directory, 'index.js')
   const pckg = load.sync(packagePath)
 
@@ -37,32 +39,25 @@ packagesPath.forEach(packagePath => {
     documentation.build(indexPath, {
       shallow: true
     }).then(res => {
-      if (res === undefined) return console.warning(packagePath);
+      if (res === undefined) return console.warning(packagePath)
       // Format JSON
       documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
         const parent = (docs.length > 1) ? pckg.name : null
 
         docs.forEach(metadata => {
-
-          const category = getCategory(metadata)
-
-          // Module
-          if (isModuleInSidebar(metadata.name)) {
-            completeModules.push({
-              parent,
-              category,
-              name: metadata.name,
-              description: getDescription(metadata),
-              snippet: getSnippet(metadata),
-              example: getExample(metadata),
-              hasMap: hasMap(metadata),
-              npmName: pckg.name,
-              returns: getReturns(metadata),
-              params: getParams(metadata),
-              options: getOptions(metadata),
-              throws: getThrows(metadata)
-            })
+          var moduleObj = getModuleObj(metadata.name)
+          if (moduleObj) {
+            moduleObj.parent = parent
+            moduleObj.description = getDescription(metadata)
+            moduleObj.snippet = getSnippet(metadata)
+            moduleObj.example = getExample(metadata)
+            moduleObj.hasMap = hasMap(metadata)
+            moduleObj.npmName = pckg.name
+            moduleObj.returns = getReturns(metadata)
+            moduleObj.params = getParams(metadata)
+            moduleObj.options = getOptions(metadata)
+            moduleObj.throws = getThrows(metadata)
           }
         })
         callback(null)
@@ -73,25 +68,19 @@ packagesPath.forEach(packagePath => {
 
 q.awaitAll(() => {
   const config = {
-    sidebar: moduleSidebarList,
-    modules: completeModules
+    modules: modules
   }
   write.sync(configPath, config)
   console.log('Saved Config:', configPath)
 })
 
-function isModuleInSidebar (moduleName) {
-  const matches = moduleSidebarList.filter(mod => {
-    return mod.name === moduleName
-  })
-  return matches.length > 0
-}
-
-function getCategory (metadata) {
-  for (const {title, description} of metadata.tags) {
-    if (title === 'category') return description
+function getModuleObj (moduleName) {
+  for (var i = 0; i < modules.length; i++) {
+    var group = modules[i]
+    for (var i2 = 0; i2 < group.modules.length; i2++) {
+      if (group.modules[i2].name === moduleName) return group.modules[i2]
+    }
   }
-  return null
 }
 
 function getDescription (metadata) {
@@ -114,11 +103,6 @@ function hasMap (metadata) {
   const example = metadata.examples[0]
   if (example) return example.description.indexOf('//addToMap') !== -1
   return false
-}
-
-function getNpmName (metadata, parent) {
-  if (parent !== null) return parent
-  return metadata.name.replace(/([A-Z])/g, word => '-' + word.toLowerCase())
 }
 
 function getReturns (metadata) {
@@ -175,12 +159,12 @@ function getOptions (metadata) {
   if (options.length === 0) return null
   let outProperties = options[0].properties.map(prop => {
     let defaultVal = null
-    if (prop.default) defaultVal = prop.default.replace('\\','')
+    if (prop.default) defaultVal = prop.default.replace('\\', '')
     return {
-      Prop: prop.name.replace('options.',''),
+      Prop: prop.name.replace('options.', ''),
       Type: getType(prop.type),
       Default: defaultVal,
-      Description: concatTags(prop.description.children[0].children, false),
+      Description: concatTags(prop.description.children[0].children, false)
     }
   })
   return outProperties

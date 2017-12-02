@@ -1,59 +1,44 @@
 <template>
-    <div class="sidebarContents">
-        <div class="fixedContent">
-          <div class="logo" v-on:click="goHome">
-            <h1>TURF</h1>
-          </div>
-          <router-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</router-link>
-          <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
+  <div class="sidebarContents">
+      <div class="fixedContent">
+        <div class="logo" v-on:click="goHome">
+          <h1>TURF</h1>
         </div>
-        <ul class="turfModules">
-          <div v-for="(category, name) in displayedModules">
-          <li class="menuItem heading">{{name}}</li>
-          <li v-for="module in category"
+        <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
+        <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
+      </div>
+      <ul class="turfModules">
+        <div v-for="category in displayedModules">
+          <li class="menuItem heading">{{category.group}}</li>
+          <li v-for="module in category.modules"
             class="menuItem"
             v-on:click="clickModule"
-            >{{module.name}}</li>
-            </div>
-        </ul>
-    </div>
+            >{{module.name}}</li> 
+        </div>
+      </ul>
+  </div>
 </template>
 
 <script>
-import {Col} from 'iview/src/components/grid'
 
 export default {
   name: 'Sidebar',
   props: ['modules'],
-    data () {
-      return {
-        filter: ""
-      }
-    },
-  components: {
-    Col
+  data () {
+    return {
+      filter: ''
+    }
   },
   computed: {
     displayedModules: function () {
-      let temp = {};
-      for (let i=0;i<this.modules.length;i++) {
-        let m = this.modules[i];
-          if (this.filter == "" || m.name.toUpperCase().indexOf(this.filter.toUpperCase()) >= 0) {
-          if (!(m.category in temp)) {
-             temp[m.category] = [];
-          }
-          temp[m.category].push(m);
-        }
-      }
-      /* sorting modules per category (could be put in a vue-filter)*/
-      for (let t in temp) {
-        temp[t].sort(function(a, b){
-            if(a.name < b.name) return -1;
-            if(a.name > b.name) return 1;
-            return 0;
-        });
-      }
-      return temp;
+      var out = []
+      this.modules.forEach(function (module) {
+        var matches = module.modules.filter(function (mod) {
+          return mod.name.toUpperCase().indexOf(this.filter.toUpperCase()) !== -1
+        }, this)
+        if (matches.length > 0) out.push({group: module.group, modules: matches})
+      }, this)
+      return out
     }
   },
   methods: {
@@ -62,10 +47,12 @@ export default {
     },
     clickModule (e) {
       if (e.target.classList.value.includes('heading')) return
-      this.$router.push('docs')
-      window.scrollTo(0, 0)
-      this.$emit('changeModule', e.target.innerText)
-    },
+      if (this.$route.name !== 'Docs') this.$router.push('Docs#' + e.target.innerText)
+      else {
+        document.getElementById(e.target.innerText).scrollIntoView()
+        window.location.hash = e.target.innerText
+      }
+    }
   }
 }
 </script>
@@ -84,12 +71,12 @@ export default {
       padding-left: 30px;
       background-color: $sidebarBg;
         .logo {
-        height: 120px;
-        background-color: #2ECC71;
-        margin-bottom: 30px;
-        margin-left: -35px;
-        margin-right: 0px;
-        cursor: pointer;
+          height: 120px;
+          background-color: #2ECC71;
+          margin-bottom: 30px;
+          margin-left: -35px;
+          margin-right: 0px;
+          cursor: pointer;
           h1 {
             font-size: 2rem;
             color: white;

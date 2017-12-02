@@ -1,33 +1,41 @@
 <template>
-  <Row>
+  <Row class="mainContentArea">
     <Col span="16">
-      <h3>{{module.name}}</h3>
-      <p v-html='module.description'></p>
+      <h3 :id='module.name'>{{module.name}}</h3>
+      <p v-html='module.description' v-bind:class="module.name" v-observe-visibility="visibilityChanged"></p>
       <h4>Arguments</h4>
       <div>
         <table>
-          <tr>
-            <th v-for="col in cols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
-          </tr>
-          <tr v-for="param in module.params">
-            <td>{{param.Argument}}</td>
-            <td v-html="param.Type"></td>
-            <td>{{param.Description}}</td>
-          </tr>
+          <thead>
+            <tr>
+              <th v-for="col in cols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="param in module.params">
+              <td>{{param.Argument}}</td>
+              <td v-html="param.Type"></td>
+              <td>{{param.Description}}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div v-if="module.options !== null">
         <h4>Options</h4>
         <table>
-          <tr>
-            <th v-for="col in optionsCols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
-          </tr>
-          <tr v-for="option in module.options">
-            <td>{{option.Prop}}</td>
-            <td>{{option.Type}}</td>
-            <td>{{option.Default}}</td>
-            <td>{{option.Description}}</td>
-          </tr>
+          <thead>
+            <tr>
+              <th v-for="col in optionsCols" v-bind:style="{ width: col.width + 'px' }">{{col.title}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="option in module.options">
+              <td>{{option.Prop}}</td>
+              <td>{{option.Type}}</td>
+              <td>{{option.Default}}</td>
+              <td>{{option.Description}}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div v-if="module.returns.length > 0">
@@ -40,17 +48,17 @@
       </div>
       <div v-if="module.snippet !== false">
         <h4>Example</h4>
-          <prism language="javascript">{{module.snippet}}</prism>
+          <pre v-highlightjs><code class="javascript">{{module.snippet}}</code></pre>
       </div>
     </Col>
     <Col span="7" offset="1">
-      <div v-if="module.hasMap">
-        <leaflet-map :code="module.example"></leaflet-map>
+      <div v-show="module.hasMap">
+        <div :id="'map_' + module.name"></div>
       </div>
       <p class="npmBadge">npm install {{module.npmName}}</p>
 
       <div v-if="module.parent !== null">
-        <p class="hasParent" >
+        <p class="hasParent">
           <strong>Note:</strong> {{module.name}} is part of the {{module.npmName}} module.<br><br>
           To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.
         </p>
@@ -60,13 +68,17 @@
 </template>
 
 <script>
-import leafletMap from './Map.vue'
-import {Row, Col} from 'iview/src/components/grid'
-import Prism from 'vue-prism-component'
 
 export default {
   name: 'Module',
   props: ['module'],
+  methods: {
+    visibilityChanged (isVisible, module) {
+      if (isVisible) {
+        this.$emit('changeMap', module.target.classList[0])
+      }
+    }
+  },
   data: function () {
     return {
       cols: [
@@ -82,7 +94,8 @@ export default {
         },
         {
           title: 'Description',
-          key: 'Description'
+          key: 'Description',
+          width: 800
         }
       ],
       optionsCols: [
@@ -107,18 +120,20 @@ export default {
         }
       ]
     }
-  },
-  components: {
-    leafletMap,
-    Row,
-    Col,
-    Prism
   }
 }
 </script>
 
 <style lang="scss">
   @import "../styles/variables.scss";
+
+  .module {
+    background-color: #f6f6f6;
+    padding: 40px;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    border: 2px solid transparentize($blue, 0.9);
+  }
 
   h3 {
     font-weight: 200;

@@ -1,26 +1,11 @@
-# Dependency directory
-# Deployed apps should consider commenting this line out:
-# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
+# dependencies
 node_modules
-npm-debug.log*
 
-yarn.lock
-# ignore jekyll build artifacts
-_site
-_docs
+# logs
+npm-debug.log
 
-# ignore generated test file
-test/turf.js
+# Nuxt build
+.nuxt
 
-.DS_Store
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+# Nuxt generate
+dist
