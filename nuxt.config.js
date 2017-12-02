@@ -8,7 +8,8 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'Turf.js | Advanced geospatial analysis for browsers and Node.js' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/iview/2.7.4/styles/iview.css' }
     ]
   },
   plugins: [
