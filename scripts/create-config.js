@@ -16,7 +16,7 @@ const moduleSidebarList = []
 const completeModules = []
 const q = d3.queue(1)
 
-var out = yaml.load(path.join(__dirname, '..', 'documentation.yml'))
+var out = yaml.load(path.join(__dirname, '..', 'turf', 'documentation.yml'))
 out.toc.forEach(tocItem => {
   moduleSidebarList.push({
     isHeading: tocItem.name ? true : false,
