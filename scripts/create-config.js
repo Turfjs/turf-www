@@ -14,9 +14,8 @@ const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 't
 const modules = []
 const q = d3.queue(1)
 
-var out = yaml.load(path.join(__dirname, '..', 'documentation.yml'))
-
-out.toc.forEach(tocItem => {
+const docs = yaml.load(path.join(__dirname, '..', 'turf', 'documentation.yml'))
+docs.toc.forEach(tocItem => {
   if (tocItem.name) {
     return modules.push({
       group: tocItem.name,
