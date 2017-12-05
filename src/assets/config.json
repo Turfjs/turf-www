@@ -113,7 +113,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						}
 					],
@@ -138,12 +138,12 @@
 					"params": [
 						{
 							"Argument": "start",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "starting Point"
 						},
 						{
 							"Argument": "end",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "ending Point"
 						},
 						{
@@ -283,7 +283,7 @@
 					"params": [
 						{
 							"Argument": "origin",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "starting point"
 						},
 						{
@@ -434,12 +434,12 @@
 					"params": [
 						{
 							"Argument": "point1",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "first point"
 						},
 						{
 							"Argument": "point2",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "second point"
 						}
 					],
@@ -519,12 +519,12 @@
 					"params": [
 						{
 							"Argument": "pt",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "Feature or Geometry"
 						},
 						{
 							"Argument": "line",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <number>>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
@@ -704,7 +704,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  west, south, east, north  order"
 						}
 					],
@@ -729,12 +729,12 @@
 					"params": [
 						{
 							"Argument": "start",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "source point feature"
 						},
 						{
 							"Argument": "end",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "destination point feature"
 						},
 						{
@@ -994,7 +994,7 @@
 						},
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						}
 					],
@@ -1110,7 +1110,7 @@
 					"params": [
 						{
 							"Argument": "center",
-							"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "center point"
 						},
 						{
@@ -2279,7 +2279,7 @@
 						},
 						{
 							"Argument": "pt",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "point to snap from"
 						},
 						{
@@ -2603,7 +2603,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <Array <number>>",
+							"Type": "Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>",
 							"Description": "an array of Positions"
 						},
 						{
@@ -2651,7 +2651,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <Array <Array <number>>>",
+							"Type": "Array <Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>>",
 							"Description": "an array of LineStrings"
 						},
 						{
@@ -2704,7 +2704,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <Array <number>>",
+							"Type": "Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>",
 							"Description": "an array of Positions"
 						},
 						{
@@ -2757,7 +2757,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <Array <Array <Array <number>>>>",
+							"Type": "Array <Array <Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>>>",
 							"Description": "an array of Polygons"
 						},
 						{
@@ -2810,7 +2810,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "longitude, latitude position (each in decimal degrees)"
 						},
 						{
@@ -2858,7 +2858,7 @@
 					"params": [
 						{
 							"Argument": "coordinates",
-							"Type": "Array <Array <Array <number>>>",
+							"Type": "Array <Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>>",
 							"Description": "an array of LinearRings"
 						},
 						{
@@ -2911,7 +2911,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "a bounding box inside of which positions are placed."
 						}
 					],
@@ -3182,7 +3182,7 @@
 						},
 						{
 							"Argument": "breaks",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "where to draw contours"
 						},
 						{
@@ -3236,7 +3236,7 @@
 						},
 						{
 							"Argument": "breaks",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "values of  zProperty  where to draw isolines"
 						},
 						{
@@ -3285,7 +3285,7 @@
 					"params": [
 						{
 							"Argument": "point",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <number>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "the Point for which a z-value will be calculated"
 						},
 						{
@@ -3425,7 +3425,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						},
 						{
@@ -3485,7 +3485,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						},
 						{
@@ -3539,7 +3539,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						},
 						{
@@ -3593,7 +3593,7 @@
 					"params": [
 						{
 							"Argument": "bbox",
-							"Type": "Array <number>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
 						},
 						{
@@ -4035,7 +4035,7 @@
 					"params": [
 						{
 							"Argument": "obj",
-							"Type": "(Array <number> | Geometry <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
+							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | Geometry <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
 							"Description": "Object"
 						}
 					],
@@ -4060,7 +4060,7 @@
 					"params": [
 						{
 							"Argument": "obj",
-							"Type": "(Array <number> | Geometry | Feature)",
+							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | Geometry | Feature)",
 							"Description": "Object"
 						}
 					],
@@ -4562,7 +4562,7 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <number>>)",
+							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
 							"Description": "to be evaluated"
 						}
 					],
