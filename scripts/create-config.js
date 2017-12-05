@@ -212,38 +212,10 @@ function getType (inNode, addLink) {
   }
 }
 
+Object.keys(docs.paths).forEach(name => {
+  docs.paths[name.toUpperCase()] = docs.paths[name]
+})
+
 function getLink (name) {
-  switch (name.toUpperCase()) {
-    case 'POINT':
-    case 'POINTS':
-      return 'http://geojson.org/geojson-spec.html#point'
-    case 'MULTIPOINT':
-      return 'http://geojson.org/geojson-spec.html#multipoint'
-    case 'LINESTRING':
-    case '(MULTI)LINESTRING':
-    case '(MULTI)LINESTRING(S)':
-    case 'LINE':
-      return 'http://geojson.org/geojson-spec.html#linestring'
-    case 'MULTILINESTRING':
-      return 'http://geojson.org/geojson-spec.html#multilinestring'
-    case 'POLYGON':
-    case 'POLYGON(S)':
-    case '(MULTI)POLYGON':
-      return 'http://geojson.org/geojson-spec.html#polygon'
-    case 'MULTIPOLYGON':
-      return 'http://geojson.org/geojson-spec.html#multipolygon'
-    case 'GEOMETRY':
-      return 'http://geojson.org/geojson-spec.html#geometry'
-    case 'GEOMETRYCOLLECTION':
-      return 'http://geojson.org/geojson-spec.html#geometrycollection'
-    case 'FEATURE':
-      return 'http://geojson.org/geojson-spec.html#feature-objects'
-    case 'FEATURECOLLECTION':
-      return 'http://geojson.org/geojson-spec.html#feature-collection-objects'
-    case 'BBOX':
-    case 'BOUNDING BOX':
-      return 'http://geojson.org/geojson-spec.html#bounding-boxes'
-    default:
-      return null
-  }
+  return docs.paths[name.toUpperCase()] || null
 }
