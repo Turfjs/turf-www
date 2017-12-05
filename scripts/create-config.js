@@ -193,8 +193,8 @@ function getType (inNode, addLink) {
     }).join(' | ') + ')'
   }
   if (inNode.type === 'OptionalType') return 'Optional: ' + inNode.expression.name
-  if (typeof inNode.type === 'object') return inNode.name
-  if (inNode.type === 'NameExpression') return inNode.name
+  if (typeof inNode.type === 'object') return createLink(inNode.name, addLink)
+  if (inNode.type === 'NameExpression') return createLink(inNode.name, addLink)
   if (inNode.type === 'TypeApplication') {
     return inNode.expression.name + ' <' + inNode.applications.map(node => {
       if (node.type === 'UnionType') {
@@ -205,9 +205,7 @@ function getType (inNode, addLink) {
       if (node.type === 'TypeApplication') {
         return getType(node, addLink)
       }
-      let link = getLink(node.name)
-      if (!addLink || link === null) return node.name
-      return '<a target="_blank" href="' + link + '">' + node.name + '</a>'
+      return createLink(node.name, addLink)
     }) + '>'
   }
 }
@@ -218,4 +216,10 @@ Object.keys(docs.paths).forEach(name => {
 
 function getLink (name) {
   return docs.paths[name.toUpperCase()] || null
+}
+
+function createLink (name, addLink) {
+  const link = getLink(name)
+  if (!addLink || link === null) return name
+  return '<a target="_blank" href="' + link + '">' + name + '</a>'
 }

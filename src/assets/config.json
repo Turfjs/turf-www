@@ -7,7 +7,7 @@
 					"name": "along",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  at a specified distance along the line.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>  and returns a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  at a specified distance along the line.",
 					"snippet": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\nvar options = {units: 'miles'};\n\nvar along = turf.along(line, 200, options);\n",
 					"example": "var line = turf.lineString([[-83, 30], [-84, 36], [-78, 41]]);\nvar options = {units: 'miles'};\n\nvar along = turf.along(line, 200, options);\n\n//addToMap\nvar addToMap = [along, line]",
 					"hasMap": true,
@@ -21,12 +21,12 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>",
 							"Description": "input line"
 						},
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance along the line"
 						},
 						{
@@ -63,7 +63,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input GeoJSON feature(s)"
 						}
 					],
@@ -88,7 +88,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "any GeoJSON object"
 						}
 					],
@@ -99,7 +99,7 @@
 					"name": "bboxPolygon",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a bbox and returns an equivalent  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
+					"description": "Takes a bbox and returns an equivalent  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>.",
 					"snippet": "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n",
 					"example": "var bbox = [0, 0, 10, 10];\n\nvar poly = turf.bboxPolygon(bbox);\n\n//addToMap\nvar addToMap = [poly]",
 					"hasMap": true,
@@ -124,7 +124,7 @@
 					"name": "bearing",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and finds the geographic bearing between them,\ni.e. the angle measured in degrees from the north line (0 degrees)",
+					"description": "Takes two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and finds the geographic bearing between them,\ni.e. the angle measured in degrees from the north line (0 degrees)",
 					"snippet": "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\n\nvar bearing = turf.bearing(point1, point2);\n",
 					"example": "var point1 = turf.point([-75.343, 39.984]);\nvar point2 = turf.point([-75.534, 39.123]);\n\nvar bearing = turf.bearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2]\npoint1.properties['marker-color'] = '#f00'\npoint2.properties['marker-color'] = '#0f0'\npoint1.properties.bearing = bearing",
 					"hasMap": true,
@@ -138,12 +138,12 @@
 					"params": [
 						{
 							"Argument": "start",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "starting Point"
 						},
 						{
 							"Argument": "end",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "ending Point"
 						},
 						{
@@ -166,7 +166,7 @@
 					"name": "center",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns the absolute center point of all features.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  and returns the absolute center point of all features.",
 					"snippet": "var features = turf.featureCollection([\n  turf.point( [-97.522259, 35.4691]),\n  turf.point( [-97.502754, 35.463455]),\n  turf.point( [-97.508269, 35.463245])\n]);\n\nvar center = turf.center(features);\n",
 					"example": "var features = turf.featureCollection([\n  turf.point( [-97.522259, 35.4691]),\n  turf.point( [-97.502754, 35.463455]),\n  turf.point( [-97.508269, 35.463245])\n]);\n\nvar center = turf.center(features);\n\n//addToMap\nvar addToMap = [features, center]\ncenter.properties['marker-size'] = 'large';\ncenter.properties['marker-color'] = '#000';",
 					"hasMap": true,
@@ -180,12 +180,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON to be centered"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -209,7 +209,7 @@
 					"name": "centerOfMass",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes any  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns its  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Center_of_mass\">center of mass</a>  using this formula:  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon\">Centroid of Polygon</a>.",
+					"description": "Takes any  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  or a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  and returns its  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Center_of_mass\">center of mass</a>  using this formula:  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon\">Centroid of Polygon</a>.",
 					"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar center = turf.centerOfMass(polygon);\n",
 					"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar center = turf.centerOfMass(polygon);\n\n//addToMap\nvar addToMap = [polygon, center]",
 					"hasMap": true,
@@ -223,12 +223,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON to be centered"
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object that is used as the  Feature 's properties"
 						}
 					],
@@ -253,12 +253,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON to be centered"
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object that is used as the  Feature 's properties"
 						}
 					],
@@ -269,7 +269,7 @@
 					"name": "destination",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a>  to account for global curvature.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a>  to account for global curvature.",
 					"snippet": "var point = turf.point([-75.343, 39.984]);\nvar distance = 50;\nvar bearing = 90;\nvar options = {units: 'miles'};\n\nvar destination = turf.destination(point, distance, bearing, options);\n",
 					"example": "var point = turf.point([-75.343, 39.984]);\nvar distance = 50;\nvar bearing = 90;\nvar options = {units: 'miles'};\n\nvar destination = turf.destination(point, distance, bearing, options);\n\n//addToMap\nvar addToMap = [point, destination]\ndestination.properties['marker-color'] = '#f00';\npoint.properties['marker-color'] = '#0f0';",
 					"hasMap": true,
@@ -283,22 +283,22 @@
 					"params": [
 						{
 							"Argument": "origin",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "starting point"
 						},
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance from the origin point"
 						},
 						{
 							"Argument": "bearing",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "ranging from -180 to 180"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -316,7 +316,7 @@
 					"name": "distance",
 					"hidden": false,
 					"parent": null,
-					"description": "Calculates the distance between two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  in degrees, radians,\nmiles, or kilometers. This uses the\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a> \nto account for global curvature.",
+					"description": "Calculates the distance between two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  in degrees, radians,\nmiles, or kilometers. This uses the\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Haversine_formula\">Haversine formula</a> \nto account for global curvature.",
 					"snippet": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\nvar options = {units: 'miles'};\n\nvar distance = turf.distance(from, to, options);\n",
 					"example": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\nvar options = {units: 'miles'};\n\nvar distance = turf.distance(from, to, options);\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
 					"hasMap": true,
@@ -340,7 +340,7 @@
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -358,7 +358,7 @@
 					"name": "envelope",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes any number of features and returns a rectangular  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  that encompasses all vertices.",
+					"description": "Takes any number of features and returns a rectangular  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  that encompasses all vertices.",
 					"snippet": "var features = turf.featureCollection([\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\n]);\n\nvar enveloped = turf.envelope(features);\n",
 					"example": "var features = turf.featureCollection([\n  turf.point([-75.343, 39.984], {\"name\": \"Location A\"}),\n  turf.point([-75.833, 39.284], {\"name\": \"Location B\"}),\n  turf.point([-75.534, 39.123], {\"name\": \"Location C\"})\n]);\n\nvar enveloped = turf.envelope(features);\n\n//addToMap\nvar addToMap = [features, enveloped];",
 					"hasMap": true,
@@ -372,7 +372,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input features"
 						}
 					],
@@ -383,7 +383,7 @@
 					"name": "length",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geojson-objects\">GeoJSON</a>  and measures its length in the specified units,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">(Multi)Point</a> 's distance are ignored.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>  and measures its length in the specified units,  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">(Multi)Point</a> 's distance are ignored.",
 					"snippet": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\nvar length = turf.length(line, {units: 'miles'});\n",
 					"example": "var line = turf.lineString([[115, -32], [131, -22], [143, -25], [150, -34]]);\nvar length = turf.length(line, {units: 'miles'});\n\n//addToMap\nvar addToMap = [line];\nline.properties.distance = length;",
 					"hasMap": true,
@@ -397,12 +397,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON to measure"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -420,7 +420,7 @@
 					"name": "midpoint",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and returns a point midway between them.\nThe midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.",
+					"description": "Takes two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and returns a point midway between them.\nThe midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.",
 					"snippet": "var point1 = turf.point([144.834823, -37.771257]);\nvar point2 = turf.point([145.14244, -37.830937]);\n\nvar midpoint = turf.midpoint(point1, point2);\n",
 					"example": "var point1 = turf.point([144.834823, -37.771257]);\nvar point2 = turf.point([145.14244, -37.830937]);\n\nvar midpoint = turf.midpoint(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2, midpoint];\nmidpoint.properties['marker-color'] = '#f00';",
 					"hasMap": true,
@@ -434,12 +434,12 @@
 					"params": [
 						{
 							"Argument": "point1",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "first point"
 						},
 						{
 							"Argument": "point2",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "second point"
 						}
 					],
@@ -450,7 +450,7 @@
 					"name": "pointOnFeature",
 					"hidden": false,
 					"parent": "@turf/point-on-feature",
-					"description": "Takes a Feature or FeatureCollection and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  guaranteed to be on the surface of the feature.",
+					"description": "Takes a Feature or FeatureCollection and returns a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  guaranteed to be on the surface of the feature.",
 					"snippet": "// create a random polygon\nvar polygon = turf.randomPolygon();\n\nvar pointOnPolygon = turf.pointOnFeature(polygon);\n",
 					"example": "// create a random polygon\nvar polygon = turf.randomPolygon();\n\nvar pointOnPolygon = turf.pointOnFeature(polygon);\n\n//addToMap\nvar addToMap = [polygon, pointOnPolygon];",
 					"hasMap": true,
@@ -464,7 +464,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(Feature | FeatureCollection)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>)",
 							"Description": "any Feature or FeatureCollection"
 						}
 					],
@@ -475,7 +475,7 @@
 					"name": "polygonTangents",
 					"hidden": false,
 					"parent": null,
-					"description": "Finds the tangents of a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>  from a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>.",
+					"description": "Finds the tangents of a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon</a>  from a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>.",
 					"snippet": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar point = turf.point([61, 5]);\n\nvar tangents = turf.polygonTangents(point, polygon)\n",
 					"example": "var polygon = turf.polygon([[[11, 0], [22, 4], [31, 0], [31, 11], [21, 15], [11, 11], [11, 0]]]);\nvar point = turf.point([61, 5]);\n\nvar tangents = turf.polygonTangents(point, polygon)\n\n//addToMap\nvar addToMap = [tangents, point, polygon];",
 					"hasMap": true,
@@ -489,12 +489,12 @@
 					"params": [
 						{
 							"Argument": "pt",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "to calculate the tangent points from"
 						},
 						{
 							"Argument": "polygon",
-							"Type": "Feature <(Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "to get tangents from"
 						}
 					],
@@ -505,7 +505,7 @@
 					"name": "pointToLineDistance",
 					"hidden": false,
 					"parent": null,
-					"description": "Returns the minimum distance between a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a> , being the distance from a line the\nminimum distance between the point and any segment of the  LineString.",
+					"description": "Returns the minimum distance between a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> , being the distance from a line the\nminimum distance between the point and any segment of the  LineString.",
 					"snippet": "var pt = turf.point([0, 0]);\nvar line = turf.lineString([[1, 1],[-1, 1]]);\n\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\n//=69.11854715938406",
 					"example": "var pt = turf.point([0, 0]);\nvar line = turf.lineString([[1, 1],[-1, 1]]);\n\nvar distance = turf.pointToLineDistance(pt, line, {units: 'miles'});\n//=69.11854715938406",
 					"hasMap": false,
@@ -519,17 +519,17 @@
 					"params": [
 						{
 							"Argument": "pt",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "Feature or Geometry"
 						},
 						{
 							"Argument": "line",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -553,7 +553,7 @@
 					"name": "rhumbBearing",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and finds the bearing angle between them along a Rhumb line\ni.e. the angle measured in degrees start the north line (0 degrees)",
+					"description": "Takes two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and finds the bearing angle between them along a Rhumb line\ni.e. the angle measured in degrees start the north line (0 degrees)",
 					"snippet": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\n\nvar bearing = turf.rhumbBearing(point1, point2);\n",
 					"example": "var point1 = turf.point([-75.343, 39.984], {\"marker-color\": \"#F00\"});\nvar point2 = turf.point([-75.534, 39.123], {\"marker-color\": \"#00F\"});\n\nvar bearing = turf.rhumbBearing(point1, point2);\n\n//addToMap\nvar addToMap = [point1, point2];\npoint1.properties.bearing = bearing;\npoint2.properties.bearing = bearing;",
 					"hasMap": true,
@@ -595,7 +595,7 @@
 					"name": "rhumbDestination",
 					"hidden": false,
 					"parent": null,
-					"description": "Returns the destination  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  having travelled the given distance along a Rhumb line from the\norigin Point with the (varant) given bearing.",
+					"description": "Returns the destination  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  having travelled the given distance along a Rhumb line from the\norigin Point with the (varant) given bearing.",
 					"snippet": "var pt = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\nvar distance = 50;\nvar bearing = 90;\nvar options = {units: 'miles'};\n\nvar destination = turf.rhumbDestination(pt, distance, bearing, options);\n",
 					"example": "var pt = turf.point([-75.343, 39.984], {\"marker-color\": \"F00\"});\nvar distance = 50;\nvar bearing = 90;\nvar options = {units: 'miles'};\n\nvar destination = turf.rhumbDestination(pt, distance, bearing, options);\n\n//addToMap\nvar addToMap = [pt, destination]\ndestination.properties['marker-color'] = '#00F';",
 					"hasMap": true,
@@ -614,17 +614,17 @@
 						},
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance from the starting point"
 						},
 						{
 							"Argument": "bearing",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "varant bearing angle ranging from -180 to 180 degrees from north"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -648,7 +648,7 @@
 					"name": "rhumbDistance",
 					"hidden": false,
 					"parent": null,
-					"description": "Calculates the distance along a rhumb line between two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  in degrees, radians,\nmiles, or kilometers.",
+					"description": "Calculates the distance along a rhumb line between two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  in degrees, radians,\nmiles, or kilometers.",
 					"snippet": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\nvar options = {units: 'miles'};\n\nvar distance = turf.rhumbDistance(from, to, options);\n",
 					"example": "var from = turf.point([-75.343, 39.984]);\nvar to = turf.point([-75.534, 39.123]);\nvar options = {units: 'miles'};\n\nvar distance = turf.rhumbDistance(from, to, options);\n\n//addToMap\nvar addToMap = [from, to];\nfrom.properties.distance = distance;\nto.properties.distance = distance;",
 					"hasMap": true,
@@ -715,7 +715,7 @@
 					"name": "greatCircle",
 					"hidden": false,
 					"parent": null,
-					"description": "Calculate great circles routes as  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>",
+					"description": "Calculate great circles routes as  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>",
 					"snippet": "var start = turf.point([-122, 48]);\nvar end = turf.point([-77, 39]);\n\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\n",
 					"example": "var start = turf.point([-122, 48]);\nvar end = turf.point([-77, 39]);\n\nvar greatCircle = turf.greatCircle(start, end, {'name': 'Seattle to DC'});\n\n//addToMap\nvar addToMap = [start, end, greatCircle]",
 					"hasMap": true,
@@ -729,17 +729,17 @@
 					"params": [
 						{
 							"Argument": "start",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "source point feature"
 						},
 						{
 							"Argument": "end",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "destination point feature"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -788,12 +788,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(Geometry | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "Feature or Geometry"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -825,12 +825,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input features"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -848,7 +848,7 @@
 					"name": "rewind",
 					"hidden": false,
 					"parent": null,
-					"description": "Rewind  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>  outer ring counterclockwise and inner rings clockwise (Uses  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Shoelace_formula\">Shoelace Formula</a> ).",
+					"description": "Rewind  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon</a>  outer ring counterclockwise and inner rings clockwise (Uses  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Shoelace_formula\">Shoelace Formula</a> ).",
 					"snippet": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\n\nvar rewind = turf.rewind(polygon);\n",
 					"example": "var polygon = turf.polygon([[[121, -29], [138, -29], [138, -18], [121, -18], [121, -29]]]);\n\nvar rewind = turf.rewind(polygon);\n\n//addToMap\nvar addToMap = [rewind];",
 					"hasMap": true,
@@ -862,12 +862,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input GeoJSON Polygon"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -905,12 +905,12 @@
 					"params": [
 						{
 							"Argument": "num",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "Number"
 						},
 						{
 							"Argument": "precision",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "Precision"
 						}
 					],
@@ -935,12 +935,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <any>)",
 							"Description": "any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection."
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -975,7 +975,7 @@
 					"name": "bboxClip",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  and a bbox and clips the feature to the bbox using  <a target=\"_blank\" href=\"https://github.com/mapbox/lineclip\">lineclip</a>.\nMay result in degenerate edges when clipping Polygons.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  and a bbox and clips the feature to the bbox using  <a target=\"_blank\" href=\"https://github.com/mapbox/lineclip\">lineclip</a>.\nMay result in degenerate edges when clipping Polygons.",
 					"snippet": "var bbox = [0, 0, 10, 10];\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\n\nvar clipped = turf.bboxClip(poly, bbox);\n",
 					"example": "var bbox = [0, 0, 10, 10];\nvar poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);\n\nvar clipped = turf.bboxClip(poly, bbox);\n\n//addToMap\nvar addToMap = [bbox, poly, clipped]",
 					"hasMap": true,
@@ -989,7 +989,7 @@
 					"params": [
 						{
 							"Argument": "feature",
-							"Type": "Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "feature to clip to the bbox"
 						},
 						{
@@ -1019,12 +1019,12 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>)",
 							"Description": "input LineString"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1062,12 +1062,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "input to be buffered"
 						},
 						{
 							"Argument": "radius",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance to draw the buffer (negative values are allowed)"
 						},
 						{
@@ -1096,7 +1096,7 @@
 					"name": "circle",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.",
 					"snippet": "var center = [-75.343, 39.984];\nvar radius = 5;\nvar options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};\nvar circle = turf.circle(center, radius, options);\n",
 					"example": "var center = [-75.343, 39.984];\nvar radius = 5;\nvar options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};\nvar circle = turf.circle(center, radius, options);\n\n//addToMap\nvar addToMap = [turf.point(center), circle]",
 					"hasMap": true,
@@ -1110,17 +1110,17 @@
 					"params": [
 						{
 							"Argument": "center",
-							"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "center point"
 						},
 						{
 							"Argument": "radius",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "radius of the circle"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1164,7 +1164,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON Object"
 						}
 					],
@@ -1175,7 +1175,7 @@
 					"name": "concave",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and returns a concave hull Polygon or MultiPolygon.\nInternally, this uses  <a target=\"_blank\" href=\"https://github.com/Turfjs/turf-tin\">turf-tin</a>  to generate geometries.",
+					"description": "Takes a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and returns a concave hull Polygon or MultiPolygon.\nInternally, this uses  <a target=\"_blank\" href=\"https://github.com/Turfjs/turf-tin\">turf-tin</a>  to generate geometries.",
 					"snippet": "var points = turf.featureCollection([\n  turf.point([-63.601226, 44.642643]),\n  turf.point([-63.591442, 44.651436]),\n  turf.point([-63.580799, 44.648749]),\n  turf.point([-63.573589, 44.641788]),\n  turf.point([-63.587665, 44.64533]),\n  turf.point([-63.595218, 44.64765])\n]);\nvar options = {units: 'miles', maxEdge: 1};\n\nvar hull = turf.concave(points, options);\n",
 					"example": "var points = turf.featureCollection([\n  turf.point([-63.601226, 44.642643]),\n  turf.point([-63.591442, 44.651436]),\n  turf.point([-63.580799, 44.648749]),\n  turf.point([-63.573589, 44.641788]),\n  turf.point([-63.587665, 44.64533]),\n  turf.point([-63.595218, 44.64765])\n]);\nvar options = {units: 'miles', maxEdge: 1};\n\nvar hull = turf.concave(points, options);\n\n//addToMap\nvar addToMap = [points, hull]",
 					"hasMap": true,
@@ -1189,12 +1189,12 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input points"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1218,7 +1218,7 @@
 					"name": "convex",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns a convex hull  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  or a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  and returns a convex hull  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>.",
 					"snippet": "var points = turf.featureCollection([\n  turf.point([10.195312, 43.755225]),\n  turf.point([10.404052, 43.8424511]),\n  turf.point([10.579833, 43.659924]),\n  turf.point([10.360107, 43.516688]),\n  turf.point([10.14038, 43.588348]),\n  turf.point([10.195312, 43.755225])\n]);\n\nvar hull = turf.convex(points);\n",
 					"example": "var points = turf.featureCollection([\n  turf.point([10.195312, 43.755225]),\n  turf.point([10.404052, 43.8424511]),\n  turf.point([10.579833, 43.659924]),\n  turf.point([10.360107, 43.516688]),\n  turf.point([10.14038, 43.588348]),\n  turf.point([10.195312, 43.755225])\n]);\n\nvar hull = turf.convex(points);\n\n//addToMap\nvar addToMap = [points, hull]",
 					"hasMap": true,
@@ -1232,12 +1232,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input Feature or FeatureCollection"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1255,7 +1255,7 @@
 					"name": "difference",
 					"hidden": false,
 					"parent": null,
-					"description": "Finds the difference between two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygons</a>  by clipping the second polygon from the first.",
+					"description": "Finds the difference between two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygons</a>  by clipping the second polygon from the first.",
 					"snippet": "var polygon1 = turf.polygon([[\n  [128, -26],\n  [141, -26],\n  [141, -21],\n  [128, -21],\n  [128, -26]\n]], {\n  \"fill\": \"#F00\",\n  \"fill-opacity\": 0.1\n});\nvar polygon2 = turf.polygon([[\n  [126, -28],\n  [140, -28],\n  [140, -20],\n  [126, -20],\n  [126, -28]\n]], {\n  \"fill\": \"#00F\",\n  \"fill-opacity\": 0.1\n});\n\nvar difference = turf.difference(polygon1, polygon2);\n",
 					"example": "var polygon1 = turf.polygon([[\n  [128, -26],\n  [141, -26],\n  [141, -21],\n  [128, -21],\n  [128, -26]\n]], {\n  \"fill\": \"#F00\",\n  \"fill-opacity\": 0.1\n});\nvar polygon2 = turf.polygon([[\n  [126, -28],\n  [140, -28],\n  [140, -20],\n  [126, -20],\n  [126, -28]\n]], {\n  \"fill\": \"#00F\",\n  \"fill-opacity\": 0.1\n});\n\nvar difference = turf.difference(polygon1, polygon2);\n\n//addToMap\nvar addToMap = [polygon1, polygon2, difference];",
 					"hasMap": true,
@@ -1269,12 +1269,12 @@
 					"params": [
 						{
 							"Argument": "polygon1",
-							"Type": "Feature <(Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "input Polygon feature"
 						},
 						{
 							"Argument": "polygon2",
-							"Type": "Feature <(Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "Polygon feature to difference from polygon1"
 						}
 					],
@@ -1285,7 +1285,7 @@
 					"name": "dissolve",
 					"hidden": false,
 					"parent": null,
-					"description": "Dissolves a FeatureCollection of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  features, filtered by an optional property name:value.\nNote that  <a target=\"_blank\" href=\"mulitpolygon\">mulitpolygon</a>  features within the collection are not supported",
+					"description": "Dissolves a FeatureCollection of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>  features, filtered by an optional property name:value.\nNote that  <a target=\"_blank\" href=\"mulitpolygon\">mulitpolygon</a>  features within the collection are not supported",
 					"snippet": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {combine: 'yes'}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {combine: 'yes'}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {combine: 'no'}),\n]);\n\nvar dissolved = turf.dissolve(features, {propertyName: 'combine'});\n",
 					"example": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {combine: 'yes'}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {combine: 'yes'}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {combine: 'no'}),\n]);\n\nvar dissolved = turf.dissolve(features, {propertyName: 'combine'});\n\n//addToMap\nvar addToMap = [features, dissolved]",
 					"hasMap": true,
@@ -1299,12 +1299,12 @@
 					"params": [
 						{
 							"Argument": "featureCollection",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "input feature collection to be dissolved"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1322,7 +1322,7 @@
 					"name": "intersect",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes two  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygons</a>  and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.",
+					"description": "Takes two  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygons</a>  and finds their intersection. If they share a border, returns the border; if they don't intersect, returns undefined.",
 					"snippet": "var poly1 = turf.polygon([[\n  [-122.801742, 45.48565],\n  [-122.801742, 45.60491],\n  [-122.584762, 45.60491],\n  [-122.584762, 45.48565],\n  [-122.801742, 45.48565]\n]]);\n\nvar poly2 = turf.polygon([[\n  [-122.520217, 45.535693],\n  [-122.64038, 45.553967],\n  [-122.720031, 45.526554],\n  [-122.669906, 45.507309],\n  [-122.723464, 45.446643],\n  [-122.532577, 45.408574],\n  [-122.487258, 45.477466],\n  [-122.520217, 45.535693]\n]]);\n\nvar intersection = turf.intersect(poly1, poly2);\n",
 					"example": "var poly1 = turf.polygon([[\n  [-122.801742, 45.48565],\n  [-122.801742, 45.60491],\n  [-122.584762, 45.60491],\n  [-122.584762, 45.48565],\n  [-122.801742, 45.48565]\n]]);\n\nvar poly2 = turf.polygon([[\n  [-122.520217, 45.535693],\n  [-122.64038, 45.553967],\n  [-122.720031, 45.526554],\n  [-122.669906, 45.507309],\n  [-122.723464, 45.446643],\n  [-122.532577, 45.408574],\n  [-122.487258, 45.477466],\n  [-122.520217, 45.535693]\n]]);\n\nvar intersection = turf.intersect(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, intersection];",
 					"hasMap": true,
@@ -1336,12 +1336,12 @@
 					"params": [
 						{
 							"Argument": "poly1",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "the first polygon"
 						},
 						{
 							"Argument": "poly2",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "the second polygon"
 						}
 					],
@@ -1366,17 +1366,17 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a>)>)",
 							"Description": "input GeoJSON"
 						},
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance to offset the line (can be of negative value)"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1394,7 +1394,7 @@
 					"name": "simplify",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geojson-objects\">GeoJSON</a>  object and returns a simplified version. Internally uses\n <a target=\"_blank\" href=\"http://mourner.github.io/simplify-js/\">simplify-js</a>  to perform simplification using the Ramer-Douglas-Peucker algorithm.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>  object and returns a simplified version. Internally uses\n <a target=\"_blank\" href=\"http://mourner.github.io/simplify-js/\">simplify-js</a>  to perform simplification using the Ramer-Douglas-Peucker algorithm.",
 					"snippet": "var geojson = turf.polygon([[\n  [-70.603637, -33.399918],\n  [-70.614624, -33.395332],\n  [-70.639343, -33.392466],\n  [-70.659942, -33.394759],\n  [-70.683975, -33.404504],\n  [-70.697021, -33.419406],\n  [-70.701141, -33.434306],\n  [-70.700454, -33.446339],\n  [-70.694274, -33.458369],\n  [-70.682601, -33.465816],\n  [-70.668869, -33.472117],\n  [-70.646209, -33.473835],\n  [-70.624923, -33.472117],\n  [-70.609817, -33.468107],\n  [-70.595397, -33.458369],\n  [-70.587158, -33.442901],\n  [-70.587158, -33.426283],\n  [-70.590591, -33.414248],\n  [-70.594711, -33.406224],\n  [-70.603637, -33.399918]\n]]);\nvar options = {tolerance: 0.01, highQuality: false};\nvar simplified = turf.simplify(geojson, options);\n",
 					"example": "var geojson = turf.polygon([[\n  [-70.603637, -33.399918],\n  [-70.614624, -33.395332],\n  [-70.639343, -33.392466],\n  [-70.659942, -33.394759],\n  [-70.683975, -33.404504],\n  [-70.697021, -33.419406],\n  [-70.701141, -33.434306],\n  [-70.700454, -33.446339],\n  [-70.694274, -33.458369],\n  [-70.682601, -33.465816],\n  [-70.668869, -33.472117],\n  [-70.646209, -33.473835],\n  [-70.624923, -33.472117],\n  [-70.609817, -33.468107],\n  [-70.595397, -33.458369],\n  [-70.587158, -33.442901],\n  [-70.587158, -33.426283],\n  [-70.590591, -33.414248],\n  [-70.594711, -33.406224],\n  [-70.603637, -33.399918]\n]]);\nvar options = {tolerance: 0.01, highQuality: false};\nvar simplified = turf.simplify(geojson, options);\n\n//addToMap\nvar addToMap = [geojson, simplified]",
 					"hasMap": true,
@@ -1408,12 +1408,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "object to be simplified"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1457,7 +1457,7 @@
 					"params": [
 						{
 							"Argument": "poly",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "the polygon to tesselate"
 						}
 					],
@@ -1482,17 +1482,17 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "object to be rotated"
 						},
 						{
 							"Argument": "angle",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "of rotation (along the vertical axis), from North in decimal degrees, negative clockwise"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1530,22 +1530,22 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "object to be translated"
 						},
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "length of the motion; negative values determine motion in opposite direction"
 						},
 						{
 							"Argument": "direction",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "of the motion; angle from North in decimal degrees, positive clockwise"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1589,17 +1589,17 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON to be scaled"
 						},
 						{
 							"Argument": "factor",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "of scaling, positive or negative values greater than 0"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1623,7 +1623,7 @@
 					"name": "union",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes two or more  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygons</a>  and returns a combined polygon. If the input polygons are not contiguous, this function returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  feature.",
+					"description": "Takes two or more  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygons</a>  and returns a combined polygon. If the input polygons are not contiguous, this function returns a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  feature.",
 					"snippet": "var poly1 = turf.polygon([[\n    [-82.574787, 35.594087],\n    [-82.574787, 35.615581],\n    [-82.545261, 35.615581],\n    [-82.545261, 35.594087],\n    [-82.574787, 35.594087]\n]], {\"fill\": \"#0f0\"});\nvar poly2 = turf.polygon([[\n    [-82.560024, 35.585153],\n    [-82.560024, 35.602602],\n    [-82.52964, 35.602602],\n    [-82.52964, 35.585153],\n    [-82.560024, 35.585153]\n]], {\"fill\": \"#00f\"});\n\nvar union = turf.union(poly1, poly2);\n",
 					"example": "var poly1 = turf.polygon([[\n    [-82.574787, 35.594087],\n    [-82.574787, 35.615581],\n    [-82.545261, 35.615581],\n    [-82.545261, 35.594087],\n    [-82.574787, 35.594087]\n]], {\"fill\": \"#0f0\"});\nvar poly2 = turf.polygon([[\n    [-82.560024, 35.585153],\n    [-82.560024, 35.602602],\n    [-82.52964, 35.602602],\n    [-82.52964, 35.585153],\n    [-82.560024, 35.585153]\n]], {\"fill\": \"#00f\"});\n\nvar union = turf.union(poly1, poly2);\n\n//addToMap\nvar addToMap = [poly1, poly2, union];",
 					"hasMap": true,
@@ -1661,12 +1661,12 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "to find the Voronoi polygons around."
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1689,7 +1689,7 @@
 					"name": "combine",
 					"hidden": false,
 					"parent": null,
-					"description": "Combines a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  features\ninto  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipoint\">MultiPoint</a> ,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multilinestring\">MultiLineString</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  features.",
+					"description": "Combines a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a> ,  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> , or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  features\ninto  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.3\">MultiPoint</a> ,  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> , or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  features.",
 					"snippet": "var fc = turf.featureCollection([\n  turf.point([19.026432, 47.49134]),\n  turf.point([19.074497, 47.509548])\n]);\n\nvar combined = turf.combine(fc);\n",
 					"example": "var fc = turf.featureCollection([\n  turf.point([19.026432, 47.49134]),\n  turf.point([19.074497, 47.509548])\n]);\n\nvar combined = turf.combine(fc);\n\n//addToMap\nvar addToMap = [combined]",
 					"hasMap": true,
@@ -1703,7 +1703,7 @@
 					"params": [
 						{
 							"Argument": "fc",
-							"Type": "FeatureCollection <(Point | LineString | Polygon)>",
+							"Type": "FeatureCollection <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>)>",
 							"Description": "a FeatureCollection of any type"
 						}
 					],
@@ -1714,7 +1714,7 @@
 					"name": "explode",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a feature or set of features and returns all positions as  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>.",
+					"description": "Takes a feature or set of features and returns all positions as  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>.",
 					"snippet": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar explode = turf.explode(polygon);\n",
 					"example": "var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);\n\nvar explode = turf.explode(polygon);\n\n//addToMap\nvar addToMap = [polygon, explode]",
 					"hasMap": true,
@@ -1728,7 +1728,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "input features"
 						}
 					],
@@ -1744,7 +1744,7 @@
 					"name": "flatten",
 					"hidden": false,
 					"parent": null,
-					"description": "Flattens any  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geojson-objects\">GeoJSON</a>  to a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  inspired by  <a target=\"_blank\" href=\"https://github.com/tmcw/geojson-flatten\">geojson-flatten</a>.",
+					"description": "Flattens any  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>  to a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  inspired by  <a target=\"_blank\" href=\"https://github.com/tmcw/geojson-flatten\">geojson-flatten</a>.",
 					"snippet": "var multiGeometry = turf.multiPolygon([\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\n]);\n\nvar flatten = turf.flatten(multiGeometry);\n",
 					"example": "var multiGeometry = turf.multiPolygon([\n  [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],\n  [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],\n  [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]\n]);\n\nvar flatten = turf.flatten(multiGeometry);\n\n//addToMap\nvar addToMap = [flatten]",
 					"hasMap": true,
@@ -1758,7 +1758,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "any valid GeoJSON Object"
 						}
 					],
@@ -1783,12 +1783,12 @@
 					"params": [
 						{
 							"Argument": "lines",
-							"Type": "(FeatureCollection | Feature <(LineString | MultiLineString)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a>)>)",
 							"Description": "Features to convert"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1818,7 +1818,7 @@
 					"name": "polygonize",
 					"hidden": false,
 					"parent": null,
-					"description": "Polygonizes  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString(s)</a>  into  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygons</a>. Implementation of GEOSPolygonize function ( geos::operation::polygonize::Polygonizer ).\nPolygonizes a set of lines that represents edges in a planar graph. Edges must be correctly\nnoded, i.e., they must only meet at their endpoints. (NOTE: while TurfJS has no specific function, an easy way to\nensure this is to use the QGis library and call unaryUnion() on the set of input geometries and then pass the\nresult to turf-polygonize).\nThe implementation correctly handles:",
+					"description": "Polygonizes  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">(Multi)LineString(s)</a>  into  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygons</a>. Implementation of GEOSPolygonize function ( geos::operation::polygonize::Polygonizer ).\nPolygonizes a set of lines that represents edges in a planar graph. Edges must be correctly\nnoded, i.e., they must only meet at their endpoints. (NOTE: while TurfJS has no specific function, an easy way to\nensure this is to use the QGis library and call unaryUnion() on the set of input geometries and then pass the\nresult to turf-polygonize).\nThe implementation correctly handles:",
 					"snippet": "var lines = {\n \"type\": \"FeatureCollection\",\n \"features\": [\n   {\n     \"type\": \"Feature\",\n     \"properties\": {},\n     \"geometry\": {\n       \"type\": \"LineString\",\n       \"coordinates\": [\n         [\n           119.00390625,\n           -22.024545601240337\n         ],\n         [\n           120.58593749999999,\n           -28.613459424004414\n         ],\n         [\n           125.595703125,\n           -32.99023555965107\n         ],\n         [\n           133.330078125,\n           -32.99023555965107\n         ],\n         [\n           142.646484375,\n           -30.977609093348676\n         ],\n         [\n           142.294921875,\n           -24.126701958681668\n         ],\n         [\n           139.04296875,\n           -16.299051014581817\n         ],\n         [\n           128.84765625,\n           -15.199386048559994\n         ]\n       ]\n     }\n   },\n   {\n     \"type\": \"Feature\",\n     \"properties\": {},\n     \"geometry\": {\n       \"type\": \"LineString\",\n       \"coordinates\": [\n         [\n           142.646484375,\n           -30.977609093348676\n         ],\n         [\n           132.451171875,\n           -27.449790329784214\n         ],\n         [\n           128.671875,\n           -23.1605633090483\n         ],\n         [\n           119.00390625,\n           -22.024545601240337\n         ]\n       ]\n     }\n   }\n ]\n}\nvar outPolygon = turf.polygonize(lines)",
 					"example": "var lines = {\n \"type\": \"FeatureCollection\",\n \"features\": [\n   {\n     \"type\": \"Feature\",\n     \"properties\": {},\n     \"geometry\": {\n       \"type\": \"LineString\",\n       \"coordinates\": [\n         [\n           119.00390625,\n           -22.024545601240337\n         ],\n         [\n           120.58593749999999,\n           -28.613459424004414\n         ],\n         [\n           125.595703125,\n           -32.99023555965107\n         ],\n         [\n           133.330078125,\n           -32.99023555965107\n         ],\n         [\n           142.646484375,\n           -30.977609093348676\n         ],\n         [\n           142.294921875,\n           -24.126701958681668\n         ],\n         [\n           139.04296875,\n           -16.299051014581817\n         ],\n         [\n           128.84765625,\n           -15.199386048559994\n         ]\n       ]\n     }\n   },\n   {\n     \"type\": \"Feature\",\n     \"properties\": {},\n     \"geometry\": {\n       \"type\": \"LineString\",\n       \"coordinates\": [\n         [\n           142.646484375,\n           -30.977609093348676\n         ],\n         [\n           132.451171875,\n           -27.449790329784214\n         ],\n         [\n           128.671875,\n           -23.1605633090483\n         ],\n         [\n           119.00390625,\n           -22.024545601240337\n         ]\n       ]\n     }\n   }\n ]\n}\nvar outPolygon = turf.polygonize(lines)\n//addToMap\nvar addToMap = [lines, outPolygon];",
 					"hasMap": true,
@@ -1832,7 +1832,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Geometry | Feature <(LineString | MultiLineString)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a>)>)",
 							"Description": "Lines in order to polygonize"
 						}
 					],
@@ -1848,7 +1848,7 @@
 					"name": "polygonToLine",
 					"hidden": false,
 					"parent": null,
-					"description": "Converts a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  to  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  to a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>.",
+					"description": "Converts a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  to  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  to a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">(Multi)LineString</a>.",
 					"snippet": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\n\nvar line = turf.polygonToLine(poly);\n",
 					"example": "var poly = turf.polygon([[[125, -30], [145, -30], [145, -20], [125, -20], [125, -30]]]);\n\nvar line = turf.polygonToLine(poly);\n\n//addToMap\nvar addToMap = [line];",
 					"hasMap": true,
@@ -1862,12 +1862,12 @@
 					"params": [
 						{
 							"Argument": "polygon",
-							"Type": "Feature <(Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "Feature to convert"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1890,7 +1890,7 @@
 					"name": "kinks",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">linestring</a> ,  <a target=\"_blank\" href=\"MultiLineString\">multi-linestring</a> ,  <a target=\"_blank\" href=\"MultiPolygon\">multi-polygon</a> , or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  and returns  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  at all self-intersections.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">linestring</a> ,  <a target=\"_blank\" href=\"MultiLineString\">multi-linestring</a> ,  <a target=\"_blank\" href=\"MultiPolygon\">multi-polygon</a> , or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>  and returns  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  at all self-intersections.",
 					"snippet": "var poly = turf.polygon([[\n  [-12.034835, 8.901183],\n  [-12.060413, 8.899826],\n  [-12.03638, 8.873199],\n  [-12.059383, 8.871418],\n  [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n",
 					"example": "var poly = turf.polygon([[\n  [-12.034835, 8.901183],\n  [-12.060413, 8.899826],\n  [-12.03638, 8.873199],\n  [-12.059383, 8.871418],\n  [-12.034835, 8.901183]\n]]);\n\nvar kinks = turf.kinks(poly);\n\n//addToMap\nvar addToMap = [poly, kinks]",
 					"hasMap": true,
@@ -1904,7 +1904,7 @@
 					"params": [
 						{
 							"Argument": "featureIn",
-							"Type": "Feature <(LineString | MultiLineString | MultiPolygon | Polygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>)>",
 							"Description": "input feature"
 						}
 					],
@@ -1929,27 +1929,27 @@
 					"params": [
 						{
 							"Argument": "center",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "center point"
 						},
 						{
 							"Argument": "radius",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "radius of the circle"
 						},
 						{
 							"Argument": "bearing1",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle, in decimal degrees, of the first radius of the arc"
 						},
 						{
 							"Argument": "bearing2",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle, in decimal degrees, of the second radius of the arc"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -1973,7 +1973,7 @@
 					"name": "lineChunk",
 					"hidden": false,
 					"parent": null,
-					"description": "Divides a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  into chunks of a specified length.\nIf the line is shorter than the segment length then the original line is returned.",
+					"description": "Divides a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>  into chunks of a specified length.\nIf the line is shorter than the segment length then the original line is returned.",
 					"snippet": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\n\nvar chunk = turf.lineChunk(line, 15, {units: 'miles'});\n",
 					"example": "var line = turf.lineString([[-95, 40], [-93, 45], [-85, 50]]);\n\nvar chunk = turf.lineChunk(line, 15, {units: 'miles'});\n\n//addToMap\nvar addToMap = [chunk];",
 					"hasMap": true,
@@ -1987,17 +1987,17 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Geometry | Feature <(LineString | MultiLineString)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a>)>)",
 							"Description": "the lines to split"
 						},
 						{
 							"Argument": "segmentLength",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "how long to make each segment"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2035,12 +2035,12 @@
 					"params": [
 						{
 							"Argument": "line1",
-							"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "any LineString or Polygon"
 						},
 						{
 							"Argument": "line2",
-							"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "any LineString or Polygon"
 						}
 					],
@@ -2065,17 +2065,17 @@
 					"params": [
 						{
 							"Argument": "line1",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "any LineString or Polygon"
 						},
 						{
 							"Argument": "line2",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "any LineString or Polygon"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2093,7 +2093,7 @@
 					"name": "lineSegment",
 					"hidden": false,
 					"parent": null,
-					"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of 2-vertex  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  segments from a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon</a>.",
+					"description": "Creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of 2-vertex  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>  segments from a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">(Multi)LineString</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon</a>.",
 					"snippet": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\nvar segments = turf.lineSegment(polygon);\n",
 					"example": "var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);\nvar segments = turf.lineSegment(polygon);\n\n//addToMap\nvar addToMap = [polygon, segments]",
 					"hasMap": true,
@@ -2107,7 +2107,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(Geometry | FeatureCollection | Feature <(LineString | MultiLineString | MultiPolygon | Polygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>)>)",
 							"Description": "GeoJSON Polygon or LineString"
 						}
 					],
@@ -2118,7 +2118,7 @@
 					"name": "lineSlice",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"LineString\">line</a> , a start  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> , and a stop point\nand returns a subsection of the line in-between those points.\nThe start & stop points don't need to fall exactly on the line.",
+					"description": "Takes a  <a target=\"_blank\" href=\"LineString\">line</a> , a start  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a> , and a stop point\nand returns a subsection of the line in-between those points.\nThe start & stop points don't need to fall exactly on the line.",
 					"snippet": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar start = turf.point([-77.029609, 38.881946]);\nvar stop = turf.point([-77.021884, 38.889563]);\n\nvar sliced = turf.lineSlice(start, stop, line);\n",
 					"example": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar start = turf.point([-77.029609, 38.881946]);\nvar stop = turf.point([-77.021884, 38.889563]);\n\nvar sliced = turf.lineSlice(start, stop, line);\n\n//addToMap\nvar addToMap = [start, stop, line]",
 					"hasMap": true,
@@ -2132,17 +2132,17 @@
 					"params": [
 						{
 							"Argument": "startPt",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "starting point"
 						},
 						{
 							"Argument": "stopPt",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "stopping point"
 						},
 						{
 							"Argument": "line",
-							"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | LineString)",
+							"Type": "(Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>)",
 							"Description": "line to slice"
 						}
 					],
@@ -2153,7 +2153,7 @@
 					"name": "lineSliceAlong",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"LineString\">line</a> , a specified distance along the line to a start  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,\nand a specified  distance along the line to a stop point\nand returns a subsection of the line in-between those points.",
+					"description": "Takes a  <a target=\"_blank\" href=\"LineString\">line</a> , a specified distance along the line to a start  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a> ,\nand a specified  distance along the line to a stop point\nand returns a subsection of the line in-between those points.",
 					"snippet": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\nvar start = 12.5;\nvar stop = 25;\nvar sliced = turf.lineSliceAlong(line, start, stop, {units: 'miles'});\n",
 					"example": "var line = turf.lineString([[7, 45], [9, 45], [14, 40], [14, 41]]);\nvar start = 12.5;\nvar stop = 25;\nvar sliced = turf.lineSliceAlong(line, start, stop, {units: 'miles'});\n\n//addToMap\nvar addToMap = [line, start, stop, sliced]",
 					"hasMap": true,
@@ -2167,22 +2167,22 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "(Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | LineString)",
+							"Type": "(Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>)",
 							"Description": "input line"
 						},
 						{
 							"Argument": "startDist",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance along the line to starting point"
 						},
 						{
 							"Argument": "stopDist",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "distance along the line to ending point"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2214,12 +2214,12 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>",
 							"Description": "LineString Feature to split"
 						},
 						{
 							"Argument": "splitter",
-							"Type": "Feature",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>",
 							"Description": "Feature used to split line"
 						}
 					],
@@ -2230,7 +2230,7 @@
 					"name": "mask",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes any type of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  and an optional mask and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>  exterior ring with holes.",
+					"description": "Takes any type of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>  and an optional mask and returns a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>  exterior ring with holes.",
 					"snippet": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\n\nvar masked = turf.mask(polygon, mask);\n",
 					"example": "var polygon = turf.polygon([[[112, -21], [116, -36], [146, -39], [153, -24], [133, -10], [112, -21]]]);\nvar mask = turf.polygon([[[90, -55], [170, -55], [170, 10], [90, 10], [90, -55]]]);\n\nvar masked = turf.mask(polygon, mask);\n\n//addToMap\nvar addToMap = [masked]",
 					"hasMap": true,
@@ -2244,7 +2244,7 @@
 					"params": [
 						{
 							"Argument": "polygon",
-							"Type": "(FeatureCollection | Feature <(Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "GeoJSON Polygon used as interior rings or holes."
 						},
 						{
@@ -2260,7 +2260,7 @@
 					"name": "nearestPointOnLine",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>  and calculates the closest Point on the (Multi)LineString.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>  and calculates the closest Point on the (Multi)LineString.",
 					"snippet": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar pt = turf.point([-77.037076, 38.884017]);\n\nvar snapped = turf.nearestPointOnLine(line, pt, {units: 'miles'});\n",
 					"example": "var line = turf.lineString([\n    [-77.031669, 38.878605],\n    [-77.029609, 38.881946],\n    [-77.020339, 38.884084],\n    [-77.025661, 38.885821],\n    [-77.021884, 38.889563],\n    [-77.019824, 38.892368]\n]);\nvar pt = turf.point([-77.037076, 38.884017]);\n\nvar snapped = turf.nearestPointOnLine(line, pt, {units: 'miles'});\n\n//addToMap\nvar addToMap = [line, pt, snapped];\nsnapped.properties['marker-color'] = '#00f';",
 					"hasMap": true,
@@ -2274,17 +2274,17 @@
 					"params": [
 						{
 							"Argument": "lines",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a>)>)",
 							"Description": "lines to snap to"
 						},
 						{
 							"Argument": "pt",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "point to snap from"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2302,7 +2302,7 @@
 					"name": "sector",
 					"hidden": false,
 					"parent": null,
-					"description": "Creates a circular sector of a circle of given radius and center  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a> ,\nbetween (clockwise) bearing1 and bearing2; 0 bearing is North of center point, positive clockwise.",
+					"description": "Creates a circular sector of a circle of given radius and center  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a> ,\nbetween (clockwise) bearing1 and bearing2; 0 bearing is North of center point, positive clockwise.",
 					"snippet": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 45;\n\nvar sector = turf.sector(center, radius, bearing1, bearing2);\n",
 					"example": "var center = turf.point([-75, 40]);\nvar radius = 5;\nvar bearing1 = 25;\nvar bearing2 = 45;\n\nvar sector = turf.sector(center, radius, bearing1, bearing2);\n\n//addToMap\nvar addToMap = [center, sector];",
 					"hasMap": true,
@@ -2316,27 +2316,27 @@
 					"params": [
 						{
 							"Argument": "center",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "center point"
 						},
 						{
 							"Argument": "radius",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "radius of the circle"
 						},
 						{
 							"Argument": "bearing1",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle, in decimal degrees, of the first radius of the sector"
 						},
 						{
 							"Argument": "bearing2",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle, in decimal degrees, of the second radius of the sector"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2360,7 +2360,7 @@
 					"name": "shortestPath",
 					"hidden": false,
 					"parent": null,
-					"description": "Returns the shortest  <a target=\"_blank\" href=\"LineString\">path</a>  from  <a target=\"_blank\" href=\"Point\">start</a>  to  <a target=\"_blank\" href=\"Point\">end</a>  without colliding with\nany  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  in  <a target=\"_blank\" href=\"FeatureCollection<Polygon>\"> obstacles</a>",
+					"description": "Returns the shortest  <a target=\"_blank\" href=\"LineString\">path</a>  from  <a target=\"_blank\" href=\"Point\">start</a>  to  <a target=\"_blank\" href=\"Point\">end</a>  without colliding with\nany  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  in  <a target=\"_blank\" href=\"FeatureCollection<Polygon>\"> obstacles</a>",
 					"snippet": "var start = [-5, -6];\nvar end = [9, -6];\nvar options = {\n  obstacles: turf.polygon([[[0, -7], [5, -7], [5, -3], [0, -3], [0, -7]]])\n};\n\nvar path = turf.shortestPath(start, end, options);\n",
 					"example": "var start = [-5, -6];\nvar end = [9, -6];\nvar options = {\n  obstacles: turf.polygon([[[0, -7], [5, -7], [5, -3], [0, -3], [0, -7]]])\n};\n\nvar path = turf.shortestPath(start, end, options);\n\n//addToMap\nvar addToMap = [start, end, options.obstacles, path];",
 					"hasMap": true,
@@ -2384,7 +2384,7 @@
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "optional parameters"
 						}
 					],
@@ -2434,7 +2434,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature <(Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "GeoJSON Polygon or MultiPolygon"
 						}
 					],
@@ -2450,7 +2450,7 @@
 					"name": "featureCollection",
 					"hidden": false,
 					"parent": "@turf/helpers",
-					"description": "Takes one or more  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Features</a>  and creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>.",
+					"description": "Takes one or more  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">Features</a>  and creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>.",
 					"snippet": "var locationA = turf.point([-75.343, 39.984], {name: 'Location A'});\nvar locationB = turf.point([-75.833, 39.284], {name: 'Location B'});\nvar locationC = turf.point([-75.534, 39.123], {name: 'Location C'});\n\nvar collection = turf.featureCollection([\n  locationA,\n  locationB,\n  locationC\n]);\n\n//=collection",
 					"example": "var locationA = turf.point([-75.343, 39.984], {name: 'Location A'});\nvar locationB = turf.point([-75.833, 39.284], {name: 'Location B'});\nvar locationC = turf.point([-75.534, 39.123], {name: 'Location C'});\n\nvar collection = turf.featureCollection([\n  locationA,\n  locationB,\n  locationC\n]);\n\n//=collection",
 					"hasMap": false,
@@ -2464,12 +2464,12 @@
 					"params": [
 						{
 							"Argument": "features",
-							"Type": "Array <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>>",
 							"Description": "input features"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2493,7 +2493,7 @@
 					"name": "feature",
 					"hidden": false,
 					"parent": "@turf/helpers",
-					"description": "Wraps a GeoJSON  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geometry\">Geometry</a>  in a GeoJSON  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>.",
+					"description": "Wraps a GeoJSON  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>  in a GeoJSON  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>.",
 					"snippet": "var geometry = {\n  \"type\": \"Point\",\n  \"coordinates\": [110, 50]\n};\n\nvar feature = turf.feature(geometry);\n\n//=feature",
 					"example": "var geometry = {\n  \"type\": \"Point\",\n  \"coordinates\": [110, 50]\n};\n\nvar feature = turf.feature(geometry);\n\n//=feature",
 					"hasMap": false,
@@ -2507,17 +2507,17 @@
 					"params": [
 						{
 							"Argument": "geometry",
-							"Type": "Geometry",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>",
 							"Description": "input geometry"
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2555,17 +2555,17 @@
 					"params": [
 						{
 							"Argument": "geometries",
-							"Type": "Array <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#geometry\">Geometry</a>>",
+							"Type": "Array <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>>",
 							"Description": "an array of GeoJSON Geometries"
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2589,7 +2589,7 @@
 					"name": "lineString",
 					"hidden": false,
 					"parent": "@turf/helpers",
-					"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>   <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  from an Array of Positions.",
+					"description": "Creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>   <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  from an Array of Positions.",
 					"snippet": "var linestring1 = turf.lineString([[-24, 63], [-23, 60], [-25, 65], [-20, 69]], {name: 'line 1'});\nvar linestring2 = turf.lineString([[-14, 43], [-13, 40], [-15, 45], [-10, 49]], {name: 'line 2'});\n\n//=linestring1\n//=linestring2",
 					"example": "var linestring1 = turf.lineString([[-24, 63], [-23, 60], [-25, 65], [-20, 69]], {name: 'line 1'});\nvar linestring2 = turf.lineString([[-14, 43], [-13, 40], [-15, 45], [-10, 49]], {name: 'line 2'});\n\n//=linestring1\n//=linestring2",
 					"hasMap": false,
@@ -2608,12 +2608,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2656,12 +2656,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2709,12 +2709,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2762,12 +2762,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2796,7 +2796,7 @@
 					"name": "point",
 					"hidden": false,
 					"parent": "@turf/helpers",
-					"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>   <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  from a Position.",
+					"description": "Creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>   <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  from a Position.",
 					"snippet": "var point = turf.point([-75.343, 39.984]);\n\n//=point",
 					"example": "var point = turf.point([-75.343, 39.984]);\n\n//=point",
 					"hasMap": false,
@@ -2815,12 +2815,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2844,7 +2844,7 @@
 					"name": "polygon",
 					"hidden": false,
 					"parent": "@turf/helpers",
-					"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>   <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  from an Array of LinearRings.",
+					"description": "Creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>   <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  from an Array of LinearRings.",
 					"snippet": "var polygon = turf.polygon([[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]], { name: 'poly1' });\n\n//=polygon",
 					"example": "var polygon = turf.polygon([[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]], { name: 'poly1' });\n\n//=polygon",
 					"hasMap": false,
@@ -2863,12 +2863,12 @@
 						},
 						{
 							"Argument": "properties",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "an Object of key-value pairs to add as properties"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional Parameters"
 						}
 					],
@@ -2922,7 +2922,7 @@
 					"name": "randomPoint",
 					"hidden": false,
 					"parent": "@turf/random",
-					"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>.",
+					"description": "Returns a random  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">point</a>.",
 					"snippet": "var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90]})\n//=points",
 					"example": "var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90]})\n//=points",
 					"hasMap": false,
@@ -2936,12 +2936,12 @@
 					"params": [
 						{
 							"Argument": "count",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "how many geometries will be generated"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -2959,7 +2959,7 @@
 					"name": "randomLineString",
 					"hidden": false,
 					"parent": "@turf/random",
-					"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">linestring</a>.",
+					"description": "Returns a random  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">linestring</a>.",
 					"snippet": "var lineStrings = turf.randomLineString(25, {bbox: [-180, -90, 180, 90]})\n//=lineStrings",
 					"example": "var lineStrings = turf.randomLineString(25, {bbox: [-180, -90, 180, 90]})\n//=lineStrings",
 					"hasMap": false,
@@ -2973,12 +2973,12 @@
 					"params": [
 						{
 							"Argument": "count",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "how many geometries will be generated"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3014,7 +3014,7 @@
 					"name": "randomPolygon",
 					"hidden": false,
 					"parent": "@turf/random",
-					"description": "Returns a random  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygon</a>.",
+					"description": "Returns a random  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>.",
 					"snippet": "var polygons = turf.randomPolygon(25, {bbox: [-180, -90, 180, 90]})\n//=polygons",
 					"example": "var polygons = turf.randomPolygon(25, {bbox: [-180, -90, 180, 90]})\n//=polygons",
 					"hasMap": false,
@@ -3028,12 +3028,12 @@
 					"params": [
 						{
 							"Argument": "count",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "how many geometries will be generated"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3068,7 +3068,7 @@
 					"name": "sample",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  and returns a FeatureCollection with given number of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">features</a>  at random.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  and returns a FeatureCollection with given number of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">features</a>  at random.",
 					"snippet": "var points = turf.randomPoint(100, {bbox: [-80, 30, -60, 60]});\n\nvar sample = turf.sample(points, 5);\n",
 					"example": "var points = turf.randomPoint(100, {bbox: [-80, 30, -60, 60]});\n\nvar sample = turf.sample(points, 5);\n\n//addToMap\nvar addToMap = [points, sample]\nturf.featureEach(sample, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
 					"hasMap": true,
@@ -3082,12 +3082,12 @@
 					"params": [
 						{
 							"Argument": "featurecollection",
-							"Type": "FeatureCollection",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>",
 							"Description": "set of input features"
 						},
 						{
 							"Argument": "num",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "number of features to select"
 						}
 					],
@@ -3117,17 +3117,17 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "with known value"
 						},
 						{
 							"Argument": "cellSize",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "the distance across each grid point"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3163,7 +3163,7 @@
 					"name": "isobands",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a grid  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  features with z-values and an array of\nvalue breaks and generates filled contour isobands.",
+					"description": "Takes a grid  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  features with z-values and an array of\nvalue breaks and generates filled contour isobands.",
 					"snippet": false,
 					"example": false,
 					"hasMap": false,
@@ -3177,7 +3177,7 @@
 					"params": [
 						{
 							"Argument": "pointGrid",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input points"
 						},
 						{
@@ -3187,7 +3187,7 @@
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "options on output"
 						}
 					],
@@ -3217,7 +3217,7 @@
 					"name": "isolines",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a grid  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  features with z-values and an array of\nvalue breaks and generates  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Isoline\">isolines</a>.",
+					"description": "Takes a grid  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  features with z-values and an array of\nvalue breaks and generates  <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Isoline\">isolines</a>.",
 					"snippet": "// create a grid of points with random z-values in their properties\nvar extent = [0, 30, 20, 50];\nvar cellWidth = 100;\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\nvar isolines = turf.isolines(pointGrid, breaks, {zProperty: 'temperature'});\n",
 					"example": "// create a grid of points with random z-values in their properties\nvar extent = [0, 30, 20, 50];\nvar cellWidth = 100;\nvar pointGrid = turf.pointGrid(extent, cellWidth, {units: 'miles'});\nfor (var i = 0; i < pointGrid.features.length; i++) {\n    pointGrid.features[i].properties.temperature = Math.random() * 10;\n}\nvar breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\nvar isolines = turf.isolines(pointGrid, breaks, {zProperty: 'temperature'});\n\n//addToMap\nvar addToMap = [isolines];",
 					"hasMap": true,
@@ -3231,7 +3231,7 @@
 					"params": [
 						{
 							"Argument": "pointGrid",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input points"
 						},
 						{
@@ -3241,7 +3241,7 @@
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3271,7 +3271,7 @@
 					"name": "planepoint",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a triangular plane as a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a> \nand a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  within that triangle and returns the z-value\nat that point. The Polygon should have properties  a ,  b , and  c \nthat define the values at its three corners. Alternatively, the z-values\nof each triangle point can be provided by their respective 3rd coordinate\nif their values are not provided as properties.",
+					"description": "Takes a triangular plane as a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> \nand a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  within that triangle and returns the z-value\nat that point. The Polygon should have properties  a ,  b , and  c \nthat define the values at its three corners. Alternatively, the z-values\nof each triangle point can be provided by their respective 3rd coordinate\nif their values are not provided as properties.",
 					"snippet": "var point = turf.point([-75.3221, 39.529]);\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\nvar triangle = turf.polygon([[\n  [-75.1221, 39.57],\n  [-75.58, 39.18],\n  [-75.97, 39.86],\n  [-75.1221, 39.57]\n]], {\n  \"a\": 11,\n  \"b\": 122,\n  \"c\": 44\n});\n\nvar zValue = turf.planepoint(point, triangle);\npoint.properties.zValue = zValue;\n",
 					"example": "var point = turf.point([-75.3221, 39.529]);\n// \"a\", \"b\", and \"c\" values represent the values of the coordinates in order.\nvar triangle = turf.polygon([[\n  [-75.1221, 39.57],\n  [-75.58, 39.18],\n  [-75.97, 39.86],\n  [-75.1221, 39.57]\n]], {\n  \"a\": 11,\n  \"b\": 122,\n  \"c\": 44\n});\n\nvar zValue = turf.planepoint(point, triangle);\npoint.properties.zValue = zValue;\n\n//addToMap\nvar addToMap = [triangle, point];",
 					"hasMap": true,
@@ -3285,12 +3285,12 @@
 					"params": [
 						{
 							"Argument": "point",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>)",
 							"Description": "the Point for which a z-value will be calculated"
 						},
 						{
 							"Argument": "triangle",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>)",
 							"Description": "a Polygon feature with three vertices"
 						}
 					],
@@ -3301,7 +3301,7 @@
 					"name": "tin",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and creates a\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Triangulated_irregular_network\">Triangulated Irregular Network</a> ,\nor a TIN for short, returned as a collection of Polygons. These are often used\nfor developing elevation contour maps or stepped heat visualizations.",
+					"description": "Takes a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and creates a\n <a target=\"_blank\" href=\"http://en.wikipedia.org/wiki/Triangulated_irregular_network\">Triangulated Irregular Network</a> ,\nor a TIN for short, returned as a collection of Polygons. These are often used\nfor developing elevation contour maps or stepped heat visualizations.",
 					"snippet": "// generate some random point data\nvar points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\n\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z');\n",
 					"example": "// generate some random point data\nvar points = turf.randomPoint(30, {bbox: [50, 30, 70, 50]});\n\n// add a random property to each point between 0 and 9\nfor (var i = 0; i < points.features.length; i++) {\n  points.features[i].properties.z = ~~(Math.random() * 9);\n}\nvar tin = turf.tin(points, 'z');\n\n//addToMap\nvar addToMap = [tin, points]\nfor (var i = 0; i < tin.features.length; i++) {\n  var properties  = tin.features[i].properties;\n  properties.fill = '#' + properties.a + properties.b + properties.c;\n}",
 					"hasMap": true,
@@ -3315,7 +3315,7 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input points"
 						},
 						{
@@ -3336,7 +3336,7 @@
 					"name": "pointsWithinPolygon",
 					"hidden": false,
 					"parent": null,
-					"description": "Finds  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Points</a>  that fall within  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">(Multi)Polygon(s)</a>.",
+					"description": "Finds  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Points</a>  that fall within  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon(s)</a>.",
 					"snippet": "var points = turf.points([\n    [-46.6318, -23.5523],\n    [-46.6246, -23.5325],\n    [-46.6062, -23.5513],\n    [-46.663, -23.554],\n    [-46.643, -23.557]\n]);\n\nvar searchWithin = turf.polygon([[\n    [-46.653,-23.543],\n    [-46.634,-23.5346],\n    [-46.613,-23.543],\n    [-46.614,-23.559],\n    [-46.631,-23.567],\n    [-46.653,-23.560],\n    [-46.653,-23.543]\n]]);\n\nvar ptsWithin = turf.pointsWithinPolygon(points, searchWithin);\n",
 					"example": "var points = turf.points([\n    [-46.6318, -23.5523],\n    [-46.6246, -23.5325],\n    [-46.6062, -23.5513],\n    [-46.663, -23.554],\n    [-46.643, -23.557]\n]);\n\nvar searchWithin = turf.polygon([[\n    [-46.653,-23.543],\n    [-46.634,-23.5346],\n    [-46.613,-23.543],\n    [-46.614,-23.559],\n    [-46.631,-23.567],\n    [-46.653,-23.560],\n    [-46.653,-23.543]\n]]);\n\nvar ptsWithin = turf.pointsWithinPolygon(points, searchWithin);\n\n//addToMap\nvar addToMap = [points, searchWithin, ptsWithin]\nturf.featureEach(ptsWithin, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
 					"hasMap": true,
@@ -3350,12 +3350,12 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "(Feauture | FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
+							"Type": "(Feauture | FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>)",
 							"Description": "Points as input search"
 						},
 						{
 							"Argument": "polygons",
-							"Type": "(FeatureCollection | Geoemtry | Feature <(Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | Geoemtry | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "Points must be within these (Multi)Polygon(s)"
 						}
 					],
@@ -3366,7 +3366,7 @@
 					"name": "tag",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygons</a>  and performs a spatial join.",
+					"description": "Takes a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygons</a>  and performs a spatial join.",
 					"snippet": "var pt1 = turf.point([-77, 44]);\nvar pt2 = turf.point([-77, 38]);\nvar poly1 = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]], {pop: 3000});\nvar poly2 = turf.polygon([[\n  [-81, 35],\n  [-81, 41],\n  [-72, 41],\n  [-72, 35],\n  [-81, 35]\n]], {pop: 1000});\n\nvar points = turf.featureCollection([pt1, pt2]);\nvar polygons = turf.featureCollection([poly1, poly2]);\n\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\n",
 					"example": "var pt1 = turf.point([-77, 44]);\nvar pt2 = turf.point([-77, 38]);\nvar poly1 = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]], {pop: 3000});\nvar poly2 = turf.polygon([[\n  [-81, 35],\n  [-81, 41],\n  [-72, 41],\n  [-72, 35],\n  [-81, 35]\n]], {pop: 1000});\n\nvar points = turf.featureCollection([pt1, pt2]);\nvar polygons = turf.featureCollection([poly1, poly2]);\n\nvar tagged = turf.tag(points, polygons, 'pop', 'population');\n\n//addToMap\nvar addToMap = [tagged, polygons]",
 					"hasMap": true,
@@ -3380,22 +3380,22 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input points"
 						},
 						{
 							"Argument": "polygons",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "input polygons"
 						},
 						{
 							"Argument": "field",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "property in  polygons  to add to joined { <Point> } features"
 						},
 						{
 							"Argument": "outField",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "property in  points  in which to store joined property from  polygons"
 						}
 					],
@@ -3411,7 +3411,7 @@
 					"name": "hexGrid",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a bounding box and the diameter of the cell and returns a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  of flat-topped\nhexagons or triangles ( <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  features) aligned in an \"odd-q\" vertical grid as\ndescribed in  <a target=\"_blank\" href=\"http://www.redblobgames.com/grids/hexagons/\">Hexagonal Grids</a>.",
+					"description": "Takes a bounding box and the diameter of the cell and returns a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  of flat-topped\nhexagons or triangles ( <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  features) aligned in an \"odd-q\" vertical grid as\ndescribed in  <a target=\"_blank\" href=\"http://www.redblobgames.com/grids/hexagons/\">Hexagonal Grids</a>.",
 					"snippet": "var bbox = [-96,31,-84,40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar hexgrid = turf.hexGrid(bbox, cellSide, options);\n",
 					"example": "var bbox = [-96,31,-84,40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar hexgrid = turf.hexGrid(bbox, cellSide, options);\n\n//addToMap\nvar addToMap = [hexgrid];",
 					"hasMap": true,
@@ -3430,12 +3430,12 @@
 						},
 						{
 							"Argument": "cellSide",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "length of the side of the the hexagons or triangles, in units. It will also coincide with the\nradius of the circumcircle of the hexagons."
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3471,7 +3471,7 @@
 					"name": "pointGrid",
 					"hidden": false,
 					"parent": null,
-					"description": "Creates a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  grid from a bounding box,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>.",
+					"description": "Creates a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  grid from a bounding box,  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>.",
 					"snippet": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellSide = 3;\nvar options = {units: 'miles'};\n\nvar grid = turf.pointGrid(extent, cellSide, options);\n",
 					"example": "var extent = [-70.823364, -33.553984, -70.473175, -33.302986];\nvar cellSide = 3;\nvar options = {units: 'miles'};\n\nvar grid = turf.pointGrid(extent, cellSide, options);\n\n//addToMap\nvar addToMap = [grid];",
 					"hasMap": true,
@@ -3490,12 +3490,12 @@
 						},
 						{
 							"Argument": "cellSide",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "the distance between points, in units"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3525,7 +3525,7 @@
 					"name": "squareGrid",
 					"hidden": false,
 					"parent": null,
-					"description": "Creates a square grid from a bounding box,  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>.",
+					"description": "Creates a square grid from a bounding box,  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>.",
 					"snippet": "var bbox = [-95, 30 ,-85, 40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar squareGrid = turf.squareGrid(bbox, cellSide, options);\n",
 					"example": "var bbox = [-95, 30 ,-85, 40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar squareGrid = turf.squareGrid(bbox, cellSide, options);\n\n//addToMap\nvar addToMap = [squareGrid]",
 					"hasMap": true,
@@ -3544,12 +3544,12 @@
 						},
 						{
 							"Argument": "cellSide",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "of each cell, in units"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3579,7 +3579,7 @@
 					"name": "triangleGrid",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a bounding box and a cell depth and returns a set of triangular  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">polygons</a>  in a grid.",
+					"description": "Takes a bounding box and a cell depth and returns a set of triangular  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygons</a>  in a grid.",
 					"snippet": "var bbox = [-95, 30 ,-85, 40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar triangleGrid = turf.triangleGrid(bbox, cellSide, options);\n",
 					"example": "var bbox = [-95, 30 ,-85, 40];\nvar cellSide = 50;\nvar options = {units: 'miles'};\n\nvar triangleGrid = turf.triangleGrid(bbox, cellSide, options);\n\n//addToMap\nvar addToMap = [triangleGrid];",
 					"hasMap": true,
@@ -3598,12 +3598,12 @@
 						},
 						{
 							"Argument": "cellSide",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "dimension of each cell"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3638,7 +3638,7 @@
 					"name": "nearestPoint",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a reference  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">point</a>  and a FeatureCollection of Features\nwith Point geometries and returns the\npoint from the FeatureCollection closest to the reference. This calculation\nis geodesic.",
+					"description": "Takes a reference  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">point</a>  and a FeatureCollection of Features\nwith Point geometries and returns the\npoint from the FeatureCollection closest to the reference. This calculation\nis geodesic.",
 					"snippet": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\nvar points = turf.featureCollection([\n    turf.point([28.973865, 41.011122]),\n    turf.point([28.948459, 41.024204]),\n    turf.point([28.938674, 41.013324])\n]);\n\nvar nearest = turf.nearestPoint(targetPoint, points);\n",
 					"example": "var targetPoint = turf.point([28.965797, 41.010086], {\"marker-color\": \"#0F0\"});\nvar points = turf.featureCollection([\n    turf.point([28.973865, 41.011122]),\n    turf.point([28.948459, 41.024204]),\n    turf.point([28.938674, 41.013324])\n]);\n\nvar nearest = turf.nearestPoint(targetPoint, points);\n\n//addToMap\nvar addToMap = [targetPoint, points, nearest];\nnearest.properties['marker-color'] = '#F00';",
 					"hasMap": true,
@@ -3657,7 +3657,7 @@
 						},
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "against input point set"
 						}
 					],
@@ -3687,22 +3687,22 @@
 					"params": [
 						{
 							"Argument": "polygons",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
 							"Description": "polygons with values on which to aggregate"
 						},
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "points to be aggregated"
 						},
 						{
 							"Argument": "inProperty",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "property to be nested from"
 						},
 						{
 							"Argument": "outProperty",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "property to be nested into"
 						}
 					],
@@ -3713,7 +3713,7 @@
 					"name": "clustersDbscan",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters according to  <a target=\"_blank\" href=\"DBSCAN's\">https://en.wikipedia.org/wiki/DBSCAN</a>  data clustering algorithm.",
+					"description": "Takes a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and partition them into clusters according to  <a target=\"_blank\" href=\"DBSCAN's\">https://en.wikipedia.org/wiki/DBSCAN</a>  data clustering algorithm.",
 					"snippet": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar maxDistance = 100;\nvar clustered = turf.clustersDbscan(points, maxDistance);\n",
 					"example": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar maxDistance = 100;\nvar clustered = turf.clustersDbscan(points, maxDistance);\n\n//addToMap\nvar addToMap = [clustered];",
 					"hasMap": true,
@@ -3727,17 +3727,17 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "to be clustered"
 						},
 						{
 							"Argument": "maxDistance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "Maximum Distance between any point of the cluster to generate the clusters (kilometers only)"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3761,7 +3761,7 @@
 					"name": "clustersKmeans",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a set of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">points</a>  and partition them into clusters using the k-mean.\nIt uses the  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/K-means_clustering\">k-means algorithm</a>",
+					"description": "Takes a set of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">points</a>  and partition them into clusters using the k-mean.\nIt uses the  <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/K-means_clustering\">k-means algorithm</a>",
 					"snippet": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar options = {numberOfClusters: 7};\nvar clustered = turf.clustersKmeans(points, options);\n",
 					"example": "// create random points with random z-values in their properties\nvar points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});\nvar options = {numberOfClusters: 7};\nvar clustered = turf.clustersKmeans(points, options);\n\n//addToMap\nvar addToMap = [clustered];",
 					"hasMap": true,
@@ -3775,12 +3775,12 @@
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "FeatureCollection <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "FeatureCollection <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "to be clustered"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -3823,7 +3823,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						}
 					],
@@ -3843,7 +3843,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -3877,7 +3877,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Geometry | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -3912,7 +3912,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -3941,7 +3941,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -3971,7 +3971,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4000,7 +4000,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4035,7 +4035,7 @@
 					"params": [
 						{
 							"Argument": "obj",
-							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | Geometry <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>> | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>)",
+							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | Geometry <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>)",
 							"Description": "Object"
 						}
 					],
@@ -4060,7 +4060,7 @@
 					"params": [
 						{
 							"Argument": "obj",
-							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | Geometry | Feature)",
+							"Type": "(Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "Object"
 						}
 					],
@@ -4085,7 +4085,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "GeoJSON Feature or Geometry Object"
 						}
 					],
@@ -4115,7 +4115,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "GeoJSON object"
 						},
 						{
@@ -4140,7 +4140,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4169,7 +4169,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4199,7 +4199,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4228,7 +4228,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "any GeoJSON object"
 						},
 						{
@@ -4260,7 +4260,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON"
 						},
 						{
@@ -4287,7 +4287,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(FeatureCollection | Feature | Geometry)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>)",
 							"Description": "any GeoJSON"
 						},
 						{
@@ -4322,7 +4322,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "FeatureCollection",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>",
 							"Description": "GeoJSON Features"
 						},
 						{
@@ -4348,12 +4348,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "FeatureCollection",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>",
 							"Description": "GeoJSON Features"
 						},
 						{
 							"Argument": "property",
-							"Type": "(string | number)",
+							"Type": "(<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a> | <a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>)",
 							"Description": "GeoJSON property key/value used to create clusters"
 						},
 						{
@@ -4382,12 +4382,12 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "FeatureCollection",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>",
 							"Description": "GeoJSON Features"
 						},
 						{
 							"Argument": "property",
-							"Type": "(string | number)",
+							"Type": "(<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a> | <a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>)",
 							"Description": "GeoJSON property key/value used to create clusters"
 						},
 						{
@@ -4413,7 +4413,7 @@
 					"name": "collectionOf",
 					"hidden": false,
 					"parent": "@turf/invariant",
-					"description": "Enforce expectations about types of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-collection-objects\">FeatureCollection</a>  inputs for Turf.\nInternally this uses  <a target=\"_blank\" href=\"geojsonType\">geojsonType</a>  to judge geometry types.",
+					"description": "Enforce expectations about types of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>  inputs for Turf.\nInternally this uses  <a target=\"_blank\" href=\"geojsonType\">geojsonType</a>  to judge geometry types.",
 					"snippet": false,
 					"example": false,
 					"hasMap": false,
@@ -4422,17 +4422,17 @@
 					"params": [
 						{
 							"Argument": "featureCollection",
-							"Type": "FeatureCollection",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>",
 							"Description": "a FeatureCollection for which features will be judged"
 						},
 						{
 							"Argument": "type",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "expected GeoJSON type"
 						},
 						{
 							"Argument": "name",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "name of calling function"
 						}
 					],
@@ -4482,17 +4482,17 @@
 					"params": [
 						{
 							"Argument": "value",
-							"Type": "GeoJSON",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a>",
 							"Description": "any GeoJSON object"
 						},
 						{
 							"Argument": "type",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "expected GeoJSON type"
 						},
 						{
 							"Argument": "name",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "name of calling function"
 						}
 					],
@@ -4508,7 +4508,7 @@
 					"name": "featureOf",
 					"hidden": false,
 					"parent": "@turf/invariant",
-					"description": "Enforce expectations about types of  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#feature-objects\">Feature</a>  inputs for Turf.\nInternally this uses  <a target=\"_blank\" href=\"geojsonType\">geojsonType</a>  to judge geometry types.",
+					"description": "Enforce expectations about types of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>  inputs for Turf.\nInternally this uses  <a target=\"_blank\" href=\"geojsonType\">geojsonType</a>  to judge geometry types.",
 					"snippet": false,
 					"example": false,
 					"hasMap": false,
@@ -4517,17 +4517,17 @@
 					"params": [
 						{
 							"Argument": "feature",
-							"Type": "Feature",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>",
 							"Description": "a feature with an expected geometry type"
 						},
 						{
 							"Argument": "type",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "expected GeoJSON type"
 						},
 						{
 							"Argument": "name",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "name of calling function"
 						}
 					],
@@ -4562,7 +4562,7 @@
 					"params": [
 						{
 							"Argument": "line",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>> | Array <Array <<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>>>)",
 							"Description": "to be evaluated"
 						}
 					],
@@ -4587,12 +4587,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						}
 					],
@@ -4617,12 +4617,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						}
 					],
@@ -4647,12 +4647,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						}
 					],
@@ -4677,12 +4677,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "GeoJSON input"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
 							"Description": "GeoJSON input"
 						}
 					],
@@ -4707,12 +4707,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "input"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature <(LineString | MultiLineString | Polygon | MultiPolygon)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.5\">MultiLineString</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "input"
 						}
 					],
@@ -4737,12 +4737,12 @@
 					"params": [
 						{
 							"Argument": "line1",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "line2",
-							"Type": "(Geometry | Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>)",
 							"Description": "GeoJSON Feature or Geometry"
 						}
 					],
@@ -4753,7 +4753,7 @@
 					"name": "booleanPointInPolygon",
 					"hidden": false,
 					"parent": null,
-					"description": "Takes a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>  and a  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#polygon\">Polygon</a>  or  <a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#multipolygon\">MultiPolygon</a>  and determines if the point resides inside the polygon. The polygon can\nbe convex or concave. The function accounts for holes.",
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  and determines if the point resides inside the polygon. The polygon can\nbe convex or concave. The function accounts for holes.",
 					"snippet": "var pt = turf.point([-77, 44]);\nvar poly = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]]);\n\nturf.booleanPointInPolygon(pt, poly);\n//= true",
 					"example": "var pt = turf.point([-77, 44]);\nvar poly = turf.polygon([[\n  [-81, 41],\n  [-81, 47],\n  [-72, 47],\n  [-72, 41],\n  [-81, 41]\n]]);\n\nturf.booleanPointInPolygon(pt, poly);\n//= true",
 					"hasMap": false,
@@ -4767,17 +4767,17 @@
 					"params": [
 						{
 							"Argument": "point",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#point\">Point</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
 							"Description": "input point"
 						},
 						{
 							"Argument": "polygon",
-							"Type": "Feature <(Polygon | MultiPolygon)>",
+							"Type": "Feature <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a> | <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
 							"Description": "input polygon or multipolygon"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -4814,12 +4814,12 @@
 						},
 						{
 							"Argument": "line",
-							"Type": "Feature <<a target=\"_blank\" href=\"http://geojson.org/geojson-spec.html#linestring\">LineString</a>>",
+							"Type": "Feature <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.4\">LineString</a>>",
 							"Description": "GeoJSON LineString"
 						},
 						{
 							"Argument": "options",
-							"Type": "Object",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\">Object</a>",
 							"Description": "Optional parameters: see below"
 						}
 					],
@@ -4851,12 +4851,12 @@
 					"params": [
 						{
 							"Argument": "feature1",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						},
 						{
 							"Argument": "feature2",
-							"Type": "(Geometry | Feature <any>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> | Feature <any>)",
 							"Description": "GeoJSON Feature or Geometry"
 						}
 					],
@@ -4886,7 +4886,7 @@
 					"params": [
 						{
 							"Argument": "bearing",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle, between -180 and +180 degrees"
 						}
 					],
@@ -4911,17 +4911,17 @@
 					"params": [
 						{
 							"Argument": "area",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "to be converted"
 						},
 						{
 							"Argument": "originalUnit",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "of the distance"
 						},
 						{
 							"Argument": "finalUnit",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "returned unit"
 						}
 					],
@@ -4946,17 +4946,17 @@
 					"params": [
 						{
 							"Argument": "length",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "to be converted"
 						},
 						{
 							"Argument": "originalUnit",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "of the length"
 						},
 						{
 							"Argument": "finalUnit",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "returned unit"
 						}
 					],
@@ -4981,7 +4981,7 @@
 					"params": [
 						{
 							"Argument": "degrees",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle between 0 and 360 degrees"
 						}
 					],
@@ -5006,12 +5006,12 @@
 					"params": [
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "in real units"
 						},
 						{
 							"Argument": "units",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers."
 						}
 					],
@@ -5036,12 +5036,12 @@
 					"params": [
 						{
 							"Argument": "distance",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "in real units"
 						},
 						{
 							"Argument": "units",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers."
 						}
 					],
@@ -5066,12 +5066,12 @@
 					"params": [
 						{
 							"Argument": "radians",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "in radians across the sphere"
 						},
 						{
 							"Argument": "units",
-							"Type": "string",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String\">string</a>",
 							"Description": "can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers."
 						}
 					],
@@ -5096,7 +5096,7 @@
 					"params": [
 						{
 							"Argument": "radians",
-							"Type": "number",
+							"Type": "<a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number\">number</a>",
 							"Description": "angle in radians"
 						}
 					],
@@ -5121,7 +5121,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(GeoJSON | Position)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a> | Position)",
 							"Description": "WGS84 GeoJSON object"
 						},
 						{
@@ -5158,7 +5158,7 @@
 					"params": [
 						{
 							"Argument": "geojson",
-							"Type": "(GeoJSON | Position)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3\">GeoJSON</a> | Position)",
 							"Description": "Mercator GeoJSON object"
 						},
 						{
