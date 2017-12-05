@@ -8,7 +8,9 @@
     "create-config": "node scripts/create-config.js",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate && shx cp -R ./dist/* ./ && shx rm -rf ./dist/",
+    "pregenerate": "shx rm -rf ./_nuxt/",
+    "generate": "nuxt generate",
+    "postgenerate": "shx cp -R ./dist/* ./ && shx rm -rf ./dist/",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint"
   },
