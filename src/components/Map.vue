@@ -1,34 +1,36 @@
 <template>
-  <div id='turfMap' style="height: 400px"></div>
+  <div id='turfMap' style="height: 325px"></div>
 </template>
 
 <script>
-import L from 'mapbox.js'
-require('leaflet-fullscreen')
-L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
-var turfMap = null
-var fg = null
-var control = null
-var layerArray = null
+// require('leaflet-fullscreen')
+
+var turfMap = null //eslint-disable-line
+var fg = null //eslint-disable-line
+var control = null //eslint-disable-line
+var layerArray = null //eslint-disable-line
+
 export default {
   name: 'Map',
-  props: ['code'],
-  watch: {
-    code: function () {
-      this.moveMapToExample()
-    }
+  mounted: function () {
+    L.mapbox.accessToken = 'pk.eyJ1IjoidG1jdyIsImEiOiJIZmRUQjRBIn0.lRARalfaGHnPdRcc-7QZYQ'
+    turfMap = L.mapbox.map('turfMap', 'mapbox.streets') //eslint-disable-line
+    control = L.control.layers([], []).addTo(turfMap)
+    // turfMap.addControl(new L.Control.Fullscreen())
+    fg = L.featureGroup([]).addTo(turfMap)
   },
   methods: {
-    moveMapToExample () {
+    moveMapToExample (module) {
+      if (!module.hasMap) return
       fg.eachLayer(function (layer) {
         control.removeLayer(layer)
       })
       fg.clearLayers()
-      layerArray = this.code.split(/\n\/\/addToMap/)[1]
+      layerArray = module.example.split(/\n\/\/addToMap/)[1]
       layerArray = layerArray.match(/\[.*]/)[0]
       layerArray = layerArray.replace('[', '').replace(']', '').split(',')
       var zoomText = this.getLayersAndZoom()
-      return eval(this.code + zoomText) //eslint-disable-line
+      return eval(module.example + zoomText) //eslint-disable-line
     },
     getLayersAndZoom: function (layerArray) {
       return `
@@ -46,13 +48,6 @@ export default {
       })
       turfMap.fitBounds(fg.getBounds(), {padding: [30,30]})`
     }
-  },
-  mounted: function () {
-    turfMap = L.mapbox.map('turfMap', 'mapbox.streets')
-    control = L.control.layers([], []).addTo(turfMap)
-    turfMap.addControl(new L.Control.Fullscreen())
-    fg = L.featureGroup([]).addTo(turfMap)
-    this.moveMapToExample()
   }
 }
 </script>

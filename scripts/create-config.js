@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
 const d3 = require('d3-queue')
 const path = require('path')
 const glob = require('glob')
@@ -9,25 +8,27 @@ const load = require('load-json-file')
 const write = require('write-json-file')
 const documentation = require('documentation')
 
-const configPath = path.join(__dirname, '..', 'src', 'config.json')
+const configPath = path.join(__dirname, '..', 'src', 'assets', 'config.json')
 const packagesPath = glob.sync(path.join(__dirname, '..', 'turf', 'packages', 'turf-*', 'package.json'))
 
-const moduleSidebarList = []
-const completeModules = []
+const modules = []
 const q = d3.queue(1)
 
-var out = yaml.load(path.join(__dirname, '..', 'turf', 'documentation.yml'))
-out.toc.forEach(tocItem => {
-  moduleSidebarList.push({
-    isHeading: tocItem.name ? true : false,
-    name: tocItem.name ? tocItem.name : tocItem,
+const docs = yaml.load(path.join(__dirname, '..', 'turf', 'documentation.yml'))
+docs.toc.forEach(tocItem => {
+  if (tocItem.name) {
+    return modules.push({
+      group: tocItem.name,
+      modules: []
+    })
+  }
+  modules[modules.length - 1].modules.push({
+    name: tocItem,
     hidden: false
   })
 })
-
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
-  const directoryName = path.basename(directory).replace('turf-', '')
   const indexPath = path.join(directory, 'index.js')
   const pckg = load.sync(packagePath)
 
@@ -37,32 +38,25 @@ packagesPath.forEach(packagePath => {
     documentation.build(indexPath, {
       shallow: true
     }).then(res => {
-      if (res === undefined) return console.warning(packagePath);
+      if (res === undefined) return console.warning(packagePath)
       // Format JSON
       documentation.formats.json(res).then(docs => {
         docs = JSON.parse(docs)
         const parent = (docs.length > 1) ? pckg.name : null
 
         docs.forEach(metadata => {
-
-          const category = getCategory(metadata)
-
-          // Module
-          if (isModuleInSidebar(metadata.name)) {
-            completeModules.push({
-              parent,
-              category,
-              name: metadata.name,
-              description: getDescription(metadata),
-              snippet: getSnippet(metadata),
-              example: getExample(metadata),
-              hasMap: hasMap(metadata),
-              npmName: pckg.name,
-              returns: getReturns(metadata),
-              params: getParams(metadata),
-              options: getOptions(metadata),
-              throws: getThrows(metadata)
-            })
+          var moduleObj = getModuleObj(metadata.name)
+          if (moduleObj) {
+            moduleObj.parent = parent
+            moduleObj.description = getDescription(metadata)
+            moduleObj.snippet = getSnippet(metadata)
+            moduleObj.example = getExample(metadata)
+            moduleObj.hasMap = hasMap(metadata)
+            moduleObj.npmName = pckg.name
+            moduleObj.returns = getReturns(metadata)
+            moduleObj.params = getParams(metadata)
+            moduleObj.options = getOptions(metadata)
+            moduleObj.throws = getThrows(metadata)
           }
         })
         callback(null)
@@ -73,25 +67,19 @@ packagesPath.forEach(packagePath => {
 
 q.awaitAll(() => {
   const config = {
-    sidebar: moduleSidebarList,
-    modules: completeModules
+    modules: modules
   }
   write.sync(configPath, config)
   console.log('Saved Config:', configPath)
 })
 
-function isModuleInSidebar (moduleName) {
-  const matches = moduleSidebarList.filter(mod => {
-    return mod.name === moduleName
-  })
-  return matches.length > 0
-}
-
-function getCategory (metadata) {
-  for (const {title, description} of metadata.tags) {
-    if (title === 'category') return description
+function getModuleObj (moduleName) {
+  for (var i = 0; i < modules.length; i++) {
+    var group = modules[i]
+    for (var i2 = 0; i2 < group.modules.length; i2++) {
+      if (group.modules[i2].name === moduleName) return group.modules[i2]
+    }
   }
-  return null
 }
 
 function getDescription (metadata) {
@@ -114,11 +102,6 @@ function hasMap (metadata) {
   const example = metadata.examples[0]
   if (example) return example.description.indexOf('//addToMap') !== -1
   return false
-}
-
-function getNpmName (metadata, parent) {
-  if (parent !== null) return parent
-  return metadata.name.replace(/([A-Z])/g, word => '-' + word.toLowerCase())
 }
 
 function getReturns (metadata) {
@@ -150,7 +133,7 @@ function getParams (metadata) {
     if (!param.description.children.length) return false
     return {
       Argument: param.name,
-      Type: getType(param.type, true),
+      Type: createLink(param.type),
       Description: concatTags(param.description.children[0].children),
       _lineNum: param.lineNumber
     }
@@ -169,31 +152,28 @@ function getParams (metadata) {
 
 function getOptions (metadata) {
   if (!metadata.params) return false
-  let options = metadata.params.filter(({name}) => {
+  const options = metadata.params.filter(({name}) => {
     return name === 'options'
   })
   if (options.length === 0) return null
-  let outProperties = options[0].properties.map(prop => {
-    let defaultVal = null
-    if (prop.default) defaultVal = prop.default.replace('\\','')
+
+  let outParams = options[0].properties.map(prop => {
+    let defaultVal = prop.default ? prop.default.replace('\\', '') : null
     return {
-      Prop: prop.name.replace('options.',''),
-      Type: getType(prop.type),
+      Prop: prop.name.replace('options.', ''),
+      Type: createLink(prop.type),
       Default: defaultVal,
-      Description: concatTags(prop.description.children[0].children, false),
+      Description: createLink(prop.description.children[0].children[0])
     }
   })
-  return outProperties
+  return outParams
 }
 
-function concatTags (inNode, addLink) {
+function concatTags (inNode) {
   if (!inNode) return false
   let outDescr = inNode.map(node => {
     if (node.children) {
-      if (!addLink) return node.children[0].value
-      let link = getLink(node.children[0].value)
-      if (link === null || !node.jsdoc) link = node.url
-      return '<a target="_blank" href="' + link + '">' + node.children[0].value + '</a>'
+      return createLink(node.children[0])
     }
     return node.value
   })
@@ -202,65 +182,50 @@ function concatTags (inNode, addLink) {
   return outDescr
 }
 
-function getType (inNode, addLink) {
+function getType (inNode) {
   if (!inNode) return false
-  if (inNode.type === 'UnionType') {
-    return '(' + inNode.elements.map(node => {
-      return getType(node, addLink)
-    }).join(' | ') + ')'
-  }
-  if (inNode.type === 'OptionalType') return 'Optional: ' + inNode.expression.name
-  if (typeof inNode.type === 'object') return inNode.name
-  if (inNode.type === 'NameExpression') return inNode.name
-  if (inNode.type === 'TypeApplication') {
-    return inNode.expression.name + ' <' + inNode.applications.map(node => {
-      if (node.type === 'UnionType') {
-        return '(' + node.elements.map(node2 => {
-          return getType(node2, addLink)
-        }).join(' | ') + ')'
-      }
-      if (node.type === 'TypeApplication') {
-        return getType(node, addLink)
-      }
-      let link = getLink(node.name)
-      if (!addLink || link === null) return node.name
-      return '<a target="_blank" href="' + link + '">' + node.name + '</a>'
-    }) + '>'
-  }
+  return createLink(inNode)
 }
 
+Object.keys(docs.paths).forEach(name => {
+  docs.paths[name.toUpperCase()] = docs.paths[name]
+})
+
 function getLink (name) {
-  switch (name.toUpperCase()) {
-    case 'POINT':
-    case 'POINTS':
-      return 'http://geojson.org/geojson-spec.html#point'
-    case 'MULTIPOINT':
-      return 'http://geojson.org/geojson-spec.html#multipoint'
-    case 'LINESTRING':
-    case '(MULTI)LINESTRING':
-    case '(MULTI)LINESTRING(S)':
-    case 'LINE':
-      return 'http://geojson.org/geojson-spec.html#linestring'
-    case 'MULTILINESTRING':
-      return 'http://geojson.org/geojson-spec.html#multilinestring'
-    case 'POLYGON':
-    case 'POLYGON(S)':
-    case '(MULTI)POLYGON':
-      return 'http://geojson.org/geojson-spec.html#polygon'
-    case 'MULTIPOLYGON':
-      return 'http://geojson.org/geojson-spec.html#multipolygon'
-    case 'GEOMETRY':
-      return 'http://geojson.org/geojson-spec.html#geometry'
-    case 'GEOMETRYCOLLECTION':
-      return 'http://geojson.org/geojson-spec.html#geometrycollection'
-    case 'FEATURE':
-      return 'http://geojson.org/geojson-spec.html#feature-objects'
-    case 'FEATURECOLLECTION':
-      return 'http://geojson.org/geojson-spec.html#feature-collection-objects'
-    case 'BBOX':
-    case 'BOUNDING BOX':
-      return 'http://geojson.org/geojson-spec.html#bounding-boxes'
+  return docs.paths[name.toUpperCase()] || null
+}
+
+function createLink (node) {
+  let name
+  switch (node.type) {
+    case 'text':
+      name = node.value
+      break
+    case 'AllLiteral':
+      name = '*'
+      break
+    case 'NameExpression':
+      name = node.name
+      break
+    case 'UndefinedLiteral':
+      name = 'undefined'
+      break
+    case 'NullLiteral':
+      name = 'null'
+      break
+    case 'RestType':
+      return `...${createLink(node.expression)}`
+    case 'TypeApplication':
+      return `${createLink(node.expression)} <${node.applications.map(application => createLink(application)).join('|')}>`
+    case 'OptionalType':
+      return `(${createLink(node.expression)})`
+    case 'UnionType':
+      return `(${node.elements.map(element => createLink(element)).join('|')})`
     default:
-      return null
+      console.log(node)
+      throw new Error(node + ' not supported')
   }
+  const link = getLink(name)
+  if (link === null) return name
+  return `<a target="_blank" href="${link}">${name}</a>`
 }

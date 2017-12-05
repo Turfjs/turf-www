@@ -22,9 +22,10 @@
         float: right;
         height: 25px;
         width: 25px;
-        margin-top: 20px;
-        margin-right: 10px;
+        margin-top: -80px;
         cursor: pointer;
+        position: fixed;
+        right: 5px;
         path {
             fill: transparentize($blue, 0.4);
             transition: 0.3s;
