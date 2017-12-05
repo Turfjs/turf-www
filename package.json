@@ -4,10 +4,9 @@
   "version": "5.0.0",
   "description": "Turf.js documentation",
   "scripts": {
-    "dev": "nuxt",
     "create-config": "node scripts/create-config.js",
     "start": "nuxt",
-    "pregenerate": "shx rm -rf ./_nuxt/",
+    "pregenerate": "shx rm -rf ./_nuxt/ && npm run create-config",
     "generate": "nuxt generate",
     "postgenerate": "shx cp -R ./dist/* ./ && shx rm -rf ./dist/",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
