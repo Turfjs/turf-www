@@ -15,7 +15,7 @@
             <tr v-for="param in module.params">
               <td>{{param.Argument}}</td>
               <td v-html="param.Type"></td>
-              <td>{{param.Description}}</td>
+              <td v-html="param.Description"></td>
             </tr>
           </tbody>
         </table>
@@ -31,7 +31,7 @@
           <tbody>
             <tr v-for="option in module.options">
               <td>{{option.Prop}}</td>
-              <td>{{option.Type}}</td>
+              <td v-html="option.Type"></td>
               <td>{{option.Default}}</td>
               <td>{{option.Description}}</td>
             </tr>
@@ -40,15 +40,11 @@
       </div>
       <div v-if="module.returns.length > 0">
         <h4>Returns</h4>
-        <p>{{module.returns[0].type}} - {{module.returns[0].desc}}</p>
+        <p v-html="module.returns[0].type + ' - ' + module.returns[0].desc"></p>
       </div>
       <div v-if="module.throws.length > 0">
         <h4>Throws</h4>
         <p>{{module.throws[0].type}} - {{module.throws[0].desc}}</p>
-      </div>
-      <div v-if="module.snippet !== false">
-        <h4>Example</h4>
-          <pre v-highlightjs><code class="javascript">{{module.snippet}}</code></pre>
       </div>
     </Col>
     <Col span="7" offset="1">
@@ -62,6 +58,12 @@
           <strong>Note:</strong> {{module.name}} is part of the {{module.npmName}} module.<br><br>
           To use it as a stand-alone module will need to import {{module.npmName}} and call the {{module.name}} method.
         </p>
+      </div>
+    </Col>
+    <Col span="24">
+      <div v-if="module.snippet !== false">
+        <h4>Example</h4>
+          <pre v-highlightjs><code class="javascript">{{module.snippet}}</code></pre>
       </div>
     </Col>
   </Row>

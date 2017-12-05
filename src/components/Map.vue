@@ -1,5 +1,5 @@
 <template>
-  <div id='turfMap' style="height: 400px"></div>
+  <div id='turfMap' style="height: 325px"></div>
 </template>
 
 <script>

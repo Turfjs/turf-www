@@ -133,7 +133,7 @@ function getParams (metadata) {
     if (!param.description.children.length) return false
     return {
       Argument: param.name,
-      Type: getType(param.type, true),
+      Type: createLink(param.type),
       Description: concatTags(param.description.children[0].children),
       _lineNum: param.lineNumber
     }
@@ -152,31 +152,28 @@ function getParams (metadata) {
 
 function getOptions (metadata) {
   if (!metadata.params) return false
-  let options = metadata.params.filter(({name}) => {
+  const options = metadata.params.filter(({name}) => {
     return name === 'options'
   })
   if (options.length === 0) return null
-  let outProperties = options[0].properties.map(prop => {
-    let defaultVal = null
-    if (prop.default) defaultVal = prop.default.replace('\\', '')
+
+  let outParams = options[0].properties.map(prop => {
+    let defaultVal = prop.default ? prop.default.replace('\\', '') : null
     return {
       Prop: prop.name.replace('options.', ''),
-      Type: getType(prop.type),
+      Type: createLink(prop.type),
       Default: defaultVal,
-      Description: concatTags(prop.description.children[0].children, false)
+      Description: createLink(prop.description.children[0].children[0])
     }
   })
-  return outProperties
+  return outParams
 }
 
-function concatTags (inNode, addLink) {
+function concatTags (inNode) {
   if (!inNode) return false
   let outDescr = inNode.map(node => {
     if (node.children) {
-      if (!addLink) return node.children[0].value
-      let link = getLink(node.children[0].value)
-      if (link === null || !node.jsdoc) link = node.url
-      return '<a target="_blank" href="' + link + '">' + node.children[0].value + '</a>'
+      return createLink(node.children[0])
     }
     return node.value
   })
@@ -185,29 +182,9 @@ function concatTags (inNode, addLink) {
   return outDescr
 }
 
-function getType (inNode, addLink) {
+function getType (inNode) {
   if (!inNode) return false
-  if (inNode.type === 'UnionType') {
-    return '(' + inNode.elements.map(node => {
-      return getType(node, addLink)
-    }).join(' | ') + ')'
-  }
-  if (inNode.type === 'OptionalType') return 'Optional: ' + inNode.expression.name
-  if (typeof inNode.type === 'object') return createLink(inNode.name, addLink)
-  if (inNode.type === 'NameExpression') return createLink(inNode.name, addLink)
-  if (inNode.type === 'TypeApplication') {
-    return inNode.expression.name + ' <' + inNode.applications.map(node => {
-      if (node.type === 'UnionType') {
-        return '(' + node.elements.map(node2 => {
-          return getType(node2, addLink)
-        }).join(' | ') + ')'
-      }
-      if (node.type === 'TypeApplication') {
-        return getType(node, addLink)
-      }
-      return createLink(node.name, addLink)
-    }) + '>'
-  }
+  return createLink(inNode)
 }
 
 Object.keys(docs.paths).forEach(name => {
@@ -218,8 +195,37 @@ function getLink (name) {
   return docs.paths[name.toUpperCase()] || null
 }
 
-function createLink (name, addLink) {
+function createLink (node) {
+  let name
+  switch (node.type) {
+    case 'text':
+      name = node.value
+      break
+    case 'AllLiteral':
+      name = '*'
+      break
+    case 'NameExpression':
+      name = node.name
+      break
+    case 'UndefinedLiteral':
+      name = 'undefined'
+      break
+    case 'NullLiteral':
+      name = 'null'
+      break
+    case 'RestType':
+      return `...${createLink(node.expression)}`
+    case 'TypeApplication':
+      return `${createLink(node.expression)} <${node.applications.map(application => createLink(application)).join('|')}>`
+    case 'OptionalType':
+      return `(${createLink(node.expression)})`
+    case 'UnionType':
+      return `(${node.elements.map(element => createLink(element)).join('|')})`
+    default:
+      console.log(node)
+      throw new Error(node + ' not supported')
+  }
   const link = getLink(name)
-  if (!addLink || link === null) return name
-  return '<a target="_blank" href="' + link + '">' + name + '</a>'
+  if (link === null) return name
+  return `<a target="_blank" href="${link}">${name}</a>`
 }
