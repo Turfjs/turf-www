@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nuxt",
     "create-config": "node scripts/create-config.js",
-    "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "nuxt",
     "pregenerate": "shx rm -rf ./_nuxt/",
     "generate": "nuxt generate",
     "postgenerate": "shx cp -R ./dist/* ./ && shx rm -rf ./dist/",

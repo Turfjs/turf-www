@@ -3,7 +3,7 @@
       <h1>Welcome to Turf.js</h1>
       <Row>
         <Col span="7" offset="3">
-            <div class="map-insert" id="inMap"></div>
+            <div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" id="inMap"></div>
         </Col>
         <Col span="2" offset="1" class="selector">
             <Select v-model="operation" v-on:on-change="changeOperation">
@@ -11,7 +11,7 @@
             </Select>
         </Col>
         <Col span="7" offset="1">
-            <div class="map-insert" id="outMap"></div>
+            <div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" id="outMap"></div>
         </Col>
       </Row>
       <h2>Advanced geospatial analysis for browsers and Node.js</h2>
@@ -45,7 +45,7 @@ export default {
   data: function () {
     return {
       operation: 'tin',
-      turfOperations: ['tin', 'buffer', 'centroid']
+      turfOperations: ['tin', 'buffer', 'centroid', 'voronoi']
     }
   },
   methods: {
@@ -53,8 +53,9 @@ export default {
       outLayer.clearLayers()
       var geojson = null
       if (e === 'tin') geojson = turf.tin(points, 'price')
-      if (e === 'buffer') geojson = turf.buffer(points, 200, {units: 'meters'})
-      if (e === 'centroid') geojson = turf.centroid(points)
+      else if (e === 'buffer') geojson = turf.buffer(points, 200, {units: 'meters'})
+      else if (e === 'centroid') geojson = turf.centroid(points)
+      else if (e === 'voronoi') geojson = turf.voronoi(points, {bbox: turf.bbox(points)})
       outLayer = L.geoJson(geojson, geojsonOptions).addTo(map2)
     }
   },
@@ -87,17 +88,17 @@ function pointToLayer (feature, latlng) {
   })
 }
 
-function valueSum (obj) {
-  var sum = 0
-  for (var k in obj) sum += obj[k]
-  return sum
-}
+// function valueSum (obj) {
+//   var sum = 0
+//   for (var k in obj) sum += obj[k]
+//   return sum
+// }
 
 var geojsonOptions = {
   pointToLayer: pointToLayer,
   style: function (feature) {
     if (feature.geometry.type === 'Polygon') {
-      var sum = valueSum(feature.properties) / 62
+      var sum = Math.random() * 0.3 + 0.2
       return {
         weight: 1,
         fillOpacity: sum,
