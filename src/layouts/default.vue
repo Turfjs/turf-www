@@ -101,7 +101,7 @@ export default {
     padding: 20px!important;
   }
   .sideCol{
-    min-height: fill;
+    min-height: 100vh;
   }
   .mainContentArea{
     background-color: #f6f6f6;
