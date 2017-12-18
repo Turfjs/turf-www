@@ -9,6 +9,8 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Montserrat:200,400' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Istok+Web' },
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/iview/2.7.4/styles/iview.css' }
     ]
   },
@@ -35,6 +37,7 @@ module.exports = {
     //     'libraryDirectory': 'src/components'
     //   }]]
     // },
+    publicPath: 'js/',
     vendor: [
       'iview'
     ],
@@ -58,6 +61,7 @@ module.exports = {
   },
   generate: {
     dir: './dist',
+    publicPath: './js',
     minify: false
   }
 }

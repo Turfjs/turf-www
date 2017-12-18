@@ -14,10 +14,11 @@
       <p>If you're working in Node or with build tool (such as webpack, browserify or rollup) you can include individual turf modules in your project.</p>
       <pre v-highlightjs><code class="js">// Import your module of interest
 var collect = require('@turf/collect');
+// or in ES6
+import collect from '@turf/collect';
 // And then use it
-collect(points, polys, 'population', 'populationValues')
+collect(points, polys, 'population', 'populationValues');
 </code></pre>
-
       <h4>Creating custom builds for use in the browser</h4>
       <p><strong>Step 1</strong> Create a folder and install whatever modules you are interested in via npm</p>
         <pre v-highlightjs><code class="js">$ npm install @turf/collect @turf/buffer</code></pre>
