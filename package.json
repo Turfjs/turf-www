@@ -8,7 +8,7 @@
     "start": "nuxt",
     "pregenerate": "shx rm -rf ./_nuxt/ && npm run create-config",
     "generate": "nuxt generate",
-    "postgenerate": "shx cp -R ./dist/* ./ && shx rm -rf ./dist/",
+    "postgenerate": "shx cp -R ./dist/* ./docs && shx rm -rf ./dist/",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint"
   },

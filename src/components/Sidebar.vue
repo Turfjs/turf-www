@@ -47,7 +47,7 @@ export default {
     },
     clickModule (e) {
       if (e.target.classList.value.includes('heading')) return
-      if (this.$route.name !== 'Docs') this.$router.push('Docs#' + e.target.innerText)
+      if (this.$route.name !== 'docs') this.$router.push('docs#' + e.target.innerText)
       else {
         document.getElementById(e.target.innerText).scrollIntoView()
         window.location.hash = e.target.innerText
