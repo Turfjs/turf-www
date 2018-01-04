@@ -115,9 +115,27 @@
 							"Argument": "bbox",
 							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-5\">BBox</a>",
 							"Description": "extent in  minX, minY, maxX, maxY  order"
+						},
+						{
+							"Argument": "options",
+							"Type": "Object",
+							"Description": "Optional parameters: see below"
 						}
 					],
-					"options": null,
+					"options": [
+						{
+							"Prop": "properties",
+							"Type": "Properties",
+							"Default": "{}",
+							"Description": "Translate properties to Polygon"
+						},
+						{
+							"Prop": "id",
+							"Type": "(string|number)",
+							"Default": "{}",
+							"Description": "Translate Id to Polygon"
+						}
+					],
 					"throws": []
 				},
 				{
@@ -2353,6 +2371,12 @@
 							"Type": "number",
 							"Default": "64",
 							"Description": "number of steps"
+						},
+						{
+							"Prop": "properties",
+							"Type": "Properties",
+							"Default": "{}",
+							"Description": "Translate properties to Feature Polygon"
 						}
 					],
 					"throws": []
@@ -3356,7 +3380,7 @@
 						},
 						{
 							"Argument": "polygons",
-							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>|Geoemtry|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
 							"Description": "Points must be within these (Multi)Polygon(s)"
 						}
 					],
@@ -3746,8 +3770,14 @@
 						{
 							"Prop": "units",
 							"Type": "string",
-							"Default": "kilometers",
+							"Default": "\"kilometers\"",
 							"Description": "in which "
+						},
+						{
+							"Prop": "mutate",
+							"Type": "boolean",
+							"Default": "false",
+							"Description": "Allows GeoJSON input to be mutated"
 						},
 						{
 							"Prop": "minPoints",
@@ -3840,7 +3870,9 @@
 					"example": "var features = turf.featureCollection([\r\n  turf.point([26, 37], {\"foo\": \"bar\"}),\r\n  turf.point([36, 53], {\"hello\": \"world\"})\r\n]);\r\n\r\nturf.coordEach(features, function (currentCoord, coordIndex, featureIndex, multiFeatureIndex, geometryIndex) {\r\n  //=currentCoord\r\n  //=coordIndex\r\n  //=featureIndex\r\n  //=multiFeatureIndex\r\n  //=geometryIndex\r\n});",
 					"hasMap": false,
 					"npmName": "@turf/meta",
-					"returns": [],
+					"returns": [
+						false
+					],
 					"params": [
 						{
 							"Argument": "geojson",
@@ -3910,7 +3942,9 @@
 					"example": "var features = turf.featureCollection([\r\n  turf.point([26, 37], {foo: 'bar'}),\r\n  turf.point([36, 53], {hello: 'world'})\r\n]);\r\n\r\nturf.featureEach(features, function (currentFeature, featureIndex) {\r\n  //=currentFeature\r\n  //=featureIndex\r\n});",
 					"hasMap": false,
 					"npmName": "@turf/meta",
-					"returns": [],
+					"returns": [
+						false
+					],
 					"params": [
 						{
 							"Argument": "geojson",
@@ -4038,9 +4072,9 @@
 					],
 					"params": [
 						{
-							"Argument": "obj",
+							"Argument": "coord",
 							"Type": "(Array <number>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a> <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>)",
-							"Description": "Object"
+							"Description": "GeoJSON Point or an Array of numbers"
 						}
 					],
 					"options": null,
@@ -4050,22 +4084,22 @@
 					"name": "getCoords",
 					"hidden": false,
 					"parent": "@turf/invariant",
-					"description": "Unwrap coordinates from a Feature, Geometry Object or an Array of numbers",
-					"snippet": "var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);\r\n\r\nvar coord = turf.getCoords(poly);\r\n//= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]",
-					"example": "var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);\r\n\r\nvar coord = turf.getCoords(poly);\r\n//= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]",
+					"description": "Unwrap coordinates from a Feature, Geometry Object or an Array",
+					"snippet": "var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);\r\n\r\nvar coords = turf.getCoords(poly);\r\n//= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]",
+					"example": "var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);\r\n\r\nvar coords = turf.getCoords(poly);\r\n//= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]",
 					"hasMap": false,
 					"npmName": "@turf/invariant",
 					"returns": [
 						{
-							"type": "Array <number>",
+							"type": "Array <any>",
 							"desc": "coordinates"
 						}
 					],
 					"params": [
 						{
-							"Argument": "obj",
-							"Type": "(Array <number>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
-							"Description": "Object"
+							"Argument": "coords",
+							"Type": "(Array <any>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>)",
+							"Description": "Feature, Geometry Object or an Array"
 						}
 					],
 					"options": null,
@@ -4124,7 +4158,7 @@
 						},
 						{
 							"Argument": "name",
-							"Type": "(string)",
+							"Type": "string",
 							"Description": "name of the variable to display in error message"
 						}
 					],
@@ -4140,7 +4174,9 @@
 					"example": "var features = turf.featureCollection([\r\n    turf.point([26, 37], {foo: 'bar'}),\r\n    turf.point([36, 53], {hello: 'world'})\r\n]);\r\n\r\nturf.geomEach(features, function (currentGeometry, featureIndex, featureProperties, featureBBox, featureId) {\r\n  //=currentGeometry\r\n  //=featureIndex\r\n  //=featureProperties\r\n  //=featureBBox\r\n  //=featureId\r\n});",
 					"hasMap": false,
 					"npmName": "@turf/meta",
-					"returns": [],
+					"returns": [
+						false
+					],
 					"params": [
 						{
 							"Argument": "geojson",
@@ -4200,7 +4236,9 @@
 					"example": "var features = turf.featureCollection([\r\n    turf.point([26, 37], {foo: 'bar'}),\r\n    turf.point([36, 53], {hello: 'world'})\r\n]);\r\n\r\nturf.propEach(features, function (currentProperties, featureIndex) {\r\n  //=currentProperties\r\n  //=featureIndex\r\n});",
 					"hasMap": false,
 					"npmName": "@turf/meta",
-					"returns": [],
+					"returns": [
+						false
+					],
 					"params": [
 						{
 							"Argument": "geojson",
