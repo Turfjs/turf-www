@@ -1,3 +1,5 @@
+var publicPath = process.env.npm_lifecycle_event === 'start' ? '' : '/js'
+
 module.exports = {
   srcDir: 'src',
   head: {
@@ -37,7 +39,7 @@ module.exports = {
     //     'libraryDirectory': 'src/components'
     //   }]]
     // },
-    publicPath: 'js/',
+    publicPath: publicPath,
     vendor: [
       'iview'
     ],

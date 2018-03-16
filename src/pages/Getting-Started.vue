@@ -18,6 +18,8 @@ var collect = require('@turf/collect');
 import collect from '@turf/collect';
 // And then use it
 collect(points, polys, 'population', 'populationValues');
+// Alternatively you can import the whole lot using
+import * as turf from '@turf/turf'
 </code></pre>
       <h4>Creating custom builds for use in the browser</h4>
       <p><strong>Step 1</strong> Create a folder and install whatever modules you are interested in via npm</p>
