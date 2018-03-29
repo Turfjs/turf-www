@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mainContentArea">
       <h1>Welcome to Turf.js</h1>
       <Row>
         <Col span="7" offset="3">

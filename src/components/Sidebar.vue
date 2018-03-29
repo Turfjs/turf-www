@@ -46,7 +46,7 @@ export default {
       this.$router.push('/')
     },
     clickModule (e) {
-      if (e.target.classList.value.includes('heading')) return
+      if (e.target.className.indexOf('heading') !== -1) return
 
       if (this.$route.name === 'docs') {
         document.getElementById(e.target.innerText).scrollIntoView()

@@ -3,7 +3,7 @@
     <Col span="4" class="sideCol">
       <sidebar :modules="modules" v-on:changeModule="setModule"></sidebar>
     </Col>
-    <Col span="18" offset="1" v-bind:class="{ mainContentArea: !isDocsPage }">
+    <Col span="18" offset="1">
         <github></github>
         <nuxt/>
     </Col>
@@ -32,13 +32,8 @@ export default {
       return {}
     },
     isDocsPage: function () {
-      return this.$route.name === 'Docs'
+      return this.$route.name === 'docs'
     }
-    //   var match = config.modules.filter(function (mod) {
-    //     return mod.name === this.selectedModuleName
-    //   }, this)
-    //   return match[0]
-    // }
   },
   methods: {
     setModule: function (newName) {
@@ -63,7 +58,7 @@ export default {
     color: #444444;
     font-size: 1rem;
     min-height: 100%;
-    background: transparentize($grey, 0.45);
+    background: transparentize($grey, 0.15);
   }
 
   h1, h2, h3, h4 {
@@ -98,7 +93,7 @@ export default {
   }
   .hljs {
     background: none!important;
-    padding: 20px!important;
+    padding: 20px 20px 0px!important;
   }
   .sideCol{
     min-height: 100vh;

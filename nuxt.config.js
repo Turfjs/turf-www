@@ -1,4 +1,4 @@
-var publicPath = process.env.npm_lifecycle_event === 'start' ? '' : '/js'
+var publicPath = process.env.npm_lifecycle_event === 'start' ? '' : '/js/'
 
 module.exports = {
   srcDir: 'src',
@@ -51,7 +51,7 @@ module.exports = {
           prefix: false
         }
       })
-      if (ctx.dev && ctx.isClient) {
+      if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -63,7 +63,6 @@ module.exports = {
   },
   generate: {
     dir: './dist',
-    publicPath: './js',
-    minify: false
+    publicPath: './js/'
   }
 }

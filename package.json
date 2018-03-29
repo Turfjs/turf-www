@@ -6,7 +6,7 @@
   "scripts": {
     "create-config": "node scripts/create-config.js",
     "start": "nuxt",
-    "pregenerate": "shx rm -rf ./_nuxt/ && npm run create-config",
+    "pregenerate": "shx rm -rf ./_nuxt/",
     "generate": "nuxt generate",
     "postgenerate": "shx cp -R ./dist/* ./docs && shx rm -rf ./dist/",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
@@ -15,7 +15,7 @@
   "dependencies": {
     "intersection-observer": "^0.4.3",
     "iview": "^2.7.4",
-    "nuxt": "^1.0.0-rc11",
+    "nuxt": "^1.4.0",
     "prismjs": "^1.8.4",
     "vue-dom-portal": "^0.1.6",
     "vue-highlightjs": "^1.3.3",
@@ -38,7 +38,7 @@
     "glob": "^7.1.2",
     "iview-loader": "^1.0.0",
     "load-json-file": "^4.0.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.8.3",
     "sass-loader": "^6.0.6",
     "shx": "^0.2.2",
     "write-json-file": "^2.3.0",
