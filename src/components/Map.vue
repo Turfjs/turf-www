@@ -13,7 +13,7 @@ var layerArray = null //eslint-disable-line
 export default {
   name: 'Map',
   mounted: function () {
-    L.mapbox.accessToken = 'pk.eyJ1Ijoicm93YW53aW5zIiwiYSI6ImNqYnpsMmVlNjNsdmozM3BwcHZvbWxkb2cifQ.ZIjythJhZLCV939atjDG4w'
+    L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ'
     turfMap = L.mapbox.map('turfMap', 'mapbox.streets') //eslint-disable-line
     control = L.control.layers([], []).addTo(turfMap)
     // turfMap.addControl(new L.Control.Fullscreen())

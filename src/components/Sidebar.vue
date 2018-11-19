@@ -13,7 +13,7 @@
           <li v-for="module in category.modules"
             class="menuItem"
             v-on:click="clickModule"
-            >{{module.name}}</li> 
+            >{{module.name}}</li>
         </div>
       </ul>
   </div>
@@ -48,7 +48,7 @@ export default {
     clickModule (e) {
       if (e.target.className.indexOf('heading') !== -1) return
 
-      if (this.$route.name === 'docs') {
+      if (this.$route.path === '/docs') {
         document.getElementById(e.target.innerText).scrollIntoView()
         window.location.hash = e.target.innerText
       } else {
