@@ -32,12 +32,11 @@ import * as turf from '@turf/turf'
       <p><strong>Step 3</strong> Run the following browserify command</p>
       <pre v-highlightjs><code class="bash">$ browserify main.js -s turf > outTurf.js </code></pre>
       <p><strong>Done</strong> You can now use your outTurf.js file where you want just like you would normally use Turf, eg load it via a script tag and call turf using the turf global variable.</p>
-      <h4>Working with data</h4>
-      <p>Turf uses <a href="http://geojson.org"/>GeoJSON</a> as its data exchange format wherever possible. It is recommended to read the GeoJSON specification before using Turf, however, a common issue to be aware of when starting out is that GeoJSON requires data to be formatted in <i>longitude,latitude</i> order.</p>
     </Col>
     <Col span="6" class="highlight">
       <h4>Examples</h4>
       <p>Below are some helpful resources for getting started with Turf.</p>
+
       <h5>Code Repositories</h5>
       <p><a href="https://github.com/turfjs/turf-node-example">Turf & Node.js for geoprocessing tasks</a></p><br>
       <p><a href="https://github.com/mapbox/turf-server-example">Turf & Express.js to create a spatial server</a></p>

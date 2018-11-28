@@ -1,10 +1,10 @@
 <template>
   <Row id="app">
-    <github></github>
     <Col span="4" class="sideCol">
       <sidebar :modules="modules" v-on:changeModule="setModule"></sidebar>
     </Col>
     <Col span="18" offset="1">
+        <github></github>
         <nuxt/>
     </Col>
   </Row>

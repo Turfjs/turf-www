@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
 const d3 = require('d3-queue')
 const path = require('path')
 const glob = require('glob')
 const yaml = require('yamljs')
 const load = require('load-json-file')
+const write = require('write-json-file')
 const documentation = require('documentation')
 
 const configPath = path.join(__dirname, '..', 'src', 'assets', 'config.json')
@@ -69,7 +69,7 @@ q.awaitAll(() => {
   const config = {
     modules: modules
   }
-  fs.writeFileSync(configPath, JSON.stringify(config))
+  write.sync(configPath, config)
   console.log('Saved Config:', configPath)
 })
 
