@@ -164,16 +164,18 @@ export default {
     }
   }
 
-
   .npmBadge {
-    background-color: transparentize($blue, 0.6);
-    padding: 15px;
+    background-color: transparentize($green, 0.15);
+    padding: 20px;
     color: white;
-    text-align: right;
+    text-align: left;
     width: 100%;
     font-size: 0.9rem;
-    font-weight: 300;
+    font-weight: 800;
     font-family: 'Montserrat', sans-serif;
+  }
+  .npmBadge::selection {
+    background: black;
   }
   .hasParent{
     background-color: transparentize($blue, 0.3);
