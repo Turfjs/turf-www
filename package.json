@@ -4,11 +4,13 @@
   "version": "5.0.0",
   "description": "Turf.js documentation",
   "scripts": {
-    "config": "node scripts/create-config.js",
+    "create-config": "node scripts/create-config.js",
     "start": "nuxt",
-    "clean": "shx rm -rf .nuxt dist",
-    "build": "nuxt generate; shx rm -rf docs; shx cp -rf dist docs; shx rm -rf dist; echo 'turfjs.org' > docs/CNAME",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ./src ./scripts"
+    "pregenerate": "shx rm -rf ./_nuxt/",
+    "generate": "nuxt generate",
+    "postgenerate": "shx cp -R ./dist/* ./docs && shx rm -rf ./dist/",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
   },
   "dependencies": {
     "intersection-observer": "^0.4.3",

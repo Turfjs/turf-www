@@ -1,5 +1,4 @@
 <template>
-  <div class="gitHolder">
   <a href="https://github.com/Turfjs/turf/">
     <svg
       class="githubLogo"
@@ -14,35 +13,24 @@
        </g>
      </svg>
     </a>
-  </div>
 </template>
 
 <style lang="scss">
    @import "../styles/variables.scss";
-
-   .gitHolder{
-    position: fixed;
-    right: 10px;
-    top: 20px;
-    width: 33px;
-    height: 33px;
-    z-index: 2000;
-    a {
-      height: 100%;
-      width: 100%;
-    }
-   }
-
+   
     .githubLogo{
+        float: right;
+        height: 25px;
+        width: 25px;
+        margin-top: -80px;
         cursor: pointer;
-        position: relative;
-        height: 100%;
-        width: 100%;
+        position: fixed;
+        right: 5px;
         path {
             fill: transparentize($blue, 0.4);
             transition: 0.3s;
             &:hover {
-                fill: transparentize($green, 0.2);
+                fill: $green;
             }
         }
     }
