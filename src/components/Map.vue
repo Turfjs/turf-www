@@ -14,7 +14,7 @@ export default {
   name: 'Map',
   mounted: function () {
     L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ'
-    turfMap = L.mapbox.map('turfMap', 'mapbox.streets') //eslint-disable-line
+    turfMap = L.mapbox.map('turfMap', 'tmcw.kncfa9dj') //eslint-disable-line
     control = L.control.layers([], []).addTo(turfMap)
     // turfMap.addControl(new L.Control.Fullscreen())
     fg = L.featureGroup([]).addTo(turfMap)
