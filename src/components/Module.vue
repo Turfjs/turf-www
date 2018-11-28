@@ -165,7 +165,7 @@ export default {
   }
 
   .npmBadge {
-    background-color: transparentize($green, 0.1);
+    background-color: transparentize($green, 0.15);
     padding: 20px;
     color: white;
     text-align: left;
