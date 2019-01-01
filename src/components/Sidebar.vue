@@ -47,12 +47,11 @@ export default {
     },
     clickModule (e) {
       if (e.target.className.indexOf('heading') !== -1) return
-
-      if (this.$route.path === '/docs') {
+      if (this.$route.path === '/docs/') {
         document.getElementById(e.target.innerText).scrollIntoView()
         window.location.hash = e.target.innerText
       } else {
-        this.$router.push('docs#' + e.target.innerText)
+        this.$router.push('docs/#' + e.target.innerText)
       }
     }
   }
