@@ -41,8 +41,11 @@ export default {
     this.modules = allMods
   },
   mounted: function () {
-    if (window.location.hash === '') {
-    } else {
+    if (window.location.pathname === '/docs') {
+      window.location.pathname = '/docs/'
+    }
+
+    if (window.location.hash !== '') {
       document.getElementById(window.location.hash.replace('#', '')).scrollIntoView()
     }
   }
