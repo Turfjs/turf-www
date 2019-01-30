@@ -41,8 +41,8 @@ import * as turf from '@turf/turf'
       <p><a href="https://github.com/turfjs/turf-node-example">Turf & Node.js for geoprocessing tasks</a></p><br>
       <p><a href="https://github.com/mapbox/turf-server-example">Turf & Express.js to create a spatial server</a></p>
       <h5>Guides</h5>
-      <p><a href="https://www.mapbox.com/guides/intro-to-turf">Intro To Turf</a></p><br>
-      <p><a href="https://www.mapbox.com/guides/analysis-with-turf">Analysis with Turf.js</a></p>
+      <p><a href="https://docs.mapbox.com/help/how-mapbox-works/geospatial-analysis/">Intro To Turf</a></p><br>
+      <p><a href="https://docs.mapbox.com/help/tutorials/analysis-with-turf/">Analysis with Turf.js</a></p>
   </Col>
 </Row>
 </template>
