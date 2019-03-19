@@ -43,6 +43,9 @@ import * as turf from '@turf/turf'
       <h5>Guides</h5>
       <p><a href="https://docs.mapbox.com/help/how-mapbox-works/geospatial-analysis/">Intro To Turf</a></p><br>
       <p><a href="https://docs.mapbox.com/help/tutorials/analysis-with-turf/">Analysis with Turf.js</a></p>
+
+      <h5> Awesome Turf </h5>
+      <p> <a href="https://github.com/Turfjs/awesome-turf" target="_blank"> A collection of awesome projects and resources in the Turf.js ecosystem </a> </p>
   </Col>
 </Row>
 </template>
