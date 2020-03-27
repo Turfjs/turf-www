@@ -5,7 +5,7 @@
       <p>There are a few different ways to get started using Turf, the documentation below will provide a couple of the common scenarios.</p>
       <h4>Using directly in the browser</h4>
       <p>Load the minified file via a script tag, this will expose a global variable named turf.</p>
-      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf/dist/turf.min.js'&gt;&lt;/script&gt;
+      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf/turf.min.js'&gt;&lt;/script&gt;
 &lt;script&gt;
     var bbox = turf.bbox(features);
 &lt;/script&gt;</code></pre>
