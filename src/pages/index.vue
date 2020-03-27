@@ -70,7 +70,7 @@ export default {
       turf.point([-73.988, 40.739], {price: 9})
     ])
     L.mapbox.accessToken = 'pk.eyJ1IjoibW9yZ2FuaGVybG9ja2VyIiwiYSI6Ii1zLU4xOWMifQ.FubD68OEerk74AYCLduMZQ'
-    var mapOptions = { attributionControl: false, zoomControl: false }
+    var mapOptions = { zoomControl: false }
     map1 = L.mapbox.map('inMap', 'tmcw.kncfa9dj', mapOptions)
     map2 = L.mapbox.map('outMap', 'tmcw.kncfa9dj', mapOptions)
 
