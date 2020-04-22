@@ -51,7 +51,14 @@
       <div v-show="module.hasMap">
         <div :id="'map_' + module.name"></div>
       </div>
-      <p class="npmBadge">npm install {{module.npmName}}</p>
+      <p class="npmBadge">
+        <a
+          :href="'https://github.com/Turfjs/turf/tree/master/packages/'+ module.npmName.replace('@turf/','turf-')"
+          target="_blank" ref="noreferrer noopener"
+        >
+          npm install {{module.npmName}}
+        </a>
+      </p>
 
       <div v-if="module.parent !== null">
         <p class="hasParent">
@@ -168,11 +175,10 @@ export default {
   .npmBadge {
     background-color: transparentize($blue, 0.6);
     padding: 15px;
-    color: white;
     text-align: right;
     width: 100%;
     font-size: 0.9rem;
-    font-weight: 300;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
   }
   .hasParent{

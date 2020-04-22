@@ -4,9 +4,9 @@
       <sidebar :modules="modules" v-on:changeModule="setModule"></sidebar>
     </Col>
     <Col span="18" offset="1">
-        <github></github>
         <nuxt/>
     </Col>
+    <github></github>
   </Row>
 </template>
 
