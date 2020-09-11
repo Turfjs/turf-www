@@ -172,7 +172,7 @@ export default {
     text-align: right;
     width: 100%;
     font-size: 0.9rem;
-    font-weight: 300;
+    font-weight: 600;
     font-family: 'Montserrat', sans-serif;
   }
   .hasParent{
