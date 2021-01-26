@@ -7,7 +7,7 @@ To run this project in your local machine you need to have installed:
 * Node.js
 * NPM
 
-Then with Git you can clone the repository to a local folder with those commands:
+Then with Git you can clone the repository to a local folder and continue the development process that is described below.
 
 ## Development Setup
 
@@ -22,7 +22,7 @@ $ cd turf-www/
 $ npm install # Or yarn install
 
 # serve with hot reload at localhost:3000
-$ npm run dev
+$ npm start
 
 # generate static project
 # the files will be located in docs/
