@@ -3,13 +3,7 @@
   <Col span="17">
       <h3>Getting started with Turf.js</h3>
       <p>There are a few different ways to get started using Turf, the documentation below will provide a couple of the common scenarios.</p>
-      <h4>Using directly in the browser</h4>
-      <p>Load the minified file via a script tag, this will expose a global variable named turf.</p>
-      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf/turf.min.js'&gt;&lt;/script&gt;
-&lt;script&gt;
-    var bbox = turf.bbox(features);
-&lt;/script&gt;</code></pre>
-      <p><strong>Note:</strong> The full build of Turf weighs around 500kb which is a fair bit of javascript to load so you probably only want to pull in the bits you need, see the instructions below on how to create a custom build.</p>
+
       <h4>Using in Node or with a build tool</h4>
       <p>If you're working in Node or with build tool (such as webpack, browserify or rollup) you can include individual turf modules in your project.</p>
       <pre v-highlightjs><code class="js">// Import your module of interest
@@ -21,6 +15,15 @@ collect(points, polys, 'population', 'populationValues');
 // Alternatively you can import the whole lot using
 import * as turf from '@turf/turf'
 </code></pre>
+
+      <h4>Using directly in the browser</h4>
+      <p>Load the minified file via a script tag, this will expose a global variable named turf.</p>
+      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf@6.3.0/turf.min.js'&gt;&lt;/script&gt;
+&lt;script&gt;
+    var bbox = turf.bbox(features);
+&lt;/script&gt;</code></pre>
+      <p><strong>Note:</strong> The full build of Turf weighs around 500kb which is a fair bit of javascript to load so you probably only want to pull in the bits you need, see the instructions below on how to create a custom build.</p>
+
       <h4>Creating custom builds for use in the browser</h4>
       <p><strong>Step 1</strong> Create a folder and install whatever modules you are interested in via npm</p>
         <pre v-highlightjs><code class="js">$ npm install @turf/collect @turf/buffer</code></pre>
@@ -39,7 +42,6 @@ import * as turf from '@turf/turf'
 
       <h5>Code Repositories</h5>
       <p><a href="https://github.com/turfjs/turf-node-example">Turf & Node.js for geoprocessing tasks</a></p><br>
-      <p><a href="https://github.com/mapbox/turf-server-example">Turf & Express.js to create a spatial server</a></p>
       <h5>Guides</h5>
       <p><a href="https://docs.mapbox.com/help/how-mapbox-works/geospatial-analysis/">Intro To Turf</a></p><br>
       <p><a href="https://docs.mapbox.com/help/tutorials/analysis-with-turf/">Analysis with Turf.js</a></p>

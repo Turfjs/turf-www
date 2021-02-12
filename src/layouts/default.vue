@@ -93,7 +93,7 @@ export default {
   }
   .hljs {
     background: none!important;
-    padding: 20px 20px 0px!important;
+    padding: 20px;
   }
   .sideCol{
     min-height: 100vh;

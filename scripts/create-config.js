@@ -29,7 +29,7 @@ docs.toc.forEach(tocItem => {
 })
 packagesPath.forEach(packagePath => {
   const directory = path.parse(packagePath).dir
-  const indexPath = path.join(directory, 'index.js')
+  const indexPath = path.join(directory, 'dist', 'js', 'index.js')
   const pckg = load.sync(packagePath)
 
   // Build Documentation
