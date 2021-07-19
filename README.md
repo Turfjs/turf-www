@@ -1,4 +1,4 @@
-# Turf-ssr
+# turf-www
 
 This repository keeps the source code of the Turf website project. Basically it uses **Vue.js** in the components and **Nuxt.js** to generate the static bundle that could be served to the client.
 
@@ -35,4 +35,4 @@ $ cd docs/
 $ npx static-server
 ```
 
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+For detailed explanation on how things work, checkout the [CONTRIBUTING.md](https://github.com/Turfjs/turf-www/blob/master/CONTRIBUTING.md)
