@@ -374,13 +374,13 @@
 					"params": [
 						{
 							"Argument": "from",
-							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>",
-							"Description": "origin point"
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>)",
+							"Description": "origin point or coordinate"
 						},
 						{
 							"Argument": "to",
-							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>",
-							"Description": "destination point"
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>)",
+							"Description": "destination point or coordinate"
 						},
 						{
 							"Argument": "options",
@@ -1340,7 +1340,7 @@
 				{
 					"name": "dissolve",
 					"hidden": false,
-					"parent": "@turf/dissolve",
+					"parent": null,
 					"description": "Dissolves a FeatureCollection of  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">polygon</a>  features, filtered by an optional property name:value.\nNote that  mulitpolygon  features within the collection are not supported",
 					"snippet": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {combine: 'yes'}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {combine: 'yes'}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {combine: 'no'}),\n]);\n\nvar dissolved = turf.dissolve(features, {propertyName: 'combine'});\n",
 					"example": "var features = turf.featureCollection([\n  turf.polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], {combine: 'yes'}),\n  turf.polygon([[[0, -1], [0, 0], [1, 0], [1, -1], [0,-1]]], {combine: 'yes'}),\n  turf.polygon([[[1,-1],[1, 0], [2, 0], [2, -1], [1, -1]]], {combine: 'no'}),\n]);\n\nvar dissolved = turf.dissolve(features, {propertyName: 'combine'});\n\n//addToMap\nvar addToMap = [features, dissolved]",
@@ -1369,7 +1369,7 @@
 							"Prop": "propertyName",
 							"Type": "(string)",
 							"Default": null,
-							"Description": "features with equals 'propertyName' in "
+							"Description": "features with the same "
 						}
 					],
 					"throws": []
@@ -1736,7 +1736,7 @@
 					"returns": [
 						{
 							"type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>",
-							"desc": "a combined  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  feature"
+							"desc": "a combined  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>  feature, or null if the inputs are empty"
 						}
 					],
 					"params": [
@@ -2015,6 +2015,77 @@
 		{
 			"group": "Misc",
 			"modules": [
+				{
+					"name": "ellipse",
+					"hidden": false,
+					"parent": null,
+					"description": "Takes a  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>  and calculates the ellipse polygon given two semi-axes expressed in variable units and steps for precision.",
+					"snippet": "var center = [-75, 40];\nvar xSemiAxis = 5;\nvar ySemiAxis = 2;\nvar ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);\n",
+					"example": "var center = [-75, 40];\nvar xSemiAxis = 5;\nvar ySemiAxis = 2;\nvar ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);\n\n//addToMap\nvar addToMap = [turf.point(center), ellipse]",
+					"hasMap": true,
+					"npmName": "@turf/ellipse",
+					"returns": [
+						{
+							"type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>>",
+							"desc": "ellipse polygon"
+						}
+					],
+					"params": [
+						{
+							"Argument": "center",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>",
+							"Description": "center point"
+						},
+						{
+							"Argument": "xSemiAxis",
+							"Type": "number",
+							"Description": "semi (major) axis of the ellipse along the x-axis"
+						},
+						{
+							"Argument": "ySemiAxis",
+							"Type": "number",
+							"Description": "semi (minor) axis of the ellipse along the y-axis"
+						},
+						{
+							"Argument": "options",
+							"Type": "Object",
+							"Description": "Optional parameters: see below"
+						}
+					],
+					"options": [
+						{
+							"Prop": "angle",
+							"Type": "number",
+							"Default": "0",
+							"Description": "angle of rotation in decimal degrees, positive clockwise"
+						},
+						{
+							"Prop": "pivot",
+							"Type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.1\">Coord</a>",
+							"Default": "'origin'",
+							"Description": "point around which the rotation will be performed"
+						},
+						{
+							"Prop": "steps",
+							"Type": "number",
+							"Default": "64",
+							"Description": "number of steps"
+						},
+						{
+							"Prop": "units",
+							"Type": "string",
+							"Default": "'kilometers'",
+							"Description": "unit of measurement for axes"
+						},
+						{
+							"Prop": "properties",
+							"Type": "Object",
+							"Default": "{}",
+							"Description": "properties"
+						}
+					],
+					"throws": []
+				},
 				{
 					"name": "kinks",
 					"hidden": false,
@@ -3471,27 +3542,27 @@
 					"name": "pointsWithinPolygon",
 					"hidden": false,
 					"parent": null,
-					"description": "Finds  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Points</a>  that fall within  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon(s)</a>.",
+					"description": "Finds  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Points</a>  or  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.3\">MultiPoint</a>  coordinate positions that fall within  <a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">(Multi)Polygon(s)</a>.",
 					"snippet": "var points = turf.points([\n    [-46.6318, -23.5523],\n    [-46.6246, -23.5325],\n    [-46.6062, -23.5513],\n    [-46.663, -23.554],\n    [-46.643, -23.557]\n]);\n\nvar searchWithin = turf.polygon([[\n    [-46.653,-23.543],\n    [-46.634,-23.5346],\n    [-46.613,-23.543],\n    [-46.614,-23.559],\n    [-46.631,-23.567],\n    [-46.653,-23.560],\n    [-46.653,-23.543]\n]]);\n\nvar ptsWithin = turf.pointsWithinPolygon(points, searchWithin);\n",
 					"example": "var points = turf.points([\n    [-46.6318, -23.5523],\n    [-46.6246, -23.5325],\n    [-46.6062, -23.5513],\n    [-46.663, -23.554],\n    [-46.643, -23.557]\n]);\n\nvar searchWithin = turf.polygon([[\n    [-46.653,-23.543],\n    [-46.634,-23.5346],\n    [-46.613,-23.543],\n    [-46.614,-23.559],\n    [-46.631,-23.567],\n    [-46.653,-23.560],\n    [-46.653,-23.543]\n]]);\n\nvar ptsWithin = turf.pointsWithinPolygon(points, searchWithin);\n\n//addToMap\nvar addToMap = [points, searchWithin, ptsWithin]\nturf.featureEach(ptsWithin, function (currentFeature) {\n  currentFeature.properties['marker-size'] = 'large';\n  currentFeature.properties['marker-color'] = '#000';\n});",
 					"hasMap": true,
 					"npmName": "@turf/points-within-polygon",
 					"returns": [
 						{
-							"type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>",
-							"desc": "points that land within at least one polygon"
+							"type": "<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.3\">MultiPoint</a>)>",
+							"desc": "Point(s) or MultiPoint(s) with positions that land within at least one polygon.  The geometry type will match what was passsed in"
 						}
 					],
 					"params": [
 						{
 							"Argument": "points",
-							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> <<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>>)",
-							"Description": "Points as input search"
+							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.2\">Point</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.3\">MultiPoint</a>)>)",
+							"Description": "Point(s) or MultiPoint(s) as input search"
 						},
 						{
 							"Argument": "polygons",
 							"Type": "(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.3\">FeatureCollection</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1\">Geometry</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.2\">Feature</a> <(<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.6\">Polygon</a>|<a target=\"_blank\" href=\"https://tools.ietf.org/html/rfc7946#section-3.1.7\">MultiPolygon</a>)>)",
-							"Description": "Points must be within these (Multi)Polygon(s)"
+							"Description": "(Multi)Polygon(s) to check if points are within"
 						}
 					],
 					"options": null,
@@ -4904,7 +4975,7 @@
 					"name": "booleanOverlap",
 					"hidden": false,
 					"parent": null,
-					"description": "Compares two geometries of the same dimension and returns true if their intersection set results in a geometry\ndifferent from both but of the same dimension. It applies to Polygon/Polygon, LineString/LineString,\nMultipoint/Multipoint, MultiLineString/MultiLineString and MultiPolygon/MultiPolygon.",
+					"description": "Compares two geometries of the same dimension and returns true if their intersection set results in a geometry\ndifferent from both but of the same dimension. It applies to Polygon/Polygon, LineString/LineString,\nMultipoint/Multipoint, MultiLineString/MultiLineString and MultiPolygon/MultiPolygon.\nIn other words, it returns true if the two geometries overlap, provided that neither completely contains the other.",
 					"snippet": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\n\nturf.booleanOverlap(poly1, poly2)\n//=true\nturf.booleanOverlap(poly2, poly3)\n//=false",
 					"example": "var poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]]);\nvar poly2 = turf.polygon([[[1,1],[1,6],[6,6],[6,1],[1,1]]]);\nvar poly3 = turf.polygon([[[10,10],[10,15],[15,15],[15,10],[10,10]]]);\n\nturf.booleanOverlap(poly1, poly2)\n//=true\nturf.booleanOverlap(poly2, poly3)\n//=false",
 					"hasMap": false,
@@ -5040,6 +5111,12 @@
 							"Type": "boolean",
 							"Default": "false",
 							"Description": "whether to ignore the start and end vertices."
+						},
+						{
+							"Prop": "epsilon",
+							"Type": "(number)",
+							"Default": null,
+							"Description": "Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points"
 						}
 					],
 					"throws": []
