@@ -18,7 +18,7 @@ import * as turf from '@turf/turf'
 
       <h4>Using directly in the browser</h4>
       <p>Load the minified file via a script tag, this will expose a global variable named turf.</p>
-      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf@6.3.0/turf.min.js'&gt;&lt;/script&gt;
+      <pre v-highlightjs><code class="js">&lt;script src='https://unpkg.com/@turf/turf@6/turf.min.js'&gt;&lt;/script&gt;
 &lt;script&gt;
     var bbox = turf.bbox(features);
 &lt;/script&gt;</code></pre>
