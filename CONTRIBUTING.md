@@ -10,13 +10,14 @@
 1. Clone with `turf-www` repository locally
   - `git clone https://github.com/Turfjs/turf-www.git --recursive` 
   - _Important: The `--recursive` flag is important._
-2. Start with updating the turf project dependency:
+2. Run `npm install`
+3. Start with updating the turf project dependency:
   - `cd` into the `turf-www/turf` submodule and run `git pull origin master`
   - Run `lerna run build`, this will update the `dist/js/index.js` for each module, from which the docs are generated.
-2. `cd` back to the root of the `turf-www` project
-3. Run `npm run create-config`
-4. Run `npm run generate`
-5. Commit and push the changes
+4. `cd` back to the root of the `turf-www` project
+5. Run `npm run create-config`
+6. Run `npm run generate`
+7. Commit and push the changes
 
 ## Updating pages templates
 If you would like to have a go at updating the actual website then you'll need to make changes in the `turf-www/src` folder. The pages are built using [Vue.js](https://vuejs.org/) and [Nuxt.js](https://nuxtjs.org/).
