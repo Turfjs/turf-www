@@ -1,5 +1,5 @@
 ## Updating existing documentation for a module
-- This happens in the [Turf repository](https://github.com/turfjs/turf/) with `/pacakges/` directory for each module. 
+- This happens in the [Turf repository](https://github.com/turfjs/turf/) with `/packages/` directory for each module. 
 - To fix the documentation for a module you need to modify the [jsdoc](https://jsdoc.app/) for an individual module found in either the `index.js` or the `index.ts`. 
   - eg to update the documentation for `@turf/along` you'd need to modify the jsdoc within `/turf/packages/turf-along/index.ts`.
 - Once you've made your changes you'll need to create a pull request to the [Turf repository](https://github.com/turfjs/turf/).
