@@ -38,8 +38,8 @@
     "glob": "^7.1.2",
     "iview-loader": "^1.0.0",
     "load-json-file": "^4.0.0",
-    "node-sass": "^4.14.1",
-    "sass-loader": "^6.0.6",
+    "sass": "^1.44.0",
+    "sass-loader": "^7.0.7",
     "shx": "^0.2.2",
     "write-json-file": "^2.3.0",
     "yamljs": "^0.3.0"
