@@ -49,16 +49,6 @@ export default {
   methods: {
     goHome: function () {
       this.$router.push('/')
-    },
-    clickModule (e) {
-      const moduleName = e.target.innerText
-      if (e.target.className.indexOf('heading') !== -1) return
-      if (this.$route.path === '/docs/') {
-        document.getElementById(moduleName).scrollIntoView()
-        window.location.hash = moduleName
-      } else {
-        this.$router.push('docs/#' + moduleName)
-      }
     }
   }
 }
