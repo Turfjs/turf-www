@@ -10,10 +10,11 @@
       <ul class="turfModules">
         <div v-for="category in displayedModules">
           <li class="menuItem heading">{{category.group}}</li>
-          <li v-for="module in category.modules"
-            class="menuItem"
-            v-on:click="clickModule"
-            >{{module.name}}</li>
+          <a :href="module.href" v-for="module in category.modules" class="menuLink">
+            <li class="menuItem">
+              {{module.name}}
+            </li>
+          </a>
         </div>
       </ul>
   </div>
@@ -35,7 +36,11 @@ export default {
       this.modules.forEach(function (module) {
         var matches = module.modules.filter(function (mod) {
           return mod.name.toUpperCase().indexOf(this.filter.toUpperCase()) !== -1
-        }, this)
+        }, this).map((mod) => {
+          // Create the link to be used for this module
+          mod.href = '/docs/#' + mod.name
+          return mod
+        })
         if (matches.length > 0) out.push({group: module.group, modules: matches})
       }, this)
       return out
@@ -44,15 +49,6 @@ export default {
   methods: {
     goHome: function () {
       this.$router.push('/')
-    },
-    clickModule (e) {
-      if (e.target.className.indexOf('heading') !== -1) return
-      if (this.$route.path === '/docs/') {
-        document.getElementById(e.target.innerText).scrollIntoView()
-        window.location.hash = e.target.innerText
-      } else {
-        this.$router.push('docs/#' + e.target.innerText)
-      }
     }
   }
 }
@@ -152,6 +148,11 @@ export default {
       cursor: pointer;
       list-style-type: none;
     }
+
+    .menuLink {
+      text-decoration: none;
+    }
+
     .heading {
       font-weight: 700;
       text-transform: uppercase;
