@@ -1,9 +1,9 @@
 <template>
-  <Row id="app">
-    <Col span="4" class="sideCol">
+  <Row id="app" class="app">
+     <Col span="4" class="sideCol sideColResponsive">
       <sidebar :modules="modules" v-on:changeModule="setModule"></sidebar>
     </Col>
-    <Col span="18" offset="1">
+    <Col span="18" offset="1" class="infoResponsive">
         <github></github>
         <nuxt/>
     </Col>
@@ -95,9 +95,44 @@ export default {
     background: none!important;
     padding: 20px;
   }
+
+  .appResponsive {
+    flex-direction: column;
+    display: flex;
+  }
+  
   .sideCol{
     min-height: 100vh;
   }
+
+  .sideColResponsive {
+     display: flex;
+    width: 100%;
+    min-height: initial !important;
+  }
+ 
+
+  .mainContentAreaResponsive {
+      margin-top: 0px !important;
+      margin-bottom: 0px;
+      display: flex;
+      display: flex;
+      flex-direction: column;
+  }
+
+  .infoResponsive {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .infoResponsive > a > svg {
+    display: none;
+  }
+
+  .mapResponsive {
+    margin-left: 0;
+  }
+
   .mainContentArea{
     background-color: #f6f6f6;
     padding: 40px;

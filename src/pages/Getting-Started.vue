@@ -1,5 +1,5 @@
 <template>
-  <Row class="mainContentArea">
+  <Row class="mainContentArea mainContentAreaResponsive">
   <Col span="17">
       <h3>Getting started with Turf.js</h3>
       <p>There are a few different ways to get started using Turf, the documentation below will provide a couple of the common scenarios.</p>

@@ -1,16 +1,16 @@
 <template>
   <div class="sidebarContents">
-      <div class="fixedContent">
+      <div class="fixedContent fixedContentResponsive">
         <div class="logo" v-on:click="goHome">
           <h1>TURF</h1>
         </div>
         <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
         <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
       </div>
-      <ul class="turfModules">
-        <div v-for="category in displayedModules">
-          <li class="menuItem heading">{{category.group}}</li>
-          <a :href="module.href" v-for="module in category.modules" class="menuLink">
+      <ul class="turfModules turfModulesResponsive">
+        <div v-for="category in modules">
+          <li class="menuItem heading ">{{category.group}}</li>
+          <a class="menuLink" v-for="module in category.modules" :href="module.href" >
             <li class="menuItem">
               {{module.name}}
             </li>
@@ -61,6 +61,10 @@ export default {
     top: 0;
     bottom: 0;
     width: inherit;
+
+    .fixedContentResponsive {
+      position: relative !important;
+    }
 
     .fixedContent {
       width: inherit;
@@ -117,6 +121,7 @@ export default {
         }
     }
 
+
     .turfModules {
       position: fixed;
       overflow-y: scroll;
@@ -160,6 +165,28 @@ export default {
       font-size: 14px;
       margin-left: -8px;
     }
+
+    @media screen and (max-width: 900px) {
+      .headingResponsive {
+        background: red;
+        padding-top: 10px;
+        margin-top: 0
+      }
+      .turfModulesResponsive {
+        overflow-x: hidden;
+        position: relative !important;
+        overflow-y: initial !important;
+        top: 0 !important;
+        padding-left: 20px;
+        padding-right: 20px;
+        height: 25vh;
+        min-height: 150px;
+        overflow: scroll;
+        border-top: 1px solid #eef2f3;
+      }
+    }
+
+   
   }
 
 </style>

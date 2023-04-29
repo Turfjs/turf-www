@@ -1,8 +1,8 @@
 <template>
-    <div class="mainContentArea">
+    <div class="mainContentArea mainContentAreaResponsive">
       <h1>Welcome to Turf.js</h1>
       <Row>
-        <Col span="7" offset="3">
+        <Col span="7" offset="3" class="mapResponsive">
             <div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" id="inMap"></div>
         </Col>
         <Col span="2" offset="1" class="selector">

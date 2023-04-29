@@ -1,10 +1,10 @@
 <template>
-  <Row class="mainContentArea">
-    <Col span="16">
-      <h3 :id='module.name'>{{module.name}}</h3>
+  <Row class="mainContentArea moduleResponsive">
+    <Col span="16" class="moduleAreaResponsive">
+      <h3 :id='module.name' class="titleResponsive">{{module.name}}</h3>
       <p v-html='module.description' v-bind:class="module.name" v-observe-visibility="visibilityChanged"></p>
       <h4>Arguments</h4>
-      <div>
+      <div class="tableResponsive">
         <table>
           <thead>
             <tr>
@@ -20,7 +20,7 @@
           </tbody>
         </table>
       </div>
-      <div v-if="module.options !== null">
+      <div v-if="module.options !== null" class="tableResponsive">
         <h4>Options</h4>
         <table>
           <thead>
@@ -47,7 +47,7 @@
         <p>{{module.throws[0].type}} - {{module.throws[0].desc}}</p>
       </div>
     </Col>
-    <Col span="7" offset="1">
+    <Col span="7" offset="1" class="exampleResponsive">
       <div v-show="module.hasMap">
         <div :id="'map_' + module.name"></div>
       </div>
@@ -184,4 +184,30 @@ export default {
     width: 100%;
     font-size: 1rem;
   }
+
+  .moduleResponsive {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+  }
+
+  .exampleResponsive {
+    margin-left: 0;
+        width: 100%;
+
+  }
+
+  .moduleAreaResponsive {
+        width: 100%;
+  }
+
+  .tableResponsive {
+    overflow-y: scroll;
+   }
+
+   .titleResponsive {
+    font-size: 32px !important;
+   }
+
+  
 </style>
