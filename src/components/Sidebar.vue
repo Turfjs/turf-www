@@ -4,11 +4,14 @@
         <div class="logo" v-on:click="goHome">
           <h1>TURF</h1>
         </div>
-        <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
+        <div class="links">
+          <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
+          <li class="menuItem heading githubResponsive"><a class="menuItem" href="https://www.github.com/turfjs/turf" >GitHub</a></li>
+        </div>
         <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
       </div>
       <ul class="turfModules turfModulesResponsive">
-        <div v-for="category in modules">
+        <div v-for="category in displayedModules">
           <li class="menuItem heading ">{{category.group}}</li>
           <a class="menuLink" v-for="module in category.modules" :href="module.href" >
             <li class="menuItem">
@@ -61,10 +64,6 @@ export default {
     top: 0;
     bottom: 0;
     width: inherit;
-
-    .fixedContentResponsive {
-      position: relative !important;
-    }
 
     .fixedContent {
       width: inherit;
@@ -166,23 +165,37 @@ export default {
       margin-left: -8px;
     }
 
+    .githubResponsive {
+      display: none;
+    }
+
     @media screen and (max-width: 900px) {
+
+      .links {}
+
+      .githubResponsive {
+        display: block;
+      }
+
+      .fixedContentResponsive {
+        position: relative !important;
+      }
+
       .headingResponsive {
         background: red;
         padding-top: 10px;
         margin-top: 0
       }
       .turfModulesResponsive {
-        overflow-x: hidden;
+        overflow-x: hidden !important;
         position: relative !important;
         overflow-y: initial !important;
         top: 0 !important;
-        padding-left: 20px;
+        padding-left: 30px;
         padding-right: 20px;
         height: 25vh;
         min-height: 150px;
         overflow: scroll;
-        border-top: 1px solid #eef2f3;
       }
     }
 

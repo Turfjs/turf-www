@@ -164,7 +164,6 @@ export default {
     }
   }
 
-
   .npmBadge {
     background-color: transparentize($blue, 0.6);
     padding: 15px;
@@ -175,6 +174,7 @@ export default {
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
   }
+
   .hasParent{
     background-color: transparentize($blue, 0.3);
     padding: 15px;
@@ -185,29 +185,30 @@ export default {
     font-size: 1rem;
   }
 
-  .moduleResponsive {
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
+  @media screen and (max-width: 900px) {
+    .moduleResponsive {
+      display: flex;
+      flex-direction: column;
+      overflow-y: scroll;
+      margin: 20px;
+    }
+
+    .exampleResponsive {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .moduleAreaResponsive {
+      width: 100%;
+    }
+
+    .tableResponsive {
+      overflow-y: scroll;
+    }
+
+    .titleResponsive {
+      font-size: 32px !important;
+    }
   }
-
-  .exampleResponsive {
-    margin-left: 0;
-        width: 100%;
-
-  }
-
-  .moduleAreaResponsive {
-        width: 100%;
-  }
-
-  .tableResponsive {
-    overflow-y: scroll;
-   }
-
-   .titleResponsive {
-    font-size: 32px !important;
-   }
-
   
 </style>

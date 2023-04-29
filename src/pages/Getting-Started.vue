@@ -1,6 +1,6 @@
 <template>
   <Row class="mainContentArea mainContentAreaResponsive">
-  <Col span="17">
+  <Col span="17" class="contentResponsive">
       <h3>Getting started with Turf.js</h3>
       <p>There are a few different ways to get started using Turf, the documentation below will provide a couple of the common scenarios.</p>
 
@@ -36,7 +36,7 @@ import * as turf from '@turf/turf'
       <pre v-highlightjs><code class="bash">$ browserify main.js -s turf > outTurf.js </code></pre>
       <p><strong>Done</strong> You can now use your outTurf.js file where you want just like you would normally use Turf, eg load it via a script tag and call turf using the turf global variable.</p>
     </Col>
-    <Col span="6" class="highlight">
+    <Col span="6" class="highlight responsiveHighlight">
       <h4>Examples</h4>
       <p>Below are some helpful resources for getting started with Turf.</p>
 
@@ -77,6 +77,18 @@ export default {
     a{
       color: white;
       text-decoration: underline;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .contentResponsive {
+      width: 100%;
+    }
+
+    .responsiveHighlight {
+      width: 100%;
+      margin: 0;
+      margin-top: 20px;
     }
   }
 </style>

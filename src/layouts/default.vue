@@ -95,42 +95,9 @@ export default {
     background: none!important;
     padding: 20px;
   }
-
-  .appResponsive {
-    flex-direction: column;
-    display: flex;
-  }
   
   .sideCol{
     min-height: 100vh;
-  }
-
-  .sideColResponsive {
-     display: flex;
-    width: 100%;
-    min-height: initial !important;
-  }
- 
-
-  .mainContentAreaResponsive {
-      margin-top: 0px !important;
-      margin-bottom: 0px;
-      display: flex;
-      display: flex;
-      flex-direction: column;
-  }
-
-  .infoResponsive {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .infoResponsive > a > svg {
-    display: none;
-  }
-
-  .mapResponsive {
-    margin-left: 0;
   }
 
   .mainContentArea{
@@ -147,4 +114,37 @@ export default {
       margin-top: 0px;
     }
   }
+  @media screen and (max-width: 900px) {
+    .appResponsive {
+      flex-direction: column;
+      display: flex;
+    }
+    .sideColResponsive {
+      display: flex;
+      width: 100%;
+      min-height: initial !important;
+    }
+
+    .mainContentAreaResponsive {
+        margin-top: 0px !important;
+        margin-bottom: 0px;
+        display: flex;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .infoResponsive {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .infoResponsive > a > svg {
+      display: none;
+    }
+
+    .mapResponsive {
+      margin-left: 0;
+    }
+  }
+
 </style>
