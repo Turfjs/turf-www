@@ -1,5 +1,5 @@
 <template>
-  <Row class="mainContentArea moduleResponsive">
+  <Row class="mainContentArea moduleResponsive" >
     <Col span="16" class="moduleAreaResponsive">
       <h3 :id='module.name' class="titleResponsive">{{module.name}}</h3>
       <p v-html='module.description' v-bind:class="module.name" v-observe-visibility="visibilityChanged"></p>

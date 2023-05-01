@@ -1,25 +1,40 @@
 <template>
   <div class="sidebarContents">
       <div class="fixedContent fixedContentResponsive">
+         
+          <label for="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </label>
+          <input type="checkbox" id="menu-toggle" v-model="menu.open" />
+         
         <div class="logo" v-on:click="goHome">
           <h1>TURF</h1>
         </div>
-        <div class="links">
-          <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
-          <li class="menuItem heading githubResponsive"><a class="menuItem" href="https://www.github.com/turfjs/turf" >GitHub</a></li>
+        <div class="menuDropDown">
+          <div class="topMenu">
+            <div class="links" >
+              <div v-on:click="close">
+                <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
+              </div>
+              <li class="menuItem heading githubResponsive"><a   href="https://www.github.com/turfjs/turf" >GitHub</a></li>
+            </div>
+            <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
+          </div>
+          <ul class="turfModules turfModulesResponsive">
+            <div v-for="category in displayedModules">
+              <li class="menuItem heading ">{{category.group}}</li>
+              <a class="menuLink" v-for="module in category.modules" :href="module.href" v-on:click="close">
+                <li class="menuItem">
+                  {{module.name}}
+                </li>
+              </a>
+            </div>
+          </ul>
         </div>
-        <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
       </div>
-      <ul class="turfModules turfModulesResponsive">
-        <div v-for="category in displayedModules">
-          <li class="menuItem heading ">{{category.group}}</li>
-          <a class="menuLink" v-for="module in category.modules" :href="module.href" >
-            <li class="menuItem">
-              {{module.name}}
-            </li>
-          </a>
-        </div>
-      </ul>
+     
   </div>
 </template>
 
@@ -30,6 +45,9 @@ export default {
   props: ['modules'],
   data () {
     return {
+      menu: {
+        open: undefined
+      },
       filter: ''
     }
   },
@@ -50,6 +68,9 @@ export default {
     }
   },
   methods: {
+    close: function () {
+      this.menu.open = false
+    },
     goHome: function () {
       this.$router.push('/')
     }
@@ -65,24 +86,27 @@ export default {
     bottom: 0;
     width: inherit;
 
-    .fixedContent {
-      width: inherit;
-      position: fixed;
-      padding-left: 30px;
-      background-color: $sidebarBg;
-        .logo {
+      .topMenu {
+        padding-left: 30px;
+        padding-top: 20px;
+      }
+
+      .logo {
           height: 120px;
           background-color: #2ECC71;
-          margin-bottom: 30px;
-          margin-left: -35px;
           margin-right: 0px;
           cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          align-self: center;
+          
+
           h1 {
             font-size: 2rem;
             color: white;
             text-align: center;
             letter-spacing: 0.4rem;
-            padding-top: 30px;
             font-weight: 600;
              &:before {
               content: '<';
@@ -105,8 +129,14 @@ export default {
           }
         }
 
+
+    .fixedContent {
+      width: inherit;
+      position: fixed;
+      background-color: $sidebarBg;
+
         #sidebarFilter {
-          margin: 30px 0px 30px -10px;
+          margin: 20px 0px 20px -0px;
           font-size: 0.9rem;
           width: 80%;
           padding: 5px;
@@ -122,12 +152,16 @@ export default {
 
 
     .turfModules {
-      position: fixed;
+      height: calc(100vh - 250px);
+      position: relative;
       overflow-y: scroll;
-      top: 260px;
+      width: 100%;
+      // top: 260px;
       bottom: 0;
       width: inherit;
       background-color: $sidebarBg;
+      left: 0;
+ 
       padding-left: 30px;
         &::-webkit-scrollbar-track{
           -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -145,6 +179,8 @@ export default {
       }
 
     .menuItem {
+      margin-left: 8px !important;
+      margin-bottom: 16px;
       margin: 2px 0px;
       font-size: 0.9rem;
       color: #656565;
@@ -158,27 +194,118 @@ export default {
     }
 
     .heading {
+      margin-left: 0px !important;
       font-weight: 700;
       text-transform: uppercase;
       margin-top: 10px;
       font-size: 14px;
-      margin-left: -8px;
     }
 
     .githubResponsive {
       display: none;
+     }
+
+     #menu-toggle, label {
+      display: none;
     }
+
+    #menu-toggle:checked ~ .menuDropDown {
+      display: block;
+    }
+
 
     @media screen and (max-width: 900px) {
 
-      .links {}
+      .links {
+        margin-top: 20px;
+      }
 
-      .githubResponsive {
+      #sidebarFilter {
+        margin: 18px 0px 18px 0px !important;
+      }
+
+      #menu-toggle ~ .menuDropDown {
+        display: none;
+      }
+
+      #menu-toggle:checked ~ .menuDropDown {
+        display: block;
+      }
+          
+      /* hide the checkbox */
+      #menu-toggle {
+        display: none;
+        position: absolute;
+        height: 100%;
+        height: 50px;
+        width: 50px;
+      }
+
+      /* style the label to look like the hamburger menu */
+      label {
+        display: inline-block;
+        cursor: pointer;
+        padding: 10px;
+        padding-left: 30px;
+      }
+
+      /* style the hamburger menu spans */
+      label span {
+        display: block;
+        width: 30px;
+        height: 4px;
+        margin-bottom: 5px;
+        background-color: white;
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* rotate the first and last span to create the X shape */
+      label span:first-of-type {
+        transform-origin: top left;
+      }
+
+      label span:last-of-type {
+        transform-origin: bottom left;
+      }
+
+      #menu-toggle:checked + label span:nth-of-type(1) {
+        transform: rotate(45deg) translate(6px, -6px);
+      }
+
+      #menu-toggle:checked + label span:nth-of-type(2) {
+        opacity: 0;
+      }
+
+      #menu-toggle:checked + label span:nth-of-type(3) {
+        transform: rotate(-45deg) translate(6px, 6px);
+      }
+
+      label, #menu-toggle {
+        position: absolute;
+        top: 36px;
+      }
+
+      .githubResponsive  {
         display: block;
       }
 
+      .githubResponsive > a  {
+
+        margin-left: 0px !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #656565;
+        text-decoration: none;
+        cursor: pointer;
+        list-style-type: none;
+      }
+
       .fixedContentResponsive {
-        position: relative !important;
+        position: fixed;
+        z-index: 10000000;
+        // height: 100%;
       }
 
       .headingResponsive {
@@ -187,19 +314,11 @@ export default {
         margin-top: 0
       }
       .turfModulesResponsive {
-        overflow-x: hidden !important;
-        position: relative !important;
-        overflow-y: initial !important;
-        top: 0 !important;
-        padding-left: 30px;
-        padding-right: 20px;
-        height: 25vh;
-        min-height: 150px;
-        overflow: scroll;
+        width: 100%;
+        height: calc(100vh - 268px);
       }
     }
 
-   
   }
 
 </style>

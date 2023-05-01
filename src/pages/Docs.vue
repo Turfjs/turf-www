@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="modules">
     <leaflet-map ref="turfMap" id="turfMap" v-dom-portal="mapContainer"></leaflet-map>
     <module v-for="mod in modules" :key="mod.name" :module="mod" v-on:changeMap="moveMap"></module>
   </div>
@@ -51,3 +51,11 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+   @media screen and (max-width: 900px) {
+    .modules {
+      margin-top: 140px;
+    }
+   }
+</style>

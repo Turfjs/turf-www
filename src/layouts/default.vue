@@ -97,6 +97,7 @@ export default {
   }
   
   .sideCol{
+    background-color: #fcfcfc;      
     min-height: 100vh;
   }
 
@@ -126,7 +127,7 @@ export default {
     }
 
     .mainContentAreaResponsive {
-        margin-top: 0px !important;
+        margin-top: 120px !important;
         margin-bottom: 0px;
         display: flex;
         display: flex;
