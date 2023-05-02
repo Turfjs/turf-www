@@ -1,14 +1,12 @@
 <template>
   <div class="sidebarContents">
       <div class="fixedContent fixedContentResponsive">
-         
-          <label for="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-          </label>
-          <input type="checkbox" id="menu-toggle" v-model="menu.open" />
-         
+        <label for="menuToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        <input type="checkbox" class="menuToggle" id='menuToggle' v-model="menu.open" />
         <div class="logo" v-on:click="goHome">
           <h1>TURF</h1>
         </div>
@@ -46,7 +44,7 @@ export default {
   data () {
     return {
       menu: {
-        open: undefined
+        open: false
       },
       filter: ''
     }
@@ -205,11 +203,11 @@ export default {
       display: none;
      }
 
-     #menu-toggle, label {
+     .menuToggle, label {
       display: none;
     }
 
-    #menu-toggle:checked ~ .menuDropDown {
+    .menuToggle:checked ~ .menuDropDown {
       display: block;
     }
 
@@ -224,16 +222,16 @@ export default {
         margin: 18px 0px 18px 0px !important;
       }
 
-      #menu-toggle ~ .menuDropDown {
+      .menuToggle ~ .menuDropDown {
         display: none;
       }
 
-      #menu-toggle:checked ~ .menuDropDown {
+      .menuToggle:checked ~ .menuDropDown {
         display: block;
       }
           
       /* hide the checkbox */
-      #menu-toggle {
+      .menuToggle {
         display: none;
         position: absolute;
         height: 100%;
@@ -268,19 +266,19 @@ export default {
         transform-origin: bottom left;
       }
 
-      #menu-toggle:checked + label span:nth-of-type(1) {
+      .menuToggle:checked + label span:nth-of-type(1) {
         transform: rotate(45deg) translate(6px, -6px);
       }
 
-      #menu-toggle:checked + label span:nth-of-type(2) {
+      .menuToggle:checked + label span:nth-of-type(2) {
         opacity: 0;
       }
 
-      #menu-toggle:checked + label span:nth-of-type(3) {
+      .menuToggle:checked + label span:nth-of-type(3) {
         transform: rotate(-45deg) translate(6px, 6px);
       }
 
-      label, #menu-toggle {
+      label, .menuToggle {
         position: absolute;
         top: 36px;
       }

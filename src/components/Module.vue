@@ -1,7 +1,8 @@
 <template>
   <Row class="mainContentArea moduleResponsive" >
     <Col span="16" class="moduleAreaResponsive">
-      <h3 :id='module.name' class="titleResponsive">{{module.name}}</h3>
+      <div :id='module.name' class="anchor"></div>
+      <h3 class="titleResponsive">{{module.name}}</h3>
       <p v-html='module.description' v-bind:class="module.name" v-observe-visibility="visibilityChanged"></p>
       <h4>Arguments</h4>
       <div class="tableResponsive">
@@ -49,7 +50,7 @@
     </Col>
     <Col span="7" offset="1" class="exampleResponsive">
       <div v-show="module.hasMap">
-        <div :id="'map_' + module.name"></div>
+        <div class="mapExample" :id="'map_' + module.name"></div>
       </div>
       <p class="npmBadge">npm install {{module.npmName}}</p>
 
@@ -185,6 +186,12 @@ export default {
     font-size: 1rem;
   }
 
+  .mapExample {
+    height: 325px;
+    background: rgba(12, 57, 82, .3);
+    margin-top: 30px;
+  }
+
   @media screen and (max-width: 900px) {
     .moduleResponsive {
       display: flex;
@@ -208,6 +215,13 @@ export default {
 
     .titleResponsive {
       font-size: 32px !important;
+    }
+
+    .anchor {
+      display: block;
+     padding-top: 100px;
+      margin-top: -100px;
+      visibility: hidden;
     }
   }
   

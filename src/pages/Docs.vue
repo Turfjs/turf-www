@@ -10,6 +10,11 @@ import Module from '../components/Module.vue'
 import leafletMap from '../components/Map.vue'
 import config from '../assets/config.json'
 
+var allMods = []
+config.modules.map(function (group) {
+  allMods = allMods.concat(group.modules)
+})
+
 export default {
   name: 'Docs',
   components: {
@@ -19,10 +24,9 @@ export default {
   data () {
     return {
       mapContainer: '#map_along',
-      modules: []
+      modules: allMods
     }
   },
-
   methods: {
     moveMap (moduleName) {
       this.mapContainer = '#map_' + moduleName
@@ -33,20 +37,20 @@ export default {
       }, this)
     }
   },
-  created: function () {
-    var allMods = []
-    config.modules.map(function (group) {
-      allMods = allMods.concat(group.modules)
-    })
-    this.modules = allMods
-  },
   mounted: function () {
     if (window.location.pathname === '/docs') {
       window.location.pathname = '/docs/'
     }
 
     if (window.location.hash !== '') {
-      document.getElementById(window.location.hash.replace('#', '')).scrollIntoView()
+      var element = document.getElementById(window.location.hash.replace('#', ''))
+      var headerOffset = 80
+      var elementPosition = element.getBoundingClientRect().top
+      var offsetPosition = elementPosition + window.pageYOffset - headerOffset
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'instant'
+      })
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id='turfMap' style="height: 325px"></div>
+  <div id='turfMap' ></div>
 </template>
 
 <script>
@@ -15,6 +15,7 @@ export default {
   mounted: function () {
     L.mapbox.accessToken = 'pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNrZWp2ODRvNzFqMHoyeHJ6b3Jpc29iczQifQ.YdYb6a6rA5aCtkmDZ5wn_g'
     turfMap = L.mapbox.map('turfMap').addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'))
+    turfMap.getContainer().style.height = '325px'
     control = L.control.layers([], []).addTo(turfMap)
     // turfMap.addControl(new L.Control.Fullscreen())
     fg = L.featureGroup([]).addTo(turfMap)
@@ -53,13 +54,10 @@ export default {
 </script>
 
 <style lang="scss">
-  #turfMap {
-    margin-top: 30px;
-  }
   .leaflet-touch .leaflet-control-fullscreen a {
-  background-position: 0px 0px;
-}
-.leaflet-touch.leaflet-fullscreen-on .leaflet-control-fullscreen a {
-  background-position: 0px -26px;
-}
+    background-position: 0px 0px;
+  }
+  .leaflet-touch.leaflet-fullscreen-on .leaflet-control-fullscreen a {
+    background-position: 0px -26px;
+  }
 </style>

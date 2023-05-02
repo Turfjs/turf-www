@@ -25,16 +25,16 @@
         </Col>
       </Row>
       <h2>Advanced geospatial analysis for browsers and Node.js</h2>
-      <Row>
-        <Col span="7">
+      <Row class="responsiveOverview">
+        <Col span="7" class="responsiveAspect">
           <h3>Simple</h3>
           <p>Modular, simple-to-understand JavaScript functions that speak GeoJSON</p>
         </Col>
-        <Col span="7" offset="1">
+        <Col span="7" offset="1" class="responsiveAspect">
           <h3>Modular</h3>
           <p>Turf is a collection of small modules, you only need to take what you want to use</p>
         </Col>
-        <Col span="7" offset="1">
+        <Col span="7" offset="1" class="responsiveAspect">
           <h3>Fast</h3>
           <p>Takes advantage of the newest algorithms and doesn't require you to send data to a server</p>
         </Col>
@@ -201,6 +201,16 @@ var geojsonOptions = {
   }
 
   @media screen and (max-width: 900px) {
+    .responsiveOverview {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .responsiveAspect {
+      width: 100% !important;
+      margin-top: 20px;
+    }
+
     .leftMap, .rightMap {
       width: 40%;
     }
