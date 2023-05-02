@@ -1,7 +1,7 @@
 <template>
   <div class="sidebarContents">
       <div class="fixedContent fixedContentResponsive">
-        <label for="menuToggle">
+        <label for="menuToggle" class="toggleLabel">
           <span></span>
           <span></span>
           <span></span>
@@ -16,7 +16,7 @@
               <div v-on:click="close">
                 <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
               </div>
-              <li class="menuItem heading githubResponsive"><a   href="https://www.github.com/turfjs/turf" >GitHub</a></li>
+              <li class="menuItem heading githubResponsive"><a href="https://www.github.com/turfjs/turf">GitHub</a></li>
             </div>
             <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
           </div>
@@ -127,7 +127,6 @@ export default {
           }
         }
 
-
     .fixedContent {
       width: inherit;
       position: fixed;
@@ -148,13 +147,11 @@ export default {
         }
     }
 
-
     .turfModules {
       height: calc(100vh - 250px);
       position: relative;
       overflow-y: scroll;
       width: 100%;
-      // top: 260px;
       bottom: 0;
       width: inherit;
       background-color: $sidebarBg;
@@ -176,147 +173,145 @@ export default {
         }
       }
 
-    .menuItem {
-      margin-left: 8px !important;
-      margin-bottom: 16px;
-      margin: 2px 0px;
-      font-size: 0.9rem;
-      color: #656565;
-      text-decoration: none;
-      cursor: pointer;
-      list-style-type: none;
-    }
-
-    .menuLink {
-      text-decoration: none;
-    }
-
-    .heading {
-      margin-left: 0px !important;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .githubResponsive {
-      display: none;
-     }
-
-     .menuToggle, label {
-      display: none;
-    }
-
-    .menuToggle:checked ~ .menuDropDown {
-      display: block;
-    }
-
-
-    @media screen and (max-width: 900px) {
-
-      .links {
-        margin-top: 20px;
-      }
-
-      #sidebarFilter {
-        margin: 18px 0px 18px 0px !important;
-      }
-
-      .menuToggle ~ .menuDropDown {
-        display: none;
-      }
-
-      .menuToggle:checked ~ .menuDropDown {
-        display: block;
-      }
-          
-      /* hide the checkbox */
-      .menuToggle {
-        display: none;
-        position: absolute;
-        height: 100%;
-        height: 50px;
-        width: 50px;
-      }
-
-      /* style the label to look like the hamburger menu */
-      label {
-        display: inline-block;
-        cursor: pointer;
-        padding: 10px;
-        padding-left: 30px;
-      }
-
-      /* style the hamburger menu spans */
-      label span {
-        display: block;
-        width: 30px;
-        height: 4px;
-        margin-bottom: 5px;
-        background-color: white;
-        transition: all 0.3s ease-in-out;
-      }
-
-      /* rotate the first and last span to create the X shape */
-      label span:first-of-type {
-        transform-origin: top left;
-      }
-
-      label span:last-of-type {
-        transform-origin: bottom left;
-      }
-
-      .menuToggle:checked + label span:nth-of-type(1) {
-        transform: rotate(45deg) translate(6px, -6px);
-      }
-
-      .menuToggle:checked + label span:nth-of-type(2) {
-        opacity: 0;
-      }
-
-      .menuToggle:checked + label span:nth-of-type(3) {
-        transform: rotate(-45deg) translate(6px, 6px);
-      }
-
-      label, .menuToggle {
-        position: absolute;
-        top: 36px;
-      }
-
-      .githubResponsive  {
-        display: block;
-      }
-
-      .githubResponsive > a  {
-
-        margin-left: 0px !important;
-        font-weight: 700;
-        text-transform: uppercase;
-        margin-top: 10px;
-        font-size: 14px;
+      .menuItem {
+        margin-left: 8px !important;
+        margin-bottom: 16px;
+        margin: 2px 0px;
+        font-size: 0.9rem;
         color: #656565;
         text-decoration: none;
         cursor: pointer;
         list-style-type: none;
       }
 
-      .fixedContentResponsive {
-        position: fixed;
-        z-index: 10000000;
-        // height: 100%;
+      .menuLink {
+        text-decoration: none;
       }
 
-      .headingResponsive {
-        background: red;
-        padding-top: 10px;
-        margin-top: 0
+      .heading {
+        margin-left: 0px !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 10px;
+        font-size: 14px;
       }
-      .turfModulesResponsive {
-        width: 100%;
-        height: calc(100vh - 268px);
-      }
-    }
 
+      .githubResponsive {
+        display: none;
+      }
+
+      .menuToggle, label {
+        display: none;
+      }
+
+      .menuToggle:checked ~ .menuDropDown {
+        display: block;
+      }
+
+
+      @media screen and (max-width: 900px) {
+
+        .links {
+          margin-top: 20px;
+        }
+
+        #sidebarFilter {
+          margin: 18px 0px 18px 0px !important;
+        }
+
+        .menuToggle ~ .menuDropDown {
+          display: none;
+        }
+
+        .menuToggle:checked ~ .menuDropDown {
+          display: block;
+        }
+            
+        /* hide the checkbox */
+        .menuToggle {
+          display: none;
+          position: absolute;
+          height: 100%;
+          height: 50px;
+          width: 50px;
+        }
+
+        /* style the label to look like the hamburger menu */
+        .toggleLabel {
+          display: inline-block;
+          cursor: pointer;
+          padding: 10px;
+          padding-left: 30px;
+        }
+
+        /* style the hamburger menu spans */
+        .toggleLabel span {
+          display: block;
+          width: 30px;
+          height: 4px;
+          margin-bottom: 5px;
+          background-color: white;
+          transition: all 0.3s ease-in-out;
+        }
+
+        /* rotate the first and last span to create the X shape */
+        .toggleLabel span:first-of-type {
+          transform-origin: top left;
+        }
+
+        .toggleLabel span:last-of-type {
+          transform-origin: bottom left;
+        }
+
+        .menuToggle:checked + .toggleLabel span:nth-of-type(1) {
+          transform: rotate(45deg) translate(6px, -6px);
+        }
+
+        .menuToggle:checked + .toggleLabel span:nth-of-type(2) {
+          opacity: 0;
+        }
+
+        .menuToggle:checked + .toggleLabel span:nth-of-type(3) {
+          transform: rotate(-45deg) translate(6px, 6px);
+        }
+
+        .toggleLabel, .menuToggle {
+          position: absolute;
+          top: 36px;
+        }
+
+        .githubResponsive  {
+          display: block;
+        }
+
+        .githubResponsive > a  {
+          margin-left: 0px !important;
+          font-weight: 700;
+          text-transform: uppercase;
+          margin-top: 10px;
+          font-size: 14px;
+          color: #656565;
+          text-decoration: none;
+          cursor: pointer;
+          list-style-type: none;
+        }
+
+        .fixedContentResponsive {
+          position: fixed;
+          z-index: 10000000; /** big value required for leaflet **/
+        }
+
+        .headingResponsive {
+          background: red;
+          padding-top: 10px;
+          margin-top: 0
+        }
+
+        .turfModulesResponsive {
+          width: 100%;
+          height: calc(100vh - 268px);
+        }
+      }
   }
 
 </style>

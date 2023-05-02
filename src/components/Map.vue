@@ -1,5 +1,5 @@
 <template>
-  <div id='turfMap' ></div>
+  <div id='turfMap'></div>
 </template>
 
 <script>
