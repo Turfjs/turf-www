@@ -24,7 +24,16 @@ export default {
   data () {
     return {
       mapContainer: '#map_along',
-      modules: allMods
+      modules: allMods,
+      scroll: function () {
+        var element = document.getElementById(window.location.hash.replace('#', ''))
+        var elementPosition = element.getBoundingClientRect().top
+        var offsetPosition = elementPosition + window.pageYOffset
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'instant'
+        })
+      }
     }
   },
   methods: {
@@ -43,14 +52,14 @@ export default {
     }
 
     if (window.location.hash !== '') {
-      var element = document.getElementById(window.location.hash.replace('#', ''))
-      var headerOffset = 80
-      var elementPosition = element.getBoundingClientRect().top
-      var offsetPosition = elementPosition + window.pageYOffset - headerOffset
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'instant'
-      })
+      this.scroll()
+    }
+  },
+  watch: {
+    '$route': function () {
+      if (window.location.hash !== '') {
+        this.scroll()
+      }
     }
   }
 }

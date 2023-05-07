@@ -1,7 +1,7 @@
 <template>
   <Row class="mainContentArea moduleResponsive" >
     <Col span="16" class="moduleAreaResponsive">
-      <div :id='module.name' class="anchor"></div>
+      <div :id='module.name'></div>
       <h3 class="titleResponsive">{{module.name}}</h3>
       <p v-html='module.description' v-bind:class="module.name" v-observe-visibility="visibilityChanged"></p>
       <h4>Arguments</h4>
@@ -214,14 +214,7 @@ export default {
     }
 
     .titleResponsive {
-      font-size: 32px !important;
-    }
-
-    .anchor {
-      display: block;
-     padding-top: 100px;
-      margin-top: -100px;
-      visibility: hidden;
+      font-size: 28px !important;
     }
   }
   

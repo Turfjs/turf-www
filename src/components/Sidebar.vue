@@ -44,10 +44,25 @@ export default {
   data () {
     return {
       menu: {
-        open: false
+        open: false,
+        resize: undefined
       },
       filter: ''
     }
+  },
+  mounted: function () {
+    const menu = this.menu
+    menu.resize = function () {
+      // Ensure menu is closed on resize to above 900px width
+      if (window.innerWidth > 900) {
+        menu.open = false
+        document.body.style.overflow = 'auto'
+      }
+    }
+    window.addEventListener('resize', menu.resize)
+  },
+  unmounted: function () {
+    window.removeEventListener('resize', this.menu.resize)
   },
   computed: {
     displayedModules: function () {
@@ -65,6 +80,16 @@ export default {
       return out
     }
   },
+  watch: {
+    'menu.open': function (val) {
+      // Prevent scrolling of content window when menu is open
+      if (val) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'auto'
+      }
+    }
+  },
   methods: {
     close: function () {
       this.menu.open = false
@@ -79,6 +104,7 @@ export default {
 <style lang="scss">
   @import "../styles/variables.scss";
   $sidebarBg: #fcfcfc;
+
   .sidebarContents {
     top: 0;
     bottom: 0;
@@ -156,6 +182,7 @@ export default {
       width: inherit;
       background-color: $sidebarBg;
       left: 0;
+      padding-bottom: 20px;
  
       padding-left: 30px;
         &::-webkit-scrollbar-track{
@@ -208,6 +235,7 @@ export default {
         display: block;
       }
 
+   
 
       @media screen and (max-width: 900px) {
 
@@ -309,7 +337,7 @@ export default {
 
         .turfModulesResponsive {
           width: 100%;
-          height: calc(100vh - 268px);
+          height: calc(100vh - 289px);
         }
       }
   }
