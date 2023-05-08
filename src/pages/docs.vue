@@ -26,7 +26,8 @@ export default {
       mapContainer: '#map_along',
       modules: allMods,
       scroll: function () {
-        var element = document.getElementById(window.location.hash.replace('#', ''))
+        var moduleName = window.location.hash.replace('#', '')
+        var element = document.getElementById(moduleName)
         var elementPosition = element.getBoundingClientRect().top
         var offsetPosition = elementPosition + window.pageYOffset
         window.scrollTo({
@@ -47,12 +48,10 @@ export default {
     }
   },
   mounted: function () {
-    if (window.location.pathname === '/docs') {
-      window.location.pathname = '/docs/'
-    }
-
     if (window.location.hash !== '') {
-      this.scroll()
+      setTimeout(() => {
+        this.scroll()
+      })
     }
   },
   watch: {

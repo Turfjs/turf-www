@@ -21,10 +21,10 @@
             <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
           </div>
           <ul class="turfModules turfModulesResponsive">
-            <div v-for="category in displayedModules">
+            <div v-for="category in displayedModules" v-bind:key="category.group">
               <li class="menuItem heading ">{{category.group}}</li>
-              <a class="menuLink" v-for="module in category.modules" :href="module.href" v-on:click="close">
-                <li class="menuItem">
+              <a v-for="module in category.modules" :href="module.href" v-on:click="close" class="menuLink" v-bind:key="module.name">
+                 <li class="menuItem">
                   {{module.name}}
                 </li>
               </a>
