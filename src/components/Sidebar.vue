@@ -12,10 +12,10 @@
         </div>
         <div class="menuDropDown">
           <div class="topMenu">
-            <div class="links" >
-              <div v-on:click="close">
+            <div class="links">
+              <span v-on:click="close">
                 <nuxt-link to="/getting-started" tag="li" class="menuItem heading">Getting Started</nuxt-link>
-              </div>
+              </span>
               <li class="menuItem heading githubResponsive"><a href="https://www.github.com/turfjs/turf">GitHub</a></li>
             </div>
             <input id="sidebarFilter" v-model="filter" placeholder="Search modules">
@@ -23,11 +23,13 @@
           <ul class="turfModules turfModulesResponsive">
             <div v-for="category in displayedModules" v-bind:key="category.group">
               <li class="menuItem heading ">{{category.group}}</li>
-              <nuxt-link v-for="module in category.modules" :to="module.href" v-on:click="close" class="menuLink" v-bind:key="module.name">
-                <li class="menuItem">
-                  {{module.name}}
-                </li>
-              </nuxt-link>
+              <span v-on:click="close" >
+                <nuxt-link v-for="module in category.modules" :to="module.href" class="menuLink" v-bind:key="module.name">
+                  <li class="menuItem">
+                    {{module.name}}
+                  </li>
+                </nuxt-link>
+              </span>
             </div>
           </ul>
         </div>

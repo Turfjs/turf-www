@@ -3,292 +3,292 @@
   <head>
     <meta charset="utf-8">
     <title>Turf.js | Advanced Geospatial Analysis</title>
-    <meta data-n-head="true" charset="utf-8"><meta data-n-head="true" content="width=device-width,initial-scale=1" name="viewport"><meta data-n-head="true" content="Turf.js | Advanced geospatial analysis for browsers and Node.js" name="description" data-hid="description"><title data-n-head="true">Turf.js | Advanced geospatial analysis</title><link href="/favicon.ico" rel="icon" data-n-head="true" type="image/x-icon"><link href="https://fonts.googleapis.com/css?family=Montserrat:200,400" rel="stylesheet" data-n-head="true"><link href="https://fonts.googleapis.com/css?family=Istok+Web" rel="stylesheet" data-n-head="true"><link href="https://cdnjs.cloudflare.com/ajax/libs/iview/2.7.4/styles/iview.css" rel="stylesheet" data-n-head="true"><link href="/js/manifest.ccbd7cf6864a844ebf62.js" rel="preload" as="script"><link href="/js/vendor.88ac1a055bc9fab4d8db.js" rel="preload" as="script"><link href="/js/app.e1c9cce4df099a8ea187.js" rel="preload" as="script"><link href="/js/layouts/default.336236758df9b1816e62.js" rel="preload" as="script"><link href="/js/pages/index.012a5f1c217678ba589a.js" rel="preload" as="script"><link href="/js/pages/docs.c03a5138a78756435d01.js" rel="prefetch"><link href="/js/pages/getting-started.66d358447fee7389a24e.js" rel="prefetch"><style data-vue-ssr-id="3051ae08:0">.nuxt-progress{position:fixed;top:0;left:0;right:0;height:2px;width:0;-webkit-transition:width .2s,opacity .4s;transition:width .2s,opacity .4s;opacity:1;background-color:#efc14e;z-index:999999}</style><style data-vue-ssr-id="f576cf02:0">html{width:100%;height:100%}body{font-family:Istok Web,sans-serif;color:#444;font-size:16px;font-size:1rem;min-height:100%;background:rgba(236,240,241,.85)}h1,h2,h3,h4{font-family:Montserrat,serif;color:#5a5a5a}h3{font-size:48px;font-size:3rem;font-weight:200;margin-top:5px}h4{font-weight:600;margin:20px 0 10px}a{color:#0c3952;text-underline-position:under;-webkit-text-decoration-style:solid;text-decoration-style:solid;text-decoration:underline}.mainContentArea pre{background-color:#fafafa;border:2px solid #ecf0f1;overflow-x:auto}.hljs{background:0 0!important;padding:20px}.sideCol{background-color:#fcfcfc;min-height:100vh}.mainContentArea{background-color:#f6f6f6;padding:40px;margin-top:60px;margin-bottom:40px;border:2px solid rgba(12,57,82,.1)}.mainContentArea h3{font-weight:200;font-size:48px;font-size:3rem;margin-bottom:10px;margin-top:0}@media screen and (max-width:900px){.appResponsive{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.appResponsive,.sideColResponsive{display:-webkit-box;display:-ms-flexbox;display:flex}.sideColResponsive{width:100%;min-height:0!important}.mainContentAreaResponsive{margin-top:120px!important;margin-bottom:0;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.infoResponsive{margin-left:0;width:100%}.infoResponsive>a>svg{display:none}.mapResponsive{margin-left:0}}</style><style data-vue-ssr-id="245469b8:0">.sidebarContents{top:0;bottom:0;width:inherit}.sidebarContents .topMenu{padding-left:30px;padding-top:20px}.sidebarContents .logo{height:120px;background-color:#2ecc71;margin-right:0;cursor:pointer;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-ms-flex-item-align:center;align-self:center}.sidebarContents .logo h1{font-size:32px;font-size:2rem;color:#fff;text-align:center;letter-spacing:6.4px;letter-spacing:.4rem;font-weight:600}.sidebarContents .logo h1:before{content:"<";opacity:0;-webkit-transition:.3s;transition:.3s}.sidebarContents .logo h1:after{content:">";-webkit-transition:.3s;transition:.3s;opacity:0}.sidebarContents .logo h1:hover:after,.sidebarContents .logo h1:hover:before{opacity:1}.sidebarContents .fixedContent{width:inherit;position:fixed;background-color:#fcfcfc}.sidebarContents .fixedContent #sidebarFilter{margin:20px 0;font-size:14.4px;font-size:.9rem;width:80%;padding:5px;border:3px solid #efefef;color:#656565;-webkit-transition:.3s;transition:.3s}.sidebarContents .fixedContent #sidebarFilter:focus{outline:0;border:3px solid #ccc}.sidebarContents .turfModules{height:calc(100vh - 250px);position:relative;overflow-y:scroll;width:100%;bottom:0;width:inherit;background-color:#fcfcfc;left:0;padding-bottom:20px;padding-left:30px}.sidebarContents .turfModules::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,.3);background-color:rgba(12,57,82,.02)}.sidebarContents .turfModules::-webkit-scrollbar{width:6px;background-color:rgba(12,57,82,.02)}.sidebarContents .turfModules::-webkit-scrollbar-thumb{background-color:rgba(12,57,82,.3)}.sidebarContents .menuItem{margin-left:8px!important;margin-bottom:16px;margin:2px 0;font-size:14.4px;font-size:.9rem;color:#656565;text-decoration:none;cursor:pointer;list-style-type:none}.sidebarContents .menuLink{text-decoration:none}.sidebarContents .heading{margin-left:0!important;font-weight:700;text-transform:uppercase;margin-top:10px;font-size:14px}.sidebarContents .githubResponsive,.sidebarContents .menuToggle,.sidebarContents label{display:none}.sidebarContents .menuToggle:checked~.menuDropDown{display:block}@media screen and (max-width:900px){.sidebarContents .links{margin-top:20px}.sidebarContents #sidebarFilter{margin:18px 0!important}.sidebarContents .menuToggle~.menuDropDown{display:none}.sidebarContents .menuToggle:checked~.menuDropDown{display:block}.sidebarContents .menuToggle{display:none;position:absolute;height:100%;height:50px;width:50px}.sidebarContents .toggleLabel{display:inline-block;cursor:pointer;padding:10px;padding-left:30px}.sidebarContents .toggleLabel span{display:block;width:30px;height:4px;margin-bottom:5px;background-color:#fff;-webkit-transition:all .3s ease-in-out;transition:all .3s ease-in-out}.sidebarContents .toggleLabel span:first-of-type{-webkit-transform-origin:top left;transform-origin:top left}.sidebarContents .toggleLabel span:last-of-type{-webkit-transform-origin:bottom left;transform-origin:bottom left}.sidebarContents .menuToggle:checked+.toggleLabel span:first-of-type{-webkit-transform:rotate(45deg) translate(6px,-6px);transform:rotate(45deg) translate(6px,-6px)}.sidebarContents .menuToggle:checked+.toggleLabel span:nth-of-type(2){opacity:0}.sidebarContents .menuToggle:checked+.toggleLabel span:nth-of-type(3){-webkit-transform:rotate(-45deg) translate(6px,6px);transform:rotate(-45deg) translate(6px,6px)}.sidebarContents .menuToggle,.sidebarContents .toggleLabel{position:absolute;top:36px}.sidebarContents .githubResponsive{display:block}.sidebarContents .githubResponsive>a{margin-left:0!important;font-weight:700;text-transform:uppercase;margin-top:10px;font-size:14px;color:#656565;text-decoration:none;cursor:pointer;list-style-type:none}.sidebarContents .fixedContentResponsive{position:fixed;z-index:10000000}.sidebarContents .headingResponsive{background:red;padding-top:10px;margin-top:0}.sidebarContents .turfModulesResponsive{width:100%;height:calc(100vh - 289px)}}</style><style data-vue-ssr-id="6f6f4625:0">.githubLogo{float:right;height:25px;width:25px;margin-top:8px;cursor:pointer;position:fixed;right:10px}.githubLogo path{fill:rgba(12,57,82,.6);-webkit-transition:.3s;transition:.3s}.githubLogo path:hover{fill:#2ecc71}</style><style data-vue-ssr-id="c0dfdd6c:0">h1[data-v-57509004]{font-weight:200;font-size:48px;font-size:3rem;margin-bottom:30px;margin-top:0;text-align:center}h2[data-v-57509004]{text-align:center;margin:20px 0;font-weight:600}h3[data-v-57509004]{font-size:17.6px;font-size:1.1rem;text-align:center}p[data-v-57509004]{text-align:center}.map-insert[data-v-57509004]{height:300px;min-width:150px}.inputOutput[data-v-57509004]{z-index:1;position:absolute;font-size:16px;font-weight:700;background:hsla(0,0%,100%,.30196);padding:6px;border-bottom-left-radius:2px}.label[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.select[data-v-57509004]{margin-left:20px;width:100px}.maps[data-v-57509004]{margin-bottom:60px}.maps[data-v-57509004],.selector[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.selector[data-v-57509004]{margin:auto;width:50%;margin-bottom:20px;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.leftMap[data-v-57509004]{margin-right:10px}.rightMap[data-v-57509004]{margin-left:10px}@media screen and (max-width:900px){.responsiveOverview[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.responsiveAspect[data-v-57509004]{width:100%!important;margin-top:20px}.leftMap[data-v-57509004],.rightMap[data-v-57509004]{width:40%}.label[data-v-57509004]{font-size:14px;width:50%}.selector[data-v-57509004]{width:70%}}@media screen and (max-width:400px){.leftMap[data-v-57509004],.rightMap[data-v-57509004]{width:100%;margin-bottom:10px}.maps[data-v-57509004]{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}}</style>
+    <meta data-n-head="true" charset="utf-8"><meta data-n-head="true" content="width=device-width,initial-scale=1" name="viewport"><meta data-n-head="true" content="Turf.js | Advanced geospatial analysis for browsers and Node.js" name="description" data-hid="description"><title data-n-head="true">Turf.js | Advanced geospatial analysis</title><link href="/favicon.ico" rel="icon" data-n-head="true" type="image/x-icon"><link href="https://fonts.googleapis.com/css?family=Montserrat:200,400" rel="stylesheet" data-n-head="true"><link href="https://fonts.googleapis.com/css?family=Istok+Web" rel="stylesheet" data-n-head="true"><link href="https://cdnjs.cloudflare.com/ajax/libs/iview/2.7.4/styles/iview.css" rel="stylesheet" data-n-head="true"><link href="/js/manifest.2640ab25eec4d70fcff5.js" rel="preload" as="script"><link href="/js/vendor.88ac1a055bc9fab4d8db.js" rel="preload" as="script"><link href="/js/app.e1c9cce4df099a8ea187.js" rel="preload" as="script"><link href="/js/layouts/default.5547504106d119fae14e.js" rel="preload" as="script"><link href="/js/pages/index.012a5f1c217678ba589a.js" rel="preload" as="script"><link href="/js/pages/docs.c03a5138a78756435d01.js" rel="prefetch"><link href="/js/pages/getting-started.66d358447fee7389a24e.js" rel="prefetch"><style data-vue-ssr-id="3051ae08:0">.nuxt-progress{position:fixed;top:0;left:0;right:0;height:2px;width:0;-webkit-transition:width .2s,opacity .4s;transition:width .2s,opacity .4s;opacity:1;background-color:#efc14e;z-index:999999}</style><style data-vue-ssr-id="f576cf02:0">html{width:100%;height:100%}body{font-family:Istok Web,sans-serif;color:#444;font-size:16px;font-size:1rem;min-height:100%;background:rgba(236,240,241,.85)}h1,h2,h3,h4{font-family:Montserrat,serif;color:#5a5a5a}h3{font-size:48px;font-size:3rem;font-weight:200;margin-top:5px}h4{font-weight:600;margin:20px 0 10px}a{color:#0c3952;text-underline-position:under;-webkit-text-decoration-style:solid;text-decoration-style:solid;text-decoration:underline}.mainContentArea pre{background-color:#fafafa;border:2px solid #ecf0f1;overflow-x:auto}.hljs{background:0 0!important;padding:20px}.sideCol{background-color:#fcfcfc;min-height:100vh}.mainContentArea{background-color:#f6f6f6;padding:40px;margin-top:60px;margin-bottom:40px;border:2px solid rgba(12,57,82,.1)}.mainContentArea h3{font-weight:200;font-size:48px;font-size:3rem;margin-bottom:10px;margin-top:0}@media screen and (max-width:900px){.appResponsive{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.appResponsive,.sideColResponsive{display:-webkit-box;display:-ms-flexbox;display:flex}.sideColResponsive{width:100%;min-height:0!important}.mainContentAreaResponsive{margin-top:120px!important;margin-bottom:0;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.infoResponsive{margin-left:0;width:100%}.infoResponsive>a>svg{display:none}.mapResponsive{margin-left:0}}</style><style data-vue-ssr-id="245469b8:0">.sidebarContents{top:0;bottom:0;width:inherit}.sidebarContents .topMenu{padding-left:30px;padding-top:20px}.sidebarContents .logo{height:120px;background-color:#2ecc71;margin-right:0;cursor:pointer;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-ms-flex-item-align:center;align-self:center}.sidebarContents .logo h1{font-size:32px;font-size:2rem;color:#fff;text-align:center;letter-spacing:6.4px;letter-spacing:.4rem;font-weight:600}.sidebarContents .logo h1:before{content:"<";opacity:0;-webkit-transition:.3s;transition:.3s}.sidebarContents .logo h1:after{content:">";-webkit-transition:.3s;transition:.3s;opacity:0}.sidebarContents .logo h1:hover:after,.sidebarContents .logo h1:hover:before{opacity:1}.sidebarContents .fixedContent{width:inherit;position:fixed;background-color:#fcfcfc}.sidebarContents .fixedContent #sidebarFilter{margin:20px 0;font-size:14.4px;font-size:.9rem;width:80%;padding:5px;border:3px solid #efefef;color:#656565;-webkit-transition:.3s;transition:.3s}.sidebarContents .fixedContent #sidebarFilter:focus{outline:0;border:3px solid #ccc}.sidebarContents .turfModules{height:calc(100vh - 250px);position:relative;overflow-y:scroll;width:100%;bottom:0;width:inherit;background-color:#fcfcfc;left:0;padding-bottom:20px;padding-left:30px}.sidebarContents .turfModules::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,.3);background-color:rgba(12,57,82,.02)}.sidebarContents .turfModules::-webkit-scrollbar{width:6px;background-color:rgba(12,57,82,.02)}.sidebarContents .turfModules::-webkit-scrollbar-thumb{background-color:rgba(12,57,82,.3)}.sidebarContents .menuItem{margin-left:8px!important;margin-bottom:16px;margin:2px 0;font-size:14.4px;font-size:.9rem;color:#656565;text-decoration:none;cursor:pointer;list-style-type:none}.sidebarContents .menuLink{text-decoration:none}.sidebarContents .heading{margin-left:0!important;font-weight:700;text-transform:uppercase;margin-top:10px;font-size:14px}.sidebarContents .githubResponsive,.sidebarContents .menuToggle,.sidebarContents label{display:none}.sidebarContents .menuToggle:checked~.menuDropDown{display:block}@media screen and (max-width:900px){.sidebarContents .links{margin-top:20px}.sidebarContents #sidebarFilter{margin:18px 0!important}.sidebarContents .menuToggle~.menuDropDown{display:none}.sidebarContents .menuToggle:checked~.menuDropDown{display:block}.sidebarContents .menuToggle{display:none;position:absolute;height:100%;height:50px;width:50px}.sidebarContents .toggleLabel{display:inline-block;cursor:pointer;padding:10px;padding-left:30px}.sidebarContents .toggleLabel span{display:block;width:30px;height:4px;margin-bottom:5px;background-color:#fff;-webkit-transition:all .3s ease-in-out;transition:all .3s ease-in-out}.sidebarContents .toggleLabel span:first-of-type{-webkit-transform-origin:top left;transform-origin:top left}.sidebarContents .toggleLabel span:last-of-type{-webkit-transform-origin:bottom left;transform-origin:bottom left}.sidebarContents .menuToggle:checked+.toggleLabel span:first-of-type{-webkit-transform:rotate(45deg) translate(6px,-6px);transform:rotate(45deg) translate(6px,-6px)}.sidebarContents .menuToggle:checked+.toggleLabel span:nth-of-type(2){opacity:0}.sidebarContents .menuToggle:checked+.toggleLabel span:nth-of-type(3){-webkit-transform:rotate(-45deg) translate(6px,6px);transform:rotate(-45deg) translate(6px,6px)}.sidebarContents .menuToggle,.sidebarContents .toggleLabel{position:absolute;top:36px}.sidebarContents .githubResponsive{display:block}.sidebarContents .githubResponsive>a{margin-left:0!important;font-weight:700;text-transform:uppercase;margin-top:10px;font-size:14px;color:#656565;text-decoration:none;cursor:pointer;list-style-type:none}.sidebarContents .fixedContentResponsive{position:fixed;z-index:10000000}.sidebarContents .headingResponsive{background:red;padding-top:10px;margin-top:0}.sidebarContents .turfModulesResponsive{width:100%;height:calc(100vh - 289px)}}</style><style data-vue-ssr-id="6f6f4625:0">.githubLogo{float:right;height:25px;width:25px;margin-top:8px;cursor:pointer;position:fixed;right:10px}.githubLogo path{fill:rgba(12,57,82,.6);-webkit-transition:.3s;transition:.3s}.githubLogo path:hover{fill:#2ecc71}</style><style data-vue-ssr-id="c0dfdd6c:0">h1[data-v-57509004]{font-weight:200;font-size:48px;font-size:3rem;margin-bottom:30px;margin-top:0;text-align:center}h2[data-v-57509004]{text-align:center;margin:20px 0;font-weight:600}h3[data-v-57509004]{font-size:17.6px;font-size:1.1rem;text-align:center}p[data-v-57509004]{text-align:center}.map-insert[data-v-57509004]{height:300px;min-width:150px}.inputOutput[data-v-57509004]{z-index:1;position:absolute;font-size:16px;font-weight:700;background:hsla(0,0%,100%,.30196);padding:6px;border-bottom-left-radius:2px}.label[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.select[data-v-57509004]{margin-left:20px;width:100px}.maps[data-v-57509004]{margin-bottom:60px}.maps[data-v-57509004],.selector[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.selector[data-v-57509004]{margin:auto;width:50%;margin-bottom:20px;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.leftMap[data-v-57509004]{margin-right:10px}.rightMap[data-v-57509004]{margin-left:10px}@media screen and (max-width:900px){.responsiveOverview[data-v-57509004]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.responsiveAspect[data-v-57509004]{width:100%!important;margin-top:20px}.leftMap[data-v-57509004],.rightMap[data-v-57509004]{width:40%}.label[data-v-57509004]{font-size:14px;width:50%}.selector[data-v-57509004]{width:70%}}@media screen and (max-width:400px){.leftMap[data-v-57509004],.rightMap[data-v-57509004]{width:100%;margin-bottom:10px}.maps[data-v-57509004]{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}}</style>
   </head>
   <body>
-    <div id="__nuxt" data-server-rendered="true"><div class="nuxt-progress" style="width:0%;height:2px;background-color:#3b8070;opacity:0"></div><div id="__layout"><div class="app ivu-row" id="app"><div class="sideCol sideColResponsive ivu-col ivu-col-span-4"><div class="sidebarContents"><div class="fixedContent fixedContentResponsive"><label class="toggleLabel" for="menuToggle"><span></span><span></span><span></span></label><input id="menuToggle" class="menuToggle" type="checkbox"><div class="logo"><h1>TURF</h1></div><div class="menuDropDown"><div class="topMenu"><div class="links"><div><li class="menuItem heading">Getting Started</div><li class="menuItem heading githubResponsive"><a href="https://www.github.com/turfjs/turf">GitHub</a></div><input id="sidebarFilter" placeholder="Search modules"></div><ul class="turfModules turfModulesResponsive"><div><li class="menuItem heading">Measurement</li><a href="/docs/#along" class="menuLink"><li class="menuItem">
-                along
-              </a><a href="/docs/#area" class="menuLink"><li class="menuItem">
-                area
-              </a><a href="/docs/#bbox" class="menuLink"><li class="menuItem">
-                bbox
-              </a><a href="/docs/#bboxPolygon" class="menuLink"><li class="menuItem">
-                bboxPolygon
-              </a><a href="/docs/#bearing" class="menuLink"><li class="menuItem">
-                bearing
-              </a><a href="/docs/#center" class="menuLink"><li class="menuItem">
-                center
-              </a><a href="/docs/#centerOfMass" class="menuLink"><li class="menuItem">
-                centerOfMass
-              </a><a href="/docs/#centroid" class="menuLink"><li class="menuItem">
-                centroid
-              </a><a href="/docs/#destination" class="menuLink"><li class="menuItem">
-                destination
-              </a><a href="/docs/#distance" class="menuLink"><li class="menuItem">
-                distance
-              </a><a href="/docs/#envelope" class="menuLink"><li class="menuItem">
-                envelope
-              </a><a href="/docs/#length" class="menuLink"><li class="menuItem">
-                length
-              </a><a href="/docs/#midpoint" class="menuLink"><li class="menuItem">
-                midpoint
-              </a><a href="/docs/#pointOnFeature" class="menuLink"><li class="menuItem">
-                pointOnFeature
-              </a><a href="/docs/#polygonTangents" class="menuLink"><li class="menuItem">
-                polygonTangents
-              </a><a href="/docs/#pointToLineDistance" class="menuLink"><li class="menuItem">
-                pointToLineDistance
-              </a><a href="/docs/#rhumbBearing" class="menuLink"><li class="menuItem">
-                rhumbBearing
-              </a><a href="/docs/#rhumbDestination" class="menuLink"><li class="menuItem">
-                rhumbDestination
-              </a><a href="/docs/#rhumbDistance" class="menuLink"><li class="menuItem">
-                rhumbDistance
-              </a><a href="/docs/#square" class="menuLink"><li class="menuItem">
-                square
-              </a><a href="/docs/#greatCircle" class="menuLink"><li class="menuItem">
-                greatCircle
-              </a></div><div><li class="menuItem heading">Coordinate Mutation</li><a href="/docs/#cleanCoords" class="menuLink"><li class="menuItem">
-                cleanCoords
-              </a><a href="/docs/#flip" class="menuLink"><li class="menuItem">
-                flip
-              </a><a href="/docs/#rewind" class="menuLink"><li class="menuItem">
-                rewind
-              </a><a href="/docs/#round" class="menuLink"><li class="menuItem">
-                round
-              </a><a href="/docs/#truncate" class="menuLink"><li class="menuItem">
-                truncate
-              </a></div><div><li class="menuItem heading">Transformation</li><a href="/docs/#bboxClip" class="menuLink"><li class="menuItem">
-                bboxClip
-              </a><a href="/docs/#bezierSpline" class="menuLink"><li class="menuItem">
-                bezierSpline
-              </a><a href="/docs/#buffer" class="menuLink"><li class="menuItem">
-                buffer
-              </a><a href="/docs/#circle" class="menuLink"><li class="menuItem">
-                circle
-              </a><a href="/docs/#clone" class="menuLink"><li class="menuItem">
-                clone
-              </a><a href="/docs/#concave" class="menuLink"><li class="menuItem">
-                concave
-              </a><a href="/docs/#convex" class="menuLink"><li class="menuItem">
-                convex
-              </a><a href="/docs/#difference" class="menuLink"><li class="menuItem">
-                difference
-              </a><a href="/docs/#dissolve" class="menuLink"><li class="menuItem">
-                dissolve
-              </a><a href="/docs/#intersect" class="menuLink"><li class="menuItem">
-                intersect
-              </a><a href="/docs/#lineOffset" class="menuLink"><li class="menuItem">
-                lineOffset
-              </a><a href="/docs/#polygonSmooth" class="menuLink"><li class="menuItem">
-                polygonSmooth
-              </a><a href="/docs/#simplify" class="menuLink"><li class="menuItem">
-                simplify
-              </a><a href="/docs/#tesselate" class="menuLink"><li class="menuItem">
-                tesselate
-              </a><a href="/docs/#transformRotate" class="menuLink"><li class="menuItem">
-                transformRotate
-              </a><a href="/docs/#transformTranslate" class="menuLink"><li class="menuItem">
-                transformTranslate
-              </a><a href="/docs/#transformScale" class="menuLink"><li class="menuItem">
-                transformScale
-              </a><a href="/docs/#union" class="menuLink"><li class="menuItem">
-                union
-              </a><a href="/docs/#voronoi" class="menuLink"><li class="menuItem">
-                voronoi
-              </a></div><div><li class="menuItem heading">Feature Conversion</li><a href="/docs/#combine" class="menuLink"><li class="menuItem">
-                combine
-              </a><a href="/docs/#explode" class="menuLink"><li class="menuItem">
-                explode
-              </a><a href="/docs/#flatten" class="menuLink"><li class="menuItem">
-                flatten
-              </a><a href="/docs/#lineToPolygon" class="menuLink"><li class="menuItem">
-                lineToPolygon
-              </a><a href="/docs/#polygonize" class="menuLink"><li class="menuItem">
-                polygonize
-              </a><a href="/docs/#polygonToLine" class="menuLink"><li class="menuItem">
-                polygonToLine
-              </a></div><div><li class="menuItem heading">Misc</li><a href="/docs/#ellipse" class="menuLink"><li class="menuItem">
-                ellipse
-              </a><a href="/docs/#kinks" class="menuLink"><li class="menuItem">
-                kinks
-              </a><a href="/docs/#lineArc" class="menuLink"><li class="menuItem">
-                lineArc
-              </a><a href="/docs/#lineChunk" class="menuLink"><li class="menuItem">
-                lineChunk
-              </a><a href="/docs/#lineIntersect" class="menuLink"><li class="menuItem">
-                lineIntersect
-              </a><a href="/docs/#lineOverlap" class="menuLink"><li class="menuItem">
-                lineOverlap
-              </a><a href="/docs/#lineSegment" class="menuLink"><li class="menuItem">
-                lineSegment
-              </a><a href="/docs/#lineSlice" class="menuLink"><li class="menuItem">
-                lineSlice
-              </a><a href="/docs/#lineSliceAlong" class="menuLink"><li class="menuItem">
-                lineSliceAlong
-              </a><a href="/docs/#lineSplit" class="menuLink"><li class="menuItem">
-                lineSplit
-              </a><a href="/docs/#mask" class="menuLink"><li class="menuItem">
-                mask
-              </a><a href="/docs/#nearestPointOnLine" class="menuLink"><li class="menuItem">
-                nearestPointOnLine
-              </a><a href="/docs/#sector" class="menuLink"><li class="menuItem">
-                sector
-              </a><a href="/docs/#shortestPath" class="menuLink"><li class="menuItem">
-                shortestPath
-              </a><a href="/docs/#unkinkPolygon" class="menuLink"><li class="menuItem">
-                unkinkPolygon
-              </a></div><div><li class="menuItem heading">Helper</li><a href="/docs/#featureCollection" class="menuLink"><li class="menuItem">
-                featureCollection
-              </a><a href="/docs/#feature" class="menuLink"><li class="menuItem">
-                feature
-              </a><a href="/docs/#geometryCollection" class="menuLink"><li class="menuItem">
-                geometryCollection
-              </a><a href="/docs/#lineString" class="menuLink"><li class="menuItem">
-                lineString
-              </a><a href="/docs/#multiLineString" class="menuLink"><li class="menuItem">
-                multiLineString
-              </a><a href="/docs/#multiPoint" class="menuLink"><li class="menuItem">
-                multiPoint
-              </a><a href="/docs/#multiPolygon" class="menuLink"><li class="menuItem">
-                multiPolygon
-              </a><a href="/docs/#point" class="menuLink"><li class="menuItem">
-                point
-              </a><a href="/docs/#polygon" class="menuLink"><li class="menuItem">
-                polygon
-              </a></div><div><li class="menuItem heading">Random</li><a href="/docs/#randomPosition" class="menuLink"><li class="menuItem">
-                randomPosition
-              </a><a href="/docs/#randomPoint" class="menuLink"><li class="menuItem">
-                randomPoint
-              </a><a href="/docs/#randomLineString" class="menuLink"><li class="menuItem">
-                randomLineString
-              </a><a href="/docs/#randomPolygon" class="menuLink"><li class="menuItem">
-                randomPolygon
-              </a></div><div><li class="menuItem heading">Data</li><a href="/docs/#sample" class="menuLink"><li class="menuItem">
-                sample
-              </a></div><div><li class="menuItem heading">Interpolation</li><a href="/docs/#interpolate" class="menuLink"><li class="menuItem">
-                interpolate
-              </a><a href="/docs/#isobands" class="menuLink"><li class="menuItem">
-                isobands
-              </a><a href="/docs/#isolines" class="menuLink"><li class="menuItem">
-                isolines
-              </a><a href="/docs/#planepoint" class="menuLink"><li class="menuItem">
-                planepoint
-              </a><a href="/docs/#tin" class="menuLink"><li class="menuItem">
-                tin
-              </a></div><div><li class="menuItem heading">Joins</li><a href="/docs/#pointsWithinPolygon" class="menuLink"><li class="menuItem">
-                pointsWithinPolygon
-              </a><a href="/docs/#tag" class="menuLink"><li class="menuItem">
-                tag
-              </a></div><div><li class="menuItem heading">Grids</li><a href="/docs/#hexGrid" class="menuLink"><li class="menuItem">
-                hexGrid
-              </a><a href="/docs/#pointGrid" class="menuLink"><li class="menuItem">
-                pointGrid
-              </a><a href="/docs/#squareGrid" class="menuLink"><li class="menuItem">
-                squareGrid
-              </a><a href="/docs/#triangleGrid" class="menuLink"><li class="menuItem">
-                triangleGrid
-              </a></div><div><li class="menuItem heading">Classification</li><a href="/docs/#nearestPoint" class="menuLink"><li class="menuItem">
-                nearestPoint
-              </a></div><div><li class="menuItem heading">Aggregation</li><a href="/docs/#collect" class="menuLink"><li class="menuItem">
-                collect
-              </a><a href="/docs/#clustersDbscan" class="menuLink"><li class="menuItem">
-                clustersDbscan
-              </a><a href="/docs/#clustersKmeans" class="menuLink"><li class="menuItem">
-                clustersKmeans
-              </a></div><div><li class="menuItem heading">Meta</li><a href="/docs/#coordAll" class="menuLink"><li class="menuItem">
-                coordAll
-              </a><a href="/docs/#coordEach" class="menuLink"><li class="menuItem">
-                coordEach
-              </a><a href="/docs/#coordReduce" class="menuLink"><li class="menuItem">
-                coordReduce
-              </a><a href="/docs/#featureEach" class="menuLink"><li class="menuItem">
-                featureEach
-              </a><a href="/docs/#featureReduce" class="menuLink"><li class="menuItem">
-                featureReduce
-              </a><a href="/docs/#flattenEach" class="menuLink"><li class="menuItem">
-                flattenEach
-              </a><a href="/docs/#flattenReduce" class="menuLink"><li class="menuItem">
-                flattenReduce
-              </a><a href="/docs/#getCoord" class="menuLink"><li class="menuItem">
-                getCoord
-              </a><a href="/docs/#getCoords" class="menuLink"><li class="menuItem">
-                getCoords
-              </a><a href="/docs/#getGeom" class="menuLink"><li class="menuItem">
-                getGeom
-              </a><a href="/docs/#getType" class="menuLink"><li class="menuItem">
-                getType
-              </a><a href="/docs/#geomEach" class="menuLink"><li class="menuItem">
-                geomEach
-              </a><a href="/docs/#geomReduce" class="menuLink"><li class="menuItem">
-                geomReduce
-              </a><a href="/docs/#propEach" class="menuLink"><li class="menuItem">
-                propEach
-              </a><a href="/docs/#propReduce" class="menuLink"><li class="menuItem">
-                propReduce
-              </a><a href="/docs/#segmentEach" class="menuLink"><li class="menuItem">
-                segmentEach
-              </a><a href="/docs/#segmentReduce" class="menuLink"><li class="menuItem">
-                segmentReduce
-              </a><a href="/docs/#getCluster" class="menuLink"><li class="menuItem">
-                getCluster
-              </a><a href="/docs/#clusterEach" class="menuLink"><li class="menuItem">
-                clusterEach
-              </a><a href="/docs/#clusterReduce" class="menuLink"><li class="menuItem">
-                clusterReduce
-              </a></div><div><li class="menuItem heading">Assertions</li><a href="/docs/#collectionOf" class="menuLink"><li class="menuItem">
-                collectionOf
-              </a><a href="/docs/#containsNumber" class="menuLink"><li class="menuItem">
-                containsNumber
-              </a><a href="/docs/#geojsonType" class="menuLink"><li class="menuItem">
-                geojsonType
-              </a><a href="/docs/#featureOf" class="menuLink"><li class="menuItem">
-                featureOf
-              </a></div><div><li class="menuItem heading">Booleans</li><a href="/docs/#booleanClockwise" class="menuLink"><li class="menuItem">
-                booleanClockwise
-              </a><a href="/docs/#booleanConcave" class="menuLink"><li class="menuItem">
-                booleanConcave
-              </a><a href="/docs/#booleanContains" class="menuLink"><li class="menuItem">
-                booleanContains
-              </a><a href="/docs/#booleanCrosses" class="menuLink"><li class="menuItem">
-                booleanCrosses
-              </a><a href="/docs/#booleanDisjoint" class="menuLink"><li class="menuItem">
-                booleanDisjoint
-              </a><a href="/docs/#booleanEqual" class="menuLink"><li class="menuItem">
-                booleanEqual
-              </a><a href="/docs/#booleanIntersects" class="menuLink"><li class="menuItem">
-                booleanIntersects
-              </a><a href="/docs/#booleanOverlap" class="menuLink"><li class="menuItem">
-                booleanOverlap
-              </a><a href="/docs/#booleanParallel" class="menuLink"><li class="menuItem">
-                booleanParallel
-              </a><a href="/docs/#booleanPointInPolygon" class="menuLink"><li class="menuItem">
-                booleanPointInPolygon
-              </a><a href="/docs/#booleanPointOnLine" class="menuLink"><li class="menuItem">
-                booleanPointOnLine
-              </a><a href="/docs/#booleanWithin" class="menuLink"><li class="menuItem">
-                booleanWithin
-              </a></div><div><li class="menuItem heading">Unit Conversion</li><a href="/docs/#bearingToAzimuth" class="menuLink"><li class="menuItem">
-                bearingToAzimuth
-              </a><a href="/docs/#convertArea" class="menuLink"><li class="menuItem">
-                convertArea
-              </a><a href="/docs/#convertLength" class="menuLink"><li class="menuItem">
-                convertLength
-              </a><a href="/docs/#degreesToRadians" class="menuLink"><li class="menuItem">
-                degreesToRadians
-              </a><a href="/docs/#lengthToRadians" class="menuLink"><li class="menuItem">
-                lengthToRadians
-              </a><a href="/docs/#lengthToDegrees" class="menuLink"><li class="menuItem">
-                lengthToDegrees
-              </a><a href="/docs/#radiansToLength" class="menuLink"><li class="menuItem">
-                radiansToLength
-              </a><a href="/docs/#radiansToDegrees" class="menuLink"><li class="menuItem">
-                radiansToDegrees
-              </a><a href="/docs/#toMercator" class="menuLink"><li class="menuItem">
-                toMercator
-              </a><a href="/docs/#toWgs84" class="menuLink"><li class="menuItem">
-                toWgs84
-              </a></div></ul></div></div></div></div><div class="infoResponsive ivu-col ivu-col-span-18 ivu-col-offset-1"><a href="https://github.com/Turfjs/turf/"><svg class="githubLogo" height="512px" viewBox="0 0 512 512" width="512px"><g id="g3"><path d="M256,0C114.615,0,0,114.615,0,256s114.615,256,256,256s256-114.615,256-256S397.385,0,256,0z M408.027,408.027   c-19.76,19.759-42.756,35.267-68.354,46.094c-6.502,2.75-13.105,5.164-19.801,7.246V423c0-20.167-6.916-35-20.75-44.5   c8.668-0.833,16.625-2,23.875-3.5s14.918-3.667,23-6.5c8.084-2.833,15.334-6.208,21.75-10.125c6.418-3.917,12.584-9,18.5-15.25   c5.918-6.25,10.875-13.333,14.875-21.25s7.168-17.417,9.5-28.5c2.334-11.083,3.5-23.292,3.5-36.625c0-25.833-8.416-47.833-25.25-66   c7.668-20,6.834-41.75-2.5-65.25l-6.25-0.75c-4.332-0.5-12.125,1.333-23.375,5.5s-23.875,11-37.875,20.5   c-19.832-5.5-40.416-8.25-61.749-8.25c-21.5,0-42,2.75-61.5,8.25c-8.833-6-17.208-10.958-25.125-14.875s-14.25-6.583-19-8   s-9.167-2.292-13.25-2.625s-6.708-0.417-7.875-0.25s-2,0.333-2.5,0.5c-9.333,23.667-10.167,45.417-2.5,65.25   c-16.833,18.167-25.25,40.167-25.25,66c0,13.333,1.167,25.542,3.5,36.625s5.5,20.583,9.5,28.5s8.958,15,14.875,21.25   s12.083,11.333,18.5,15.25s13.667,7.292,21.75,10.125s15.75,5,23,6.5s15.208,2.667,23.875,3.5c-13.667,9.333-20.5,24.167-20.5,44.5   v39.115c-7.549-2.247-14.99-4.902-22.3-7.994c-25.597-10.827-48.594-26.335-68.353-46.094   c-19.758-19.758-35.267-42.756-46.093-68.354C46.679,313.195,41,285.043,41,256s5.679-57.195,16.879-83.675   c10.827-25.597,26.335-48.594,46.093-68.353c19.758-19.759,42.756-35.267,68.353-46.093C198.805,46.679,226.957,41,256,41   s57.195,5.679,83.676,16.879c25.598,10.827,48.594,26.335,68.354,46.093c19.758,19.758,35.266,42.756,46.092,68.353   C465.32,198.805,471,226.957,471,256s-5.68,57.195-16.879,83.675C443.295,365.271,427.785,388.27,408.027,408.027z" id="path5"></path></g></svg></a><div class="mainContentArea mainContentAreaResponsive" data-v-57509004><h1 data-v-57509004>Welcome to Turf.js</h1><div class="ivu-row" data-v-57509004><div class="selector ivu-col" data-v-57509004><label class="label" data-v-57509004>Choose an operation:</label><div class="select" data-v-57509004><div class="ivu-select ivu-select-single" data-v-57509004 labe=""><div class="ivu-select-selection" tabindex="0"><input type="hidden"> <div> <span class="ivu-select-placeholder">请选择</span> <!----> <!----> <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i></div></div> <div class="ivu-select-dropdown" style="display:none"><ul class="ivu-select-not-found" style="display:none"><li>无匹配数据</ul> <ul class="ivu-select-dropdown-list"><li class="ivu-select-item" data-v-57509004>tin<li class="ivu-select-item" data-v-57509004>buffer<li class="ivu-select-item" data-v-57509004>centroid<li class="ivu-select-item" data-v-57509004>voronoi</ul> <ul class="ivu-select-loading" style="display:none">加载中</ul></div></div></div></div></div><div class="maps ivu-row" data-v-57509004><div class="leftMap mapResponsive ivu-col ivu-col-span-9" data-v-57509004><div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" data-v-57509004 id="inMap"><div class="inputOutput" data-v-57509004>Input</div></div></div><div class="rightMap ivu-col ivu-col-span-9" data-v-57509004><div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" data-v-57509004 id="outMap"><div class="inputOutput" data-v-57509004>Output</div></div></div></div><h2 data-v-57509004>Advanced geospatial analysis for browsers and Node.js</h2><div class="responsiveOverview ivu-row" data-v-57509004><div class="responsiveAspect ivu-col ivu-col-span-7" data-v-57509004><h3 data-v-57509004>Simple</h3><p data-v-57509004>Modular, simple-to-understand JavaScript functions that speak GeoJSON</div><div class="responsiveAspect ivu-col ivu-col-span-7 ivu-col-offset-1" data-v-57509004><h3 data-v-57509004>Modular</h3><p data-v-57509004>Turf is a collection of small modules, you only need to take what you want to use</div><div class="responsiveAspect ivu-col ivu-col-span-7 ivu-col-offset-1" data-v-57509004><h3 data-v-57509004>Fast</h3><p data-v-57509004>Takes advantage of the newest algorithms and doesn't require you to send data to a server</div></div></div></div></div></div></div><script type="text/javascript">window.__NUXT__={layout:"default",data:[{}],error:null,serverRendered:!0}</script><script src="/js/manifest.ccbd7cf6864a844ebf62.js" defer></script><script src="/js/layouts/default.336236758df9b1816e62.js" defer></script><script src="/js/pages/index.012a5f1c217678ba589a.js" defer></script><script src="/js/vendor.88ac1a055bc9fab4d8db.js" defer></script><script src="/js/app.e1c9cce4df099a8ea187.js" defer></script>
+    <div id="__nuxt" data-server-rendered="true"><div class="nuxt-progress" style="width:0%;height:2px;background-color:#3b8070;opacity:0"></div><div id="__layout"><div class="app ivu-row" id="app"><div class="sideCol sideColResponsive ivu-col ivu-col-span-4"><div class="sidebarContents"><div class="fixedContent fixedContentResponsive"><label class="toggleLabel" for="menuToggle"><span></span><span></span><span></span></label><input id="menuToggle" class="menuToggle" type="checkbox"><div class="logo"><h1>TURF</h1></div><div class="menuDropDown"><div class="topMenu"><div class="links"><span><li class="menuItem heading">Getting Started</span><li class="menuItem heading githubResponsive"><a href="https://www.github.com/turfjs/turf">GitHub</a></div><input id="sidebarFilter" placeholder="Search modules"></div><ul class="turfModules turfModulesResponsive"><div><li class="menuItem heading">Measurement</li><span><a href="/docs/#along" class="menuLink"><li class="menuItem">
+                  along
+                </a><a href="/docs/#area" class="menuLink"><li class="menuItem">
+                  area
+                </a><a href="/docs/#bbox" class="menuLink"><li class="menuItem">
+                  bbox
+                </a><a href="/docs/#bboxPolygon" class="menuLink"><li class="menuItem">
+                  bboxPolygon
+                </a><a href="/docs/#bearing" class="menuLink"><li class="menuItem">
+                  bearing
+                </a><a href="/docs/#center" class="menuLink"><li class="menuItem">
+                  center
+                </a><a href="/docs/#centerOfMass" class="menuLink"><li class="menuItem">
+                  centerOfMass
+                </a><a href="/docs/#centroid" class="menuLink"><li class="menuItem">
+                  centroid
+                </a><a href="/docs/#destination" class="menuLink"><li class="menuItem">
+                  destination
+                </a><a href="/docs/#distance" class="menuLink"><li class="menuItem">
+                  distance
+                </a><a href="/docs/#envelope" class="menuLink"><li class="menuItem">
+                  envelope
+                </a><a href="/docs/#length" class="menuLink"><li class="menuItem">
+                  length
+                </a><a href="/docs/#midpoint" class="menuLink"><li class="menuItem">
+                  midpoint
+                </a><a href="/docs/#pointOnFeature" class="menuLink"><li class="menuItem">
+                  pointOnFeature
+                </a><a href="/docs/#polygonTangents" class="menuLink"><li class="menuItem">
+                  polygonTangents
+                </a><a href="/docs/#pointToLineDistance" class="menuLink"><li class="menuItem">
+                  pointToLineDistance
+                </a><a href="/docs/#rhumbBearing" class="menuLink"><li class="menuItem">
+                  rhumbBearing
+                </a><a href="/docs/#rhumbDestination" class="menuLink"><li class="menuItem">
+                  rhumbDestination
+                </a><a href="/docs/#rhumbDistance" class="menuLink"><li class="menuItem">
+                  rhumbDistance
+                </a><a href="/docs/#square" class="menuLink"><li class="menuItem">
+                  square
+                </a><a href="/docs/#greatCircle" class="menuLink"><li class="menuItem">
+                  greatCircle
+                </a></span></div><div><li class="menuItem heading">Coordinate Mutation</li><span><a href="/docs/#cleanCoords" class="menuLink"><li class="menuItem">
+                  cleanCoords
+                </a><a href="/docs/#flip" class="menuLink"><li class="menuItem">
+                  flip
+                </a><a href="/docs/#rewind" class="menuLink"><li class="menuItem">
+                  rewind
+                </a><a href="/docs/#round" class="menuLink"><li class="menuItem">
+                  round
+                </a><a href="/docs/#truncate" class="menuLink"><li class="menuItem">
+                  truncate
+                </a></span></div><div><li class="menuItem heading">Transformation</li><span><a href="/docs/#bboxClip" class="menuLink"><li class="menuItem">
+                  bboxClip
+                </a><a href="/docs/#bezierSpline" class="menuLink"><li class="menuItem">
+                  bezierSpline
+                </a><a href="/docs/#buffer" class="menuLink"><li class="menuItem">
+                  buffer
+                </a><a href="/docs/#circle" class="menuLink"><li class="menuItem">
+                  circle
+                </a><a href="/docs/#clone" class="menuLink"><li class="menuItem">
+                  clone
+                </a><a href="/docs/#concave" class="menuLink"><li class="menuItem">
+                  concave
+                </a><a href="/docs/#convex" class="menuLink"><li class="menuItem">
+                  convex
+                </a><a href="/docs/#difference" class="menuLink"><li class="menuItem">
+                  difference
+                </a><a href="/docs/#dissolve" class="menuLink"><li class="menuItem">
+                  dissolve
+                </a><a href="/docs/#intersect" class="menuLink"><li class="menuItem">
+                  intersect
+                </a><a href="/docs/#lineOffset" class="menuLink"><li class="menuItem">
+                  lineOffset
+                </a><a href="/docs/#polygonSmooth" class="menuLink"><li class="menuItem">
+                  polygonSmooth
+                </a><a href="/docs/#simplify" class="menuLink"><li class="menuItem">
+                  simplify
+                </a><a href="/docs/#tesselate" class="menuLink"><li class="menuItem">
+                  tesselate
+                </a><a href="/docs/#transformRotate" class="menuLink"><li class="menuItem">
+                  transformRotate
+                </a><a href="/docs/#transformTranslate" class="menuLink"><li class="menuItem">
+                  transformTranslate
+                </a><a href="/docs/#transformScale" class="menuLink"><li class="menuItem">
+                  transformScale
+                </a><a href="/docs/#union" class="menuLink"><li class="menuItem">
+                  union
+                </a><a href="/docs/#voronoi" class="menuLink"><li class="menuItem">
+                  voronoi
+                </a></span></div><div><li class="menuItem heading">Feature Conversion</li><span><a href="/docs/#combine" class="menuLink"><li class="menuItem">
+                  combine
+                </a><a href="/docs/#explode" class="menuLink"><li class="menuItem">
+                  explode
+                </a><a href="/docs/#flatten" class="menuLink"><li class="menuItem">
+                  flatten
+                </a><a href="/docs/#lineToPolygon" class="menuLink"><li class="menuItem">
+                  lineToPolygon
+                </a><a href="/docs/#polygonize" class="menuLink"><li class="menuItem">
+                  polygonize
+                </a><a href="/docs/#polygonToLine" class="menuLink"><li class="menuItem">
+                  polygonToLine
+                </a></span></div><div><li class="menuItem heading">Misc</li><span><a href="/docs/#ellipse" class="menuLink"><li class="menuItem">
+                  ellipse
+                </a><a href="/docs/#kinks" class="menuLink"><li class="menuItem">
+                  kinks
+                </a><a href="/docs/#lineArc" class="menuLink"><li class="menuItem">
+                  lineArc
+                </a><a href="/docs/#lineChunk" class="menuLink"><li class="menuItem">
+                  lineChunk
+                </a><a href="/docs/#lineIntersect" class="menuLink"><li class="menuItem">
+                  lineIntersect
+                </a><a href="/docs/#lineOverlap" class="menuLink"><li class="menuItem">
+                  lineOverlap
+                </a><a href="/docs/#lineSegment" class="menuLink"><li class="menuItem">
+                  lineSegment
+                </a><a href="/docs/#lineSlice" class="menuLink"><li class="menuItem">
+                  lineSlice
+                </a><a href="/docs/#lineSliceAlong" class="menuLink"><li class="menuItem">
+                  lineSliceAlong
+                </a><a href="/docs/#lineSplit" class="menuLink"><li class="menuItem">
+                  lineSplit
+                </a><a href="/docs/#mask" class="menuLink"><li class="menuItem">
+                  mask
+                </a><a href="/docs/#nearestPointOnLine" class="menuLink"><li class="menuItem">
+                  nearestPointOnLine
+                </a><a href="/docs/#sector" class="menuLink"><li class="menuItem">
+                  sector
+                </a><a href="/docs/#shortestPath" class="menuLink"><li class="menuItem">
+                  shortestPath
+                </a><a href="/docs/#unkinkPolygon" class="menuLink"><li class="menuItem">
+                  unkinkPolygon
+                </a></span></div><div><li class="menuItem heading">Helper</li><span><a href="/docs/#featureCollection" class="menuLink"><li class="menuItem">
+                  featureCollection
+                </a><a href="/docs/#feature" class="menuLink"><li class="menuItem">
+                  feature
+                </a><a href="/docs/#geometryCollection" class="menuLink"><li class="menuItem">
+                  geometryCollection
+                </a><a href="/docs/#lineString" class="menuLink"><li class="menuItem">
+                  lineString
+                </a><a href="/docs/#multiLineString" class="menuLink"><li class="menuItem">
+                  multiLineString
+                </a><a href="/docs/#multiPoint" class="menuLink"><li class="menuItem">
+                  multiPoint
+                </a><a href="/docs/#multiPolygon" class="menuLink"><li class="menuItem">
+                  multiPolygon
+                </a><a href="/docs/#point" class="menuLink"><li class="menuItem">
+                  point
+                </a><a href="/docs/#polygon" class="menuLink"><li class="menuItem">
+                  polygon
+                </a></span></div><div><li class="menuItem heading">Random</li><span><a href="/docs/#randomPosition" class="menuLink"><li class="menuItem">
+                  randomPosition
+                </a><a href="/docs/#randomPoint" class="menuLink"><li class="menuItem">
+                  randomPoint
+                </a><a href="/docs/#randomLineString" class="menuLink"><li class="menuItem">
+                  randomLineString
+                </a><a href="/docs/#randomPolygon" class="menuLink"><li class="menuItem">
+                  randomPolygon
+                </a></span></div><div><li class="menuItem heading">Data</li><span><a href="/docs/#sample" class="menuLink"><li class="menuItem">
+                  sample
+                </a></span></div><div><li class="menuItem heading">Interpolation</li><span><a href="/docs/#interpolate" class="menuLink"><li class="menuItem">
+                  interpolate
+                </a><a href="/docs/#isobands" class="menuLink"><li class="menuItem">
+                  isobands
+                </a><a href="/docs/#isolines" class="menuLink"><li class="menuItem">
+                  isolines
+                </a><a href="/docs/#planepoint" class="menuLink"><li class="menuItem">
+                  planepoint
+                </a><a href="/docs/#tin" class="menuLink"><li class="menuItem">
+                  tin
+                </a></span></div><div><li class="menuItem heading">Joins</li><span><a href="/docs/#pointsWithinPolygon" class="menuLink"><li class="menuItem">
+                  pointsWithinPolygon
+                </a><a href="/docs/#tag" class="menuLink"><li class="menuItem">
+                  tag
+                </a></span></div><div><li class="menuItem heading">Grids</li><span><a href="/docs/#hexGrid" class="menuLink"><li class="menuItem">
+                  hexGrid
+                </a><a href="/docs/#pointGrid" class="menuLink"><li class="menuItem">
+                  pointGrid
+                </a><a href="/docs/#squareGrid" class="menuLink"><li class="menuItem">
+                  squareGrid
+                </a><a href="/docs/#triangleGrid" class="menuLink"><li class="menuItem">
+                  triangleGrid
+                </a></span></div><div><li class="menuItem heading">Classification</li><span><a href="/docs/#nearestPoint" class="menuLink"><li class="menuItem">
+                  nearestPoint
+                </a></span></div><div><li class="menuItem heading">Aggregation</li><span><a href="/docs/#collect" class="menuLink"><li class="menuItem">
+                  collect
+                </a><a href="/docs/#clustersDbscan" class="menuLink"><li class="menuItem">
+                  clustersDbscan
+                </a><a href="/docs/#clustersKmeans" class="menuLink"><li class="menuItem">
+                  clustersKmeans
+                </a></span></div><div><li class="menuItem heading">Meta</li><span><a href="/docs/#coordAll" class="menuLink"><li class="menuItem">
+                  coordAll
+                </a><a href="/docs/#coordEach" class="menuLink"><li class="menuItem">
+                  coordEach
+                </a><a href="/docs/#coordReduce" class="menuLink"><li class="menuItem">
+                  coordReduce
+                </a><a href="/docs/#featureEach" class="menuLink"><li class="menuItem">
+                  featureEach
+                </a><a href="/docs/#featureReduce" class="menuLink"><li class="menuItem">
+                  featureReduce
+                </a><a href="/docs/#flattenEach" class="menuLink"><li class="menuItem">
+                  flattenEach
+                </a><a href="/docs/#flattenReduce" class="menuLink"><li class="menuItem">
+                  flattenReduce
+                </a><a href="/docs/#getCoord" class="menuLink"><li class="menuItem">
+                  getCoord
+                </a><a href="/docs/#getCoords" class="menuLink"><li class="menuItem">
+                  getCoords
+                </a><a href="/docs/#getGeom" class="menuLink"><li class="menuItem">
+                  getGeom
+                </a><a href="/docs/#getType" class="menuLink"><li class="menuItem">
+                  getType
+                </a><a href="/docs/#geomEach" class="menuLink"><li class="menuItem">
+                  geomEach
+                </a><a href="/docs/#geomReduce" class="menuLink"><li class="menuItem">
+                  geomReduce
+                </a><a href="/docs/#propEach" class="menuLink"><li class="menuItem">
+                  propEach
+                </a><a href="/docs/#propReduce" class="menuLink"><li class="menuItem">
+                  propReduce
+                </a><a href="/docs/#segmentEach" class="menuLink"><li class="menuItem">
+                  segmentEach
+                </a><a href="/docs/#segmentReduce" class="menuLink"><li class="menuItem">
+                  segmentReduce
+                </a><a href="/docs/#getCluster" class="menuLink"><li class="menuItem">
+                  getCluster
+                </a><a href="/docs/#clusterEach" class="menuLink"><li class="menuItem">
+                  clusterEach
+                </a><a href="/docs/#clusterReduce" class="menuLink"><li class="menuItem">
+                  clusterReduce
+                </a></span></div><div><li class="menuItem heading">Assertions</li><span><a href="/docs/#collectionOf" class="menuLink"><li class="menuItem">
+                  collectionOf
+                </a><a href="/docs/#containsNumber" class="menuLink"><li class="menuItem">
+                  containsNumber
+                </a><a href="/docs/#geojsonType" class="menuLink"><li class="menuItem">
+                  geojsonType
+                </a><a href="/docs/#featureOf" class="menuLink"><li class="menuItem">
+                  featureOf
+                </a></span></div><div><li class="menuItem heading">Booleans</li><span><a href="/docs/#booleanClockwise" class="menuLink"><li class="menuItem">
+                  booleanClockwise
+                </a><a href="/docs/#booleanConcave" class="menuLink"><li class="menuItem">
+                  booleanConcave
+                </a><a href="/docs/#booleanContains" class="menuLink"><li class="menuItem">
+                  booleanContains
+                </a><a href="/docs/#booleanCrosses" class="menuLink"><li class="menuItem">
+                  booleanCrosses
+                </a><a href="/docs/#booleanDisjoint" class="menuLink"><li class="menuItem">
+                  booleanDisjoint
+                </a><a href="/docs/#booleanEqual" class="menuLink"><li class="menuItem">
+                  booleanEqual
+                </a><a href="/docs/#booleanIntersects" class="menuLink"><li class="menuItem">
+                  booleanIntersects
+                </a><a href="/docs/#booleanOverlap" class="menuLink"><li class="menuItem">
+                  booleanOverlap
+                </a><a href="/docs/#booleanParallel" class="menuLink"><li class="menuItem">
+                  booleanParallel
+                </a><a href="/docs/#booleanPointInPolygon" class="menuLink"><li class="menuItem">
+                  booleanPointInPolygon
+                </a><a href="/docs/#booleanPointOnLine" class="menuLink"><li class="menuItem">
+                  booleanPointOnLine
+                </a><a href="/docs/#booleanWithin" class="menuLink"><li class="menuItem">
+                  booleanWithin
+                </a></span></div><div><li class="menuItem heading">Unit Conversion</li><span><a href="/docs/#bearingToAzimuth" class="menuLink"><li class="menuItem">
+                  bearingToAzimuth
+                </a><a href="/docs/#convertArea" class="menuLink"><li class="menuItem">
+                  convertArea
+                </a><a href="/docs/#convertLength" class="menuLink"><li class="menuItem">
+                  convertLength
+                </a><a href="/docs/#degreesToRadians" class="menuLink"><li class="menuItem">
+                  degreesToRadians
+                </a><a href="/docs/#lengthToRadians" class="menuLink"><li class="menuItem">
+                  lengthToRadians
+                </a><a href="/docs/#lengthToDegrees" class="menuLink"><li class="menuItem">
+                  lengthToDegrees
+                </a><a href="/docs/#radiansToLength" class="menuLink"><li class="menuItem">
+                  radiansToLength
+                </a><a href="/docs/#radiansToDegrees" class="menuLink"><li class="menuItem">
+                  radiansToDegrees
+                </a><a href="/docs/#toMercator" class="menuLink"><li class="menuItem">
+                  toMercator
+                </a><a href="/docs/#toWgs84" class="menuLink"><li class="menuItem">
+                  toWgs84
+                </a></span></div></ul></div></div></div></div><div class="infoResponsive ivu-col ivu-col-span-18 ivu-col-offset-1"><a href="https://github.com/Turfjs/turf/"><svg class="githubLogo" height="512px" viewBox="0 0 512 512" width="512px"><g id="g3"><path d="M256,0C114.615,0,0,114.615,0,256s114.615,256,256,256s256-114.615,256-256S397.385,0,256,0z M408.027,408.027   c-19.76,19.759-42.756,35.267-68.354,46.094c-6.502,2.75-13.105,5.164-19.801,7.246V423c0-20.167-6.916-35-20.75-44.5   c8.668-0.833,16.625-2,23.875-3.5s14.918-3.667,23-6.5c8.084-2.833,15.334-6.208,21.75-10.125c6.418-3.917,12.584-9,18.5-15.25   c5.918-6.25,10.875-13.333,14.875-21.25s7.168-17.417,9.5-28.5c2.334-11.083,3.5-23.292,3.5-36.625c0-25.833-8.416-47.833-25.25-66   c7.668-20,6.834-41.75-2.5-65.25l-6.25-0.75c-4.332-0.5-12.125,1.333-23.375,5.5s-23.875,11-37.875,20.5   c-19.832-5.5-40.416-8.25-61.749-8.25c-21.5,0-42,2.75-61.5,8.25c-8.833-6-17.208-10.958-25.125-14.875s-14.25-6.583-19-8   s-9.167-2.292-13.25-2.625s-6.708-0.417-7.875-0.25s-2,0.333-2.5,0.5c-9.333,23.667-10.167,45.417-2.5,65.25   c-16.833,18.167-25.25,40.167-25.25,66c0,13.333,1.167,25.542,3.5,36.625s5.5,20.583,9.5,28.5s8.958,15,14.875,21.25   s12.083,11.333,18.5,15.25s13.667,7.292,21.75,10.125s15.75,5,23,6.5s15.208,2.667,23.875,3.5c-13.667,9.333-20.5,24.167-20.5,44.5   v39.115c-7.549-2.247-14.99-4.902-22.3-7.994c-25.597-10.827-48.594-26.335-68.353-46.094   c-19.758-19.758-35.267-42.756-46.093-68.354C46.679,313.195,41,285.043,41,256s5.679-57.195,16.879-83.675   c10.827-25.597,26.335-48.594,46.093-68.353c19.758-19.759,42.756-35.267,68.353-46.093C198.805,46.679,226.957,41,256,41   s57.195,5.679,83.676,16.879c25.598,10.827,48.594,26.335,68.354,46.093c19.758,19.758,35.266,42.756,46.092,68.353   C465.32,198.805,471,226.957,471,256s-5.68,57.195-16.879,83.675C443.295,365.271,427.785,388.27,408.027,408.027z" id="path5"></path></g></svg></a><div class="mainContentArea mainContentAreaResponsive" data-v-57509004><h1 data-v-57509004>Welcome to Turf.js</h1><div class="ivu-row" data-v-57509004><div class="selector ivu-col" data-v-57509004><label class="label" data-v-57509004>Choose an operation:</label><div class="select" data-v-57509004><div class="ivu-select ivu-select-single" data-v-57509004 labe=""><div class="ivu-select-selection" tabindex="0"><input type="hidden"> <div> <span class="ivu-select-placeholder">请选择</span> <!----> <!----> <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i></div></div> <div class="ivu-select-dropdown" style="display:none"><ul class="ivu-select-not-found" style="display:none"><li>无匹配数据</ul> <ul class="ivu-select-dropdown-list"><li class="ivu-select-item" data-v-57509004>tin<li class="ivu-select-item" data-v-57509004>buffer<li class="ivu-select-item" data-v-57509004>centroid<li class="ivu-select-item" data-v-57509004>voronoi</ul> <ul class="ivu-select-loading" style="display:none">加载中</ul></div></div></div></div></div><div class="maps ivu-row" data-v-57509004><div class="leftMap mapResponsive ivu-col ivu-col-span-9" data-v-57509004><div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" data-v-57509004 id="inMap"><div class="inputOutput" data-v-57509004>Input</div></div></div><div class="rightMap ivu-col ivu-col-span-9" data-v-57509004><div class="map-insert leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" data-v-57509004 id="outMap"><div class="inputOutput" data-v-57509004>Output</div></div></div></div><h2 data-v-57509004>Advanced geospatial analysis for browsers and Node.js</h2><div class="responsiveOverview ivu-row" data-v-57509004><div class="responsiveAspect ivu-col ivu-col-span-7" data-v-57509004><h3 data-v-57509004>Simple</h3><p data-v-57509004>Modular, simple-to-understand JavaScript functions that speak GeoJSON</div><div class="responsiveAspect ivu-col ivu-col-span-7 ivu-col-offset-1" data-v-57509004><h3 data-v-57509004>Modular</h3><p data-v-57509004>Turf is a collection of small modules, you only need to take what you want to use</div><div class="responsiveAspect ivu-col ivu-col-span-7 ivu-col-offset-1" data-v-57509004><h3 data-v-57509004>Fast</h3><p data-v-57509004>Takes advantage of the newest algorithms and doesn't require you to send data to a server</div></div></div></div></div></div></div><script type="text/javascript">window.__NUXT__={layout:"default",data:[{}],error:null,serverRendered:!0}</script><script src="/js/manifest.2640ab25eec4d70fcff5.js" defer></script><script src="/js/layouts/default.5547504106d119fae14e.js" defer></script><script src="/js/pages/index.012a5f1c217678ba589a.js" defer></script><script src="/js/vendor.88ac1a055bc9fab4d8db.js" defer></script><script src="/js/app.e1c9cce4df099a8ea187.js" defer></script>
   <link href="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js"></script>
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
