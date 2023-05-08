@@ -23,11 +23,11 @@
           <ul class="turfModules turfModulesResponsive">
             <div v-for="category in displayedModules" v-bind:key="category.group">
               <li class="menuItem heading ">{{category.group}}</li>
-              <a v-for="module in category.modules" :href="module.href" v-on:click="close" class="menuLink" v-bind:key="module.name">
-                 <li class="menuItem">
+              <nuxt-link v-for="module in category.modules" :to="module.href" v-on:click="close" class="menuLink" v-bind:key="module.name">
+                <li class="menuItem">
                   {{module.name}}
                 </li>
-              </a>
+              </nuxt-link>
             </div>
           </ul>
         </div>
