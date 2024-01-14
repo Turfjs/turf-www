@@ -1,38 +1,41 @@
 # turf-www
 
-This repository keeps the source code of the Turf website project. Basically it uses **Vue.js** in the components and **Nuxt.js** to generate the static bundle that could be served to the client.
+This repository keeps the source code of the Turf website project. The website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-To run this project in your local machine you need to have installed:
+### Installation
 
-* Node.js
-* NPM
-
-Then with Git you can clone the repository to a local folder and continue the development process that is described below.
-
-## Development Setup
-
-``` bash
-# clone the repository to a local folder
-$ git clone https://github.com/Turfjs/turf-www.git
-
-# go to the local folder
-$ cd turf-www/
-
-# install dependencies
-$ npm install # Or yarn install
-
-# serve with hot reload at localhost:3000
-$ npm start
-
-# generate static project
-# the files will be located in docs/
-$ npm run generate
-
-# go to the generated pages
-$ cd docs/
-
-# serve the project with a static server
-$ npx static-server
+```
+$ yarn
 ```
 
-For detailed explanation on how things work, checkout the [CONTRIBUTING.md](https://github.com/Turfjs/turf-www/blob/master/CONTRIBUTING.md)
+### Local Development
+
+```
+$ yarn start
+```
+
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+### Build
+
+```
+$ yarn build
+```
+
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
+
+### Deployment
+
+Using SSH:
+
+```
+$ USE_SSH=true yarn deploy
+```
+
+Not using SSH:
+
+```
+$ GIT_USER=<Your GitHub username> yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
