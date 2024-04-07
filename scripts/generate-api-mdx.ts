@@ -33,15 +33,8 @@ import parseJavaScript from "documentation/src/parsers/javascript";
   const content = {};
 
   // glob index.ts/js in turf/packages/
-  const packageDirs = globSync(
-    path.join(srcPathDir, "packages", "turf-*")
-  ).filter(
-    (path) =>
-      !path.includes("turf-helpers") &&
-      !path.includes("turf-meta") &&
-      !path.includes("turf-rectangle-grid") && // Not exported by @turf/turf in 6.5.0
-      !path.includes("turf-nearest-neighbour-analysis") // Not exported by @turf/turf in 6.5.0
-  );
+  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
+  // .filter((path) => path.includes("turf-helpers"));
 
   await Promise.all(
     packageDirs.map(async (packageDir) => {
@@ -58,19 +51,30 @@ import parseJavaScript from "documentation/src/parsers/javascript";
           external: [],
           shallow: true,
         });
-        const doc = JSON.parse(await formats.json(res));
+        const moduleObj = JSON.parse(await formats.json(res));
 
-        const [filename, mdx] = moduleJsonToMdx(doc, pckg);
-        console.log(filename);
+        // Multiple functions e.g. helpers or meta
+        moduleObj.forEach((fn) => {
+          if (fn.kind && fn.kind === "module") {
+            console.log("skipping module header");
+            return;
+          }
+          if (fn.kind && fn.kind !== "function") {
+            console.log(`skipping non-function ${fn.name}`);
+            return;
+          }
 
-        if (filename && mdx) {
-          fs.writeFileSync(
-            srcPathDir + "/../docs/api/" + filename + ".mdx",
-            mdx
-          );
-        } else {
-          console.log(`skipping ${moduleName}`);
-        }
+          const [filename, mdx] = functionJsonToMdx(fn, pckg);
+
+          if (filename && mdx) {
+            fs.writeFileSync(
+              srcPathDir + "/../docs/api/" + filename + ".mdx",
+              mdx
+            );
+          } else {
+            console.log(`skipping ${moduleName} ${filename}`);
+          }
+        });
       }
     })
   );
@@ -80,8 +84,19 @@ import parseJavaScript from "documentation/src/parsers/javascript";
       // Single function in this module.
       return functionJsonToMdx(moduleObj[0], pckg);
     } else {
+      let mdx = "";
+      let filename = "";
       // Multiple functions e.g. helpers or meta
-      return [undefined, undefined];
+      moduleObj.forEach((fn) => {
+        if (fn.kind && fn.kind === "module") {
+          console.log("skipping module header");
+          return;
+        }
+        const [fnFilename, fnMdx] = functionJsonToMdx(fn, pckg);
+        filename = fnFilename;
+        mdx.concat(fnMdx);
+      });
+      return [filename, mdx];
     }
   }
 
@@ -262,9 +277,20 @@ export function Map${index}() {
         break;
       case "param":
         const name = tag.name;
-        const optional = tag.type.type === "OptionalType" ? "<i>?</i>" : "";
-        const type = mdxEscape(renderToMdx(tag.type));
-        const description = mdxEscape(tag.description);
+        let optional = "";
+        let type = "";
+        if (!tag.type) {
+          // Possible in the case of malformed JSDoc i.e. missing {}
+          // Default to something to prompt user to check the code.
+          // Should be able to remove this once we archive a copy of 6.5.0 docs
+          // and fix the annotations in v7.
+          // Single example found in @turf-distance-weight pNormDistance.
+          type = "UNCERTAIN";
+        } else {
+          optional = tag.type.type === "OptionalType" ? "<i>?</i>" : "";
+          type = mdxEscape(renderToMdx(tag.type));
+        }
+        const description = tag.description ? mdxEscape(tag.description) : "";
         const defaultValue = tag.default
           ? `_(default ${mdxEscape(tag.default)})_`
           : "";
@@ -307,8 +333,10 @@ export function Map${index}() {
 
   function getDescriptionMdx(fn) {
     let description = "";
-    for (const child of fn.description.children) {
-      description = description.concat(renderToMdx(child));
+    if (fn.description.children) {
+      for (const child of fn.description.children) {
+        description = description.concat(renderToMdx(child));
+      }
     }
 
     return mdxEscape(description);
@@ -380,6 +408,9 @@ export function Map${index}() {
         break;
       case "NullLiteral":
         mdx = mdx.concat("null");
+        break;
+      case "AllLiteral":
+        mdx = mdx.concat("*");
         break;
       default:
         throw new Error(node.type + " not supported");
