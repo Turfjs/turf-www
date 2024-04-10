@@ -419,10 +419,14 @@ export function Map${index}() {
         for (const child of node.children) {
           mdx = mdx.concat(renderToMdx(child));
         }
-        mdx = "**";
+        mdx = mdx.concat("**");
         break;
       case "emphasis":
-        mdx = mdx.concat("_", node.value, "_");
+        mdx = mdx.concat("_");
+        for (const child of node.children) {
+          mdx = mdx.concat(renderToMdx(child));
+        }
+        mdx = mdx.concat("_");
         break;
       case "list":
         // Need special path for this to be able to pass ordered or unordered
