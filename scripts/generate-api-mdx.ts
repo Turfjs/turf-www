@@ -398,6 +398,7 @@ export function Map${index}() {
         }
         break;
       case "text":
+      case "html":
         mdx = mdx.concat(node.value);
         break;
       case "link":
