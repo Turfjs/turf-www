@@ -14,7 +14,10 @@ export default function ExampleMap(props) {
 
     // Initialise map and set base style layer.
     const turfMap = L.mapbox.map("turfMap");
-    turfMap.addLayer(L.mapbox.styleLayer("mapbox://styles/mapbox/streets-v11"));
+    // colour - mapbox://styles/mapbox/streets-v12
+    // greyscale - mapbox://styles/mapbox/light-v11
+    // dark - mapbox://styles/mapbox/dark-v11
+    turfMap.addLayer(L.mapbox.styleLayer("mapbox://styles/mapbox/light-v11"));
 
     // Create a feature group to add all our layers to. We'll
     // use this below to get the overall bounds of all layers

@@ -34,7 +34,7 @@ import parseJavaScript from "documentation/src/parsers/javascript";
 
   // glob index.ts/js in turf/packages/
   const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
-  // .filter((path) => path.includes("turf-helpers"));
+  // .filter((path) => path.includes("turf-difference"));
 
   await Promise.all(
     packageDirs.map(async (packageDir) => {
@@ -164,7 +164,7 @@ const result = turf.${name}(...);
   }
 
   function getParamsMdx(fn) {
-    let mdx = "";
+    let mdx = "| Name | Type | Description |\n| --- | --- | --- |\n";
     for (const tag of fn.tags.filter((tag) => tag.title === "param")) {
       mdx = mdx.concat(renderTagToMdx(tag));
     }
@@ -174,9 +174,19 @@ const result = turf.${name}(...);
 
   function getReturnsMdx(fn) {
     let mdx = "";
-    for (const tag of fn.tags.filter((tag) => tag.title === "returns")) {
-      mdx = mdx.concat(renderTagToMdx(tag));
+    for (const ret of fn.returns) {
+      const returnsType = `**${renderToMdx(ret.type)}**`;
+      const returnsDescription = ret.description
+        ? `${renderToMdx(ret.description)}`
+        : "";
+      mdx = mdx
+        .concat("<ul>\n")
+        .concat(mdxEscape(`  ${returnsType} ${returnsDescription}\n`))
+        .concat("</ul>\n");
     }
+    // for (const tag of fn.tags.filter((tag) => tag.title === "returns")) {
+    //   mdx = mdx.concat(renderTagToMdx(tag));
+    // }
 
     return mdx;
   }
@@ -221,7 +231,7 @@ export function Map${index}() {
 
         // First replace [ with {, and ] with }
         exampleCode = exampleCode.replace(
-          /(?<=^var addToMap = )(?:\[)(.+?)(?:\])$/m,
+          /(?<=^var addToMap = )(?:\[)(.+?)(?:\]);{0,1}$/m,
           "{$1}"
         );
 
@@ -238,6 +248,12 @@ export function Map${index}() {
         exampleCode = exampleCode.replace(
           /(?<=var addToMap = \{.*?)(turf\.point\(center\))/,
           '"center": turf.point(center)'
+        );
+
+        // shortestPath
+        exampleCode = exampleCode.replace(
+          /(?<=var addToMap = \{.*?)(options.obstacles)/,
+          '"obstacles": options.obstacles'
         );
 
         // square
@@ -290,23 +306,16 @@ export function Map${index}() {
           optional = tag.type.type === "OptionalType" ? "<i>?</i>" : "";
           type = mdxEscape(renderToMdx(tag.type));
         }
-        const description = tag.description ? mdxEscape(tag.description) : "";
+        // Join multi-line param descriptions with a space. https://stackoverflow.com/a/30955762
+        const description = tag.description
+          ? newlineToSpace(mdxEscape(tag.description))
+          : "";
         const defaultValue = tag.default
           ? `_(default ${mdxEscape(tag.default)})_`
           : "";
         mdx = mdx.concat(
-          `* ${name}${optional} **${type}** ${description} ${defaultValue}\n`
+          `| ${name}${optional} | **${type}** | ${description} ${defaultValue} |\n`
         );
-        break;
-      case "returns":
-        // Use <ul> as a bit of a hack to get block indentation without
-        // the blockquote markup that "> " would give us.
-        mdx = mdx
-          .concat("<ul>\n")
-          .concat(
-            mdxEscape(`**${renderToMdx(tag.type)}** ${tag.description}\n`)
-          )
-          .concat("</ul>\n");
         break;
       case "example":
         // When rendering to MDX (i.e. to be read by a person) trim everything
@@ -324,7 +333,12 @@ export function Map${index}() {
   function mdxEscape(mdxIn) {
     return mdxIn
       .replace(/(?<!\\)([\{\<])/g, "\\$1")
-      .replace(/`(\w+)`/g, "```$1```");
+      .replace(/`(\w+)`/g, "```$1```")
+      .replace(/\|/g, " \\| ");
+  }
+
+  function newlineToSpace(mdxIn) {
+    return mdxIn.replace(/\n/g, " ");
   }
 
   function mdxLiteral(mdxIn) {
@@ -342,44 +356,78 @@ export function Map${index}() {
     return mdxEscape(description);
   }
 
-  function renderToMdx(node) {
+  function renderListMdx(node) {
+    let mdx = "";
+    for (const child of node.children) {
+      mdx = mdx.concat(renderListItemMdx(child, node.ordered ? "1." : "-"));
+    }
+    return mdx;
+  }
+
+  function renderListItemMdx(node, prefix) {
+    let mdx = `${prefix} `;
+    for (const child of node.children) {
+      mdx = mdx.concat(renderToMdx(child, node));
+    }
+    return mdx;
+  }
+
+  function renderToMdx(node, parent: undefined | any = undefined) {
+    if (typeof node === "string") {
+      return node;
+    }
+
     let mdx = "";
     switch (node.type) {
+      case "root":
+        for (const child of node.children) {
+          mdx = mdx.concat(renderToMdx(child));
+        }
+        break;
       case "paragraph":
         for (const child of node.children) {
           mdx = mdx.concat(renderToMdx(child));
         }
-        mdx = mdx.concat("\n\n");
+        if (parent && parent.type === "listItem") {
+          // For some reason list item contents are provided as paragraphs.
+          // Only add a single newline to avoid additional whitespace
+          // between items.
+          mdx = mdx.concat("\n");
+        } else {
+          mdx = mdx.concat("\n\n");
+        }
         break;
       case "text":
         mdx = mdx.concat(node.value);
         break;
       case "link":
-        for (const child of node.children) {
-          if (docs.paths[node.url]) {
-            mdx = mdx.concat(
-              "[",
-              renderToMdx(child),
-              "](",
-              docs.paths[node.url],
-              ")"
-            );
-          } else {
-            mdx = mdx.concat(renderToMdx(child));
-          }
+        let url = node.url;
+        if (docs.paths[node.url]) {
+          url = docs.paths[node.url];
         }
+        mdx = mdx.concat("[");
+        for (const child of node.children) {
+          mdx = mdx.concat(renderToMdx(child));
+        }
+        mdx = mdx.concat("](", url, ")");
         break;
       case "inlineCode":
         mdx = mdx.concat("```", node.value, "```");
         break;
       case "strong":
-        mdx = mdx.concat("**", node.value, "**");
+        mdx = mdx.concat("**");
+        for (const child of node.children) {
+          mdx = mdx.concat(renderToMdx(child));
+        }
+        mdx = "**";
         break;
       case "emphasis":
         mdx = mdx.concat("_", node.value, "_");
         break;
       case "list":
-        mdx = mdx.concat("* ", node.value);
+        // Need special path for this to be able to pass ordered or unordered
+        // prefix to renderListItemMdx()
+        mdx = mdx.concat(renderListMdx(node));
         break;
       case "TypeApplication":
         mdx = mdx.concat(
@@ -410,7 +458,7 @@ export function Map${index}() {
         mdx = mdx.concat("null");
         break;
       case "AllLiteral":
-        mdx = mdx.concat("*");
+        mdx = mdx.concat("\\*");
         break;
       default:
         throw new Error(node.type + " not supported");
