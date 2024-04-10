@@ -4,7 +4,7 @@ import yaml from "yamljs";
 import fs from "fs";
 import { sync as globSync } from "glob";
 import { loadJsonFileSync } from "load-json-file";
-import parseJavaScript from "documentation/src/parsers/javascript";
+import * as prettier from "prettier";
 
 (async () => {
   const srcPathDir = path.resolve(__dirname, "..", "turf");
@@ -13,24 +13,30 @@ import parseJavaScript from "documentation/src/parsers/javascript";
   // ...
   const modules = [];
 
+  interface SidebarConfig {
+    type: string;
+    label: string;
+    collapsed: boolean;
+    items: string[];
+  }
+
+  const sidebarBuckets = {};
+  const orderedSidebarBucketKeys: string[] = [];
+  const functionCategories = {};
+  let category = "";
+
   const docs = yaml.load(path.join(srcPathDir, "documentation.yml"));
   docs.toc.forEach((tocItem) => {
     if (tocItem.name) {
-      return modules.push({
-        group: tocItem.name,
-        modules: [],
-      });
+      sidebarBuckets[tocItem.name] = [];
+      orderedSidebarBucketKeys.push(tocItem.name);
+      category = tocItem.name;
+    } else {
+      functionCategories[tocItem] = category;
     }
-    modules[modules.length - 1].modules.push({
-      name: tocItem,
-      hidden: false,
-    });
   });
-
-  // console.log(modules);
-
-  /* ... */
-  const content = {};
+  sidebarBuckets["Other"] = [];
+  orderedSidebarBucketKeys.push("Other");
 
   // glob index.ts/js in turf/packages/
   const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
@@ -54,29 +60,72 @@ import parseJavaScript from "documentation/src/parsers/javascript";
         const moduleObj = JSON.parse(await formats.json(res));
 
         // Multiple functions e.g. helpers or meta
-        moduleObj.forEach((fn) => {
-          if (fn.kind && fn.kind === "module") {
-            console.log("skipping module header");
-            return;
-          }
-          if (fn.kind && fn.kind !== "function") {
-            console.log(`skipping non-function ${fn.name}`);
-            return;
-          }
+        await Promise.all(
+          moduleObj.map(async (fn) => {
+            if (fn.kind && fn.kind === "module") {
+              console.log("skipping module header");
+              return;
+            }
+            if (fn.kind && fn.kind !== "function") {
+              console.log(`skipping non-function ${fn.name}`);
+              return;
+            }
 
-          const [filename, mdx] = functionJsonToMdx(fn, pckg);
+            const [filename, mdx] = functionJsonToMdx(fn, pckg);
 
-          if (filename && mdx) {
-            fs.writeFileSync(
-              srcPathDir + "/../docs/api/" + filename + ".mdx",
-              mdx
-            );
-          } else {
-            console.log(`skipping ${moduleName} ${filename}`);
-          }
-        });
+            if (filename && mdx) {
+              const prettyMdx = await prettier.format(mdx, { parser: "mdx" });
+              fs.writeFileSync(
+                srcPathDir + "/../docs/api/" + filename + ".mdx",
+                prettyMdx,
+              );
+              if (functionCategories[filename]) {
+                sidebarBuckets[functionCategories[filename]].push(
+                  `api/${filename}`,
+                );
+              } else {
+                // No category provided in documentation.yml. Default to "Other".
+                sidebarBuckets["Other"].push(`api/${filename}`);
+              }
+            } else {
+              console.log(`skipping ${moduleName} ${filename}`);
+            }
+          }),
+        );
       }
-    })
+    }),
+  );
+
+  const sidebarConfig: SidebarConfig[] = [];
+  for (const key of orderedSidebarBucketKeys) {
+    sidebarConfig.push({
+      type: "category",
+      label: key,
+      collapsed: false,
+      items: sidebarBuckets[key].sort(),
+    });
+  }
+
+  // Save API categories config to api-sidebar.ts. Prettify content as well.
+  const sidebarContent = `// Generated automatically by generate-api-mdx.ts
+// Do not edit manually.
+
+export default ${JSON.stringify(sidebarConfig)}`;
+
+  const prettySidebarContent = await prettier.format(sidebarContent, {
+    parser: "typescript",
+  });
+
+  fs.writeFile(
+    path.resolve(__dirname, "..", "api-sidebar.ts"),
+    prettySidebarContent,
+    (err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        // file written successfully
+      }
+    },
   );
 
   function moduleJsonToMdx(moduleObj, pckg) {
@@ -232,7 +281,7 @@ export function Map${index}() {
         // First replace [ with {, and ] with }
         exampleCode = exampleCode.replace(
           /(?<=^var addToMap = )(?:\[)(.+?)(?:\]);{0,1}$/m,
-          "{$1}"
+          "{$1}",
         );
 
         // Next (and this isn't ideal) replace a number of special cases.
@@ -247,31 +296,31 @@ export function Map${index}() {
         // ellipse
         exampleCode = exampleCode.replace(
           /(?<=var addToMap = \{.*?)(turf\.point\(center\))/,
-          '"center": turf.point(center)'
+          '"center": turf.point(center)',
         );
 
         // shortestPath
         exampleCode = exampleCode.replace(
           /(?<=var addToMap = \{.*?)(options.obstacles)/,
-          '"obstacles": options.obstacles'
+          '"obstacles": options.obstacles',
         );
 
         // square
         exampleCode = exampleCode
           .replace(
             /(?<=var addToMap = \{.*?)(turf\.bboxPolygon\(bbox\))/,
-            '"bbox": turf.bboxPolygon(bbox)'
+            '"bbox": turf.bboxPolygon(bbox)',
           )
           .replace(
             /(?<=var addToMap = \{.*?)(turf\.bboxPolygon\(squared\))/,
-            '"squared": turf.bboxPolygon(squared)'
+            '"squared": turf.bboxPolygon(squared)',
           );
 
         // Indent with two spaces so example lines up with surrounding MDX.
         mdx = mdx.concat(
           "  // jsdoc example start\n",
           exampleCode.replace(/^(.*?)$/gm, "  $1"), // Indent lines
-          "\n  // jsdoc example end"
+          "\n  // jsdoc example end",
         );
         mdx = mdx.concat(`
         
@@ -314,14 +363,14 @@ export function Map${index}() {
           ? `_(default ${mdxEscape(tag.default)})_`
           : "";
         mdx = mdx.concat(
-          `| ${name}${optional} | **${type}** | ${description} ${defaultValue} |\n`
+          `| ${name}${optional} | **${type}** | ${description} ${defaultValue} |\n`,
         );
         break;
       case "example":
         // When rendering to MDX (i.e. to be read by a person) trim everything
         // from the //addToMap comment to the end of the text.
         mdx = mdx.concat(
-          mdxLiteral(tag.description.replace(/\s.\/\/addToMap.+$/s, ""))
+          mdxLiteral(tag.description.replace(/\s.\/\/addToMap.+$/s, "")),
         );
         break;
       default:
@@ -438,7 +487,7 @@ export function Map${index}() {
         mdx = mdx.concat(
           `${renderToMdx(node.expression)}<${node.applications
             .map((application) => renderToMdx(application))
-            .join("|")}>`
+            .join("|")}>`,
         );
         break;
       case "NameExpression":
@@ -453,7 +502,7 @@ export function Map${index}() {
         break;
       case "UnionType":
         mdx = mdx.concat(
-          `${node.elements.map((element) => renderToMdx(element)).join("|")}`
+          `${node.elements.map((element) => renderToMdx(element)).join("|")}`,
         );
         break;
       case "UndefinedLiteral":
