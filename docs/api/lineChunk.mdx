@@ -1,0 +1,77 @@
+---
+title: lineChunk
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Divides a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) into chunks of a specified length.
+If the line is shorter than the segment length then the original line is returned.
+
+### Parameters
+
+| Name                    | Type                                                                                                                                                                                                                                                                                                                                            | Description                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| geojson                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** | the lines to split                                                                   |
+| segmentLength           | **number**                                                                                                                                                                                                                                                                                                                                      | how long to make each segment                                                        |
+| options<i>?</i>         | **Object**                                                                                                                                                                                                                                                                                                                                      | Optional parameters _(default \{})_                                                  |
+| options.units<i>?</i>   | **string**                                                                                                                                                                                                                                                                                                                                      | units can be degrees, radians, miles, or kilometers _(default 'kilometers')_         |
+| options.reverse<i>?</i> | **boolean**                                                                                                                                                                                                                                                                                                                                     | reverses coordinates to start the first chunked segment at the end _(default false)_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** collection of line segments
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [-95, 40],
+  [-93, 45],
+  [-85, 50],
+]);
+
+var chunk = turf.lineChunk(line, 15, { units: "miles" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [-95, 40],
+    [-93, 45],
+    [-85, 50],
+  ]);
+
+  var chunk = turf.lineChunk(line, 15, { units: "miles" });
+
+  //addToMap
+  var addToMap = { chunk };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/line-chunk
+
+import { lineChunk } from "@turf/line-chunk";
+const result = lineChunk(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineChunk(...);
+```

@@ -1,0 +1,71 @@
+---
+title: circle
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.
+
+### Parameters
+
+| Name                       | Type                                                                                                                                          | Description                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| center                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)> \| Array\<number>** | center point                                                    |
+| radius                     | **number**                                                                                                                                    | radius of the circle                                            |
+| options<i>?</i>            | **Object**                                                                                                                                    | Optional parameters _(default \{})_                             |
+| options.steps<i>?</i>      | **number**                                                                                                                                    | number of steps _(default 64)_                                  |
+| options.units<i>?</i>      | **string**                                                                                                                                    | miles, kilometers, degrees, or radians _(default 'kilometers')_ |
+| options.properties<i>?</i> | **Object**                                                                                                                                    | properties _(default \{})_                                      |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** circle polygon
+
+</ul>
+
+### Examples
+
+```javascript
+var center = [-75.343, 39.984];
+var radius = 5;
+var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
+var circle = turf.circle(center, radius, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var center = [-75.343, 39.984];
+  var radius = 5;
+  var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
+  var circle = turf.circle(center, radius, options);
+
+  //addToMap
+  var addToMap = { center: turf.point(center), circle };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/circle
+
+import { circle } from "@turf/circle";
+const result = circle(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.circle(...);
+```

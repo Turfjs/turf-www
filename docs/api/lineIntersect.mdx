@@ -1,0 +1,77 @@
+---
+title: lineIntersect
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).
+
+### Parameters
+
+| Name  | Type                                                         | Description               |
+| ----- | ------------------------------------------------------------ | ------------------------- |
+| line1 | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any LineString or Polygon |
+| line2 | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any LineString or Polygon |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** point(s) that intersect both
+
+</ul>
+
+### Examples
+
+```javascript
+var line1 = turf.lineString([
+  [126, -11],
+  [129, -21],
+]);
+var line2 = turf.lineString([
+  [123, -18],
+  [131, -14],
+]);
+var intersects = turf.lineIntersect(line1, line2);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line1 = turf.lineString([
+    [126, -11],
+    [129, -21],
+  ]);
+  var line2 = turf.lineString([
+    [123, -18],
+    [131, -14],
+  ]);
+  var intersects = turf.lineIntersect(line1, line2);
+
+  //addToMap
+  var addToMap = { line1, line2, intersects };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/line-intersect
+
+import { lineIntersect } from "@turf/line-intersect";
+const result = lineIntersect(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineIntersect(...);
+```

@@ -1,0 +1,77 @@
+---
+title: along
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Takes a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) and returns a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) at a specified distance along the line.
+
+### Parameters
+
+| Name                  | Type                                                                                                                             | Description                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| line                  | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | input line                                                             |
+| distance              | **number**                                                                                                                       | distance along the line                                                |
+| options<i>?</i>       | **Object**                                                                                                                       | Optional parameters                                                    |
+| options.units<i>?</i> | **string**                                                                                                                       | can be degrees, radians, miles, or kilometers _(default "kilometers")_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** Point `````distance````` `````units````` along the line
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [-83, 30],
+  [-84, 36],
+  [-78, 41],
+]);
+var options = { units: "miles" };
+
+var along = turf.along(line, 200, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [-83, 30],
+    [-84, 36],
+    [-78, 41],
+  ]);
+  var options = { units: "miles" };
+
+  var along = turf.along(line, 200, options);
+
+  //addToMap
+  var addToMap = { along, line };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/along
+
+import { along } from "@turf/along";
+const result = along(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.along(...);
+```

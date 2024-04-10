@@ -1,0 +1,60 @@
+---
+title: flattenEach
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Iterate over flattened features in any GeoJSON object, similar to
+Array.forEach.
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                  | Description                                                           |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object                                                    |
+| callback | **Function**                                                                                                                                                                                          | a method that takes (currentFeature, featureIndex, multiFeatureIndex) |
+
+### Returns
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.multiPoint(
+    [
+      [40, 30],
+      [36, 53],
+    ],
+    { hello: "world" },
+  ),
+]);
+
+turf.flattenEach(
+  features,
+  function (currentFeature, featureIndex, multiFeatureIndex) {
+    //=currentFeature
+    //=featureIndex
+    //=multiFeatureIndex
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { flattenEach } from "@turf/meta";
+const result = flattenEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.flattenEach(...);
+```

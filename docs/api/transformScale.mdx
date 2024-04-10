@@ -1,0 +1,82 @@
+---
+title: transformScale
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Scale a GeoJSON from a given point by a factor of scaling (ex: factor=2 would make the GeoJSON 200% larger).
+If a FeatureCollection is provided, the origin point will be calculated based on each individual Feature.
+
+### Parameters
+
+| Name                   | Type                                                                     | Description                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**             | GeoJSON to be scaled                                                                                         |
+| factor                 | **number**                                                               | of scaling, positive or negative values greater than 0                                                       |
+| options<i>?</i>        | **Object**                                                               | Optional parameters _(default \{})_                                                                          |
+| options.origin<i>?</i> | **string \| [Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid) _(default 'centroid')_ |
+| options.mutate<i>?</i> | **boolean**                                                              | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_              |
+
+### Returns
+
+<ul>
+  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** scaled GeoJSON
+
+</ul>
+
+### Examples
+
+```javascript
+var poly = turf.polygon([
+  [
+    [0, 29],
+    [3.5, 29],
+    [2.5, 32],
+    [0, 29],
+  ],
+]);
+var scaledPoly = turf.transformScale(poly, 3);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var poly = turf.polygon([
+    [
+      [0, 29],
+      [3.5, 29],
+      [2.5, 32],
+      [0, 29],
+    ],
+  ]);
+  var scaledPoly = turf.transformScale(poly, 3);
+
+  //addToMap
+  var addToMap = { poly, scaledPoly };
+  scaledPoly.properties = { stroke: "#F00", "stroke-width": 4 };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/transform-scale
+
+import { transformScale } from "@turf/transform-scale";
+const result = transformScale(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.transformScale(...);
+```

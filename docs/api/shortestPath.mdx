@@ -1,0 +1,95 @@
+---
+title: shortestPath
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Returns the shortest [path](https://tools.ietf.org/html/rfc7946#section-3.1.4) from [start](https://tools.ietf.org/html/rfc7946#section-3.1.2) to [end](https://tools.ietf.org/html/rfc7946#section-3.1.2) without colliding with
+any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) in \{@link FeatureCollection\<Polygon> \| obstacles}
+
+### Parameters
+
+| Name                        | Type                                                                                                                                                                                                                                                                 | Description                                                                                                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| start                       | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                       | point                                                                                                                                         |
+| end                         | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                       | point                                                                                                                                         |
+| options<i>?</i>             | **Object**                                                                                                                                                                                                                                                           | optional parameters _(default \{})_                                                                                                           |
+| options.obstacles<i>?</i>   | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | areas which path cannot travel                                                                                                                |
+| options.minDistance<i>?</i> | **number**                                                                                                                                                                                                                                                           | minimum distance between shortest path and obstacles                                                                                          |
+| options.units<i>?</i>       | **string**                                                                                                                                                                                                                                                           | unit in which resolution & minimum distance will be expressed in; it can be degrees, radians, miles, kilometers, ... _(default 'kilometers')_ |
+| options.resolution<i>?</i>  | **number**                                                                                                                                                                                                                                                           | distance between matrix points on which the path will be calculated _(default 100)_                                                           |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** shortest path between start and end
+
+</ul>
+
+### Examples
+
+```javascript
+var start = [-5, -6];
+var end = [9, -6];
+var options = {
+  obstacles: turf.polygon([
+    [
+      [0, -7],
+      [5, -7],
+      [5, -3],
+      [0, -3],
+      [0, -7],
+    ],
+  ]),
+};
+
+var path = turf.shortestPath(start, end, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var start = [-5, -6];
+  var end = [9, -6];
+  var options = {
+    obstacles: turf.polygon([
+      [
+        [0, -7],
+        [5, -7],
+        [5, -3],
+        [0, -3],
+        [0, -7],
+      ],
+    ]),
+  };
+
+  var path = turf.shortestPath(start, end, options);
+
+  //addToMap
+  var addToMap = { start, end, obstacles: options.obstacles, path };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/shortest-path
+
+import { shortestPath } from "@turf/shortest-path";
+const result = shortestPath(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.shortestPath(...);
+```

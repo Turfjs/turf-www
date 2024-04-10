@@ -1,0 +1,62 @@
+---
+title: multiPolygon
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Creates a \{@link Feature\<MultiPolygon>} based on a
+coordinate array. Properties can be added optionally.
+
+### Parameters
+
+| Name                 | Type                                       | Description                                                               |
+| -------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
+| coordinates          | **Array\<Array\<Array\<Array\<number>>>>** | an array of Polygons                                                      |
+| properties<i>?</i>   | **Object**                                 | an Object of key-value pairs to add as properties _(default \{})_         |
+| options<i>?</i>      | **Object**                                 | Optional Parameters _(default \{})_                                       |
+| options.bbox<i>?</i> | **Array\<number>**                         | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **string \| number**                       | Identifier associated with the Feature                                    |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** a multipolygon feature
+
+</ul>
+
+### Examples
+
+```javascript
+var multiPoly = turf.multiPolygon([
+  [
+    [
+      [0, 0],
+      [0, 10],
+      [10, 10],
+      [10, 0],
+      [0, 0],
+    ],
+  ],
+]);
+
+//=multiPoly
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { multiPolygon } from "@turf/helpers";
+const result = multiPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.multiPolygon(...);
+```

@@ -1,0 +1,77 @@
+---
+title: rhumbDestination
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Returns the destination [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) having travelled the given distance along a Rhumb line from the
+origin Point with the (varant) given bearing.
+
+### Parameters
+
+| Name                       | Type                                                           | Description                                                            |
+| -------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| origin                     | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | starting point                                                         |
+| distance                   | **number**                                                     | distance from the starting point                                       |
+| bearing                    | **number**                                                     | varant bearing angle ranging from -180 to 180 degrees from north       |
+| options<i>?</i>            | **Object**                                                     | Optional parameters _(default \{})_                                    |
+| options.units<i>?</i>      | **string**                                                     | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| options.properties<i>?</i> | **Object**                                                     | translate properties to destination point _(default \{})_              |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** Destination point.
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.point([-75.343, 39.984], { "marker-color": "F00" });
+var distance = 50;
+var bearing = 90;
+var options = { units: "miles" };
+
+var destination = turf.rhumbDestination(pt, distance, bearing, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var pt = turf.point([-75.343, 39.984], { "marker-color": "F00" });
+  var distance = 50;
+  var bearing = 90;
+  var options = { units: "miles" };
+
+  var destination = turf.rhumbDestination(pt, distance, bearing, options);
+
+  //addToMap
+  var addToMap = { pt, destination };
+  destination.properties["marker-color"] = "#00F";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/rhumb-destination
+
+import { rhumbDestination } from "@turf/rhumb-destination";
+const result = rhumbDestination(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.rhumbDestination(...);
+```

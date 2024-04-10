@@ -1,0 +1,51 @@
+---
+title: propEach
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Iterate over properties in any GeoJSON object, similar to Array.forEach()
+
+### Parameters
+
+| Name     | Type                                                                                                                                   | Description                                           |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | any GeoJSON object                                    |
+| callback | **Function**                                                                                                                           | a method that takes (currentProperties, featureIndex) |
+
+### Returns
+
+<ul>**void**</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.propEach(features, function (currentProperties, featureIndex) {
+  //=currentProperties
+  //=featureIndex
+});
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { propEach } from "@turf/meta";
+const result = propEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.propEach(...);
+```

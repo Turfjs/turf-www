@@ -1,0 +1,64 @@
+---
+title: lineStrings
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Creates a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) from an Array of LineString coordinates.
+
+### Parameters
+
+| Name                 | Type                               | Description                                                                         |
+| -------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- |
+| coordinates          | **Array\<Array\<Array\<number>>>** | an array of LinearRings                                                             |
+| properties<i>?</i>   | **Object**                         | an Object of key-value pairs to add as properties _(default \{})_                   |
+| options<i>?</i>      | **Object**                         | Optional Parameters _(default \{})_                                                 |
+| options.bbox<i>?</i> | **Array\<number>**                 | Bounding Box Array [west, south, east, north] associated with the FeatureCollection |
+| options.id<i>?</i>   | **string \| number**               | Identifier associated with the FeatureCollection                                    |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** LineString FeatureCollection
+
+</ul>
+
+### Examples
+
+```javascript
+var linestrings = turf.lineStrings([
+  [
+    [-24, 63],
+    [-23, 60],
+    [-25, 65],
+    [-20, 69],
+  ],
+  [
+    [-14, 43],
+    [-13, 40],
+    [-15, 45],
+    [-10, 49],
+  ],
+]);
+
+//=linestrings
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { lineStrings } from "@turf/helpers";
+const result = lineStrings(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineStrings(...);
+```

@@ -1,0 +1,77 @@
+---
+title: greatCircle
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Calculate great circles routes as [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) or [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5).
+If the `start` and `end` points span the antimeridian, the resulting feature will
+be split into a `MultiLineString`.
+
+### Parameters
+
+| Name                       | Type                                                           | Description                                                                                                                             |
+| -------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| start                      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | source point feature                                                                                                                    |
+| end                        | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | destination point feature                                                                                                               |
+| options<i>?</i>            | **Object**                                                     | Optional parameters _(default \{})_                                                                                                     |
+| options.properties<i>?</i> | **Object**                                                     | line feature properties _(default \{})_                                                                                                 |
+| options.npoints<i>?</i>    | **number**                                                     | number of points _(default 100)_                                                                                                        |
+| options.offset<i>?</i>     | **number**                                                     | offset controls the likelyhood that lines will be split which cross the dateline. The higher the number the more likely. _(default 10)_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** great circle line feature
+
+</ul>
+
+### Examples
+
+```javascript
+var start = turf.point([-122, 48]);
+var end = turf.point([-77, 39]);
+
+var greatCircle = turf.greatCircle(start, end, {
+  properties: { name: "Seattle to DC" },
+});
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var start = turf.point([-122, 48]);
+  var end = turf.point([-77, 39]);
+
+  var greatCircle = turf.greatCircle(start, end, {
+    properties: { name: "Seattle to DC" },
+  });
+
+  //addToMap
+  var addToMap = { start, end, greatCircle };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/great-circle
+
+import { greatCircle } from "@turf/great-circle";
+const result = greatCircle(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.greatCircle(...);
+```

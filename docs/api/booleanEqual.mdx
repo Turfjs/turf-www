@@ -1,0 +1,54 @@
+---
+title: booleanEqual
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Determine whether two geometries of the same type have identical X,Y coordinate values.
+See http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm
+
+### Parameters
+
+| Name     | Type                                                                                                                          | Description   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input |
+
+### Returns
+
+<ul>
+  **boolean** true if the objects are equal, false otherwise
+
+</ul>
+
+### Examples
+
+```javascript
+var pt1 = turf.point([0, 0]);
+var pt2 = turf.point([0, 0]);
+var pt3 = turf.point([1, 1]);
+
+turf.booleanEqual(pt1, pt2);
+//= true
+turf.booleanEqual(pt2, pt3);
+//= false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-equal
+
+import { booleanEqual } from "@turf/boolean-equal";
+const result = booleanEqual(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanEqual(...);
+```

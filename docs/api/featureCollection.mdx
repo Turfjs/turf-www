@@ -1,0 +1,54 @@
+---
+title: featureCollection
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Takes one or more [Features](https://tools.ietf.org/html/rfc7946#section-3.2) and creates a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3).
+
+### Parameters
+
+| Name                 | Type                                                                   | Description                                                               |
+| -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| features             | **Array\<[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)>** | input features                                                            |
+| options<i>?</i>      | **Object**                                                             | Optional Parameters _(default \{})_                                       |
+| options.bbox<i>?</i> | **Array\<number>**                                                     | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **string \| number**                                                   | Identifier associated with the Feature                                    |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** FeatureCollection of Features
+
+</ul>
+
+### Examples
+
+```javascript
+var locationA = turf.point([-75.343, 39.984], { name: "Location A" });
+var locationB = turf.point([-75.833, 39.284], { name: "Location B" });
+var locationC = turf.point([-75.534, 39.123], { name: "Location C" });
+
+var collection = turf.featureCollection([locationA, locationB, locationC]);
+
+//=collection
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { featureCollection } from "@turf/helpers";
+const result = featureCollection(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.featureCollection(...);
+```

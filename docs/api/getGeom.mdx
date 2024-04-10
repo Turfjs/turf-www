@@ -1,0 +1,54 @@
+---
+title: getGeom
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Get Geometry from Feature or Geometry Object
+
+### Parameters
+
+| Name    | Type                                                                                                                          | Description                        |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| geojson | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | GeoJSON Feature or Geometry Object |
+
+### Returns
+
+<ul>
+  **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| null** GeoJSON Geometry Object
+
+</ul>
+
+### Examples
+
+```javascript
+var point = {
+  type: "Feature",
+  properties: {},
+  geometry: {
+    type: "Point",
+    coordinates: [110, 40],
+  },
+};
+var geom = turf.getGeom(point);
+//={"type": "Point", "coordinates": [110, 40]}
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { getGeom } from "@turf/invariant";
+const result = getGeom(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getGeom(...);
+```

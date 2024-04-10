@@ -1,0 +1,42 @@
+---
+title: convertLength
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Converts a length to the requested unit.
+Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+
+### Parameters
+
+| Name                 | Type       | Description                            |
+| -------------------- | ---------- | -------------------------------------- |
+| length               | **number** | to be converted                        |
+| originalUnit<i>?</i> | **Units**  | of the length _(default "kilometers")_ |
+| finalUnit<i>?</i>    | **Units**  | returned unit _(default "kilometers")_ |
+
+### Returns
+
+<ul>
+  **number** the converted length
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { convertLength } from "@turf/helpers";
+const result = convertLength(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.convertLength(...);
+```

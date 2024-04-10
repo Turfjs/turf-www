@@ -1,0 +1,89 @@
+---
+title: lineReduce
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Reduce features in any GeoJSON object, similar to Array.reduce().
+
+### Parameters
+
+| Name                 | Type                                                                                                                                                                                                                                                                                                                                                                                                         | Description                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| geojson              | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | object                                                                                           |
+| callback             | **Function**                                                                                                                                                                                                                                                                                                                                                                                                 | a method that takes (previousValue, currentLine, featureIndex, multiFeatureIndex, geometryIndex) |
+| initialValue<i>?</i> | **\***                                                                                                                                                                                                                                                                                                                                                                                                       | Value to use as the first argument to the first call of the callback.                            |
+
+### Returns
+
+<ul>
+  **\*** The value that results from the reduction.
+
+</ul>
+
+### Examples
+
+```javascript
+var multiPoly = turf.multiPolygon([
+  turf.polygon([
+    [
+      [12, 48],
+      [2, 41],
+      [24, 38],
+      [12, 48],
+    ],
+    [
+      [9, 44],
+      [13, 41],
+      [13, 45],
+      [9, 44],
+    ],
+  ]),
+  turf.polygon([
+    [
+      [5, 5],
+      [0, 0],
+      [2, 2],
+      [4, 4],
+      [5, 5],
+    ],
+  ]),
+]);
+
+turf.lineReduce(
+  multiPoly,
+  function (
+    previousValue,
+    currentLine,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+  ) {
+    //=previousValue
+    //=currentLine
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+    return currentLine;
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { lineReduce } from "@turf/meta";
+const result = lineReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineReduce(...);
+```

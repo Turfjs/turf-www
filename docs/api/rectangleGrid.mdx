@@ -1,0 +1,76 @@
+---
+title: rectangleGrid
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Creates a grid of rectangles from a bounding box, [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3).
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                               | Description                                                                                                                                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| bbox                       | **Array\<number>**                                                                                                                                                                                 | extent in [minX, minY, maxX, maxY] order                                                                                                                                 |
+| cellWidth                  | **number**                                                                                                                                                                                         | of each cell, in units                                                                                                                                                   |
+| cellHeight                 | **number**                                                                                                                                                                                         | of each cell, in units                                                                                                                                                   |
+| options<i>?</i>            | **Object**                                                                                                                                                                                         | Optional parameters _(default \{})_                                                                                                                                      |
+| options.units<i>?</i>      | **string**                                                                                                                                                                                         | units ("degrees", "radians", "miles", "kilometers") that the given cellWidth and cellHeight are expressed in. Converted at the southern border. _(default 'kilometers')_ |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                                                                                      |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                         | passed to each point of the grid _(default \{})_                                                                                                                         |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a grid of polygons
+
+</ul>
+
+### Examples
+
+```javascript
+var bbox = [-95, 30, -85, 40];
+var cellWidth = 50;
+var cellHeight = 20;
+var options = { units: "miles" };
+
+var rectangleGrid = turf.rectangleGrid(bbox, cellWidth, cellHeight, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var bbox = [-95, 30, -85, 40];
+  var cellWidth = 50;
+  var cellHeight = 20;
+  var options = { units: "miles" };
+
+  var rectangleGrid = turf.rectangleGrid(bbox, cellWidth, cellHeight, options);
+
+  //addToMap
+  var addToMap = { rectangleGrid };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/rectangle-grid
+
+import { rectangleGrid } from "@turf/rectangle-grid";
+const result = rectangleGrid(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.rectangleGrid(...);
+```

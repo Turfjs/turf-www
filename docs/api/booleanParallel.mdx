@@ -1,0 +1,56 @@
+---
+title: booleanParallel
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Boolean-Parallel returns True if each segment of `line1` is parallel to the correspondent segment of `line2`
+
+### Parameters
+
+| Name  | Type                                                                                                                                                                                            | Description                 |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| line1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | GeoJSON Feature or Geometry |
+| line2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | GeoJSON Feature or Geometry |
+
+### Returns
+
+<ul>
+  **boolean** true/false if the lines are parallel
+
+</ul>
+
+### Examples
+
+```javascript
+var line1 = turf.lineString([
+  [0, 0],
+  [0, 1],
+]);
+var line2 = turf.lineString([
+  [1, 0],
+  [1, 1],
+]);
+
+turf.booleanParallel(line1, line2);
+//=true
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-parallel
+
+import { booleanParallel } from "@turf/boolean-parallel";
+const result = booleanParallel(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanParallel(...);
+```

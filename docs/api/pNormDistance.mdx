@@ -1,0 +1,38 @@
+---
+title: pNormDistance
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+calcualte the Minkowski p-norm distance between two features.
+
+### Parameters
+
+| Name     | Type          | Description                                                         |
+| -------- | ------------- | ------------------------------------------------------------------- |
+| feature1 | **UNCERTAIN** | point feature                                                       |
+| feature2 | **UNCERTAIN** | point feature                                                       |
+| p        | **UNCERTAIN** | p-norm 1=\<p\<=infinity 1: Manhattan distance 2: Euclidean distance |
+
+### Returns
+
+<ul>**number**</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/distance-weight
+
+import { pNormDistance } from "@turf/distance-weight";
+const result = pNormDistance(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pNormDistance(...);
+```

@@ -1,0 +1,46 @@
+---
+title: randomPosition
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Returns a random position within a [box](bounding).
+
+### Parameters
+
+| Name         | Type               | Description                                                                        |
+| ------------ | ------------------ | ---------------------------------------------------------------------------------- |
+| bbox<i>?</i> | **Array\<number>** | a bounding box inside of which positions are placed. _(default [-180,-90,180,90])_ |
+
+### Returns
+
+<ul>
+  **Array\<number>** Position [longitude, latitude]
+
+</ul>
+
+### Examples
+
+```javascript
+var position = turf.randomPosition([-180, -90, 180, 90]);
+// => position
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/random
+
+import { randomPosition } from "@turf/random";
+const result = randomPosition(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.randomPosition(...);
+```

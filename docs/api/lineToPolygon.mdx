@@ -1,0 +1,81 @@
+---
+title: lineToPolygon
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Converts (Multi)LineString(s) to Polygon(s).
+
+### Parameters
+
+| Name                         | Type                                                                                                                                                                                                                                                                             | Description                                                                                            |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| lines                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** | Features to convert                                                                                    |
+| options<i>?</i>              | **Object**                                                                                                                                                                                                                                                                       | Optional parameters _(default \{})_                                                                    |
+| options.properties<i>?</i>   | **Object**                                                                                                                                                                                                                                                                       | translates GeoJSON properties to Feature _(default \{})_                                               |
+| options.autoComplete<i>?</i> | **boolean**                                                                                                                                                                                                                                                                      | auto complete linestrings (matches first & last coordinates) _(default true)_                          |
+| options.orderCoords<i>?</i>  | **boolean**                                                                                                                                                                                                                                                                      | sorts linestrings to place outer ring at the first position of the coordinates _(default true)_        |
+| options.mutate<i>?</i>       | **boolean**                                                                                                                                                                                                                                                                      | mutate the original linestring using autoComplete (matches first & last coordinates) _(default false)_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** converted to Polygons
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [125, -30],
+  [145, -30],
+  [145, -20],
+  [125, -20],
+  [125, -30],
+]);
+
+var polygon = turf.lineToPolygon(line);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [125, -30],
+    [145, -30],
+    [145, -20],
+    [125, -20],
+    [125, -30],
+  ]);
+
+  var polygon = turf.lineToPolygon(line);
+
+  //addToMap
+  var addToMap = { polygon };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/line-to-polygon
+
+import { lineToPolygon } from "@turf/line-to-polygon";
+const result = lineToPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineToPolygon(...);
+```

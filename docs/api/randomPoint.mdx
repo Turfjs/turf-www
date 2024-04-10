@@ -1,0 +1,48 @@
+---
+title: randomPoint
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Returns a random [point](point).
+
+### Parameters
+
+| Name                 | Type               | Description                                                                         |
+| -------------------- | ------------------ | ----------------------------------------------------------------------------------- |
+| count<i>?</i>        | **number**         | how many geometries will be generated _(default 1)_                                 |
+| options<i>?</i>      | **Object**         | Optional parameters _(default \{})_                                                 |
+| options.bbox<i>?</i> | **Array\<number>** | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** GeoJSON FeatureCollection of points
+
+</ul>
+
+### Examples
+
+```javascript
+var points = turf.randomPoint(25, { bbox: [-180, -90, 180, 90] });
+// => points
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/random
+
+import { randomPoint } from "@turf/random";
+const result = randomPoint(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.randomPoint(...);
+```

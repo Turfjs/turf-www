@@ -1,0 +1,36 @@
+---
+title: geojsonType
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Enforce expectations about types of GeoJSON objects for Turf.
+
+### Parameters
+
+| Name  | Type                                                         | Description              |
+| ----- | ------------------------------------------------------------ | ------------------------ |
+| value | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON object       |
+| type  | **string**                                                   | expected GeoJSON type    |
+| name  | **string**                                                   | name of calling function |
+
+### Returns
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { geojsonType } from "@turf/invariant";
+const result = geojsonType(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.geojsonType(...);
+```

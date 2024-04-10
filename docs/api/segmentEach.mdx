@@ -1,0 +1,76 @@
+---
+title: segmentEach
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()
+(Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                  | Description                                                                                        |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON                                                                                        |
+| callback | **Function**                                                                                                                                                                                          | a method that takes (currentSegment, featureIndex, multiFeatureIndex, geometryIndex, segmentIndex) |
+
+### Returns
+
+<ul>**void**</ul>
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [-50, 5],
+    [-40, -10],
+    [-50, -10],
+    [-40, 5],
+    [-50, 5],
+  ],
+]);
+
+// Iterate over GeoJSON by 2-vertex segments
+turf.segmentEach(
+  polygon,
+  function (
+    currentSegment,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+    segmentIndex,
+  ) {
+    //=currentSegment
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+    //=segmentIndex
+  },
+);
+
+// Calculate the total number of segments
+var total = 0;
+turf.segmentEach(polygon, function () {
+  total++;
+});
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { segmentEach } from "@turf/meta";
+const result = segmentEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.segmentEach(...);
+```

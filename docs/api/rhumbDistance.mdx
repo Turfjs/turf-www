@@ -1,0 +1,74 @@
+---
+title: rhumbDistance
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+    
+### Description
+
+Calculates the distance along a rhumb line between two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) in degrees, radians,
+miles, or kilometers.
+
+### Parameters
+
+| Name                  | Type                                                           | Description                                                            |
+| --------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| from                  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | origin point                                                           |
+| to                    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | destination point                                                      |
+| options<i>?</i>       | **Object**                                                     | Optional parameters                                                    |
+| options.units<i>?</i> | **string**                                                     | can be degrees, radians, miles, or kilometers _(default "kilometers")_ |
+
+### Returns
+
+<ul>
+  **number** distance between the two points
+
+</ul>
+
+### Examples
+
+```javascript
+var from = turf.point([-75.343, 39.984]);
+var to = turf.point([-75.534, 39.123]);
+var options = { units: "miles" };
+
+var distance = turf.rhumbDistance(from, to, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var from = turf.point([-75.343, 39.984]);
+  var to = turf.point([-75.534, 39.123]);
+  var options = { units: "miles" };
+
+  var distance = turf.rhumbDistance(from, to, options);
+
+  //addToMap
+  var addToMap = { from, to };
+  from.properties.distance = distance;
+  to.properties.distance = distance;
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<Map0 />;
+
+### Installation
+
+```javascript
+$ npm install @turf/rhumb-distance
+
+import { rhumbDistance } from "@turf/rhumb-distance";
+const result = rhumbDistance(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.rhumbDistance(...);
+```
