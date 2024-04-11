@@ -9,7 +9,7 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 ### Description
 
 Dissolves a FeatureCollection of [polygon](polygon) features, filtered by an optional property name:value.
-Note that [mulitpolygon](mulitpolygon) features within the collection are not supported
+Note that [multipolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) features within the collection are not supported
 
 ### Parameters
 
@@ -74,53 +74,53 @@ var dissolved = turf.dissolve(features, { propertyName: "combine" });
 export function Map0() {
   "use strict";
 
-  // jsdoc example start
-  var features = turf.featureCollection([
-    turf.polygon(
-      [
-        [
-          [0, 0],
-          [0, 1],
-          [1, 1],
-          [1, 0],
-          [0, 0],
-        ],
-      ],
-      { combine: "yes" },
-    ),
-    turf.polygon(
-      [
-        [
-          [0, -1],
-          [0, 0],
-          [1, 0],
-          [1, -1],
-          [0, -1],
-        ],
-      ],
-      { combine: "yes" },
-    ),
-    turf.polygon(
-      [
-        [
-          [1, -1],
-          [1, 0],
-          [2, 0],
-          [2, -1],
-          [1, -1],
-        ],
-      ],
-      { combine: "no" },
-    ),
-  ]);
+// jsdoc example start
+var features = turf.featureCollection([
+turf.polygon(
+[
+[
+[0, 0],
+[0, 1],
+[1, 1],
+[1, 0],
+[0, 0],
+],
+],
+{ combine: "yes" },
+),
+turf.polygon(
+[
+[
+[0, -1],
+[0, 0],
+[1, 0],
+[1, -1],
+[0, -1],
+],
+],
+{ combine: "yes" },
+),
+turf.polygon(
+[
+[
+[1, -1],
+[1, 0],
+[2, 0],
+[2, -1],
+[1, -1],
+],
+],
+{ combine: "no" },
+),
+]);
 
-  var dissolved = turf.dissolve(features, { propertyName: "combine" });
+var dissolved = turf.dissolve(features, { propertyName: "combine" });
 
-  //addToMap
-  var addToMap = { features, dissolved };
-  // jsdoc example end
+//addToMap
+var addToMap = { features, dissolved };
+// jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+return <ExampleMap addToMap={addToMap} />;
 }
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>;

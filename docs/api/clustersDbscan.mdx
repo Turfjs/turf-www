@@ -8,7 +8,7 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
-Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and partition them into clusters according to [https://en.wikipedia.org/wiki/DBSCAN](DBSCAN's) data clustering algorithm.
+Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and partition them into clusters according to [DBSCAN's](https://en.wikipedia.org/wiki/DBSCAN) data clustering algorithm.
 
 ### Parameters
 
@@ -43,17 +43,17 @@ var clustered = turf.clustersDbscan(points, maxDistance);
 export function Map0() {
   "use strict";
 
-  // jsdoc example start
-  // create random points with random z-values in their properties
-  var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
-  var maxDistance = 100;
-  var clustered = turf.clustersDbscan(points, maxDistance);
+// jsdoc example start
+// create random points with random z-values in their properties
+var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
+var maxDistance = 100;
+var clustered = turf.clustersDbscan(points, maxDistance);
 
-  //addToMap
-  var addToMap = { clustered };
-  // jsdoc example end
+//addToMap
+var addToMap = { clustered };
+// jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+return <ExampleMap addToMap={addToMap} />;
 }
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>;
