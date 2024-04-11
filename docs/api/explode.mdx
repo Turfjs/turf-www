@@ -4,7 +4,8 @@ title: explode
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes a feature or set of features and returns all positions as [points](https://tools.ietf.org/html/rfc7946#section-3.1.2).
@@ -63,7 +64,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

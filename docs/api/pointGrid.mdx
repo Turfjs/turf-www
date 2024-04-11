@@ -4,7 +4,8 @@ title: pointGrid
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Creates a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) grid from a bounding box, [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) or [Feature](https://tools.ietf.org/html/rfc7946#section-3.2).
@@ -54,7 +55,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

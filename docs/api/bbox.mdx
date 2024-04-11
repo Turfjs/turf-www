@@ -4,7 +4,8 @@ title: bbox
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
@@ -53,7 +54,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

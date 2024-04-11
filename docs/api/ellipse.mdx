@@ -4,7 +4,8 @@ title: ellipse
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and calculates the ellipse polygon given two semi-axes expressed in variable units and steps for precision.
@@ -55,7 +56,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

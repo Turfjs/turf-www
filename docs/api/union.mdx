@@ -4,7 +4,8 @@ title: union
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes two [(Multi)Polygon(s)](https://tools.ietf.org/html/rfc7946#section-3.1.6) and returns a combined polygon. If the input polygons are not contiguous, this function returns a [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feature.
@@ -94,7 +95,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

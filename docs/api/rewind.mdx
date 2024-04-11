@@ -4,7 +4,8 @@ title: rewind
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Rewind [(Multi)LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) or [(Multi)Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) outer ring counterclockwise and inner rings clockwise (Uses [Shoelace Formula](http://en.wikipedia.org/wiki/Shoelace_formula)).
@@ -64,7 +65,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

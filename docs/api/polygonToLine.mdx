@@ -4,7 +4,8 @@ title: polygonToLine
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Converts a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) to [(Multi)LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) to a
@@ -64,7 +65,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

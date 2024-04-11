@@ -4,7 +4,8 @@ title: lineSegment
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Creates a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) of 2-vertex [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) segments from a
@@ -60,7 +61,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

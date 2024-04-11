@@ -4,7 +4,8 @@ title: rhumbDistance
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Calculates the distance along a rhumb line between two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) in degrees, radians,
@@ -55,7 +56,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

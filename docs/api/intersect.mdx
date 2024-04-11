@@ -4,7 +4,8 @@ title: intersect
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes two [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [multi-polygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) geometries and
@@ -92,7 +93,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

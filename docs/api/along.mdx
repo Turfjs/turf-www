@@ -4,7 +4,8 @@ title: along
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) and returns a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) at a specified distance along the line.
@@ -58,7 +59,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

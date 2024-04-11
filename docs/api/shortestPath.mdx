@@ -4,7 +4,8 @@ title: shortestPath
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Returns the shortest [path](https://tools.ietf.org/html/rfc7946#section-3.1.4) from [start](https://tools.ietf.org/html/rfc7946#section-3.1.2) to [end](https://tools.ietf.org/html/rfc7946#section-3.1.2) without colliding with
@@ -76,7 +77,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

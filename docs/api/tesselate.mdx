@@ -4,7 +4,8 @@ title: tesselate
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Tesselates a \{@link Feature\<Polygon>} into a \{@link FeatureCollection\<Polygon>} of triangles
@@ -64,7 +65,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

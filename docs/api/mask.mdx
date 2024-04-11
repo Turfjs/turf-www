@@ -4,7 +4,8 @@ title: mask
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes any type of [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) and an optional mask and returns a [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) exterior ring with holes.
@@ -82,7 +83,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

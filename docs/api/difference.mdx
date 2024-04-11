@@ -4,7 +4,8 @@ title: difference
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Finds the difference between two [polygons](https://tools.ietf.org/html/rfc7946#section-3.1.6) by clipping the second polygon from the first.
@@ -104,7 +105,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

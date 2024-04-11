@@ -4,7 +4,8 @@ title: isolines
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 Takes a grid [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) of [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) features with z-values and an array of
@@ -67,7 +68,7 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<Map0 />;
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>;
 
 ### Installation
 

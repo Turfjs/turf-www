@@ -67,7 +67,7 @@ import * as prettier from "prettier";
               return;
             }
             if (fn.kind && fn.kind !== "function") {
-              console.log(`skipping non-function ${fn.name}`);
+              console.log(`skipping non-function ${fn.name} ${fn.kind}`);
               return;
             }
 
@@ -171,7 +171,8 @@ title: ${name}
 
 import * as turf from "@turf/turf";
 import ExampleMap from "@site/src/components/ExampleMap";
-    
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
 ### Description
 
 ${description}
@@ -326,8 +327,8 @@ export function Map${index}() {
         
   return <ExampleMap addToMap={addToMap}/>;
 }
-    
-<Map${index} />
+  
+<BrowserOnly>{() => <Map${index} />}</BrowserOnly>
 `);
       }
     }
