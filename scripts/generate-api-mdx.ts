@@ -74,7 +74,10 @@ import * as prettier from "prettier";
             const [filename, mdx] = functionJsonToMdx(fn, pckg);
 
             if (filename && mdx) {
-              const prettyMdx = await prettier.format(mdx, { parser: "mdx" });
+              const prettyMdx = await prettier.format(mdx, {
+                parser: "mdx",
+                trailingSemi: "none",
+              });
               fs.writeFileSync(
                 srcPathDir + "/../docs/api/" + filename + ".mdx",
                 prettyMdx,
