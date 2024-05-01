@@ -268,7 +268,6 @@ export default [
       "api/lineStrings",
       "api/mean",
       "api/moranIndex",
-      "api/nearestNeighborAnalysis",
       "api/nearestPointToLine",
       "api/pNormDistance",
       "api/points",
