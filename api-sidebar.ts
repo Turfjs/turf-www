@@ -275,7 +275,6 @@ export default [
       "api/polygons",
       "api/pt",
       "api/quadratAnalysis",
-      "api/rectangleGrid",
       "api/standardDeviationalEllipse",
       "api/variance",
     ],

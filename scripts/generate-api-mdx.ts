@@ -39,8 +39,12 @@ import * as prettier from "prettier";
   orderedSidebarBucketKeys.push("Other");
 
   // glob index.ts/js in turf/packages/
-  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
-  // .filter((path) => path.includes("turf-difference"));
+  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"))
+    // These two packages weren't exported from @turf/turf in 6.5.0, so
+    // aren't in the CDN file the website uses. Suppress for now
+    // and add back in once v7 is on the CDN.
+    .filter((path) => !path.includes("turf-rectangle-grid"))
+    .filter((path) => !path.includes("turf-nearest-neighbor-analysis"));
 
   await Promise.all(
     packageDirs.map(async (packageDir) => {
@@ -330,7 +334,8 @@ export function Map${index}() {
         
   return <ExampleMap addToMap={addToMap}/>;
 }
-  
+
+<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map${index} />}</BrowserOnly>
 `);
       }
