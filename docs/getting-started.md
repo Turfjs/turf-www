@@ -31,11 +31,11 @@ You can also include it directly from a CDN:
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 ```
 
-### TypeScript
+## TypeScript
 
 TypeScript definitions are packaged with each module. No DefinitelyTyped packages required.
 
-### Other languages
+## Other languages
 
 Ports of Turf.js are available in:
 

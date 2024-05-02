@@ -15,7 +15,7 @@ The high-level structure of Turf is undergoing discussion at [#1428](https://git
 - GeoJSON is the lingua franca of Turf. It should be used as the data structure for anything that can be represented as geography.
 - Avoid large dependencies at all costs.
 - Turf is used in a wide range of places. Make sure that your code can run in the browser (ie: don't make calls to external services, don't hit the filesystem, etc.).
-- The `README.md` files in `packages/turf-<module>` are automatically generated from the [JSDocs](http://usejsdoc.org/) of the `index.js`. Please modify the JSDocs instead of modifying the `README.md` files directly. Then update/create the `README.md` executing [`./scripts/generate-readmes`](https://github.com/Turfjs/turf/blob/master/scripts/generate-readmes) or runing `npm run docs` from the root TurfJS directory.
+- The `README.md` files in `packages/turf-<module>` are automatically generated from the [JSDocs](https://jsdoc.app) of the `index.js`. Please modify the JSDocs instead of modifying the `README.md` files directly. Then update/create the `README.md` executing [`./scripts/generate-readmes`](https://github.com/Turfjs/turf/blob/master/scripts/generate-readmes) or runing `npm run docs` from the root TurfJS directory.
 - Finally run `npm test` from the project root folder to run all the tests required for deploying the project.
 
 ## Code Style
@@ -60,7 +60,7 @@ $ node ./scripts/create-new-module <MODULE NAME>
 it will create a new folder inside `packages` with a simple boilerplate for your module.
 
 - `index.js` - This file contains, in order, the various modules you need to
-  import, the [JSDocs](http://usejsdoc.org) documentation, and, finally, the
+  import, the [JSDocs](https://jsdoc.app) documentation, and, finally, the
   single exported function that the module provides. For more on the types
   supported in the documentation, see…
 - `index.d.ts` - This is a [TypeScript](https://www.typescriptlang.org/) file
@@ -115,7 +115,7 @@ To update TurfJS's Documentation (README.md) use the following `npm run docs`:
 - **inside a module:** will only generate the docs of that module.
 - **main folder:** will generate docs for all modules.
 
-### Documentation - Examples
+### Examples
 
 **Only builds docs for `@turf/center`**
 
@@ -150,7 +150,7 @@ Building Docs: @turf/boolean-clockwise
 
 ## Other Dependencies
 
-- Turf uses [Yarn](https://yarnpkg.com) and [lerna](https://lernajs.io/) during the testing, packaging and publishing process.
+- Turf uses [Yarn](https://yarnpkg.com) and [lerna](https://lerna.js.org) during the testing, packaging and publishing process.
   - Lerna will be automatically installed when you run `npm install` in the root directory.
   - Yarn will need to be installed on your computer, installers are available via the yarn website.
 
