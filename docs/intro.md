@@ -2,46 +2,50 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**_A modular geospatial engine written in JavaScript_**
 
-## Getting Started
+---
 
-Get started by **creating a new site**.
+[Turf](https://turfjs.org) is a [JavaScript library](https://en.wikipedia.org/wiki/JavaScript_library) for [spatial analysis](https://en.wikipedia.org/wiki/Spatial_analysis). It includes traditional spatial operations, helper functions for creating [GeoJSON](https://geojson.org) data, and data classification and statistics tools. Turf can be added to your website as a client-side plugin, or you can [run Turf server-side](https://www.npmjs.com/package/@turf/turf) with [Node.js](https://nodejs.org/) (see below).
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+[![GitHub Actions Status](https://github.com/Turfjs/turf/actions/workflows/turf.yml/badge.svg)](https://github.com/Turfjs/turf/actions/workflows/turf.yml/badge.svg)
+[![Version Badge][npm-img]][npm-url]
+[![Gitter chat][gitter-img]][gitter-url]
+[![Backers on Open Collective][oc-backer-badge]](#backers)
+[![Sponsors on Open Collective][oc-sponsor-badge]](#sponsors) [![Coverage Status](https://coveralls.io/repos/github/Turfjs/turf/badge.svg)](https://coveralls.io/github/Turfjs/turf)
 
-### What you'll need
+[npm-img]: https://img.shields.io/npm/v/@turf/turf.svg
+[npm-url]: https://www.npmjs.com/package/@turf/turf
+[gitter-img]: https://badges.gitter.im/Turfjs/turf.svg
+[gitter-url]: https://gitter.im/Turfjs/turf
+[oc-backer-badge]: https://opencollective.com/turf/backers/badge.svg
+[oc-sponsor-badge]: https://opencollective.com/turf/sponsors/badge.svg
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Contributors
 
-## Generate a new site
+This project exists thanks to all the people who contribute. If you are interested in helping, check out the [Contributing Guide](contributing.md).
 
-Generate a new Docusaurus site using the **classic template**.
+<a href="https://github.com/Turfjs/turf/graphs/contributors"><img src="https://opencollective.com/turf/contributors.svg?width=890&button=false" /></a>
 
-The classic template will automatically be added to your project after you run the command:
+## Backers
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/turf#backer)]
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+<a href="https://opencollective.com/turf#backers" target="_blank"><img src="https://opencollective.com/turf/backers.svg?width=890"></img></a>
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+## Sponsors
 
-## Start your site
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/turf#sponsor)]
 
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+<a href="https://opencollective.com/turf/sponsor/0/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/0/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/1/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/1/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/2/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/2/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/3/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/3/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/4/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/4/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/5/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/5/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/6/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/6/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/7/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/7/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/8/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/8/avatar.svg"></img></a>
+<a href="https://opencollective.com/turf/sponsor/9/website" target="_blank"><img src="https://opencollective.com/turf/sponsor/9/avatar.svg"></img></a>
