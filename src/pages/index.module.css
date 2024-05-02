@@ -21,3 +21,14 @@
   align-items: center;
   justify-content: center;
 }
+
+.homepageMap {
+  width: 100%;
+  margin-bottom: 1.4rem;
+}
+
+.homepageTurfFunctions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
