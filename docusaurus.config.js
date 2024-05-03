@@ -112,7 +112,7 @@ const config = {
               },
               {
                 label: "API",
-                to: "/docs/api",
+                to: "/docs/api/along",
               },
             ],
           },
@@ -121,15 +121,11 @@ const config = {
             items: [
               {
                 label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
+                href: "https://stackoverflow.com/questions/tagged/turfjs",
               },
               {
                 label: "Twitter",
-                href: "https://twitter.com/docusaurus",
+                href: "https://twitter.com/turfjs",
               },
             ],
           },
@@ -147,7 +143,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © 2013 Turf org. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,

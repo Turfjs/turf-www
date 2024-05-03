@@ -40,7 +40,7 @@ function HomepageHeader() {
 
         <div className="sl-theme-dark">
           <SlRadioGroup
-            label="Turf function"
+            className="turf-functions"
             value={turfFunction}
             onSlChange={(event) => setTurfFunction(event.target.value)}
           >

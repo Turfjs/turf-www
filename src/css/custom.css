@@ -18,7 +18,7 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
+[data-theme="dark"] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
@@ -27,4 +27,22 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * Styles for turf function radio buttons on home page. Used
+ * for the demo map showing the effect of different turf functions.
+ */
+.turf-functions sl-radio-button::part(button) {
+  background-color: var(--ifm-color-secondary-light);
+  border-color: var(--ifm-color-secondary-dark);
+}
+
+.turf-functions sl-radio-button::part(button):hover,
+.turf-functions sl-radio-button::part(button--checked) {
+  background-color: var(--ifm-color-primary-lighter);
+}
+
+.turf-functions sl-radio-button::part(label) {
+  color: var(--sl-input-label-color);
 }
