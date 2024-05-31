@@ -22,7 +22,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "Turfjs", // Usually your GitHub org/user name.
-  projectName: "turf", // Usually your repo name.
+  projectName: "turf-www", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
