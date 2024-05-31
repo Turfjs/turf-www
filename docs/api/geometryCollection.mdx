@@ -1,0 +1,58 @@
+---
+title: geometryCollection
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Creates a \{@link Feature\<GeometryCollection>} based on a
+coordinate array. Properties can be added optionally.
+
+### Parameters
+
+| Name                 | Type                                                                    | Description                                                               |
+| -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| geometries           | **Array\<[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)>** | an array of GeoJSON Geometries                                            |
+| properties<i>?</i>   | **Object**                                                              | an Object of key-value pairs to add as properties _(default \{})_         |
+| options<i>?</i>      | **Object**                                                              | Optional Parameters _(default \{})_                                       |
+| options.bbox<i>?</i> | **Array\<number>**                                                      | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **string \| number**                                                    | Identifier associated with the Feature                                    |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)>** a GeoJSON GeometryCollection Feature
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.geometry("Point", [100, 0]);
+var line = turf.geometry("LineString", [
+  [101, 0],
+  [102, 1],
+]);
+var collection = turf.geometryCollection([pt, line]);
+
+// => collection
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { geometryCollection } from "@turf/helpers";
+const result = geometryCollection(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.geometryCollection(...);
+```

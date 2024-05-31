@@ -1,0 +1,93 @@
+---
+title: clusterReduce
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Reduce clusters in GeoJSON Features, similar to Array.reduce()
+
+### Parameters
+
+| Name                 | Type                                                                     | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** | GeoJSON Features                                                         |
+| property             | **string \| number**                                                     | GeoJSON property key/value used to create clusters                       |
+| callback             | **Function**                                                             | a method that takes (previousValue, cluster, clusterValue, currentIndex) |
+| initialValue<i>?</i> | **\***                                                                   | Value to use as the first argument to the first call of the callback.    |
+
+### Returns
+
+<ul>
+  **\*** The value that results from the reduction.
+
+</ul>
+
+### Examples
+
+```javascript
+var geojson = turf.featureCollection([
+  turf.point([0, 0]),
+  turf.point([2, 4]),
+  turf.point([3, 6]),
+  turf.point([5, 1]),
+  turf.point([4, 2]),
+]);
+
+// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)
+var clustered = turf.clustersKmeans(geojson);
+
+// Iterate over each cluster and perform a calculation
+var initialValue = 0;
+turf.clusterReduce(
+  clustered,
+  "cluster",
+  function (previousValue, cluster, clusterValue, currentIndex) {
+    //=previousValue
+    //=cluster
+    //=clusterValue
+    //=currentIndex
+    return previousValue++;
+  },
+  initialValue,
+);
+
+// Calculate the total number of clusters
+var total = turf.clusterReduce(
+  clustered,
+  "cluster",
+  function (previousValue) {
+    return previousValue++;
+  },
+  0,
+);
+
+// Create an Array of all the values retrieved from the 'cluster' property
+var values = turf.clusterReduce(
+  clustered,
+  "cluster",
+  function (previousValue, cluster, clusterValue) {
+    return previousValue.concat(clusterValue);
+  },
+  [],
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/clusters
+
+import { clusterReduce } from "@turf/clusters";
+const result = clusterReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.clusterReduce(...);
+```

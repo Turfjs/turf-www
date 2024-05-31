@@ -1,0 +1,62 @@
+---
+title: directionalMean
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+This module calculate the average angle of a set of lines, measuring the trend of it.
+It can be used in both project coordinate system and geography coordinate system.
+It can handle segments of line or the whole line.
+
+### Parameters
+
+| Name                    | Type                                                                                                                                       | Description                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| lines                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** |                                                                                     |
+| options<i>?</i>         | **object**                                                                                                                                 | _(default \{})_                                                                     |
+| options.planar<i>?</i>  | **boolean**                                                                                                                                | whether the spatial reference system is projected or geographical. _(default true)_ |
+| options.segment<i>?</i> | **boolean**                                                                                                                                | whether treat a LineString as a whole or a set of segments. _(default false)_       |
+
+### Returns
+
+<ul>
+  **DirectionalMeanLine** Directional Mean Line
+
+</ul>
+
+### Examples
+
+```javascript
+var lines = turf.lineStrings([
+  [
+    [110, 45],
+    [120, 50],
+  ],
+  [
+    [100, 50],
+    [115, 55],
+  ],
+]);
+var directionalMeanLine = turf.directionalMean(lines);
+// => directionalMeanLine
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/directional-mean
+
+import { directionalMean } from "@turf/directional-mean";
+const result = directionalMean(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.directionalMean(...);
+```

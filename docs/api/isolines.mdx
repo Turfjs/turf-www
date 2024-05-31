@@ -1,0 +1,88 @@
+---
+title: isolines
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a grid [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) of [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) features with z-values and an array of
+value breaks and generates [isolines](https://en.wikipedia.org/wiki/Contour_line).
+
+### Parameters
+
+| Name                             | Type                                                                                                                                  | Description                                                                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pointGrid                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points                                                                                                                                               |
+| breaks                           | **Array\<number>**                                                                                                                    | values of `zProperty` where to draw isolines                                                                                                               |
+| options<i>?</i>                  | **Object**                                                                                                                            | Optional parameters _(default \{})_                                                                                                                        |
+| options.zProperty<i>?</i>        | **string**                                                                                                                            | the property name in `points` from which z-values will be pulled _(default 'elevation')_                                                                   |
+| options.commonProperties<i>?</i> | **Object**                                                                                                                            | GeoJSON properties passed to ALL isolines _(default \{})_                                                                                                  |
+| options.breaksProperties<i>?</i> | **Array\<Object>**                                                                                                                    | GeoJSON properties passed, in order, to the correspondent isoline; the breaks array will define the order in which the isolines are created _(default [])_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** a FeatureCollection of [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) features representing isolines
+
+</ul>
+
+### Examples
+
+```javascript
+// create a grid of points with random z-values in their properties
+var extent = [0, 30, 20, 50];
+var cellWidth = 100;
+var pointGrid = turf.pointGrid(extent, cellWidth, { units: "miles" });
+
+for (var i = 0; i < pointGrid.features.length; i++) {
+  pointGrid.features[i].properties.temperature = Math.random() * 10;
+}
+var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+var lines = turf.isolines(pointGrid, breaks, { zProperty: "temperature" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  // create a grid of points with random z-values in their properties
+  var extent = [0, 30, 20, 50];
+  var cellWidth = 100;
+  var pointGrid = turf.pointGrid(extent, cellWidth, { units: "miles" });
+
+  for (var i = 0; i < pointGrid.features.length; i++) {
+    pointGrid.features[i].properties.temperature = Math.random() * 10;
+  }
+  var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  var lines = turf.isolines(pointGrid, breaks, { zProperty: "temperature" });
+
+  //addToMap
+  var addToMap = { lines };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/isolines
+
+import { isolines } from "@turf/isolines";
+const result = isolines(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.isolines(...);
+```

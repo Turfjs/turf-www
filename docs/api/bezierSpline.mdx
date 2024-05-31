@@ -1,0 +1,89 @@
+---
+title: bezierSpline
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4) and returns a curved version
+by applying a [Bezier spline](http://en.wikipedia.org/wiki/B%C3%A9zier_spline)
+algorithm.
+
+The bezier spline implementation is by [Leszek Rybicki](http://leszek.rybicki.cc/).
+
+### Parameters
+
+| Name                       | Type                                                                                                                             | Description                                                                |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | input LineString                                                           |
+| options<i>?</i>            | **Object**                                                                                                                       | Optional parameters _(default \{})_                                        |
+| options.properties<i>?</i> | **Object**                                                                                                                       | Translate properties to output _(default \{})_                             |
+| options.resolution<i>?</i> | **number**                                                                                                                       | time in milliseconds between points _(default 10000)_                      |
+| options.sharpness<i>?</i>  | **number**                                                                                                                       | a measure of how curvy the path should be between splines _(default 0.85)_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** curved line
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [-76.091308, 18.427501],
+  [-76.695556, 18.729501],
+  [-76.552734, 19.40443],
+  [-74.61914, 19.134789],
+  [-73.652343, 20.07657],
+  [-73.157958, 20.210656],
+]);
+
+var curved = turf.bezierSpline(line);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [-76.091308, 18.427501],
+    [-76.695556, 18.729501],
+    [-76.552734, 19.40443],
+    [-74.61914, 19.134789],
+    [-73.652343, 20.07657],
+    [-73.157958, 20.210656],
+  ]);
+
+  var curved = turf.bezierSpline(line);
+
+  //addToMap
+  var addToMap = { line, curved };
+  curved.properties = { stroke: "#0F0" };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/bezier-spline
+
+import { bezierSpline } from "@turf/bezier-spline";
+const result = bezierSpline(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bezierSpline(...);
+```

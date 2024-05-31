@@ -1,0 +1,49 @@
+---
+title: getCoord
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
+
+### Parameters
+
+| Name  | Type                                                                                                                                                                                                                                                                      | Description                          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| coord | **Array\<number> \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | GeoJSON Point or an Array of numbers |
+
+### Returns
+
+<ul>
+  **Array\<number>** coordinates
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.point([10, 10]);
+
+var coord = turf.getCoord(pt);
+//= [10, 10]
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { getCoord } from "@turf/invariant";
+const result = getCoord(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getCoord(...);
+```

@@ -1,0 +1,80 @@
+---
+title: findSegment
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Finds a particular 2-vertex LineString Segment from a GeoJSON using `@turf/meta` indexes.
+
+Negative indexes are permitted.
+Point & MultiPoint will always return null.
+
+### Parameters
+
+| Name                              | Type                                                                                                                                                                                                  | Description                                               |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| geojson                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | Any GeoJSON Feature or Geometry                           |
+| options<i>?</i>                   | **Object**                                                                                                                                                                                            | Optional parameters _(default \{})_                       |
+| options.featureIndex<i>?</i>      | **number**                                                                                                                                                                                            | Feature Index _(default 0)_                               |
+| options.multiFeatureIndex<i>?</i> | **number**                                                                                                                                                                                            | Multi-Feature Index _(default 0)_                         |
+| options.geometryIndex<i>?</i>     | **number**                                                                                                                                                                                            | Geometry Index _(default 0)_                              |
+| options.segmentIndex<i>?</i>      | **number**                                                                                                                                                                                            | Segment Index _(default 0)_                               |
+| options.properties<i>?</i>        | **Object**                                                                                                                                                                                            | Translate Properties to output LineString _(default \{})_ |
+| options.bbox<i>?</i>              | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                             | Translate BBox to output LineString _(default \{})_       |
+| options.id<i>?</i>                | **number \| string**                                                                                                                                                                                  | Translate Id to output LineString _(default \{})_         |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** 2-vertex GeoJSON Feature LineString
+
+</ul>
+
+### Examples
+
+```javascript
+var multiLine = turf.multiLineString([
+  [
+    [10, 10],
+    [50, 30],
+    [30, 40],
+  ],
+  [
+    [-10, -10],
+    [-50, -30],
+    [-30, -40],
+  ],
+]);
+
+// First Segment (defaults are 0)
+turf.findSegment(multiLine);
+// => Feature<LineString<[[10, 10], [50, 30]]>>
+
+// First Segment of 2nd Multi Feature
+turf.findSegment(multiLine, { multiFeatureIndex: 1 });
+// => Feature<LineString<[[-10, -10], [-50, -30]]>>
+
+// Last Segment of Last Multi Feature
+turf.findSegment(multiLine, { multiFeatureIndex: -1, segmentIndex: -1 });
+// => Feature<LineString<[[-50, -30], [-30, -40]]>>
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { findSegment } from "@turf/meta";
+const result = findSegment(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.findSegment(...);
+```

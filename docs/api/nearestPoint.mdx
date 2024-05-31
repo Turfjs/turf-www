@@ -1,0 +1,85 @@
+---
+title: nearestPoint
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a reference [point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a FeatureCollection of Features
+with Point geometries and returns the
+point from the FeatureCollection closest to the reference. This calculation
+is geodesic.
+
+### Parameters
+
+| Name        | Type                                                                                                                                  | Description             |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| targetPoint | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                        | the reference point     |
+| points      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | against input point set |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** the closest point in the set to the reference point
+
+</ul>
+
+### Examples
+
+```javascript
+var targetPoint = turf.point([28.965797, 41.010086], {
+  "marker-color": "#0F0",
+});
+var points = turf.featureCollection([
+  turf.point([28.973865, 41.011122]),
+  turf.point([28.948459, 41.024204]),
+  turf.point([28.938674, 41.013324]),
+]);
+
+var nearest = turf.nearestPoint(targetPoint, points);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var targetPoint = turf.point([28.965797, 41.010086], {
+    "marker-color": "#0F0",
+  });
+  var points = turf.featureCollection([
+    turf.point([28.973865, 41.011122]),
+    turf.point([28.948459, 41.024204]),
+    turf.point([28.938674, 41.013324]),
+  ]);
+
+  var nearest = turf.nearestPoint(targetPoint, points);
+
+  //addToMap
+  var addToMap = { targetPoint, points, nearest };
+  nearest.properties["marker-color"] = "#F00";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/nearest-point
+
+import { nearestPoint } from "@turf/nearest-point";
+const result = nearestPoint(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.nearestPoint(...);
+```
