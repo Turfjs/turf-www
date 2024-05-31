@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkturf_www=self.webpackChunkturf_www||[]).push([[3008],{8672:t=>{t.exports=JSON.parse('{"label":"documentation","permalink":"/blog/tags/documentation","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

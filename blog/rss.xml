@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Turf.js Blog</title>
+        <link>https://turfjs.org/blog</link>
+        <description>Turf.js Blog</description>
+        <lastBuildDate>Thu, 02 May 2024 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Website and documentation upgrade]]></title>
+            <link>https://turfjs.org/blog/website-upgrade-docusaurus</link>
+            <guid>https://turfjs.org/blog/website-upgrade-docusaurus</guid>
+            <pubDate>Thu, 02 May 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[In preparation for the v7 release of Turf, we've updated Turf's website to run on docusaurus. This brings with it a lot of advantages, one of the main ones being versioned documentation.]]></description>
+            <content:encoded><![CDATA[<p>In preparation for the v7 release of Turf, we've updated Turf's website to run on <a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer">docusaurus</a>. This brings with it a lot of advantages, one of the main ones being versioned documentation.</p>
+<p>Versioning will allow us to keep the website up-to-date with the latest documentation, while catering to legacy versions as well.</p>
+<p>If you notice any website quirks or broken links, please <a href="https://github.com/Turfjs/turf-www/issues" target="_blank" rel="noopener noreferrer">create a new issue</a> if it hasn't already been reported.</p>]]></content:encoded>
+            <category>documentation</category>
+        </item>
+    </channel>
+</rss>
