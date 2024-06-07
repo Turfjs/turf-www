@@ -44,25 +44,25 @@ var triangles = turf.tesselate(poly);
 export function Map0() {
   "use strict";
 
-// jsdoc example start
-var poly = turf.polygon([
-[
-[11, 0],
-[22, 4],
-[31, 0],
-[31, 11],
-[21, 15],
-[11, 11],
-[11, 0],
-],
-]);
-var triangles = turf.tesselate(poly);
+  // jsdoc example start
+  var poly = turf.polygon([
+    [
+      [11, 0],
+      [22, 4],
+      [31, 0],
+      [31, 11],
+      [21, 15],
+      [11, 11],
+      [11, 0],
+    ],
+  ]);
+  var triangles = turf.tesselate(poly);
 
-//addToMap
-var addToMap = { poly, triangles };
-// jsdoc example end
+  //addToMap
+  var addToMap = { poly, triangles };
+  // jsdoc example end
 
-return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={addToMap} />;
 }
 
 <!-- prettier-ignore -->
