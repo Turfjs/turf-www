@@ -1,0 +1,68 @@
+---
+title: flip
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes input features and flips all of their coordinates from `[x, y]` to `[y, x]`.
+
+### Parameters
+
+| Name                   | Type                                                         | Description                                                                                     |
+| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input features                                                                                  |
+| options<i>?</i>        | **Object**                                                   | Optional parameters _(default \{})_                                                             |
+| options.mutate<i>?</i> | **boolean**                                                  | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
+
+### Returns
+
+<ul>
+  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** a feature or set of features of the same type as `````input````` with flipped coordinates
+
+</ul>
+
+### Examples
+
+```javascript
+var serbia = turf.point([20.566406, 43.421008]);
+
+var saudiArabia = turf.flip(serbia);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var serbia = turf.point([20.566406, 43.421008]);
+
+  var saudiArabia = turf.flip(serbia);
+
+  //addToMap
+  var addToMap = { serbia, saudiArabia };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/flip
+
+import { flip } from "@turf/flip";
+const result = flip(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.flip(...);
+```

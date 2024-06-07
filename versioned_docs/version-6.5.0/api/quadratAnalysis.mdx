@@ -1,0 +1,74 @@
+---
+title: quadratAnalysis
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Quadrat analysis lays a set of equal-size areas(quadrat) over the study area and counts
+the number of features in each quadrat and creates a frequency table.
+The table lists the number of quadrats containing no features,
+the number containing one feature, two features, and so on,
+all the way up to the quadrat containing the most features.
+The method then creates the frequency table for the random distribution, usually based on a Poisson distribution.
+The method uses the distribution to calculate the probability for 0 feature occuring,
+1 feature occuring, 2 features, and so on,
+and lists these probabilities in the frequency table.
+By comparing the two frequency tables, you can see whether the features create a pattern.
+If the table for the observed distribution has more quadrats containing many features than the
+table for the random distribution dose, then the features create a clustered pattern.
+
+It is hard to judge the frequency tables are similar or different just by looking at them.
+So, we can use serval statistical tests to find out how much the frequency tables differ.
+We use Kolmogorov-Smirnov test.This method calculates cumulative probabilities for both distributions,
+and then compares the cumulative probabilities at each class level and selects the largest absolute difference D.
+Then, the test compares D to the critical value for a confidence level you specify.
+If D is greater than the critical value, the difference between the observed distribution and
+the random distribution is significant. The greater the value the bigger the difference.
+
+Traditionally, squares are used for the shape of the quadrats, in a regular grid(square-grid).
+Some researchers suggest that the quadrat size equal twice the size of mean area per feature,
+which is simply the area of the study area divided by the number of features.
+
+### Parameters
+
+| Name                            | Type                                                                                                                                  | Description                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| pointFeatureSet                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | point set to study                                                                                          |
+| options<i>?</i>                 | **Object**                                                                                                                            | optional parameters _(default \{})_                                                                         |
+| options.studyBbox<i>?</i>       | **bbox**                                                                                                                              | bbox representing the study area                                                                            |
+| options.confidenceLevel<i>?</i> | **number**                                                                                                                            | a confidence level. The unit is percentage . 5 means 95%, value must be in \{@link K*TABLE} *(default 20)\_ |
+
+### Returns
+
+<ul>
+  **Object** result QuadratAnalysisResult
+
+</ul>
+
+### Examples
+
+```javascript
+var bbox = [-65, 40, -63, 42];
+var dataset = turf.randomPoint(100, { bbox: bbox });
+var result = turf.quadratAnalysis(dataset);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/quadrat-analysis
+
+import { quadratAnalysis } from "@turf/quadrat-analysis";
+const result = quadratAnalysis(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.quadratAnalysis(...);
+```

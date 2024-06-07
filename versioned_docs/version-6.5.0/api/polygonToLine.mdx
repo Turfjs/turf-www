@@ -1,0 +1,85 @@
+---
+title: polygonToLine
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Converts a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) to [(Multi)LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) to a
+[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) of [(Multi)LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4).
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                               | Description                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | Feature to convert                                       |
+| options<i>?</i>            | **Object**                                                                                                                                                                                         | Optional parameters _(default \{})_                      |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                         | translates GeoJSON properties to Feature _(default \{})_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring>** converted (Multi)Polygon to (Multi)LineString
+
+</ul>
+
+### Examples
+
+```javascript
+var poly = turf.polygon([
+  [
+    [125, -30],
+    [145, -30],
+    [145, -20],
+    [125, -20],
+    [125, -30],
+  ],
+]);
+
+var line = turf.polygonToLine(poly);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var poly = turf.polygon([
+    [
+      [125, -30],
+      [145, -30],
+      [145, -20],
+      [125, -20],
+      [125, -30],
+    ],
+  ]);
+
+  var line = turf.polygonToLine(poly);
+
+  //addToMap
+  var addToMap = { line };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/polygon-to-line
+
+import { polygonToLine } from "@turf/polygon-to-line";
+const result = polygonToLine(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.polygonToLine(...);
+```

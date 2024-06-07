@@ -1,0 +1,66 @@
+---
+title: getCluster
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Get Cluster
+
+### Parameters
+
+| Name    | Type                                                                     | Description                                      |
+| ------- | ------------------------------------------------------------------------ | ------------------------------------------------ |
+| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** | GeoJSON Features                                 |
+| filter  | **\***                                                                   | Filter used on GeoJSON properties to get Cluster |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** Single Cluster filtered by GeoJSON Properties
+
+</ul>
+
+### Examples
+
+```javascript
+var geojson = turf.featureCollection([
+  turf.point([0, 0], { "marker-symbol": "circle" }),
+  turf.point([2, 4], { "marker-symbol": "star" }),
+  turf.point([3, 6], { "marker-symbol": "star" }),
+  turf.point([5, 1], { "marker-symbol": "square" }),
+  turf.point([4, 2], { "marker-symbol": "circle" }),
+]);
+
+// Create a cluster using K-Means (adds `cluster` to GeoJSON properties)
+var clustered = turf.clustersKmeans(geojson);
+
+// Retrieve first cluster (0)
+var cluster = turf.getCluster(clustered, { cluster: 0 });
+//= cluster
+
+// Retrieve cluster based on custom properties
+turf.getCluster(clustered, { "marker-symbol": "circle" }).length;
+//= 2
+turf.getCluster(clustered, { "marker-symbol": "square" }).length;
+//= 1
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/clusters
+
+import { getCluster } from "@turf/clusters";
+const result = getCluster(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getCluster(...);
+```

@@ -1,0 +1,86 @@
+---
+title: concave
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and returns a concave hull Polygon or MultiPolygon.
+Internally, this uses [turf-tin](https://github.com/Turfjs/turf-tin) to generate geometries.
+
+### Parameters
+
+| Name                    | Type                                                                                                                                  | Description                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| points                  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points                                                                                              |
+| options<i>?</i>         | **Object**                                                                                                                            | Optional parameters _(default \{})_                                                                       |
+| options.maxEdge<i>?</i> | **number**                                                                                                                            | the length (in 'units') of an edge necessary for part of the hull to become concave. _(default Infinity)_ |
+| options.units<i>?</i>   | **string**                                                                                                                            | can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                    |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)> \| null** a concave hull (null value is returned if unable to compute hull)
+
+</ul>
+
+### Examples
+
+```javascript
+var points = turf.featureCollection([
+  turf.point([-63.601226, 44.642643]),
+  turf.point([-63.591442, 44.651436]),
+  turf.point([-63.580799, 44.648749]),
+  turf.point([-63.573589, 44.641788]),
+  turf.point([-63.587665, 44.64533]),
+  turf.point([-63.595218, 44.64765]),
+]);
+var options = { units: "miles", maxEdge: 1 };
+
+var hull = turf.concave(points, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var points = turf.featureCollection([
+    turf.point([-63.601226, 44.642643]),
+    turf.point([-63.591442, 44.651436]),
+    turf.point([-63.580799, 44.648749]),
+    turf.point([-63.573589, 44.641788]),
+    turf.point([-63.587665, 44.64533]),
+    turf.point([-63.595218, 44.64765]),
+  ]);
+  var options = { units: "miles", maxEdge: 1 };
+
+  var hull = turf.concave(points, options);
+
+  //addToMap
+  var addToMap = { points, hull };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/concave
+
+import { concave } from "@turf/concave";
+const result = concave(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.concave(...);
+```

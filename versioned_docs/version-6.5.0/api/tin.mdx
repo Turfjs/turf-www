@@ -1,0 +1,88 @@
+---
+title: tin
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and creates a
+[Triangulated Irregular Network](http://en.wikipedia.org/wiki/Triangulated_irregular_network),
+or a TIN for short, returned as a collection of Polygons. These are often used
+for developing elevation contour maps or stepped heat visualizations.
+
+If an optional z-value property is provided then it is added as properties called `a`, `b`,
+and `c` representing its value at each of the points that represent the corners of the
+triangle.
+
+### Parameters
+
+| Name      | Type                                                                                                                                  | Description                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points                                                                                                                                      |
+| z<i>?</i> | **String**                                                                                                                            | name of the property from which to pull z values This is optional: if not given, then there will be no extra data added to the derived triangles. |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** TIN output
+
+</ul>
+
+### Examples
+
+```javascript
+// generate some random point data
+var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
+
+// add a random property to each point between 0 and 9
+for (var i = 0; i < points.features.length; i++) {
+  points.features[i].properties.z = ~~(Math.random() * 9);
+}
+var tin = turf.tin(points, "z");
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  // generate some random point data
+  var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
+
+  // add a random property to each point between 0 and 9
+  for (var i = 0; i < points.features.length; i++) {
+    points.features[i].properties.z = ~~(Math.random() * 9);
+  }
+  var tin = turf.tin(points, "z");
+
+  //addToMap
+  var addToMap = { tin, points };
+  for (var i = 0; i < tin.features.length; i++) {
+    var properties = tin.features[i].properties;
+    properties.fill = "#" + properties.a + properties.b + properties.c;
+  }
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/tin
+
+import { tin } from "@turf/tin";
+const result = tin(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.tin(...);
+```

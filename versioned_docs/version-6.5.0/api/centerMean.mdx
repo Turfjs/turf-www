@@ -1,0 +1,83 @@
+---
+title: centerMean
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) and returns the mean center. Can be weighted.
+
+### Parameters
+
+| Name                       | Type                                                         | Description                                           |
+| -------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | GeoJSON to be centered                                |
+| options<i>?</i>            | **Object**                                                   | Optional parameters _(default \{})_                   |
+| options.properties<i>?</i> | **Object**                                                   | Translate GeoJSON Properties to Point _(default \{})_ |
+| options.bbox<i>?</i>       | **Object**                                                   | Translate GeoJSON BBox to Point _(default \{})_       |
+| options.id<i>?</i>         | **Object**                                                   | Translate GeoJSON Id to Point _(default \{})_         |
+| options.weight<i>?</i>     | **string**                                                   | the property name used to weight the center           |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** a Point feature at the mean center point of all input features
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([-97.522259, 35.4691], { value: 10 }),
+  turf.point([-97.502754, 35.463455], { value: 3 }),
+  turf.point([-97.508269, 35.463245], { value: 5 }),
+]);
+
+var options = { weight: "value" };
+var mean = turf.centerMean(features, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var features = turf.featureCollection([
+    turf.point([-97.522259, 35.4691], { value: 10 }),
+    turf.point([-97.502754, 35.463455], { value: 3 }),
+    turf.point([-97.508269, 35.463245], { value: 5 }),
+  ]);
+
+  var options = { weight: "value" };
+  var mean = turf.centerMean(features, options);
+
+  //addToMap
+  var addToMap = { features, mean };
+  mean.properties["marker-size"] = "large";
+  mean.properties["marker-color"] = "#000";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/center-mean
+
+import { centerMean } from "@turf/center-mean";
+const result = centerMean(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.centerMean(...);
+```

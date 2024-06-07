@@ -1,0 +1,87 @@
+---
+title: bboxClip
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) and a bbox and clips the feature to the bbox using
+[lineclip](https://github.com/mapbox/lineclip).
+May result in degenerate edges when clipping Polygons.
+
+### Parameters
+
+| Name    | Type                                                                                                                                                                                                                                                                                                                                          | Description                              |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | feature to clip to the bbox              |
+| bbox    | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                     | extent in [minX, minY, maxX, maxY] order |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** clipped Feature
+
+</ul>
+
+### Examples
+
+```javascript
+var bbox = [0, 0, 10, 10];
+var poly = turf.polygon([
+  [
+    [2, 2],
+    [8, 4],
+    [12, 8],
+    [3, 7],
+    [2, 2],
+  ],
+]);
+
+var clipped = turf.bboxClip(poly, bbox);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var bbox = [0, 0, 10, 10];
+  var poly = turf.polygon([
+    [
+      [2, 2],
+      [8, 4],
+      [12, 8],
+      [3, 7],
+      [2, 2],
+    ],
+  ]);
+
+  var clipped = turf.bboxClip(poly, bbox);
+
+  //addToMap
+  var addToMap = { bbox, poly, clipped };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/bbox-clip
+
+import { bboxClip } from "@turf/bbox-clip";
+const result = bboxClip(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bboxClip(...);
+```

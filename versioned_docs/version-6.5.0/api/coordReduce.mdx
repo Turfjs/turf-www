@@ -1,0 +1,72 @@
+---
+title: coordReduce
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Reduce coordinates in any GeoJSON object, similar to Array.reduce()
+
+### Parameters
+
+| Name                     | Type                                                                                                                                                                                                  | Description                                                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| geojson                  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | any GeoJSON object                                                                                                    |
+| callback                 | **Function**                                                                                                                                                                                          | a method that takes (previousValue, currentCoord, coordIndex)                                                         |
+| initialValue<i>?</i>     | **\***                                                                                                                                                                                                | Value to use as the first argument to the first call of the callback.                                                 |
+| excludeWrapCoord<i>?</i> | **boolean**                                                                                                                                                                                           | whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration. _(default false)_ |
+
+### Returns
+
+<ul>
+  **\*** The value that results from the reduction.
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.coordReduce(
+  features,
+  function (
+    previousValue,
+    currentCoord,
+    coordIndex,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+  ) {
+    //=previousValue
+    //=currentCoord
+    //=coordIndex
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+    return currentCoord;
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { coordReduce } from "@turf/meta";
+const result = coordReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.coordReduce(...);
+```

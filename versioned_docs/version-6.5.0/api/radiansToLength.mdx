@@ -1,0 +1,42 @@
+---
+title: radiansToLength
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
+Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+
+### Parameters
+
+| Name          | Type       | Description                                                                                                     |
+| ------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
+| radians       | **number** | in radians across the sphere                                                                                    |
+| units<i>?</i> | **string** | can be degrees, radians, miles, inches, yards, metres, meters, kilometres, kilometers. _(default "kilometers")_ |
+
+### Returns
+
+<ul>
+  **number** distance
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { radiansToLength } from "@turf/helpers";
+const result = radiansToLength(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.radiansToLength(...);
+```
