@@ -1,0 +1,56 @@
+---
+title: points
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Creates a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) from an Array of Point coordinates.
+
+### Parameters
+
+| Name                 | Type                       | Description                                                                         |
+| -------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| coordinates          | **Array\<Array\<number>>** | an array of Points                                                                  |
+| properties<i>?</i>   | **Object**                 | Translate these properties to each Feature _(default \{})_                          |
+| options<i>?</i>      | **Object**                 | Optional Parameters _(default \{})_                                                 |
+| options.bbox<i>?</i> | **Array\<number>**         | Bounding Box Array [west, south, east, north] associated with the FeatureCollection |
+| options.id<i>?</i>   | **string \| number**       | Identifier associated with the FeatureCollection                                    |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** Point Feature
+
+</ul>
+
+### Examples
+
+```javascript
+var points = turf.points([
+  [-75, 39],
+  [-80, 45],
+  [-78, 50],
+]);
+
+//=points
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { points } from "@turf/helpers";
+const result = points(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.points(...);
+```

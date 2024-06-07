@@ -1,0 +1,46 @@
+---
+title: isobands
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a square or rectangular grid [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) of [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) features with z-values and an array of
+value breaks and generates filled contour isobands.
+
+### Parameters
+
+| Name                             | Type                                                                                                                                  | Description                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| pointGrid                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points - must be square or rectangular                                                               |
+| breaks                           | **Array\<number>**                                                                                                                    | where to draw contours                                                                                     |
+| options<i>?</i>                  | **Object**                                                                                                                            | options on output _(default \{})_                                                                          |
+| options.zProperty<i>?</i>        | **string**                                                                                                                            | the property name in `points` from which z-values will be pulled _(default 'elevation')_                   |
+| options.commonProperties<i>?</i> | **Object**                                                                                                                            | GeoJSON properties passed to ALL isobands _(default \{})_                                                  |
+| options.breaksProperties<i>?</i> | **Array\<Object>**                                                                                                                    | GeoJSON properties passed, in order, to the correspondent isoband (order defined by breaks) _(default [])_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** a FeatureCollection of [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) features representing isobands
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/isobands
+
+import { isobands } from "@turf/isobands";
+const result = isobands(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.isobands(...);
+```

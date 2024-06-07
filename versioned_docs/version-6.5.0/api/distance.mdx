@@ -1,0 +1,76 @@
+---
+title: distance
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Calculates the distance between two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) in degrees, radians, miles, or kilometers.
+This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
+
+### Parameters
+
+| Name                  | Type                                                                                                                         | Description                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| from                  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | origin point or coordinate                                             |
+| to                    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | destination point or coordinate                                        |
+| options<i>?</i>       | **Object**                                                                                                                   | Optional parameters _(default \{})_                                    |
+| options.units<i>?</i> | **string**                                                                                                                   | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+
+### Returns
+
+<ul>
+  **number** distance between the two points
+
+</ul>
+
+### Examples
+
+```javascript
+var from = turf.point([-75.343, 39.984]);
+var to = turf.point([-75.534, 39.123]);
+var options = { units: "miles" };
+
+var distance = turf.distance(from, to, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var from = turf.point([-75.343, 39.984]);
+  var to = turf.point([-75.534, 39.123]);
+  var options = { units: "miles" };
+
+  var distance = turf.distance(from, to, options);
+
+  //addToMap
+  var addToMap = { from, to };
+  from.properties.distance = distance;
+  to.properties.distance = distance;
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/distance
+
+import { distance } from "@turf/distance";
+const result = distance(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.distance(...);
+```

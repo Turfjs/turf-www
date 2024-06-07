@@ -1,0 +1,62 @@
+---
+title: booleanClockwise
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a ring and return true or false whether or not the ring is clockwise or counter-clockwise.
+
+### Parameters
+
+| Name | Type                                                                                                                                                                                                                          | Description     |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| line | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| Array\<Array\<number>>** | to be evaluated |
+
+### Returns
+
+<ul>
+  **boolean** true/false
+
+</ul>
+
+### Examples
+
+```javascript
+var clockwiseRing = turf.lineString([
+  [0, 0],
+  [1, 1],
+  [1, 0],
+  [0, 0],
+]);
+var counterClockwiseRing = turf.lineString([
+  [0, 0],
+  [1, 0],
+  [1, 1],
+  [0, 0],
+]);
+
+turf.booleanClockwise(clockwiseRing);
+//=true
+turf.booleanClockwise(counterClockwiseRing);
+//=false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-clockwise
+
+import { booleanClockwise } from "@turf/boolean-clockwise";
+const result = booleanClockwise(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanClockwise(...);
+```

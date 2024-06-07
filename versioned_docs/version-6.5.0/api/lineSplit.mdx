@@ -1,0 +1,81 @@
+---
+title: lineSplit
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Split a LineString by another GeoJSON Feature.
+
+### Parameters
+
+| Name     | Type                                                                                                                             | Description                 |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| line     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | LineString Feature to split |
+| splitter | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any>**                                                             | Feature used to split line  |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** Split LineStrings
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [120, -25],
+  [145, -25],
+]);
+var splitter = turf.lineString([
+  [130, -15],
+  [130, -35],
+]);
+
+var split = turf.lineSplit(line, splitter);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [120, -25],
+    [145, -25],
+  ]);
+  var splitter = turf.lineString([
+    [130, -15],
+    [130, -35],
+  ]);
+
+  var split = turf.lineSplit(line, splitter);
+
+  //addToMap
+  var addToMap = { line, splitter };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/line-split
+
+import { lineSplit } from "@turf/line-split";
+const result = lineSplit(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineSplit(...);
+```

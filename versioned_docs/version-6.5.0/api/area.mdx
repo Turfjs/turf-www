@@ -1,0 +1,83 @@
+---
+title: area
+---
+
+import * as turf from "@turf/turf";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes one or more features and returns their area in square meters.
+
+### Parameters
+
+| Name    | Type                                                         | Description              |
+| ------- | ------------------------------------------------------------ | ------------------------ |
+| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input GeoJSON feature(s) |
+
+### Returns
+
+<ul>
+  **number** area in square meters
+
+</ul>
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [125, -15],
+    [113, -22],
+    [154, -27],
+    [144, -15],
+    [125, -15],
+  ],
+]);
+
+var area = turf.area(polygon);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [125, -15],
+      [113, -22],
+      [154, -27],
+      [144, -15],
+      [125, -15],
+    ],
+  ]);
+
+  var area = turf.area(polygon);
+
+  //addToMap
+  var addToMap = { polygon };
+  polygon.properties.area = area;
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/area
+
+import { area } from "@turf/area";
+const result = area(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.area(...);
+```
