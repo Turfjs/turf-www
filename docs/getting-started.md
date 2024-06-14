@@ -31,9 +31,13 @@ You can also include it directly from a CDN:
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 ```
 
+## Upgrading
+
+When upgrading to a newer version of Turf, see [CHANGELOG](https://github.com/Turfjs/turf/blob/master/CHANGELOG.md) for breaking changes and migration steps.
+
 ## TypeScript
 
-TypeScript definitions are packaged with each module. No DefinitelyTyped packages required.
+TypeScript definitions are packaged with each module.  Turf uses the `@types/geojson` package for base GeoJSON type definitions such as `Polygon`, `FeatureCollection`, etc. and does not re-export them.  Users will need to install and import these types directly e.g. `import { Polygon, FeatureCollection } from 'geojson'`.
 
 ## Other languages
 
