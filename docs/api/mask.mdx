@@ -2,7 +2,7 @@
 title: mask
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,15 +12,15 @@ Takes any type of [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) a
 
 ### Parameters
 
-| Name         | Type                                                                                                                                                                                                                                                                       | Description                                                                        |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| polygon      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | GeoJSON Polygon used as interior rings or holes.                                   |
-| mask<i>?</i> | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>**                                                                                                                                              | GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used) |
+| Name         | Type                                                                                                                                                                                                                                                                        | Description                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| polygon      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | GeoJSON Polygon used as interior rings or holes.                                   |
+| mask<i>?</i> | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>**                                                                                                                                              | GeoJSON Polygon used as the exterior ring (if undefined, the world extent is used) |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** Masked Polygon (exterior ring with holes).
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Masked Polygon (exterior ring with holes).
 
 </ul>
 

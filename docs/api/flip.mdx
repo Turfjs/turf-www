@@ -2,7 +2,7 @@
 title: flip
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -15,13 +15,13 @@ Takes input features and flips all of their coordinates from `[x, y]` to `[y, x]
 | Name                   | Type                                                         | Description                                                                                     |
 | ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
 | geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input features                                                                                  |
-| options<i>?</i>        | **Object**                                                   | Optional parameters _(default \{})_                                                             |
+| options<i>?</i>        | **Object**                                                   | Optional parameters _(default \{\})_                                                            |
 | options.mutate<i>?</i> | **boolean**                                                  | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
 ### Returns
 
 <ul>
-  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** a feature or set of features of the same type as `````input````` with flipped coordinates
+  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** a feature or set of features of the same type as `input` with flipped coordinates
 
 </ul>
 

@@ -2,7 +2,7 @@
 title: nearestPointOnLine
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,17 +12,17 @@ Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a [LineSt
 
 ### Parameters
 
-| Name                  | Type                                                                                                                                                                                                                                                                    | Description                                                            |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| lines                 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** | lines to snap to                                                       |
-| pt                    | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)> \| Array\<number>**                                                            | point to snap from                                                     |
-| options<i>?</i>       | **Object**                                                                                                                                                                                                                                                              | Optional parameters _(default \{})_                                    |
-| options.units<i>?</i> | **string**                                                                                                                                                                                                                                                              | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| Name                  | Type                                                                                                                                                                                                                                                                     | Description                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| lines                 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | lines to snap to                                                       |
+| pt                    | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| Array\<number\>**                                                           | point to snap from                                                     |
+| options<i>?</i>       | **Object**                                                                                                                                                                                                                                                               | Optional parameters _(default \{\})_                                   |
+| options.units<i>?</i> | **string**                                                                                                                                                                                                                                                               | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** closest point on the `````line````` to `````point`````. The properties object will contain three values: `````index`````: closest point was found on nth line part, `````dist`````: distance between pt and the closest point, `````location`````: distance along the line between start and the closest point.
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** closest point on the `line` to `point`. The properties object will contain three values: `index`: closest point was found on nth line part, `dist`: distance between pt and the closest point, `location`: distance along the line between start and the closest point.
 
 </ul>
 

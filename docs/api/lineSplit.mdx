@@ -2,7 +2,7 @@
 title: lineSplit
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,15 +12,15 @@ Split a LineString by another GeoJSON Feature.
 
 ### Parameters
 
-| Name     | Type                                                                                                                             | Description                 |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| line     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | LineString Feature to split |
-| splitter | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any>**                                                             | Feature used to split line  |
+| Name     | Type                                                                                                                              | Description                 |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| line     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | LineString Feature to split |
+| splitter | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>**                                                             | Feature used to split line  |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** Split LineStrings
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** Split LineStrings
 
 </ul>
 

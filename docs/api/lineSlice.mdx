@@ -2,7 +2,7 @@
 title: lineSlice
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -16,16 +16,16 @@ This can be useful for extracting only the part of a route between waypoints.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                | Description    |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| startPt | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | starting point |
-| stopPt  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | stopping point |
-| line    | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | line to slice  |
+| Name    | Type                                                                                                                                                                                                 | Description    |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| startPt | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                       | starting point |
+| stopPt  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                       | stopping point |
+| line    | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | line to slice  |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** sliced line
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** sliced line
 
 </ul>
 

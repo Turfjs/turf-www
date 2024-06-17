@@ -2,7 +2,7 @@
 title: triangleGrid
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,19 +12,19 @@ Takes a bounding box and a cell depth and returns a set of triangular [polygons]
 
 ### Parameters
 
-| Name                       | Type                                                                                                                          | Description                                                                                          |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| bbox                       | **Array\<number>**                                                                                                            | extent in [minX, minY, maxX, maxY] order                                                             |
-| cellSide                   | **number**                                                                                                                    | dimension of each cell                                                                               |
-| options<i>?</i>            | **Object**                                                                                                                    | Optional parameters _(default \{})_                                                                  |
-| options.units<i>?</i>      | **string**                                                                                                                    | used in calculating cellSide, can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
-| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                  |
-| options.properties<i>?</i> | **Object**                                                                                                                    | passed to each point of the grid _(default \{})_                                                     |
+| Name                       | Type                                                                                                                           | Description                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| bbox                       | **Array\<number\>**                                                                                                            | extent in [minX, minY, maxX, maxY] order                                                             |
+| cellSide                   | **number**                                                                                                                     | dimension of each cell                                                                               |
+| options<i>?</i>            | **Object**                                                                                                                     | Optional parameters _(default \{\})_                                                                 |
+| options.units<i>?</i>      | **string**                                                                                                                     | used in calculating cellSide, can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                  |
+| options.properties<i>?</i> | **Object**                                                                                                                     | passed to each point of the grid _(default \{\})_                                                    |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** grid of polygons
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of polygons
 
 </ul>
 

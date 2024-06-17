@@ -2,27 +2,26 @@
 title: union
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
-Takes two [(Multi)Polygon(s)](https://tools.ietf.org/html/rfc7946#section-3.1.6) and returns a combined polygon. If the input polygons are not contiguous, this function returns a [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feature.
+Takes input [(Multi)Polygon(s)](https://tools.ietf.org/html/rfc7946#section-3.1.6) and returns a combined polygon. If the input polygons are not contiguous, this function returns a [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feature.
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                               | Description                                            |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| polygon1                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | input Polygon feature                                  |
-| polygon2                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | Polygon feature to difference from polygon1            |
-| options<i>?</i>            | **Object**                                                                                                                                                                                         | Optional Parameters _(default \{})_                    |
-| options.properties<i>?</i> | **Object**                                                                                                                                                                                         | Translate Properties to output Feature _(default \{})_ |
+| Name                       | Type                                                                                                                                                                                                | Description                                             |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| polygon1                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input Polygon features                                  |
+| options<i>?</i>            | **Object**                                                                                                                                                                                          | Optional Parameters _(default \{\})_                    |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                          | Translate Properties to output Feature _(default \{\})_ |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** a combined [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feature, or null if the inputs are empty
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** a combined [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feature, or null if the inputs are empty
 
 </ul>
 
@@ -54,7 +53,7 @@ var poly2 = turf.polygon(
   { fill: "#00f" },
 );
 
-var union = turf.union(poly1, poly2);
+var union = turf.union(turf.featureCollection([poly1, poly2]));
 ```
 
 export function Map0() {
@@ -86,7 +85,7 @@ export function Map0() {
     { fill: "#00f" },
   );
 
-  var union = turf.union(poly1, poly2);
+  var union = turf.union(turf.featureCollection([poly1, poly2]));
 
   //addToMap
   var addToMap = { poly1, poly2, union };

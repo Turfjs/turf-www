@@ -2,7 +2,7 @@
 title: polygonize
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -22,14 +22,14 @@ The implementation correctly handles:
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                                                                                                                                                            | Description                  |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| geoJson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** | Lines in order to polygonize |
+| Name    | Type                                                                                                                                                                                                                                                                                                                                             | Description                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| geoJson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | Lines in order to polygonize |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** Polygons created
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Polygons created
 
 </ul>
 

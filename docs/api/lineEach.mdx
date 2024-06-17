@@ -2,7 +2,7 @@
 title: lineEach
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,10 +13,10 @@ similar to Array.forEach.
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                                                                                                                                         | Description                                                                       |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| geojson  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | object                                                                            |
-| callback | **Function**                                                                                                                                                                                                                                                                                                                                                                                                 | a method that takes (currentLine, featureIndex, multiFeatureIndex, geometryIndex) |
+| Name     | Type                                                                                                                                                                                                                                                                                                                                                                                                          | Description                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| geojson  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | object                                                                            |
+| callback | **Function**                                                                                                                                                                                                                                                                                                                                                                                                  | a method that takes (currentLine, featureIndex, multiFeatureIndex, geometryIndex) |
 
 ### Returns
 

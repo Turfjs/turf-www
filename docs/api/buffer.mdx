@@ -2,7 +2,7 @@
 title: buffer
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -18,18 +18,18 @@ the input, or even be empty.
 
 ### Parameters
 
-| Name                  | Type                                                                                                                                                                                                        | Description                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any>** | input to be buffered                                                |
-| radius                | **number**                                                                                                                                                                                                  | distance to draw the buffer (negative values are allowed)           |
-| options<i>?</i>       | **Object**                                                                                                                                                                                                  | Optional parameters _(default \{})_                                 |
-| options.units<i>?</i> | **string**                                                                                                                                                                                                  | any of the options supported by turf units _(default "kilometers")_ |
-| options.steps<i>?</i> | **number**                                                                                                                                                                                                  | number of steps _(default 8)_                                       |
+| Name                  | Type                                                                                                                                                                                                         | Description                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | input to be buffered                                                |
+| radius                | **number**                                                                                                                                                                                                   | distance to draw the buffer (negative values are allowed)           |
+| options<i>?</i>       | **Object**                                                                                                                                                                                                   | Optional parameters _(default \{\})_                                |
+| options.units<i>?</i> | **string**                                                                                                                                                                                                   | any of the options supported by turf units _(default "kilometers")_ |
+| options.steps<i>?</i> | **number**                                                                                                                                                                                                   | number of steps _(default 8)_                                       |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)> \| undefined** buffered features
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| undefined** buffered features
 
 </ul>
 

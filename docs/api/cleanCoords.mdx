@@ -2,7 +2,7 @@
 title: cleanCoords
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -15,7 +15,7 @@ Removes redundant coordinates from any GeoJSON Geometry.
 | Name                   | Type                                                                                                                          | Description                                          |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | geojson                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | Feature or Geometry                                  |
-| options<i>?</i>        | **Object**                                                                                                                    | Optional parameters _(default \{})_                  |
+| options<i>?</i>        | **Object**                                                                                                                    | Optional parameters _(default \{\})_                 |
 | options.mutate<i>?</i> | **boolean**                                                                                                                   | allows GeoJSON input to be mutated _(default false)_ |
 
 ### Returns

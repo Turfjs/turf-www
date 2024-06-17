@@ -2,7 +2,7 @@
 title: standardDeviationalEllipse
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -21,26 +21,26 @@ in ArcGIS and the [QGIS Standard Deviational Ellipse Plugin](http://arken.nmbu.n
 
 • Robert S. Yuill, “The Standard Deviational Ellipse; An Updated Tool for
 Spatial Description,” _Geografiska Annaler_ 53, no. 1 (1971): 28–39,
-doi:[10.2307/490885](https://doi.org/10.2307/490885).
+doi:\{@link [https://doi.org/10.2307/490885 \| 10.2307/490885\}](https://doi.org/10.2307/490885 \| 10.2307/490885\}).
 
 • Paul Hanly Furfey, “A Note on Lefever’s “Standard Deviational Ellipse,”
 _American Journal of Sociology_ 33, no. 1 (1927): 94—98,
-doi:[10.1086/214336](https://doi.org/10.1086/214336).
+doi:\{@link [https://doi.org/10.1086/214336 \| 10.1086/214336\}](https://doi.org/10.1086/214336 \| 10.1086/214336\}).
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                  | Description                                                 |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | GeoJSON points                                              |
-| options<i>?</i>            | **Object**                                                                                                                            | Optional parameters _(default \{})_                         |
-| options.weight<i>?</i>     | **string**                                                                                                                            | the property name used to weight the center                 |
-| options.steps<i>?</i>      | **number**                                                                                                                            | number of steps for the polygon _(default 64)_              |
-| options.properties<i>?</i> | **Object**                                                                                                                            | properties to pass to the resulting ellipse _(default \{})_ |
+| Name                       | Type                                                                                                                                   | Description                                                  |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | GeoJSON points                                               |
+| options<i>?</i>            | **Object**                                                                                                                             | Optional parameters _(default \{\})_                         |
+| options.weight<i>?</i>     | **string**                                                                                                                             | the property name used to weight the center                  |
+| options.steps<i>?</i>      | **number**                                                                                                                             | number of steps for the polygon _(default 64)_               |
+| options.properties<i>?</i> | **Object**                                                                                                                             | properties to pass to the resulting ellipse _(default \{\})_ |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** an elliptical Polygon that includes approximately 1 SD of the dataset within it.
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** an elliptical Polygon that includes approximately 1 SD of the dataset within it.
 
 </ul>
 

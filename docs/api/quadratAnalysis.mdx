@@ -2,7 +2,7 @@
 title: quadratAnalysis
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -35,17 +35,17 @@ which is simply the area of the study area divided by the number of features.
 
 ### Parameters
 
-| Name                            | Type                                                                                                                                  | Description                                                                                                 |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| pointFeatureSet                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | point set to study                                                                                          |
-| options<i>?</i>                 | **Object**                                                                                                                            | optional parameters _(default \{})_                                                                         |
-| options.studyBbox<i>?</i>       | **bbox**                                                                                                                              | bbox representing the study area                                                                            |
-| options.confidenceLevel<i>?</i> | **number**                                                                                                                            | a confidence level. The unit is percentage . 5 means 95%, value must be in \{@link K*TABLE} *(default 20)\_ |
+| Name                            | Type                                                                                                                                   | Description                                                                                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| pointFeatureSet                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | point set to study                                                                                           |
+| options<i>?</i>                 | **Object**                                                                                                                             | optional parameters _(default \{\})_                                                                         |
+| options.studyBbox<i>?</i>       | **bbox**                                                                                                                               | bbox representing the study area                                                                             |
+| options.confidenceLevel<i>?</i> | **number**                                                                                                                             | a confidence level. The unit is percentage . 5 means 95%, value must be in \{@link K*TABLE\} *(default 20)\_ |
 
 ### Returns
 
 <ul>
-  **Object** result QuadratAnalysisResult
+  **Object** result [QuadratAnalysisResult](QuadratAnalysisResult)
 
 </ul>
 

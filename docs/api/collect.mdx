@@ -2,7 +2,7 @@
 title: collect
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -16,17 +16,17 @@ on the polygon.
 
 ### Parameters
 
-| Name        | Type                                                                                                                                    | Description                                |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| polygons    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | polygons with values on which to aggregate |
-| points      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>**   | points to be aggregated                    |
-| inProperty  | **string**                                                                                                                              | property to be nested from                 |
-| outProperty | **string**                                                                                                                              | property to be nested into                 |
+| Name        | Type                                                                                                                                     | Description                                |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| polygons    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | polygons with values on which to aggregate |
+| points      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>**   | points to be aggregated                    |
+| inProperty  | **string**                                                                                                                               | property to be nested from                 |
+| outProperty | **string**                                                                                                                               | property to be nested into                 |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** polygons with properties listed based on `````outField`````
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** polygons with properties listed based on `outField`
 
 </ul>
 

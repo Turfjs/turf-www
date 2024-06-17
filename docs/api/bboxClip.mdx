@@ -2,7 +2,7 @@
 title: bboxClip
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -14,15 +14,15 @@ May result in degenerate edges when clipping Polygons.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                                                                                                                                                          | Description                              |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | feature to clip to the bbox              |
-| bbox    | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                     | extent in [minX, minY, maxX, maxY] order |
+| Name    | Type                                                                                                                                                                                                                                                                                                                                           | Description                              |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | feature to clip to the bbox              |
+| bbox    | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                      | extent in [minX, minY, maxX, maxY] order |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** clipped Feature
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** clipped Feature
 
 </ul>
 

@@ -2,19 +2,22 @@
 title: bbox
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
-Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
+Calculates the bounding box for any GeoJSON object, including FeatureCollection.
+Uses geojson.bbox if available and options.recompute is not set.
 
 ### Parameters
 
-| Name    | Type                                                         | Description        |
-| ------- | ------------------------------------------------------------ | ------------------ |
-| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON object |
+| Name                      | Type                                                         | Description                                            |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| geojson                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON object                                     |
+| options<i>?</i>           | **Object**                                                   | Optional parameters _(default \{\})_                   |
+| options.recompute<i>?</i> | **boolean**                                                  | Whether to ignore an existing bbox property on geojson |
 
 ### Returns
 

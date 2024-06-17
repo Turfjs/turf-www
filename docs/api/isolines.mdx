@@ -2,7 +2,7 @@
 title: isolines
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,19 +13,19 @@ value breaks and generates [isolines](https://en.wikipedia.org/wiki/Contour_line
 
 ### Parameters
 
-| Name                             | Type                                                                                                                                  | Description                                                                                                                                                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| pointGrid                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points                                                                                                                                               |
-| breaks                           | **Array\<number>**                                                                                                                    | values of `zProperty` where to draw isolines                                                                                                               |
-| options<i>?</i>                  | **Object**                                                                                                                            | Optional parameters _(default \{})_                                                                                                                        |
-| options.zProperty<i>?</i>        | **string**                                                                                                                            | the property name in `points` from which z-values will be pulled _(default 'elevation')_                                                                   |
-| options.commonProperties<i>?</i> | **Object**                                                                                                                            | GeoJSON properties passed to ALL isolines _(default \{})_                                                                                                  |
-| options.breaksProperties<i>?</i> | **Array\<Object>**                                                                                                                    | GeoJSON properties passed, in order, to the correspondent isoline; the breaks array will define the order in which the isolines are created _(default [])_ |
+| Name                             | Type                                                                                                                                   | Description                                                                                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pointGrid                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | input points                                                                                                                                               |
+| breaks                           | **Array\<number\>**                                                                                                                    | values of `zProperty` where to draw isolines                                                                                                               |
+| options<i>?</i>                  | **Object**                                                                                                                             | Optional parameters _(default \{\})_                                                                                                                       |
+| options.zProperty<i>?</i>        | **string**                                                                                                                             | the property name in `points` from which z-values will be pulled _(default 'elevation')_                                                                   |
+| options.commonProperties<i>?</i> | **Object**                                                                                                                             | GeoJSON properties passed to ALL isolines _(default \{\})_                                                                                                 |
+| options.breaksProperties<i>?</i> | **Array\<Object\>**                                                                                                                    | GeoJSON properties passed, in order, to the correspondent isoline; the breaks array will define the order in which the isolines are created _(default [])_ |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** a FeatureCollection of [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) features representing isolines
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** a FeatureCollection of [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) features representing isolines
 
 </ul>
 

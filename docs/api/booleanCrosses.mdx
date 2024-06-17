@@ -2,7 +2,7 @@
 title: booleanCrosses
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,13 +13,14 @@ the maximum dimension of the two source geometries and the intersection set is i
 both source geometries.
 
 Boolean-Crosses returns t (TRUE) for only multipoint/polygon, multipoint/linestring, linestring/linestring, linestring/polygon, and linestring/multipolygon comparisons.
+Other comparisons are not supported as they are outside the OpenGIS Simple Features spec and may give unexpected results.
 
 ### Parameters
 
-| Name     | Type                                                                                                                                | Description                 |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any>** | GeoJSON Feature or Geometry |
-| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any>** | GeoJSON Feature or Geometry |
+| Name     | Type                                                                                                                                 | Description                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
 
 ### Returns
 

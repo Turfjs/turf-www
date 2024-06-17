@@ -2,7 +2,7 @@
 title: featureCollection
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,12 +12,12 @@ Takes one or more [Features](https://tools.ietf.org/html/rfc7946#section-3.2) an
 
 ### Parameters
 
-| Name                 | Type                                                                   | Description                                                               |
-| -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| features             | **Array\<[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)>** | input features                                                            |
-| options<i>?</i>      | **Object**                                                             | Optional Parameters _(default \{})_                                       |
-| options.bbox<i>?</i> | **Array\<number>**                                                     | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **string \| number**                                                   | Identifier associated with the Feature                                    |
+| Name                 | Type                                                                    | Description                                                               |
+| -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| features             | **Array\<[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\>** | input features                                                            |
+| options<i>?</i>      | **Object**                                                              | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **Array\<number\>**                                                     | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **string \| number**                                                    | Identifier associated with the Feature                                    |
 
 ### Returns
 

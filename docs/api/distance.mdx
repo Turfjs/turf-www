@@ -2,7 +2,7 @@
 title: distance
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -17,7 +17,7 @@ This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | from                  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | origin point or coordinate                                             |
 | to                    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | destination point or coordinate                                        |
-| options<i>?</i>       | **Object**                                                                                                                   | Optional parameters _(default \{})_                                    |
+| options<i>?</i>       | **Object**                                                                                                                   | Optional parameters _(default \{\})_                                   |
 | options.units<i>?</i> | **string**                                                                                                                   | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
 
 ### Returns

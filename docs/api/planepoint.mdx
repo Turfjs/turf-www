@@ -2,7 +2,7 @@
 title: planepoint
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -17,15 +17,15 @@ if their values are not provided as properties.
 
 ### Parameters
 
-| Name     | Type                                                                                                                          | Description                                      |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| point    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                | the Point for which a z-value will be calculated |
-| triangle | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | a Polygon feature with three vertices            |
+| Name     | Type                                                                                                                           | Description                                      |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| point    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                 | the Point for which a z-value will be calculated |
+| triangle | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | a Polygon feature with three vertices            |
 
 ### Returns
 
 <ul>
-  **number** the z-value for `````interpolatedPoint`````
+  **number** the z-value for `interpolatedPoint`
 
 </ul>
 

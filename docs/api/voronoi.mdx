@@ -2,7 +2,7 @@
 title: voronoi
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -15,16 +15,16 @@ The Voronoi algorithim used comes from the d3-voronoi package.
 
 ### Parameters
 
-| Name                 | Type                                                                                                                                  | Description                                                                           |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| points               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | to find the Voronoi polygons around.                                                  |
-| options<i>?</i>      | **Object**                                                                                                                            | Optional parameters _(default \{})_                                                   |
-| options.bbox<i>?</i> | **Array\<number>**                                                                                                                    | clipping rectangle, in [minX, minY, maxX, MaxY] order. _(default [-180,-85,180,-85])_ |
+| Name                 | Type                                                                                                                                   | Description                                                                           |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| points               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | to find the Voronoi polygons around.                                                  |
+| options<i>?</i>      | **Object**                                                                                                                             | Optional parameters _(default \{\})_                                                  |
+| options.bbox<i>?</i> | **Array\<number\>**                                                                                                                    | clipping rectangle, in [minX, minY, maxX, MaxY] order. _(default [-180,-85,180,-85])_ |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a set of polygons, one per input point.
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a set of polygons, one per input point.
 
 </ul>
 

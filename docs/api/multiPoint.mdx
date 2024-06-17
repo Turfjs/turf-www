@@ -2,29 +2,29 @@
 title: multiPoint
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
-Creates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)> based on a
+Creates a [Feature\<MultiPoint\>](Feature<MultiPoint>) based on a
 coordinate array. Properties can be added optionally.
 
 ### Parameters
 
-| Name                 | Type                       | Description                                                               |
-| -------------------- | -------------------------- | ------------------------------------------------------------------------- |
-| coordinates          | **Array\<Array\<number>>** | an array of Positions                                                     |
-| properties<i>?</i>   | **Object**                 | an Object of key-value pairs to add as properties _(default \{})_         |
-| options<i>?</i>      | **Object**                 | Optional Parameters _(default \{})_                                       |
-| options.bbox<i>?</i> | **Array\<number>**         | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **string \| number**       | Identifier associated with the Feature                                    |
+| Name                 | Type                         | Description                                                               |
+| -------------------- | ---------------------------- | ------------------------------------------------------------------------- |
+| coordinates          | **Array\<Array\<number\>\>** | an array of Positions                                                     |
+| properties<i>?</i>   | **Object**                   | an Object of key-value pairs to add as properties _(default \{\})_        |
+| options<i>?</i>      | **Object**                   | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **Array\<number\>**          | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **string \| number**         | Identifier associated with the Feature                                    |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)>** a MultiPoint feature
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)\>** a MultiPoint feature
 
 </ul>
 

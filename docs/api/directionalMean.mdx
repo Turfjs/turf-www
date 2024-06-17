@@ -2,7 +2,7 @@
 title: directionalMean
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -14,12 +14,12 @@ It can handle segments of line or the whole line.
 
 ### Parameters
 
-| Name                    | Type                                                                                                                                       | Description                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| lines                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** |                                                                                     |
-| options<i>?</i>         | **object**                                                                                                                                 | _(default \{})_                                                                     |
-| options.planar<i>?</i>  | **boolean**                                                                                                                                | whether the spatial reference system is projected or geographical. _(default true)_ |
-| options.segment<i>?</i> | **boolean**                                                                                                                                | whether treat a LineString as a whole or a set of segments. _(default false)_       |
+| Name                    | Type                                                                                                                                        | Description                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| lines                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** |                                                                                     |
+| options<i>?</i>         | **object**                                                                                                                                  | _(default \{\})_                                                                    |
+| options.planar<i>?</i>  | **boolean**                                                                                                                                 | whether the spatial reference system is projected or geographical. _(default true)_ |
+| options.segment<i>?</i> | **boolean**                                                                                                                                 | whether treat a LineString as a whole or a set of segments. _(default false)_       |
 
 ### Returns
 

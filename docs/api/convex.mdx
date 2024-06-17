@@ -2,7 +2,7 @@
 title: convex
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -19,14 +19,14 @@ the [convex-hull](https://github.com/mikolalysenko/convex-hull) module that impl
 | Name                       | Type                                                         | Description                                                  |
 | -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input Feature or FeatureCollection                           |
-| options<i>?</i>            | **Object**                                                   | Optional parameters _(default \{})_                          |
+| options<i>?</i>            | **Object**                                                   | Optional parameters _(default \{\})_                         |
 | options.concavity<i>?</i>  | **number**                                                   | 1 - thin shape. Infinity - convex hull. _(default Infinity)_ |
-| options.properties<i>?</i> | **Object**                                                   | Translate Properties to Feature _(default \{})_              |
+| options.properties<i>?</i> | **Object**                                                   | Translate Properties to Feature _(default \{\})_             |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a convex hull
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a convex hull
 
 </ul>
 

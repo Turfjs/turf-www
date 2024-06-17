@@ -2,7 +2,7 @@
 title: polygonToLine
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,16 +13,16 @@ Converts a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) to [(Mul
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                               | Description                                              |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | Feature to convert                                       |
-| options<i>?</i>            | **Object**                                                                                                                                                                                         | Optional parameters _(default \{})_                      |
-| options.properties<i>?</i> | **Object**                                                                                                                                                                                         | translates GeoJSON properties to Feature _(default \{})_ |
+| Name                       | Type                                                                                                                                                                                                | Description                                               |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | Feature to convert                                        |
+| options<i>?</i>            | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                      |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                          | translates GeoJSON properties to Feature _(default \{\})_ |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring>** converted (Multi)Polygon to (Multi)LineString
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring\>** converted (Multi)Polygon to (Multi)LineString
 
 </ul>
 

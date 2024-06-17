@@ -2,7 +2,7 @@
 title: polygonSmooth
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,16 +13,16 @@ Warning: may create degenerate polygons.
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                                                                                       | Description                                                                                       |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| inputPolys                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | (Multi)Polygon(s) to smooth                                                                       |
-| options<i>?</i>            | **Object**                                                                                                                                                                                                                                                                 | Optional parameters _(default \{})_                                                               |
-| options.iterations<i>?</i> | **string**                                                                                                                                                                                                                                                                 | THe number of times to smooth the polygon. A higher value means a smoother polygon. _(default 1)_ |
+| Name                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| inputPolys                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | (Multi)Polygon(s) to smooth                                                                       |
+| options<i>?</i>            | **Object**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Optional parameters _(default \{\})_                                                              |
+| options.iterations<i>?</i> | **string**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | The number of times to smooth the polygon. A higher value means a smoother polygon. _(default 1)_ |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** FeatureCollection containing the smoothed polygon/poylgons
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** FeatureCollection containing the smoothed polygon/multipoylgons
 
 </ul>
 

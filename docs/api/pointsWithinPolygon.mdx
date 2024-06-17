@@ -2,7 +2,7 @@
 title: pointsWithinPolygon
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,15 +12,15 @@ Finds [Points](https://tools.ietf.org/html/rfc7946#section-3.1.2) or [MultiPoint
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                                                                      | Description                                     |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| points   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)>**                                                                    | Point(s) or MultiPoint(s) as input search       |
-| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | (Multi)Polygon(s) to check if points are within |
+| Name     | Type                                                                                                                                                                                                                                                                                                                                       | Description                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| points   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)\>**                                                                    | Point(s) or MultiPoint(s) as input search       |
+| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | (Multi)Polygon(s) to check if points are within |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)>** Point(s) or MultiPoint(s) with positions that land within at least one polygon.  The geometry type will match what was passsed in
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)\>** Point(s) or MultiPoint(s) with positions that land within at least one polygon.  The geometry type will match what was passsed in
 
 </ul>
 

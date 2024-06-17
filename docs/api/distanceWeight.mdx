@@ -2,7 +2,7 @@
 title: distanceWeight
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -10,20 +10,20 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Parameters
 
-| Name                            | Type                                                                           | Description                                                                                                                         |
-| ------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any>** | FeatureCollection.                                                                                                                  |
-| options<i>?</i>                 | **Object**                                                                     | option object.                                                                                                                      |
-| options.threshold<i>?</i>       | **number**                                                                     | If the distance between neighbor and target features is greater than threshold, the weight of that neighbor is 0. _(default 10000)_ |
-| options.p<i>?</i>               | **number**                                                                     | Minkowski p-norm distance parameter. 1: Manhattan distance. 2: Euclidean distance. 1=\<p\<=infinity. _(default 2)_                  |
-| options.binary<i>?</i>          | **boolean**                                                                    | If true, weight=1 if d \<= threshold otherwise weight=0. If false, weight=Math.pow(d, alpha). _(default false)_                     |
-| options.alpha<i>?</i>           | **number**                                                                     | distance decay parameter. A big value means the weight decay quickly as distance increases. _(default -1)_                          |
-| options.standardization<i>?</i> | **boolean**                                                                    | row standardization. _(default false)_                                                                                              |
+| Name                            | Type                                                                            | Description                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>** | FeatureCollection.                                                                                                                  |
+| options<i>?</i>                 | **Object**                                                                      | option object.                                                                                                                      |
+| options.threshold<i>?</i>       | **number**                                                                      | If the distance between neighbor and target features is greater than threshold, the weight of that neighbor is 0. _(default 10000)_ |
+| options.p<i>?</i>               | **number**                                                                      | Minkowski p-norm distance parameter. 1: Manhattan distance. 2: Euclidean distance. 1=\<p\<=infinity. _(default 2)_                  |
+| options.binary<i>?</i>          | **boolean**                                                                     | If true, weight=1 if d \<= threshold otherwise weight=0. If false, weight=Math.pow(d, alpha). _(default false)_                     |
+| options.alpha<i>?</i>           | **number**                                                                      | distance decay parameter. A big value means the weight decay quickly as distance increases. _(default -1)_                          |
+| options.standardization<i>?</i> | **boolean**                                                                     | row standardization. _(default false)_                                                                                              |
 
 ### Returns
 
 <ul>
-  **Array\<Array\<number>>** distance weight matrix.
+  **Array\<Array\<number\>\>** distance weight matrix.
 
 </ul>
 

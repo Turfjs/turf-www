@@ -2,7 +2,7 @@
 title: pointToLineDistance
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,13 +13,13 @@ minimum distance between the point and any segment of the `LineString`.
 
 ### Parameters
 
-| Name                   | Type                                                                                                                                          | Description                                                                                                                                             |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| pt                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)> \| Array\<number>** | Feature or Geometry                                                                                                                                     |
-| line                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>**              | GeoJSON Feature or Geometry                                                                                                                             |
-| options<i>?</i>        | **Object**                                                                                                                                    | Optional parameters _(default \{})_                                                                                                                     |
-| options.units<i>?</i>  | **string**                                                                                                                                    | can be anything supported by turf/convertLength (ex: degrees, radians, miles, or kilometers) _(default "kilometers")_                                   |
-| options.method<i>?</i> | **string**                                                                                                                                    | wether to calculate the distance based on geodesic (spheroid) or planar (flat) method. Valid options are 'geodesic' or 'planar'. _(default "geodesic")_ |
+| Name                   | Type                                                                                                                                            | Description                                                                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pt                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| Array\<number\>** | Feature or Geometry                                                                                                                                     |
+| line                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>**               | GeoJSON Feature or Geometry                                                                                                                             |
+| options<i>?</i>        | **Object**                                                                                                                                      | Optional parameters _(default \{\})_                                                                                                                    |
+| options.units<i>?</i>  | **string**                                                                                                                                      | can be anything supported by turf/convertLength (ex: degrees, radians, miles, or kilometers) _(default "kilometers")_                                   |
+| options.method<i>?</i> | **string**                                                                                                                                      | wether to calculate the distance based on geodesic (spheroid) or planar (flat) method. Valid options are 'geodesic' or 'planar'. _(default "geodesic")_ |
 
 ### Returns
 

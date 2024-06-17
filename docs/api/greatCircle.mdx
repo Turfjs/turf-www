@@ -2,7 +2,7 @@
 title: greatCircle
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -18,15 +18,15 @@ be split into a `MultiLineString`.
 | -------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | start                      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | source point feature                                                                                                                    |
 | end                        | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | destination point feature                                                                                                               |
-| options<i>?</i>            | **Object**                                                     | Optional parameters _(default \{})_                                                                                                     |
-| options.properties<i>?</i> | **Object**                                                     | line feature properties _(default \{})_                                                                                                 |
+| options<i>?</i>            | **Object**                                                     | Optional parameters _(default \{\})_                                                                                                    |
+| options.properties<i>?</i> | **Object**                                                     | line feature properties _(default \{\})_                                                                                                |
 | options.npoints<i>?</i>    | **number**                                                     | number of points _(default 100)_                                                                                                        |
 | options.offset<i>?</i>     | **number**                                                     | offset controls the likelyhood that lines will be split which cross the dateline. The higher the number the more likely. _(default 10)_ |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** great circle line feature
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** great circle line feature
 
 </ul>
 

@@ -2,7 +2,7 @@
 title: hexGrid
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -14,20 +14,20 @@ described in [Hexagonal Grids](http://www.redblobgames.com/grids/hexagons/).
 
 ### Parameters
 
-| Name                       | Type                                                                                                                          | Description                                                                                                                               |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                     | extent in [minX, minY, maxX, maxY] order                                                                                                  |
-| cellSide                   | **number**                                                                                                                    | length of the side of the the hexagons or triangles, in units. It will also coincide with the radius of the circumcircle of the hexagons. |
-| options<i>?</i>            | **Object**                                                                                                                    | Optional parameters _(default \{})_                                                                                                       |
-| options.units<i>?</i>      | **string**                                                                                                                    | used in calculating cell size, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                     |
-| options.properties<i>?</i> | **Object**                                                                                                                    | passed to each hexagon or triangle of the grid _(default \{})_                                                                            |
-| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                                                       |
-| options.triangles<i>?</i>  | **boolean**                                                                                                                   | whether to return as triangles instead of hexagons _(default false)_                                                                      |
+| Name                       | Type                                                                                                                           | Description                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                      | extent in [minX, minY, maxX, maxY] order                                                                                                  |
+| cellSide                   | **number**                                                                                                                     | length of the side of the the hexagons or triangles, in units. It will also coincide with the radius of the circumcircle of the hexagons. |
+| options<i>?</i>            | **Object**                                                                                                                     | Optional parameters _(default \{\})_                                                                                                      |
+| options.units<i>?</i>      | **string**                                                                                                                     | used in calculating cell size, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                     |
+| options.properties<i>?</i> | **Object**                                                                                                                     | passed to each hexagon or triangle of the grid _(default \{\})_                                                                           |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                                                       |
+| options.triangles<i>?</i>  | **boolean**                                                                                                                    | whether to return as triangles instead of hexagons _(default false)_                                                                      |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a hexagonal grid
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a hexagonal grid
 
 </ul>
 

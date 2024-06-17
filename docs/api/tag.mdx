@@ -2,7 +2,7 @@
 title: tag
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,17 +12,17 @@ Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                         | Description                                                            |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| points   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>**                                                                        | input points                                                           |
-| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | input (multi)polygons                                                  |
-| field    | **string**                                                                                                                                                                                                   | property in `polygons` to add to joined \{\<Point>} features           |
-| outField | **string**                                                                                                                                                                                                   | property in `points` in which to store joined property from `polygons` |
+| Name     | Type                                                                                                                                                                                                          | Description                                                            |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| points   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>**                                                                        | input points                                                           |
+| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input (multi)polygons                                                  |
+| field    | **string**                                                                                                                                                                                                    | property in `polygons` to add to joined \{\<Point\>\} features         |
+| outField | **string**                                                                                                                                                                                                    | property in `points` in which to store joined property from `polygons` |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** points with `````containingPolyId````` property containing values from `````polyId`````
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** points with `containingPolyId` property containing values from `polyId`
 
 </ul>
 

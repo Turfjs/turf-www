@@ -2,7 +2,7 @@
 title: truncate
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -15,7 +15,7 @@ Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the 
 | Name                        | Type                                                         | Description                                                                                     |
 | --------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
 | geojson                     | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection.                         |
-| options<i>?</i>             | **Object**                                                   | Optional parameters _(default \{})_                                                             |
+| options<i>?</i>             | **Object**                                                   | Optional parameters _(default \{\})_                                                            |
 | options.precision<i>?</i>   | **number**                                                   | coordinate decimal precision _(default 6)_                                                      |
 | options.coordinates<i>?</i> | **number**                                                   | maximum number of coordinates (primarly used to remove z coordinates) _(default 3)_             |
 | options.mutate<i>?</i>      | **boolean**                                                  | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |

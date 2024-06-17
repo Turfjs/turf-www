@@ -2,7 +2,7 @@
 title: length
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,11 +12,11 @@ Takes a [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) and measures it
 
 ### Parameters
 
-| Name                  | Type                                                                                                                                                                                                     | Description                                                          |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| geojson               | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)>** | GeoJSON to measure                                                   |
-| options<i>?</i>       | **Object**                                                                                                                                                                                               | Optional parameters _(default \{})_                                  |
-| options.units<i>?</i> | **string**                                                                                                                                                                                               | can be degrees, radians, miles, or kilometers _(default kilometers)_ |
+| Name                  | Type                                                                                                                                                                                                      | Description                                                          |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| geojson               | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | GeoJSON to measure                                                   |
+| options<i>?</i>       | **Object**                                                                                                                                                                                                | Optional parameters _(default \{\})_                                 |
+| options.units<i>?</i> | **string**                                                                                                                                                                                                | can be degrees, radians, miles, or kilometers _(default kilometers)_ |
 
 ### Returns
 

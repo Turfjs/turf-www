@@ -2,7 +2,7 @@
 title: tin
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -19,15 +19,15 @@ triangle.
 
 ### Parameters
 
-| Name      | Type                                                                                                                                  | Description                                                                                                                                       |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| points    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | input points                                                                                                                                      |
-| z<i>?</i> | **String**                                                                                                                            | name of the property from which to pull z values This is optional: if not given, then there will be no extra data added to the derived triangles. |
+| Name      | Type                                                                                                                                   | Description                                                                                                                                       |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | input points                                                                                                                                      |
+| z<i>?</i> | **String**                                                                                                                             | name of the property from which to pull z values This is optional: if not given, then there will be no extra data added to the derived triangles. |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** TIN output
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** TIN output
 
 </ul>
 

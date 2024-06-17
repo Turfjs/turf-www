@@ -2,21 +2,23 @@
 title: booleanEqual
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
 Determine whether two geometries of the same type have identical X,Y coordinate values.
-See http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm
+See [http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm](http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relations.htm)
 
 ### Parameters
 
-| Name     | Type                                                                                                                          | Description   |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input |
-| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input |
+| Name                      | Type                                                                                                                          | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| feature1                  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input                                                     |
+| feature2                  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input                                                     |
+| options<i>?</i>           | **Object**                                                                                                                    | Optional parameters _(default \{\})_                              |
+| options.precision<i>?</i> | **number**                                                                                                                    | decimal precision to use when comparing coordinates _(default 6)_ |
 
 ### Returns
 

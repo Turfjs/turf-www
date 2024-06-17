@@ -2,7 +2,7 @@
 title: interpolate
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,20 +12,20 @@ Takes a set of points and estimates their 'property' values on a grid using the 
 
 ### Parameters
 
-| Name                     | Type                                                                                                                                  | Description                                                                                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| points                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | with known value                                                                                                                                    |
-| cellSize                 | **number**                                                                                                                            | the distance across each grid point                                                                                                                 |
-| options<i>?</i>          | **Object**                                                                                                                            | Optional parameters _(default \{})_                                                                                                                 |
-| options.gridType<i>?</i> | **string**                                                                                                                            | defines the output format based on a Grid Type (options: 'square' \| 'point' \| 'hex' \| 'triangle') _(default 'square')_                           |
-| options.property<i>?</i> | **string**                                                                                                                            | the property name in `points` from which z-values will be pulled, zValue fallbacks to 3rd coordinate if no property exists. _(default 'elevation')_ |
-| options.units<i>?</i>    | **string**                                                                                                                            | used in calculating cellSize, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                                |
-| options.weight<i>?</i>   | **number**                                                                                                                            | exponent regulating the distance-decay weighting _(default 1)_                                                                                      |
+| Name                     | Type                                                                                                                                   | Description                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | with known value                                                                                                                                    |
+| cellSize                 | **number**                                                                                                                             | the distance across each grid point                                                                                                                 |
+| options<i>?</i>          | **Object**                                                                                                                             | Optional parameters _(default \{\})_                                                                                                                |
+| options.gridType<i>?</i> | **string**                                                                                                                             | defines the output format based on a Grid Type (options: 'square' \| 'point' \| 'hex' \| 'triangle') _(default 'square')_                           |
+| options.property<i>?</i> | **string**                                                                                                                             | the property name in `points` from which z-values will be pulled, zValue fallbacks to 3rd coordinate if no property exists. _(default 'elevation')_ |
+| options.units<i>?</i>    | **string**                                                                                                                             | used in calculating cellSize, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                                |
+| options.weight<i>?</i>   | **number**                                                                                                                             | exponent regulating the distance-decay weighting _(default 1)_                                                                                      |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** grid of points or polygons with interpolated 'property'
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of points or polygons with interpolated 'property'
 
 </ul>
 

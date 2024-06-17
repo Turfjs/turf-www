@@ -2,7 +2,7 @@
 title: transformScale
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,13 +13,13 @@ If a FeatureCollection is provided, the origin point will be calculated based on
 
 ### Parameters
 
-| Name                   | Type                                                                     | Description                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**             | GeoJSON to be scaled                                                                                         |
-| factor                 | **number**                                                               | of scaling, positive or negative values greater than 0                                                       |
-| options<i>?</i>        | **Object**                                                               | Optional parameters _(default \{})_                                                                          |
-| options.origin<i>?</i> | **string \| [Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid) _(default 'centroid')_ |
-| options.mutate<i>?</i> | **boolean**                                                              | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_              |
+| Name                   | Type                                                                     | Description                                                                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**             | GeoJSON to be scaled                                                                                                                                                           |
+| factor                 | **number**                                                               | of scaling, positive values greater than 0. Numbers between 0 and 1 will shrink the geojson, numbers greater than 1 will expand it, a factor of 1 will not change the geojson. |
+| options<i>?</i>        | **Object**                                                               | Optional parameters _(default \{\})_                                                                                                                                           |
+| options.origin<i>?</i> | **string \| [Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid) _(default 'centroid')_                                                                   |
+| options.mutate<i>?</i> | **boolean**                                                              | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_                                                                                |
 
 ### Returns
 

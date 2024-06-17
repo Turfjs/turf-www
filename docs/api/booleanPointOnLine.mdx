@@ -2,7 +2,7 @@
 title: booleanPointOnLine
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,13 +13,13 @@ start and end vertices of the linestring.
 
 ### Parameters
 
-| Name                              | Type                                                                                                                             | Description                                                                                                                |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| pt                                | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                   | GeoJSON Point                                                                                                              |
-| line                              | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>** | GeoJSON LineString                                                                                                         |
-| options<i>?</i>                   | **Object**                                                                                                                       | Optional parameters _(default \{})_                                                                                        |
-| options.ignoreEndVertices<i>?</i> | **boolean**                                                                                                                      | whether to ignore the start and end vertices. _(default false)_                                                            |
-| options.epsilon<i>?</i>           | **number**                                                                                                                       | Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points |
+| Name                              | Type                                                                                                                              | Description                                                                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| pt                                | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                    | GeoJSON Point                                                                                                              |
+| line                              | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | GeoJSON LineString                                                                                                         |
+| options<i>?</i>                   | **Object**                                                                                                                        | Optional parameters _(default \{\})_                                                                                       |
+| options.ignoreEndVertices<i>?</i> | **boolean**                                                                                                                       | whether to ignore the start and end vertices. _(default false)_                                                            |
+| options.epsilon<i>?</i>           | **number**                                                                                                                        | Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points |
 
 ### Returns
 

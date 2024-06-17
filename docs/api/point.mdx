@@ -2,7 +2,7 @@
 title: point
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -14,16 +14,16 @@ Creates a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) [Feature](h
 
 | Name                 | Type                 | Description                                                               |
 | -------------------- | -------------------- | ------------------------------------------------------------------------- |
-| coordinates          | **Array\<number>**   | longitude, latitude position (each in decimal degrees)                    |
-| properties<i>?</i>   | **Object**           | an Object of key-value pairs to add as properties _(default \{})_         |
-| options<i>?</i>      | **Object**           | Optional Parameters _(default \{})_                                       |
-| options.bbox<i>?</i> | **Array\<number>**   | Bounding Box Array [west, south, east, north] associated with the Feature |
+| coordinates          | **Array\<number\>**  | longitude, latitude position (each in decimal degrees)                    |
+| properties<i>?</i>   | **Object**           | an Object of key-value pairs to add as properties _(default \{\})_        |
+| options<i>?</i>      | **Object**           | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **Array\<number\>**  | Bounding Box Array [west, south, east, north] associated with the Feature |
 | options.id<i>?</i>   | **string \| number** | Identifier associated with the Feature                                    |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** a Point feature
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a Point feature
 
 </ul>
 

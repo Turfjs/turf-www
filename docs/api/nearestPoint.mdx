@@ -2,7 +2,7 @@
 title: nearestPoint
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -15,15 +15,17 @@ is geodesic.
 
 ### Parameters
 
-| Name        | Type                                                                                                                                  | Description             |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| targetPoint | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                        | the reference point     |
-| points      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | against input point set |
+| Name                  | Type                                                                                                                                   | Description                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| targetPoint           | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                         | the reference point                                      |
+| points                | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | against input point set                                  |
+| options<i>?</i>       | **Object**                                                                                                                             | Optional parameters _(default \{\})_                     |
+| options.units<i>?</i> | **string**                                                                                                                             | the units of the numeric result _(default 'kilometers')_ |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** the closest point in the set to the reference point
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the closest point in the set to the reference point
 
 </ul>
 

@@ -2,7 +2,7 @@
 title: moranIndex
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,12 +12,12 @@ Moran's I measures patterns of attribute values associated with features.
 The method reveal whether similar values tend to occur near each other,
 or whether high or low values are interspersed.
 
-Moran's I > 0 means a clusterd pattern.
+Moran's I \> 0 means a clusterd pattern.
 Moran's I \< 0 means a dispersed pattern.
 Moran's I = 0 means a random pattern.
 
 In order to test the significance of the result. The z score is calculated.
-A positive enough z-score (ex. >1.96) indicates clustering,
+A positive enough z-score (ex. \>1.96) indicates clustering,
 while a negative enough z-score (ex. \<-1.96) indicates a dispersed pattern.
 
 the z-score can be calculated based on a normal or random assumption.
@@ -30,16 +30,16 @@ the z-score can be calculated based on a normal or random assumption.
 
 ### Parameters
 
-| Name                            | Type                                                                           | Description                                                |
-| ------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------- |
-| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any>** |                                                            |
-| options                         | **Object**                                                                     |                                                            |
-| options.inputField              | **string**                                                                     | the property name, must contain numeric values             |
-| options.threshold<i>?</i>       | **number**                                                                     | the distance threshold _(default 100000)_                  |
-| options.p<i>?</i>               | **number**                                                                     | the Minkowski p-norm distance parameter _(default 2)_      |
-| options.binary<i>?</i>          | **boolean**                                                                    | whether transfrom the distance to binary _(default false)_ |
-| options.alpha<i>?</i>           | **number**                                                                     | the distance decay parameter _(default -1)_                |
-| options.standardization<i>?</i> | **boolean**                                                                    | wheter row standardization the distance _(default true)_   |
+| Name                            | Type                                                                            | Description                                                |
+| ------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>** |                                                            |
+| options                         | **Object**                                                                      |                                                            |
+| options.inputField              | **string**                                                                      | the property name, must contain numeric values             |
+| options.threshold<i>?</i>       | **number**                                                                      | the distance threshold _(default 100000)_                  |
+| options.p<i>?</i>               | **number**                                                                      | the Minkowski p-norm distance parameter _(default 2)_      |
+| options.binary<i>?</i>          | **boolean**                                                                     | whether transfrom the distance to binary _(default false)_ |
+| options.alpha<i>?</i>           | **number**                                                                      | the distance decay parameter _(default -1)_                |
+| options.standardization<i>?</i> | **boolean**                                                                     | wheter row standardization the distance _(default true)_   |
 
 ### Returns
 

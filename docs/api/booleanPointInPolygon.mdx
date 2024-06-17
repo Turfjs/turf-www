@@ -2,7 +2,7 @@
 title: booleanPointInPolygon
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,17 +13,17 @@ resides inside the polygon. The polygon can be convex or concave. The function a
 
 ### Parameters
 
-| Name                           | Type                                                                                                                                                                                               | Description                                                                                                                       |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| point                          | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                     | input point                                                                                                                       |
-| polygon                        | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | input polygon or multipolygon                                                                                                     |
-| options<i>?</i>                | **Object**                                                                                                                                                                                         | Optional parameters _(default \{})_                                                                                               |
-| options.ignoreBoundary<i>?</i> | **boolean**                                                                                                                                                                                        | True if polygon boundary should be ignored when determining if the point is inside the polygon otherwise false. _(default false)_ |
+| Name                           | Type                                                                                                                                                                                                | Description                                                                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| point                          | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | input point                                                                                                                       |
+| polygon                        | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input polygon or multipolygon                                                                                                     |
+| options<i>?</i>                | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                                                                                              |
+| options.ignoreBoundary<i>?</i> | **boolean**                                                                                                                                                                                         | True if polygon boundary should be ignored when determining if the point is inside the polygon otherwise false. _(default false)_ |
 
 ### Returns
 
 <ul>
-  **boolean** `````true````` if the Point is inside the Polygon; `````false````` if the Point is not inside the Polygon
+  **boolean** `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
 
 </ul>
 

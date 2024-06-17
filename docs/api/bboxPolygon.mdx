@@ -2,7 +2,7 @@
 title: bboxPolygon
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,17 +12,17 @@ Takes a bbox and returns an equivalent [polygon](https://tools.ietf.org/html/rfc
 
 ### Parameters
 
-| Name                       | Type                                                      | Description                                     |
-| -------------------------- | --------------------------------------------------------- | ----------------------------------------------- |
-| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** | extent in [minX, minY, maxX, maxY] order        |
-| options<i>?</i>            | **Object**                                                | Optional parameters _(default \{})_             |
-| options.properties<i>?</i> | **Properties**                                            | Translate properties to Polygon _(default \{})_ |
-| options.id<i>?</i>         | **string \| number**                                      | Translate Id to Polygon _(default \{})_         |
+| Name                       | Type                                                      | Description                                      |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------ |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** | extent in [minX, minY, maxX, maxY] order         |
+| options<i>?</i>            | **Object**                                                | Optional parameters _(default \{\})_             |
+| options.properties<i>?</i> | **Properties**                                            | Translate properties to Polygon _(default \{\})_ |
+| options.id<i>?</i>         | **string \| number**                                      | Translate Id to Polygon _(default \{\})_         |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a Polygon representation of the bounding box
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a Polygon representation of the bounding box
 
 </ul>
 

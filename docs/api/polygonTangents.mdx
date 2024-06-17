@@ -2,7 +2,7 @@
 title: polygonTangents
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -12,15 +12,15 @@ Finds the tangents of a [(Multi)Polygon](https://tools.ietf.org/html/rfc7946#sec
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                               | Description                          |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| pt      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                     | to calculate the tangent points from |
-| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)>** | to get tangents from                 |
+| Name    | Type                                                                                                                                                                                                | Description                          |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| pt      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | to calculate the tangent points from |
+| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | to get tangents from                 |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** Feature Collection containing the two tangent points
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** Feature Collection containing the two tangent points
 
 </ul>
 

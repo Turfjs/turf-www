@@ -2,7 +2,7 @@
 title: nearestPointToLine
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -13,18 +13,18 @@ to a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4). The returned poi
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                             | Description                                                                                                |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** | Point Collection                                                                                           |
-| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)>**                  | Line Feature                                                                                               |
-| options<i>?</i>            | **Object**                                                                                                                                                                                                       | Optional parameters                                                                                        |
-| options.units<i>?</i>      | **string**                                                                                                                                                                                                       | unit of the output distance property (eg: degrees, radians, miles, or kilometers) _(default 'kilometers')_ |
-| options.properties<i>?</i> | **Object**                                                                                                                                                                                                       | Translate Properties to Point _(default \{})_                                                              |
+| Name                       | Type                                                                                                                                                                                                              | Description                                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | Point Collection                                                                                           |
+| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>**                  | Line Feature                                                                                               |
+| options<i>?</i>            | **Object**                                                                                                                                                                                                        | Optional parameters                                                                                        |
+| options.units<i>?</i>      | **string**                                                                                                                                                                                                        | unit of the output distance property (eg: degrees, radians, miles, or kilometers) _(default 'kilometers')_ |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                                        | Translate Properties to Point _(default \{\})_                                                             |
 
 ### Returns
 
 <ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)>** the closest point
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the closest point
 
 </ul>
 

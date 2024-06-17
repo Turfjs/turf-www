@@ -2,7 +2,7 @@
 title: transformRotate
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -16,7 +16,7 @@ Rotates any geojson Feature or Geometry of a specified angle, around its `centro
 | ---------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**   | object to be rotated                                                                            |
 | angle                  | **number**                                                     | of rotation in decimal degrees, positive clockwise                                              |
-| options<i>?</i>        | **Object**                                                     | Optional parameters _(default \{})_                                                             |
+| options<i>?</i>        | **Object**                                                     | Optional parameters _(default \{\})_                                                            |
 | options.pivot<i>?</i>  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | point around which the rotation will be performed _(default 'centroid')_                        |
 | options.mutate<i>?</i> | **boolean**                                                    | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 

@@ -2,25 +2,25 @@
 title: tesselate
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 ### Description
 
-Tesselates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)> into a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)> of triangles
+Tesselates a [Feature\<Polygon\>](Feature<Polygon>) into a [FeatureCollection\<Polygon\>](FeatureCollection<Polygon>) of triangles
 using [earcut](https://github.com/mapbox/earcut).
 
 ### Parameters
 
-| Name | Type                                                                                                                          | Description              |
-| ---- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| poly | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** | the polygon to tesselate |
+| Name | Type                                                                                                                           | Description              |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
+| poly | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | the polygon to tesselate |
 
 ### Returns
 
 <ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)>** a geometrycollection feature
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a geometrycollection feature
 
 </ul>
 
