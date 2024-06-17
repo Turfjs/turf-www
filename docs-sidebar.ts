@@ -9,6 +9,10 @@ export default [
   },
   {
     type: "doc",
+    id: "upgrade-guide",
+  },
+  {
+    type: "doc",
     id: "contributing",
   },
 ];

@@ -4,6 +4,10 @@ sidebar_position: 2
 
 # Getting started
 
+How you add Turf to your project will dependend on your environment and tooling but here are some guidelines to get you started.
+
+The source of truth for published versions of Turf is [NPM](https://www.npmjs.com/package/@turf/turf?activeTab=versions).  You are welcome to use other providers that republish these packages.
+
 ## Installation
 
 ### In Node.js
@@ -17,27 +21,40 @@ npm install @turf/helpers
 npm install @turf/buffer
 ```
 
+As of v7, both CommonJS and ESM bundles are included.
+
 ### In browser
 
-Download the [minified file](https://npmcdn.com/@turf/turf/turf.min.js), and include it in a script tag. This will expose a global variable named `turf`.
+Whether downloading locally, or including a 3rd party version of turf directly, there are multiple CDN's to choose from and each has a URL scheme that allows you to specify what version you want, with some flexibility.  Structure your URL as appropriate for your needs:
+
+- [jsdelivr](https://www.jsdelivr.com/)
+  - browse: https://www.jsdelivr.com/package/npm/@turf/turf
+  - latest within major version: https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js
+  - latest within minor version: https://cdn.jsdelivr.net/npm/@turf/turf@7.0/turf.min.js
+  - specific version: https://cdn.jsdelivr.net/npm/@turf/turf@7.0.0/turf.min.js
+- [unpkg](https://www.unpkg.com/)
+  - browse: https://unpkg.com/browse/@turf/turf@7.0.0/
+  - latest within major version: https://unpkg.com/@turf/turf@^7/turf.min.js
+  - latest within minor version: https://unpkg.com/@turf/turf@^7.0/turf.min.js
+  - specific version: https://unpkg.com/@turf/turf@7.0.0/turf.min.js
+
+For example, download the [latest minified version 7](https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js), and include it in a script tag. This will expose a global variable named `turf`.
 
 ```html
 <script src="turf.min.js" charset="utf-8"></script>
 ```
 
-You can also include it directly from a CDN:
+You can also include it directly from a CDN.  This example specifies the latest version within v7.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
 ```
 
-## Upgrading
-
-When upgrading to a newer version of Turf, see [CHANGELOG](https://github.com/Turfjs/turf/blob/master/CHANGELOG.md) for breaking changes and migration steps.
+It is not recommended to use a CDN URL that gives you the `latest` bleeding edge version of Turf, especially in a production app.  There are breaking changes to turf functions between major versions that can leave your app in a broken state because it always gives your browser users the latest version.
 
 ## TypeScript
 
-TypeScript definitions are packaged with each module.  Turf uses the `@types/geojson` package for base GeoJSON type definitions such as `Polygon`, `FeatureCollection`, etc. and does not re-export them.  Users will need to install and import these types directly e.g. `import { Polygon, FeatureCollection } from 'geojson'`.
+TypeScript definitions are included and exported by each Turf module, except for GeoJSON type definitions (e.g. `Polygon`, `FeatureCollection`) which are provided by the [@types/geojson](https://www.npmjs.com/package/@types/geojson) package.  Turf does not re-export these type definitionas.  If you need them, you can import and use them directly, e.g. `import { Polygon, FeatureCollection } from 'geojson'`.  You may need to install the `@types/geojson` package first.
 
 ## Other languages
 
