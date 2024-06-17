@@ -11,6 +11,7 @@ import * as prettier from "prettier";
   const documentation = await import("documentation");
 
   const srcPathDir = path.resolve(__dirname, "..", "turf");
+  const docsOutDir = path.resolve(__dirname, "..", "docs");
 
   console.log(srcPathDir);
   // ...
@@ -86,7 +87,7 @@ import * as prettier from "prettier";
                 trailingSemi: "none",
               });
               fs.writeFileSync(
-                srcPathDir + "/../docs/api/" + filename + ".mdx",
+                docsOutDir + "/api/" + filename + ".mdx",
                 prettyMdx,
               );
               if (functionCategories[filename]) {
@@ -393,8 +394,7 @@ export function Map${index}() {
 
   function mdxEscape(mdxIn) {
     return mdxIn
-      .replace(/(?<!\\)([\{\<])/g, "\\$1")
-      .replace(/`(\w+)`/g, "```$1```")
+      .replace(/(?<!\\)([\{\}\<\>])/g, "\\$1")
       .replace(/\|/g, " \\| ");
   }
 
@@ -474,7 +474,7 @@ export function Map${index}() {
         mdx = mdx.concat("](", url, ")");
         break;
       case "inlineCode":
-        mdx = mdx.concat("```", node.value, "```");
+        mdx = mdx.concat("`", node.value, "`");
         break;
       case "strong":
         mdx = mdx.concat("**");
@@ -494,6 +494,7 @@ export function Map${index}() {
         // Need special path for this to be able to pass ordered or unordered
         // prefix to renderListItemMdx()
         mdx = mdx.concat(renderListMdx(node));
+        mdx = mdx.concat("\n\n");
         break;
       case "TypeApplication":
         mdx = mdx.concat(
