@@ -224,6 +224,7 @@ export default [
       "api/booleanParallel",
       "api/booleanPointInPolygon",
       "api/booleanPointOnLine",
+      "api/booleanTouches",
       "api/booleanWithin",
     ],
   },
@@ -251,7 +252,6 @@ export default [
     items: [
       "api/angle",
       "api/booleanIntersects",
-      "api/booleanTouches",
       "api/booleanValid",
       "api/centerMean",
       "api/centerMedian",
@@ -274,6 +274,7 @@ export default [
       "api/polygons",
       "api/pt",
       "api/quadratAnalysis",
+      "api/rbush",
       "api/standardDeviationalEllipse",
       "api/variance",
     ],

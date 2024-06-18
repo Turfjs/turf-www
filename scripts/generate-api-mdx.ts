@@ -1,4 +1,3 @@
-import { build, formats } from "documentation";
 import path from "path";
 import yaml from "yamljs";
 import fs from "fs";
@@ -7,7 +6,12 @@ import { loadJsonFileSync } from "load-json-file";
 import * as prettier from "prettier";
 
 (async () => {
+  // documentation v14 has moved to ESM so need to import as if async, and wrap
+  // in an IIFE as top level async not allowed.
+  const documentation = await import("documentation");
+
   const srcPathDir = path.resolve(__dirname, "..", "turf");
+  const docsOutDir = path.resolve(__dirname, "..", "docs");
 
   console.log(srcPathDir);
   // ...
@@ -57,11 +61,11 @@ import * as prettier from "prettier";
       const indexFiles = globSync(path.join(packageDir, "index.[jt]s"));
       if (indexFiles.length === 1) {
         const indexFile = indexFiles[0];
-        const res = await build([path.resolve(indexFile)], {
+        const res = await documentation.build([path.resolve(indexFile)], {
           external: [],
           shallow: true,
         });
-        const moduleObj = JSON.parse(await formats.json(res));
+        const moduleObj = JSON.parse(await documentation.formats.json(res));
 
         // Multiple functions e.g. helpers or meta
         await Promise.all(
@@ -83,7 +87,7 @@ import * as prettier from "prettier";
                 trailingSemi: "none",
               });
               fs.writeFileSync(
-                srcPathDir + "/../docs/api/" + filename + ".mdx",
+                docsOutDir + "/api/" + filename + ".mdx",
                 prettyMdx,
               );
               if (functionCategories[filename]) {
@@ -176,7 +180,7 @@ export default ${JSON.stringify(sidebarConfig)}`;
 title: ${name}
 ---
 
-import * as turf from "@turf/turf";
+import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -390,8 +394,7 @@ export function Map${index}() {
 
   function mdxEscape(mdxIn) {
     return mdxIn
-      .replace(/(?<!\\)([\{\<])/g, "\\$1")
-      .replace(/`(\w+)`/g, "```$1```")
+      .replace(/(?<!\\)([\{\}\<\>])/g, "\\$1")
       .replace(/\|/g, " \\| ");
   }
 
@@ -471,7 +474,7 @@ export function Map${index}() {
         mdx = mdx.concat("](", url, ")");
         break;
       case "inlineCode":
-        mdx = mdx.concat("```", node.value, "```");
+        mdx = mdx.concat("`", node.value, "`");
         break;
       case "strong":
         mdx = mdx.concat("**");
@@ -491,6 +494,7 @@ export function Map${index}() {
         // Need special path for this to be able to pass ordered or unordered
         // prefix to renderListItemMdx()
         mdx = mdx.concat(renderListMdx(node));
+        mdx = mdx.concat("\n\n");
         break;
       case "TypeApplication":
         mdx = mdx.concat(
