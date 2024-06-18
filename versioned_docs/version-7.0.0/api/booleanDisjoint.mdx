@@ -1,0 +1,56 @@
+---
+title: booleanDisjoint
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Boolean-disjoint returns (TRUE) if the intersection of the two geometries is an empty set.
+
+### Parameters
+
+| Name     | Type                                                                                                                                 | Description                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+
+### Returns
+
+<ul>
+  **boolean** true/false
+
+</ul>
+
+### Examples
+
+```javascript
+var point = turf.point([2, 2]);
+var line = turf.lineString([
+  [1, 1],
+  [1, 2],
+  [1, 3],
+  [1, 4],
+]);
+
+turf.booleanDisjoint(line, point);
+//=true
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-disjoint
+
+import { booleanDisjoint } from "@turf/boolean-disjoint";
+const result = booleanDisjoint(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanDisjoint(...);
+```

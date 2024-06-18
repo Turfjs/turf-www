@@ -1,0 +1,62 @@
+---
+title: booleanPointInPolygon
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) and determines if the point
+resides inside the polygon. The polygon can be convex or concave. The function accounts for holes.
+
+### Parameters
+
+| Name                           | Type                                                                                                                                                                                                | Description                                                                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| point                          | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | input point                                                                                                                       |
+| polygon                        | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input polygon or multipolygon                                                                                                     |
+| options<i>?</i>                | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                                                                                              |
+| options.ignoreBoundary<i>?</i> | **boolean**                                                                                                                                                                                         | True if polygon boundary should be ignored when determining if the point is inside the polygon otherwise false. _(default false)_ |
+
+### Returns
+
+<ul>
+  **boolean** `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.point([-77, 44]);
+var poly = turf.polygon([
+  [
+    [-81, 41],
+    [-81, 47],
+    [-72, 47],
+    [-72, 41],
+    [-81, 41],
+  ],
+]);
+
+turf.booleanPointInPolygon(pt, poly);
+//= true
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-point-in-polygon
+
+import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
+const result = booleanPointInPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanPointInPolygon(...);
+```

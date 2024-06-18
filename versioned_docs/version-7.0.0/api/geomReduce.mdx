@@ -1,0 +1,71 @@
+---
+title: geomReduce
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Reduce geometry in any GeoJSON object, similar to Array.reduce().
+
+### Parameters
+
+| Name                 | Type                                                                                                                                                                                                  | Description                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object                                                                                            |
+| callback             | **Function**                                                                                                                                                                                          | a method that takes (previousValue, currentGeometry, featureIndex, featureProperties, featureBBox, featureId) |
+| initialValue<i>?</i> | **\***                                                                                                                                                                                                | Value to use as the first argument to the first call of the callback.                                         |
+
+### Returns
+
+<ul>
+  **\*** The value that results from the reduction.
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.geomReduce(
+  features,
+  function (
+    previousValue,
+    currentGeometry,
+    featureIndex,
+    featureProperties,
+    featureBBox,
+    featureId,
+  ) {
+    //=previousValue
+    //=currentGeometry
+    //=featureIndex
+    //=featureProperties
+    //=featureBBox
+    //=featureId
+    return currentGeometry;
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { geomReduce } from "@turf/meta";
+const result = geomReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.geomReduce(...);
+```

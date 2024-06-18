@@ -1,0 +1,107 @@
+---
+title: pointsWithinPolygon
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Finds [Points](https://tools.ietf.org/html/rfc7946#section-3.1.2) or [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3) coordinate positions that fall within [(Multi)Polygon(s)](https://tools.ietf.org/html/rfc7946#section-3.1.6).
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                                                                                                                                                       | Description                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| points   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)\>**                                                                    | Point(s) or MultiPoint(s) as input search       |
+| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | (Multi)Polygon(s) to check if points are within |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3)\>** Point(s) or MultiPoint(s) with positions that land within at least one polygon.  The geometry type will match what was passsed in
+
+</ul>
+
+### Examples
+
+```javascript
+var points = turf.points([
+  [-46.6318, -23.5523],
+  [-46.6246, -23.5325],
+  [-46.6062, -23.5513],
+  [-46.663, -23.554],
+  [-46.643, -23.557],
+]);
+
+var searchWithin = turf.polygon([
+  [
+    [-46.653, -23.543],
+    [-46.634, -23.5346],
+    [-46.613, -23.543],
+    [-46.614, -23.559],
+    [-46.631, -23.567],
+    [-46.653, -23.56],
+    [-46.653, -23.543],
+  ],
+]);
+
+var ptsWithin = turf.pointsWithinPolygon(points, searchWithin);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var points = turf.points([
+    [-46.6318, -23.5523],
+    [-46.6246, -23.5325],
+    [-46.6062, -23.5513],
+    [-46.663, -23.554],
+    [-46.643, -23.557],
+  ]);
+
+  var searchWithin = turf.polygon([
+    [
+      [-46.653, -23.543],
+      [-46.634, -23.5346],
+      [-46.613, -23.543],
+      [-46.614, -23.559],
+      [-46.631, -23.567],
+      [-46.653, -23.56],
+      [-46.653, -23.543],
+    ],
+  ]);
+
+  var ptsWithin = turf.pointsWithinPolygon(points, searchWithin);
+
+  //addToMap
+  var addToMap = { points, searchWithin, ptsWithin };
+  turf.featureEach(ptsWithin, function (currentFeature) {
+    currentFeature.properties["marker-size"] = "large";
+    currentFeature.properties["marker-color"] = "#000";
+  });
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/points-within-polygon
+
+import { pointsWithinPolygon } from "@turf/points-within-polygon";
+const result = pointsWithinPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pointsWithinPolygon(...);
+```

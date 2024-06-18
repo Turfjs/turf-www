@@ -1,0 +1,75 @@
+---
+title: pointGrid
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Creates a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) grid from a bounding box, [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) or [Feature](https://tools.ietf.org/html/rfc7946#section-3.2).
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                                | Description                                                                                          |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| bbox                       | **Array\<number\>**                                                                                                                                                                                 | extent in [minX, minY, maxX, maxY] order                                                             |
+| cellSide                   | **number**                                                                                                                                                                                          | the distance between points, in units                                                                |
+| options<i>?</i>            | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                                                                 |
+| options.units<i>?</i>      | **string**                                                                                                                                                                                          | used in calculating cellSide, can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                  |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                          | passed to each point of the grid _(default \{\})_                                                    |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** grid of points
+
+</ul>
+
+### Examples
+
+```javascript
+var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
+var cellSide = 3;
+var options = { units: "miles" };
+
+var grid = turf.pointGrid(extent, cellSide, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
+  var cellSide = 3;
+  var options = { units: "miles" };
+
+  var grid = turf.pointGrid(extent, cellSide, options);
+
+  //addToMap
+  var addToMap = { grid };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/point-grid
+
+import { pointGrid } from "@turf/point-grid";
+const result = pointGrid(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pointGrid(...);
+```

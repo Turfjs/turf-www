@@ -1,0 +1,71 @@
+---
+title: midpoint
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and returns a point midway between them.
+The midpoint is calculated geodesically, meaning the curvature of the earth is taken into account.
+
+### Parameters
+
+| Name   | Type                                                           | Description  |
+| ------ | -------------------------------------------------------------- | ------------ |
+| point1 | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | first point  |
+| point2 | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | second point |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a point midway between `pt1` and `pt2`
+
+</ul>
+
+### Examples
+
+```javascript
+var point1 = turf.point([144.834823, -37.771257]);
+var point2 = turf.point([145.14244, -37.830937]);
+
+var midpoint = turf.midpoint(point1, point2);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var point1 = turf.point([144.834823, -37.771257]);
+  var point2 = turf.point([145.14244, -37.830937]);
+
+  var midpoint = turf.midpoint(point1, point2);
+
+  //addToMap
+  var addToMap = { point1, point2, midpoint };
+  midpoint.properties["marker-color"] = "#f00";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/midpoint
+
+import { midpoint } from "@turf/midpoint";
+const result = midpoint(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.midpoint(...);
+```
