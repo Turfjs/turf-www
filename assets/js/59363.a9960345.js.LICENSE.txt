@@ -1,0 +1,8 @@
+/*!
+* MarchingSquaresJS
+* version 1.3.3
+* https://github.com/RaumZeit/MarchingSquares.js
+*
+* @license GNU Affero General Public License.
+* Copyright (c) 2015-2019 Ronny Lorenz <ronny@tbi.univie.ac.at>
+*/
