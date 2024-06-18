@@ -9,7 +9,7 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 ### Description
 
 Returns the shortest [path](https://tools.ietf.org/html/rfc7946#section-3.1.4) from [start](https://tools.ietf.org/html/rfc7946#section-3.1.2) to [end](https://tools.ietf.org/html/rfc7946#section-3.1.2) without colliding with
-any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) in [ obstacles](FeatureCollection<Polygon>)
+any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) in obstacles
 
 ### Parameters
 
@@ -64,7 +64,7 @@ export function Map0() {
         [0, -3],
         [0, -7],
       ],
-    ]),
+    ]).geometry,
   };
 
   var path = turf.shortestPath(start, end, options);
