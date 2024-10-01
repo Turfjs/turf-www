@@ -26,9 +26,12 @@ import * as prettier from "prettier";
 
   const sidebarBuckets = {};
   const orderedSidebarBucketKeys: string[] = [];
-  const functionCategories = {};
+  const tocCategories = {};
   let category = "";
 
+  // Assemble user defined categories to place functions into. These will be the
+  // categories in the API sidebar. A few other categories we create
+  // automatically below to place types and constants in to.
   const docs = yaml.load(path.join(srcPathDir, "documentation.yml"));
   docs.toc.forEach((tocItem) => {
     if (tocItem.name) {
@@ -36,76 +39,104 @@ import * as prettier from "prettier";
       orderedSidebarBucketKeys.push(tocItem.name);
       category = tocItem.name;
     } else {
-      functionCategories[tocItem] = category;
+      tocCategories[tocItem] = category;
     }
   });
+  // Catch all for uncategorised functions.
   sidebarBuckets["Other"] = [];
   orderedSidebarBucketKeys.push("Other");
 
+  console.log(sidebarBuckets);
+
   // glob index.ts/js in turf/packages/
-  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"))
-    // These two packages weren't exported from @turf/turf in 6.5.0, so
-    // aren't in the CDN file the website uses. Suppress for now
-    // and add back in once v7 is on the CDN.
-    .filter((path) => !path.includes("turf-rectangle-grid"))
-    .filter((path) => !path.includes("turf-nearest-neighbor-analysis"));
+  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
+  // These two packages weren't exported from @turf/turf in 6.5.0, so
+  // aren't in the CDN file the website uses. Suppress for now
+  // and add back in once v7 is on the CDN.
+  // .filter((path) => path.includes("turf-helpers"));
+  // .filter((path) => path.includes("turf-bearing"))
+  // .filter((path) => !path.includes("turf-rectangle-grid"))
+  // .filter((path) => !path.includes("turf-nearest-neighbor-analysis"));
 
-  await Promise.all(
-    packageDirs.map(async (packageDir) => {
-      const moduleName = path.parse(packageDir).name;
-      console.log(moduleName);
+  for (const packageDir of packageDirs) {
+    const moduleName = path.parse(packageDir).name;
+    console.log(`\n\n*** ${moduleName}\n`);
 
-      const pckg = loadJsonFileSync(path.join(packageDir, "package.json"));
+    const pckg = loadJsonFileSync(path.join(packageDir, "package.json"));
 
-      // Check for index.ts or index.js
-      const indexFiles = globSync(path.join(packageDir, "index.[jt]s"));
-      if (indexFiles.length === 1) {
-        const indexFile = indexFiles[0];
-        const res = await documentation.build([path.resolve(indexFile)], {
-          external: [],
-          shallow: true,
-        });
-        const moduleObj = JSON.parse(await documentation.formats.json(res));
+    // Check for index.ts or index.js
+    const indexFiles = globSync(path.join(packageDir, "index.[jt]s"));
+    if (indexFiles.length === 1) {
+      const indexFile = indexFiles[0];
 
-        // Multiple functions e.g. helpers or meta
-        await Promise.all(
-          moduleObj.map(async (fn) => {
-            if (fn.kind && fn.kind === "module") {
-              console.log("skipping module header");
-              return;
-            }
-            if (fn.kind && fn.kind !== "function") {
-              console.log(`skipping non-function ${fn.name} ${fn.kind}`);
-              return;
-            }
+      // Get the documentation for the module.
+      const res = await documentation.build([path.resolve(indexFile)], {
+        external: [],
+        shallow: true,
+      });
+      const moduleObj = JSON.parse(await documentation.formats.json(res));
 
-            const [filename, mdx] = functionJsonToMdx(fn, pckg);
-
-            if (filename && mdx) {
-              const prettyMdx = await prettier.format(mdx, {
-                parser: "mdx",
-                trailingSemi: "none",
-              });
-              fs.writeFileSync(
-                docsOutDir + "/api/" + filename + ".mdx",
-                prettyMdx,
-              );
-              if (functionCategories[filename]) {
-                sidebarBuckets[functionCategories[filename]].push(
-                  `api/${filename}`,
-                );
-              } else {
-                // No category provided in documentation.yml. Default to "Other".
-                sidebarBuckets["Other"].push(`api/${filename}`);
-              }
-            } else {
-              console.log(`skipping ${moduleName} ${filename}`);
-            }
-          }),
-        );
+      if (moduleName === "turf-moran-index") {
+        console.log(JSON.stringify(moduleObj));
       }
-    }),
-  );
+
+      // For each exported member of the module (functions, types, consts)
+      // generate the documentation, save to a file, and add an entry to the
+      // appropriate heading in the sidebar. Some modules have multiple
+      // members e.g. helpers or meta
+      for (const member of moduleObj) {
+        // console.log("function", JSON.stringify(fn));
+
+        if (member.kind === "module") {
+          console.log("skipping module header");
+          continue;
+        }
+
+        let filename: string | undefined = undefined,
+          mdx: string | undefined = undefined;
+
+        if (member.kind === "typedef") {
+          [filename, mdx] = typedefJsonToMdx(member, pckg);
+        } else if (member.kind === "constant") {
+          [filename, mdx] = [member.name, "bar"];
+        } else if (member.kind === "function") {
+          console.log(
+            `skipping2 ${member.kind} ${member.name} from ${moduleName}`,
+          );
+        } else {
+          // A function.
+          [filename, mdx] = functionJsonToMdx(member, pckg);
+        }
+
+        console.log(pckg.name, member.name, filename);
+
+        if (filename && mdx) {
+          const prettyMdx = await prettier.format(mdx, {
+            parser: "mdx",
+            trailingSemi: "none",
+          });
+          const apiDir = member.kind === "typedef" ? "api/types" : "api";
+          fs.writeFileSync(
+            path.join(docsOutDir, apiDir, `${filename}.mdx`),
+            prettyMdx,
+          );
+
+          if (tocCategories[filename]) {
+            sidebarBuckets[tocCategories[filename]].push(
+              `${apiDir}/${filename}`,
+            );
+          } else {
+            // No category provided in documentation.yml. Default to "Other".
+            sidebarBuckets["Other"].push(path.join(apiDir, `${filename}`));
+          }
+        } else {
+          console.log(
+            `skipping ${member.kind} ${member.name} from ${moduleName}`,
+          );
+        }
+      }
+    }
+  }
 
   const sidebarConfig: SidebarConfig[] = [];
   for (const key of orderedSidebarBucketKeys) {
@@ -116,6 +147,8 @@ import * as prettier from "prettier";
       items: sidebarBuckets[key].sort(),
     });
   }
+
+  console.log(sidebarConfig);
 
   // Save API categories config to api-sidebar.ts. Prettify content as well.
   const sidebarContent = `// Generated automatically by generate-api-mdx.ts
@@ -138,6 +171,28 @@ export default ${JSON.stringify(sidebarConfig)}`;
       }
     },
   );
+
+  function typedefJsonToMdx(typedef, pckg) {
+    return [typedef.name, "some mdx"];
+    if (moduleObj.length === 1) {
+      // Single function in this module.
+      return functionJsonToMdx(moduleObj[0], pckg);
+    } else {
+      let mdx = "";
+      let filename = "";
+      // Multiple functions e.g. helpers or meta
+      moduleObj.forEach((fn) => {
+        if (fn.kind && fn.kind === "module") {
+          console.log("skipping module header");
+          return;
+        }
+        const [fnFilename, fnMdx] = functionJsonToMdx(fn, pckg);
+        filename = fnFilename;
+        mdx.concat(fnMdx);
+      });
+      return [filename, mdx];
+    }
+  }
 
   function moduleJsonToMdx(moduleObj, pckg) {
     if (moduleObj.length === 1) {
@@ -226,8 +281,30 @@ const result = turf.${name}(...);
 
   function getParamsMdx(fn) {
     let mdx = "| Name | Type | Description |\n| --- | --- | --- |\n";
-    for (const tag of fn.tags.filter((tag) => tag.title === "param")) {
-      mdx = mdx.concat(renderTagToMdx(tag));
+    const tags = fn.tags;
+    for (const param of fn.params) {
+      const paramTag = tags
+        .filter((tag) => tag.name === param.name)
+        .slice(0, 1)[0];
+      if (paramTag) {
+        param.type = paramTag.type;
+      }
+      mdx = mdx.concat(renderTagToMdx(param));
+      // For example, options.blah
+      if (param.properties) {
+        for (const property of param.properties) {
+          // Merge in the 'types' field from the tag of the same name. For some
+          // reason documentationjs stores the type data (including optional) on
+          // the tag, but the rich description (including embedded links) on the
+          // params.
+          const propertyTag = tags
+            .filter((tag) => tag.name === property.name)
+            .slice(0, 1)[0];
+
+          property.type = propertyTag.type;
+          mdx = mdx.concat(renderTagToMdx(property));
+        }
+      }
     }
 
     return mdx;
@@ -370,7 +447,7 @@ export function Map${index}() {
         }
         // Join multi-line param descriptions with a space. https://stackoverflow.com/a/30955762
         const description = tag.description
-          ? newlineToSpace(mdxEscape(tag.description))
+          ? newlineToSpace(mdxEscape(renderToMdx(tag.description)))
           : "";
         const defaultValue = tag.default
           ? `_(default ${mdxEscape(tag.default)})_`
@@ -463,6 +540,7 @@ export function Map${index}() {
         mdx = mdx.concat(node.value);
         break;
       case "link":
+      case "linkReference":
         let url = node.url;
         if (docs.paths[node.url]) {
           url = docs.paths[node.url];
