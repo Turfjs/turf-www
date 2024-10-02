@@ -1,0 +1,75 @@
+---
+title: triangleGrid
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Creates a grid of triangular polygons.
+
+### Parameters
+
+| Name                       | Type                                                                                                                           | Description                                                                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                      | extent of grid in [minX, minY, maxX, maxY] order                                                                                                                                |
+| cellSide                   | **number**                                                                                                                     | dimension of each grid cell. Two triangles are created in each cell.                                                                                                            |
+| options<i>?</i>            | **Object**                                                                                                                     | Optional parameters _(default \{\})_                                                                                                                                            |
+| options.units<i>?</i>      | **Units**                                                                                                                      | used in calculating cellSide. Supports all valid Turf \{@link https://github.com/Turfjs/turf/blob/master/packages/turf-helpers/README_UNITS.md Units\} _(default 'kilometers')_ |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                                                                                             |
+| options.properties<i>?</i> | **Object**                                                                                                                     | passed to each point of the grid _(default \{\})_                                                                                                                               |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of polygons
+
+</ul>
+
+### Examples
+
+```javascript
+var bbox = [-95, 30, -85, 40];
+var cellSide = 50;
+var options = { units: "miles" };
+
+var triangleGrid = turf.triangleGrid(bbox, cellSide, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var bbox = [-95, 30, -85, 40];
+  var cellSide = 50;
+  var options = { units: "miles" };
+
+  var triangleGrid = turf.triangleGrid(bbox, cellSide, options);
+
+  //addToMap
+  var addToMap = { triangleGrid };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/triangle-grid
+
+import { triangleGrid } from "@turf/triangle-grid";
+const result = triangleGrid(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.triangleGrid(...);
+```

@@ -1,0 +1,143 @@
+---
+title: dissolve
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Dissolves a FeatureCollection of [polygon](polygon) features, filtered by an optional property name:value.
+Note that [multipolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) features within the collection are not supported
+
+### Parameters
+
+| Name                         | Type                                                                                                                                     | Description                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| featureCollection            | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | input feature collection to be dissolved                       |
+| options<i>?</i>              | **Object**                                                                                                                               | Optional parameters _(default \{\})_                           |
+| options.propertyName<i>?</i> | **string**                                                                                                                               | features with the same `propertyName` value will be dissolved. |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a FeatureCollection containing the dissolved polygons
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.polygon(
+    [
+      [
+        [0, 0],
+        [0, 1],
+        [1, 1],
+        [1, 0],
+        [0, 0],
+      ],
+    ],
+    { combine: "yes" },
+  ),
+  turf.polygon(
+    [
+      [
+        [0, -1],
+        [0, 0],
+        [1, 0],
+        [1, -1],
+        [0, -1],
+      ],
+    ],
+    { combine: "yes" },
+  ),
+  turf.polygon(
+    [
+      [
+        [1, -1],
+        [1, 0],
+        [2, 0],
+        [2, -1],
+        [1, -1],
+      ],
+    ],
+    { combine: "no" },
+  ),
+]);
+
+var dissolved = turf.dissolve(features, { propertyName: "combine" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var features = turf.featureCollection([
+    turf.polygon(
+      [
+        [
+          [0, 0],
+          [0, 1],
+          [1, 1],
+          [1, 0],
+          [0, 0],
+        ],
+      ],
+      { combine: "yes" },
+    ),
+    turf.polygon(
+      [
+        [
+          [0, -1],
+          [0, 0],
+          [1, 0],
+          [1, -1],
+          [0, -1],
+        ],
+      ],
+      { combine: "yes" },
+    ),
+    turf.polygon(
+      [
+        [
+          [1, -1],
+          [1, 0],
+          [2, 0],
+          [2, -1],
+          [1, -1],
+        ],
+      ],
+      { combine: "no" },
+    ),
+  ]);
+
+  var dissolved = turf.dissolve(features, { propertyName: "combine" });
+
+  //addToMap
+  var addToMap = { features, dissolved };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/dissolve
+
+import { dissolve } from "@turf/dissolve";
+const result = dissolve(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.dissolve(...);
+```

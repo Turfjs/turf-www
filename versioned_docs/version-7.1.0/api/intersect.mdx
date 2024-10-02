@@ -1,0 +1,112 @@
+---
+title: intersect
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [multi-polygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) geometries and
+finds their polygonal intersection. If they don't intersect, returns null.
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                                          | Description                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| features                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | the features to intersect                                |
+| options<i>?</i>            | **Object**                                                                                                                                                                                                    | Optional Parameters _(default \{\})_                     |
+| options.properties<i>?</i> | **Object**                                                                                                                                                                                                    | Translate GeoJSON Properties to Feature _(default \{\})_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| null** returns a feature representing the area they share (either a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or
+[MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)). If they do not share any area, returns `null`.
+
+</ul>
+
+### Examples
+
+```javascript
+var poly1 = turf.polygon([
+  [
+    [-122.801742, 45.48565],
+    [-122.801742, 45.60491],
+    [-122.584762, 45.60491],
+    [-122.584762, 45.48565],
+    [-122.801742, 45.48565],
+  ],
+]);
+
+var poly2 = turf.polygon([
+  [
+    [-122.520217, 45.535693],
+    [-122.64038, 45.553967],
+    [-122.720031, 45.526554],
+    [-122.669906, 45.507309],
+    [-122.723464, 45.446643],
+    [-122.532577, 45.408574],
+    [-122.487258, 45.477466],
+    [-122.520217, 45.535693],
+  ],
+]);
+
+var intersection = turf.intersect(turf.featureCollection([poly1, poly2]));
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var poly1 = turf.polygon([
+    [
+      [-122.801742, 45.48565],
+      [-122.801742, 45.60491],
+      [-122.584762, 45.60491],
+      [-122.584762, 45.48565],
+      [-122.801742, 45.48565],
+    ],
+  ]);
+
+  var poly2 = turf.polygon([
+    [
+      [-122.520217, 45.535693],
+      [-122.64038, 45.553967],
+      [-122.720031, 45.526554],
+      [-122.669906, 45.507309],
+      [-122.723464, 45.446643],
+      [-122.532577, 45.408574],
+      [-122.487258, 45.477466],
+      [-122.520217, 45.535693],
+    ],
+  ]);
+
+  var intersection = turf.intersect(turf.featureCollection([poly1, poly2]));
+
+  //addToMap
+  var addToMap = { poly1, poly2, intersection };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/intersect
+
+import { intersect } from "@turf/intersect";
+const result = intersect(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.intersect(...);
+```

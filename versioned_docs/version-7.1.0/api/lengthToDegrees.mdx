@@ -1,0 +1,42 @@
+---
+title: lengthToDegrees
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Convert a distance measurement (assuming a spherical Earth) from a real-world unit into degrees
+Valid units: miles, nauticalmiles, inches, yards, meters, metres, centimeters, kilometres, feet
+
+### Parameters
+
+| Name          | Type       | Description                                                                                                     |
+| ------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
+| distance      | **number** | in real units                                                                                                   |
+| units<i>?</i> | **string** | can be degrees, radians, miles, inches, yards, metres, meters, kilometres, kilometers. _(default "kilometers")_ |
+
+### Returns
+
+<ul>
+  **number** degrees
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { lengthToDegrees } from "@turf/helpers";
+const result = lengthToDegrees(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lengthToDegrees(...);
+```

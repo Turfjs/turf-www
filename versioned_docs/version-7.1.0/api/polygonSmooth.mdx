@@ -1,0 +1,89 @@
+---
+title: polygonSmooth
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Smooths a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7). Based on [Chaikin's algorithm](http://graphics.cs.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html).
+Warning: may create degenerate polygons.
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| inputPolys                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | (Multi)Polygon(s) to smooth                                                                       |
+| options<i>?</i>            | **Object**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Optional parameters _(default \{\})_                                                              |
+| options.iterations<i>?</i> | **string**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | The number of times to smooth the polygon. A higher value means a smoother polygon. _(default 1)_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** FeatureCollection containing the smoothed polygon/multipoylgons
+
+</ul>
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [11, 0],
+    [22, 4],
+    [31, 0],
+    [31, 11],
+    [21, 15],
+    [11, 11],
+    [11, 0],
+  ],
+]);
+
+var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [11, 0],
+      [22, 4],
+      [31, 0],
+      [31, 11],
+      [21, 15],
+      [11, 11],
+      [11, 0],
+    ],
+  ]);
+
+  var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
+
+  //addToMap
+  var addToMap = { smoothed, polygon };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/polygon-smooth
+
+import { polygonSmooth } from "@turf/polygon-smooth";
+const result = polygonSmooth(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.polygonSmooth(...);
+```

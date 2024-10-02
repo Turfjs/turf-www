@@ -1,0 +1,89 @@
+---
+title: polygonTangents
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Finds the tangents of a [(Multi)Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) from a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2).
+
+### Parameters
+
+| Name    | Type                                                                                                                                                                                                | Description                          |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| pt      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | to calculate the tangent points from |
+| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | to get tangents from                 |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** Feature Collection containing the two tangent points
+
+</ul>
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [11, 0],
+    [22, 4],
+    [31, 0],
+    [31, 11],
+    [21, 15],
+    [11, 11],
+    [11, 0],
+  ],
+]);
+var point = turf.point([61, 5]);
+
+var tangents = turf.polygonTangents(point, polygon);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [11, 0],
+      [22, 4],
+      [31, 0],
+      [31, 11],
+      [21, 15],
+      [11, 11],
+      [11, 0],
+    ],
+  ]);
+  var point = turf.point([61, 5]);
+
+  var tangents = turf.polygonTangents(point, polygon);
+
+  //addToMap
+  var addToMap = { tangents, point, polygon };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/polygon-tangents
+
+import { polygonTangents } from "@turf/polygon-tangents";
+const result = polygonTangents(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.polygonTangents(...);
+```

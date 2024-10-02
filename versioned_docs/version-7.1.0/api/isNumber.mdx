@@ -1,0 +1,49 @@
+---
+title: isNumber
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+isNumber
+
+### Parameters
+
+| Name | Type   | Description        |
+| ---- | ------ | ------------------ |
+| num  | **\*** | Number to validate |
+
+### Returns
+
+<ul>
+  **boolean** true/false
+
+</ul>
+
+### Examples
+
+```javascript
+turf.isNumber(123);
+//=true
+turf.isNumber("foo");
+//=false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { isNumber } from "@turf/helpers";
+const result = isNumber(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.isNumber(...);
+```
