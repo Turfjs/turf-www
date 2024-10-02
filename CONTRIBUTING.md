@@ -1,81 +1,100 @@
-## Overview of how the docs work
+## Updating documentation for a module
 
-1. A custom script (generate-api-mdx.ts) uses documentation.js to generate MDX describing the API directly the Turf source files. generate-api-mdx.ts does any custom handling Turf requires, for example generating the interactive maps used to display examples.
+Documentation is generated automatically wherever possible directly from the Turf source code. Best practice is to submit a PR to update the documentation in the relevant package of the turf repository.
 
-1. Docusaurus then processes that MDX into a HTML website.
+For example, to update the documentation for `@turf/along` you would modify the JSDoc comments within [`/turf/packages/turf-along/index.ts`](https://github.com/Turfjs/turf/blob/master/packages/turf-along/index.ts).
 
+As part of the commit process, the README.md in the turf-along directory will automatically be updated to reflect your changes.
+
+Periodically the Turf website is also updated to reflect the latest documentation generated from the source code. It is similar to the README.md though has some extra features such as interactive example maps.
+
+## Updating the Turf website
+
+The content of the Turf website resides in a separate repository, which links to the turf repo as a submodule.
+
+1. A custom script (generate-api-mdx.ts) generates MDX (extended Markdown) describing the API directly from the Turf source files. generate-api-mdx.ts does any custom handling Turf requires, for example generating the interactive maps used to display examples.
+1. Docusaurus then processes that MDX into a static HTML website.
 1. The HTML files are uploaded to github pages where they become publicly accessible via https://turfjs.org
 
-## Updating existing documentation for a module
+### Terminology confusion
 
-Assume we are updating the documentation to v7.1.0.
+Docusaurus lets us publish multiple versions of the documentation simultaneously, accessed via a dropdown in the top menu. The terminology used can be a bit confusing though.
 
-1. In your local turf-www repo, update the `turf` submodule link in this repository to point to the commit associated with 7.1.0 on master (948cdafaf7)
-   ```
-   $ git -C turf/ checkout 948cdafaf7
-   $ git add turf
-   $ git commit -m "Updating turf submodule to v7.1.0"
-   ```
-1. Snapshot current version of documentation (a.k.a v7.0.0) Generate new MDX files
+Currently on the website we have versions:
 
-- This happens in the [Turf repository](https://github.com/turfjs/turf/) with `/packages/` directory for each module.
+| Label | Docusaurus         | Description                                                                                                              |
+| ----- | ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Next  | Current            | Bleeding edge _unversioned_ documentation from the git repo. Probably hasn't yet been published to NPM                   |
+| 7.0.0 | Latest             | The most recent versioned snapshot of the documentation. This is the default shown to users when first visiting the site |
+| 6.5.0 | a previous version | Archived documentation from a version that is neither Current or Latest                                                  |
 
-- To fix the documentation for a module you need to modify the [jsdoc](https://jsdoc.app/) for an individual module found in either the `index.js` or the `index.ts`.
+When we upload a new release of Turf to NPM we take a snapshot of the _Current_ documentation and copy that into version _whatever_. Docusaurus then points "Latest" at this newly minted version.
 
-- eg to update the documentation for `@turf/along` you'd need to modify the jsdoc within `/turf/packages/turf-along/index.ts`.
+### Generate documentation to version as 7.1.0
 
-- Once you've made your changes you'll need to create a pull request to the [Turf repository](https://github.com/turfjs/turf/).
+In this step you will take a snapshot of the _Current_ documentation, and save it as version 7.1.0.
 
-- **Note** Nothing needs to be changed in the `README.md` for a module.
+First thing to do is make sure _Current_ points to the code (and hence, the documentation) for 7.1.0. It likely points to the HEAD of the tree, which may not necessarily be 7.1.0, especially if there have already been some bug fixes between releasing to NPM and updating the documentation. So we will temporarily point _Current_ to the 7.1.0 code, generate our 7.1.0 snapshot, and then restore it to what it was.
 
-- Even once your PR is accepted the docs will still need to be updated manually.
+To do this we link the `turf/` submodule directory in turf-www to the relevant commit in the turf repo. In the example below commit `68915ee` refers to the 7.1.0 tag in the turf repo:
 
-## Updating content on http://turfjs.org/
+```
+$ git -C turf/ checkout 68915ee
+```
 
-1. Clone with `turf-www` repository locally
+Now that the `turf/` submodule points to 7.1.0 code regenerate the API documentation:
 
-- `git clone https://github.com/Turfjs/turf-www.git --recursive`
+```
+$ npx tsx ./scripts/generate-api-mdx.ts
+```
 
-- _Important: The `--recursive` flag is important._
+You will likely see many changes to MDX files in the `docs/` directory.
 
-2. Run `npm install`
+Run docusaurus to view the site in dev mode and highlight any missing routes, etc. Docusaurus is pretty good at finding problems. Fix any issues manually, usually by tweaking the MDX.
 
-3. Start with updating the turf project dependency:
+```
+$ npm run start
+```
 
-- `cd` into the `turf-www/turf` submodule and run `git pull origin master`
+Note the generated documentation will appear under the _Next_ drop down menu.
 
-- Run `lerna run build`, this will update the `dist/js/index.js` for each module, from which the docs are generated.
+You could at this point commit the changes. However we're about to make a versioned snapshot which we _will_ commit, so it's not absolutely necessary.
 
-4.  `cd` back to the root of the `turf-www` project
+Now, version the contents of _Current_ as 7.1.0:
 
-5.  Run `npm run create-config`
+```
+$ npm run docusaurus docs:version 7.1.0
+```
 
-6.  Run `npm run generate`
+You will now see many more changes in the `versioned_docs` directory. This is the snapshot we want to commit and publish. Before we do that though, switch back to the HEAD of our git repo and regenerate the _Current_ documentation based on that code:
 
-7.  Commit and push the changes
+```
+$ git submodule update --init
+$ npx tsx ./scripts/generate-api-mdx.ts
+```
 
-- This project contains a reference to the turfjs/turf repo as a git submodule.
+Most, if not all, of the changes in docs/ should revert. If any remain review them as they may have previously been committed as manual corrections (and thus can be discarded).
 
-- Updating the API docs is a two step process:
+You'll likely have changes in these locations:
 
-- 1.  Update the
+```
+api-sidebar.ts <- might change
+versions.json <- should be a line added for the new version snapshot
+docs/ <- maybe a couple of changed files
+versioned_docs/ <- many new files
+versioned_sidebars/ <- one new file
+```
 
-- 1.  Run the scripts/generate-api-mdx.ts script to parse the turf packages linked as a submodule
+Once everything looks good, commit all the files and push to your fork:
 
-- http://turfjs.org/ is managed as a static site using Github Pages
+```
+$ git add .
+$ git commit -m "Adding v7.1.0 documentation snapshot."
+$ git push
+```
 
-- A custom domain for Github Pages in present in `/docs/CNAME`
+### Publishing to turfjs.org
 
-- The `/src` directory contains the VueJS app
+To build and publish the site, you simply need to create a PR from your fork to turf-www:master. This will run a test build as a github action.
 
-- This can be run in a live preview mode using `npm run start`, note that this won't pick up changes to the module documentation.
-
-- The API docs are generated from jsdoc markup in each module within the `/turf` submodule
-
-- [DocumentationJS](https://documentation.js.org/) is used to parse the jsdoc content in each module
-
-- The `npm run create-config` cmd calls the `/scripts/create-config.js` file, which generates the `src/assets/config.json` file which is used by the VueJS to render the docs.
-
-- The `/src` VueJS app, is built into the final deployed docs are built using [NuxtJS](https://nuxtjs.org/) and are found in the `/docs` folder
-
-- These are created using the `npm run generate` cmd.
+When your PR is merged into master, another github action will deploy the content automatically to github pages.
