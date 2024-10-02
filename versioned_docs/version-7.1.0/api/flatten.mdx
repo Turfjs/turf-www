@@ -1,0 +1,118 @@
+---
+title: flatten
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Flattens any [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) to a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) inspired by [geojson-flatten](https://github.com/tmcw/geojson-flatten).
+
+### Parameters
+
+| Name    | Type                                                         | Description              |
+| ------- | ------------------------------------------------------------ | ------------------------ |
+| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any valid GeoJSON Object |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>** all Multi-Geometries are flattened into single Features
+
+</ul>
+
+### Examples
+
+```javascript
+var multiGeometry = turf.multiPolygon([
+  [
+    [
+      [102.0, 2.0],
+      [103.0, 2.0],
+      [103.0, 3.0],
+      [102.0, 3.0],
+      [102.0, 2.0],
+    ],
+  ],
+  [
+    [
+      [100.0, 0.0],
+      [101.0, 0.0],
+      [101.0, 1.0],
+      [100.0, 1.0],
+      [100.0, 0.0],
+    ],
+    [
+      [100.2, 0.2],
+      [100.8, 0.2],
+      [100.8, 0.8],
+      [100.2, 0.8],
+      [100.2, 0.2],
+    ],
+  ],
+]);
+
+var flatten = turf.flatten(multiGeometry);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var multiGeometry = turf.multiPolygon([
+    [
+      [
+        [102.0, 2.0],
+        [103.0, 2.0],
+        [103.0, 3.0],
+        [102.0, 3.0],
+        [102.0, 2.0],
+      ],
+    ],
+    [
+      [
+        [100.0, 0.0],
+        [101.0, 0.0],
+        [101.0, 1.0],
+        [100.0, 1.0],
+        [100.0, 0.0],
+      ],
+      [
+        [100.2, 0.2],
+        [100.8, 0.2],
+        [100.8, 0.8],
+        [100.2, 0.8],
+        [100.2, 0.2],
+      ],
+    ],
+  ]);
+
+  var flatten = turf.flatten(multiGeometry);
+
+  //addToMap
+  var addToMap = { flatten };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/flatten
+
+import { flatten } from "@turf/flatten";
+const result = flatten(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.flatten(...);
+```

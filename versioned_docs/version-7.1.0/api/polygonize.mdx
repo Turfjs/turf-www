@@ -1,0 +1,50 @@
+---
+title: polygonize
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Polygonizes [(Multi)LineString(s)](https://tools.ietf.org/html/rfc7946#section-3.1.4) into [Polygons](https://tools.ietf.org/html/rfc7946#section-3.1.6).
+
+Implementation of GEOSPolygonize function (`geos::operation::polygonize::Polygonizer`).
+
+Polygonizes a set of lines that represents edges in a planar graph. Edges must be correctly
+noded, i.e., they must only meet at their endpoints.
+
+The implementation correctly handles:
+
+- Dangles: edges which have one or both ends which are not incident on another edge endpoint.
+- Cut Edges (bridges): edges that are connected at both ends but which do not form part of a polygon.
+
+### Parameters
+
+| Name    | Type                                                                                                                                                                                                                                                                                                                                             | Description                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| geoJson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | Lines in order to polygonize |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Polygons created
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/polygonize
+
+import { polygonize } from "@turf/polygonize";
+const result = polygonize(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.polygonize(...);
+```

@@ -1,0 +1,65 @@
+---
+title: coordEach
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
+
+### Parameters
+
+| Name                     | Type                                                                                                                                                                                                  | Description                                                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| geojson                  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object                                                                                                    |
+| callback                 | **Function**                                                                                                                                                                                          | a method that takes (currentCoord, coordIndex, featureIndex, multiFeatureIndex)                                       |
+| excludeWrapCoord<i>?</i> | **boolean**                                                                                                                                                                                           | whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration. _(default false)_ |
+
+### Returns
+
+<ul>**void**</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.coordEach(
+  features,
+  function (
+    currentCoord,
+    coordIndex,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+  ) {
+    //=currentCoord
+    //=coordIndex
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { coordEach } from "@turf/meta";
+const result = coordEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.coordEach(...);
+```

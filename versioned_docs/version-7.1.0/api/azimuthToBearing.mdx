@@ -1,0 +1,41 @@
+---
+title: azimuthToBearing
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Converts any azimuth angle from the north line direction (positive clockwise)
+and returns an angle between -180 and +180 degrees (positive clockwise), 0 being the north line
+
+### Parameters
+
+| Name  | Type       | Description               |
+| ----- | ---------- | ------------------------- |
+| angle | **number** | between 0 and 360 degrees |
+
+### Returns
+
+<ul>
+  **number** bearing between -180 and +180 degrees
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { azimuthToBearing } from "@turf/helpers";
+const result = azimuthToBearing(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.azimuthToBearing(...);
+```

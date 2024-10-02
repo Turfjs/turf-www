@@ -1,0 +1,40 @@
+---
+title: radiansToDegrees
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Converts an angle in radians to degrees
+
+### Parameters
+
+| Name    | Type       | Description      |
+| ------- | ---------- | ---------------- |
+| radians | **number** | angle in radians |
+
+### Returns
+
+<ul>
+  **number** degrees between 0 and 360 degrees
+
+</ul>
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { radiansToDegrees } from "@turf/helpers";
+const result = radiansToDegrees(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.radiansToDegrees(...);
+```

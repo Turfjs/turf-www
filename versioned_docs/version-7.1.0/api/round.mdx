@@ -1,0 +1,51 @@
+---
+title: round
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Round number to precision
+
+### Parameters
+
+| Name              | Type       | Description             |
+| ----------------- | ---------- | ----------------------- |
+| num               | **number** | Number                  |
+| precision<i>?</i> | **number** | Precision _(default 0)_ |
+
+### Returns
+
+<ul>
+  **number** rounded number
+
+</ul>
+
+### Examples
+
+```javascript
+turf.round(120.4321);
+//=120
+
+turf.round(120.4321, 2);
+//=120.43
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { round } from "@turf/helpers";
+const result = round(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.round(...);
+```
