@@ -1,0 +1,58 @@
+---
+title: pointToLineDistance
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Returns the minimum distance between a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4), being the distance from a line the
+minimum distance between the point and any segment of the `LineString`.
+
+### Parameters
+
+| Name                   | Type                                                                                                                                            | Description                                                                                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pt                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| Array\<number\>** | Feature or Geometry                                                                                                                                      |
+| line                   | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>**               | GeoJSON Feature or Geometry                                                                                                                              |
+| options<i>?</i>        | **Object**                                                                                                                                      | Optional parameters _(default \{\})_                                                                                                                     |
+| options.units<i>?</i>  | **string**                                                                                                                                      | can be anything supported by turf/convertLength (ex: degrees, radians, miles, or kilometers) _(default "kilometers")_                                    |
+| options.method<i>?</i> | **string**                                                                                                                                      | whether to calculate the distance based on geodesic (spheroid) or planar (flat) method. Valid options are 'geodesic' or 'planar'. _(default "geodesic")_ |
+
+### Returns
+
+<ul>
+  **number** distance between point and line
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.point([0, 0]);
+var line = turf.lineString([
+  [1, 1],
+  [-1, 1],
+]);
+
+var distance = turf.pointToLineDistance(pt, line, { units: "miles" });
+//=69.11854715938406
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/point-to-line-distance
+
+import { pointToLineDistance } from "@turf/point-to-line-distance";
+const result = pointToLineDistance(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pointToLineDistance(...);
+```

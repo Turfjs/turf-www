@@ -1,0 +1,51 @@
+---
+title: randomPolygon
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Returns a random [polygon](polygon).
+
+### Parameters
+
+| Name                              | Type                | Description                                                                                                                             |
+| --------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| count<i>?</i>                     | **number**          | how many geometries will be generated _(default 1)_                                                                                     |
+| options<i>?</i>                   | **Object**          | Optional parameters _(default \{\})_                                                                                                    |
+| options.bbox<i>?</i>              | **Array\<number\>** | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_                                                     |
+| options.num_vertices<i>?</i>      | **number**          | is how many coordinates each LineString will contain. _(default 10)_                                                                    |
+| options.max_radial_length<i>?</i> | **number**          | is the maximum number of decimal degrees latitude or longitude that a vertex can reach out of the center of the Polygon. _(default 10)_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** GeoJSON FeatureCollection of polygons
+
+</ul>
+
+### Examples
+
+```javascript
+var polygons = turf.randomPolygon(25, { bbox: [-180, -90, 180, 90] });
+// => polygons
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/random
+
+import { randomPolygon } from "@turf/random";
+const result = randomPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.randomPolygon(...);
+```

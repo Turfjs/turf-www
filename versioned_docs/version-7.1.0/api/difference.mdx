@@ -1,0 +1,126 @@
+---
+title: difference
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Finds the difference between multiple [polygons](https://tools.ietf.org/html/rfc7946#section-3.1.6) by clipping the subsequent polygon from the first.
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                          | Description            |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| features | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input Polygon features |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| null** a Polygon or MultiPolygon feature showing the area of `polygon1` excluding the area of `polygon2` (if empty returns `null`)
+
+</ul>
+
+### Examples
+
+```javascript
+var polygon1 = turf.polygon(
+  [
+    [
+      [128, -26],
+      [141, -26],
+      [141, -21],
+      [128, -21],
+      [128, -26],
+    ],
+  ],
+  {
+    fill: "#F00",
+    "fill-opacity": 0.1,
+  },
+);
+var polygon2 = turf.polygon(
+  [
+    [
+      [126, -28],
+      [140, -28],
+      [140, -20],
+      [126, -20],
+      [126, -28],
+    ],
+  ],
+  {
+    fill: "#00F",
+    "fill-opacity": 0.1,
+  },
+);
+
+var difference = turf.difference(turf.featureCollection([polygon1, polygon2]));
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon1 = turf.polygon(
+    [
+      [
+        [128, -26],
+        [141, -26],
+        [141, -21],
+        [128, -21],
+        [128, -26],
+      ],
+    ],
+    {
+      fill: "#F00",
+      "fill-opacity": 0.1,
+    },
+  );
+  var polygon2 = turf.polygon(
+    [
+      [
+        [126, -28],
+        [140, -28],
+        [140, -20],
+        [126, -20],
+        [126, -28],
+      ],
+    ],
+    {
+      fill: "#00F",
+      "fill-opacity": 0.1,
+    },
+  );
+
+  var difference = turf.difference(
+    turf.featureCollection([polygon1, polygon2]),
+  );
+
+  //addToMap
+  var addToMap = { polygon1, polygon2, difference };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/difference
+
+import { difference } from "@turf/difference";
+const result = difference(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.difference(...);
+```

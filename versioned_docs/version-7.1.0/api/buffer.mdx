@@ -1,0 +1,74 @@
+---
+title: buffer
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.
+
+When using a negative radius, the resulting geometry may be invalid if
+it's too small compared to the radius magnitude. If the input is a
+FeatureCollection, only valid members will be returned in the output
+FeatureCollection - i.e., the output collection may have fewer members than
+the input, or even be empty.
+
+### Parameters
+
+| Name                  | Type                                                                                                                                                                                                         | Description                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | input to be buffered                                                |
+| radius                | **number**                                                                                                                                                                                                   | distance to draw the buffer (negative values are allowed)           |
+| options<i>?</i>       | **Object**                                                                                                                                                                                                   | Optional parameters _(default \{\})_                                |
+| options.units<i>?</i> | **string**                                                                                                                                                                                                   | any of the options supported by turf units _(default "kilometers")_ |
+| options.steps<i>?</i> | **number**                                                                                                                                                                                                   | number of steps _(default 8)_                                       |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| undefined** buffered features
+
+</ul>
+
+### Examples
+
+```javascript
+var point = turf.point([-90.54863, 14.616599]);
+var buffered = turf.buffer(point, 500, { units: "miles" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var point = turf.point([-90.54863, 14.616599]);
+  var buffered = turf.buffer(point, 500, { units: "miles" });
+
+  //addToMap
+  var addToMap = { point, buffered };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/buffer
+
+import { buffer } from "@turf/buffer";
+const result = buffer(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.buffer(...);
+```

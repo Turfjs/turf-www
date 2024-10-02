@@ -1,0 +1,77 @@
+---
+title: bbox
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Calculates the bounding box for any GeoJSON object, including FeatureCollection.
+Uses geojson.bbox if available and options.recompute is not set.
+
+### Parameters
+
+| Name                      | Type                                                         | Description                                            |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| geojson                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON object                                     |
+| options<i>?</i>           | **Object**                                                   | Optional parameters _(default \{\})_                   |
+| options.recompute<i>?</i> | **boolean**                                                  | Whether to ignore an existing bbox property on geojson |
+
+### Returns
+
+<ul>
+  **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** bbox extent in [minX, minY, maxX, maxY] order
+
+</ul>
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [-74, 40],
+  [-78, 42],
+  [-82, 35],
+]);
+var bbox = turf.bbox(line);
+var bboxPolygon = turf.bboxPolygon(bbox);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [-74, 40],
+    [-78, 42],
+    [-82, 35],
+  ]);
+  var bbox = turf.bbox(line);
+  var bboxPolygon = turf.bboxPolygon(bbox);
+
+  //addToMap
+  var addToMap = { line, bboxPolygon };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/bbox
+
+import { bbox } from "@turf/bbox";
+const result = bbox(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bbox(...);
+```

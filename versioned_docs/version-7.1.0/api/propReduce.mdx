@@ -1,0 +1,63 @@
+---
+title: propReduce
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Reduce properties in any GeoJSON object into a single value,
+similar to how Array.reduce works. However, in this case we lazily run
+the reduction, so an array of all properties is unnecessary.
+
+### Parameters
+
+| Name                 | Type                                                                                                                                   | Description                                                           |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | any GeoJSON object                                                    |
+| callback             | **Function**                                                                                                                           | a method that takes (previousValue, currentProperties, featureIndex)  |
+| initialValue<i>?</i> | **\***                                                                                                                                 | Value to use as the first argument to the first call of the callback. |
+
+### Returns
+
+<ul>
+  **\*** The value that results from the reduction.
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.propReduce(
+  features,
+  function (previousValue, currentProperties, featureIndex) {
+    //=previousValue
+    //=currentProperties
+    //=featureIndex
+    return currentProperties;
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { propReduce } from "@turf/meta";
+const result = propReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.propReduce(...);
+```

@@ -1,0 +1,52 @@
+---
+title: coordAll
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Get all coordinates from any GeoJSON object.
+
+### Parameters
+
+| Name    | Type                                                                                                                                                                                                  | Description        |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object |
+
+### Returns
+
+<ul>
+  **Array\<Array\<number\>\>** coordinate position array
+
+</ul>
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+var coords = turf.coordAll(features);
+//= [[26, 37], [36, 53]]
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { coordAll } from "@turf/meta";
+const result = coordAll(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.coordAll(...);
+```

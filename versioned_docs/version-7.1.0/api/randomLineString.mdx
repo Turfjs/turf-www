@@ -1,0 +1,52 @@
+---
+title: randomLineString
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Returns a random linestring.
+
+### Parameters
+
+| Name                         | Type                | Description                                                                                                    |
+| ---------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| count<i>?</i>                | **number**          | how many geometries will be generated _(default 1)_                                                            |
+| options<i>?</i>              | **Object**          | Optional parameters _(default \{\})_                                                                           |
+| options.bbox<i>?</i>         | **Array\<number\>** | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_                            |
+| options.num_vertices<i>?</i> | **number**          | is how many coordinates each LineString will contain. _(default 10)_                                           |
+| options.max_length<i>?</i>   | **number**          | is the maximum number of decimal degrees that a vertex can be from its predecessor _(default 0.0001)_          |
+| options.max_rotation<i>?</i> | **number**          | is the maximum number of radians that a line segment can turn from the previous segment. _(default Math.PI/8)_ |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** GeoJSON FeatureCollection of linestrings
+
+</ul>
+
+### Examples
+
+```javascript
+var lineStrings = turf.randomLineString(25, { bbox: [-180, -90, 180, 90] });
+// => lineStrings
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/random
+
+import { randomLineString } from "@turf/random";
+const result = randomLineString(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.randomLineString(...);
+```

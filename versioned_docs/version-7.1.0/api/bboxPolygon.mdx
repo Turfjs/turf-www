@@ -1,0 +1,69 @@
+---
+title: bboxPolygon
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a bbox and returns an equivalent [polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6).
+
+### Parameters
+
+| Name                       | Type                                                      | Description                                      |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------ |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** | extent in [minX, minY, maxX, maxY] order         |
+| options<i>?</i>            | **Object**                                                | Optional parameters _(default \{\})_             |
+| options.properties<i>?</i> | **Properties**                                            | Translate properties to Polygon _(default \{\})_ |
+| options.id<i>?</i>         | **string \| number**                                      | Translate Id to Polygon _(default \{\})_         |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a Polygon representation of the bounding box
+
+</ul>
+
+### Examples
+
+```javascript
+var bbox = [0, 0, 10, 10];
+
+var poly = turf.bboxPolygon(bbox);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var bbox = [0, 0, 10, 10];
+
+  var poly = turf.bboxPolygon(bbox);
+
+  //addToMap
+  var addToMap = { poly };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/bbox-polygon
+
+import { bboxPolygon } from "@turf/bbox-polygon";
+const result = bboxPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bboxPolygon(...);
+```

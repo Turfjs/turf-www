@@ -1,0 +1,86 @@
+---
+title: centerOfMass
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) and returns its [center of mass](https://en.wikipedia.org/wiki/Center_of_mass) using this formula: [Centroid of Polygon](https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon).
+
+### Parameters
+
+| Name                       | Type                                                         | Description                                      |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | GeoJSON to be centered                           |
+| options<i>?</i>            | **Object**                                                   | Optional Parameters _(default \{\})_             |
+| options.properties<i>?</i> | **Object**                                                   | Translate Properties to Feature _(default \{\})_ |
+
+### Returns
+
+<ul>
+  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the center of mass
+
+</ul>
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [-81, 41],
+    [-88, 36],
+    [-84, 31],
+    [-80, 33],
+    [-77, 39],
+    [-81, 41],
+  ],
+]);
+
+var center = turf.centerOfMass(polygon);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [-81, 41],
+      [-88, 36],
+      [-84, 31],
+      [-80, 33],
+      [-77, 39],
+      [-81, 41],
+    ],
+  ]);
+
+  var center = turf.centerOfMass(polygon);
+
+  //addToMap
+  var addToMap = { polygon, center };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/center-of-mass
+
+import { centerOfMass } from "@turf/center-of-mass";
+const result = centerOfMass(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.centerOfMass(...);
+```

@@ -1,0 +1,38 @@
+---
+title: featureOf
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Enforce expectations about types of [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) inputs for Turf.
+Internally this uses [geojsonType](geojsonType) to judge geometry types.
+
+### Parameters
+
+| Name    | Type                                                           | Description                              |
+| ------- | -------------------------------------------------------------- | ---------------------------------------- |
+| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | a feature with an expected geometry type |
+| type    | **string**                                                     | expected GeoJSON type                    |
+| name    | **string**                                                     | name of calling function                 |
+
+### Returns
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { featureOf } from "@turf/invariant";
+const result = featureOf(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.featureOf(...);
+```

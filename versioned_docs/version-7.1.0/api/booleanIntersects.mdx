@@ -1,0 +1,91 @@
+---
+title: booleanIntersects
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Boolean-intersects returns (TRUE) if the intersection of the two geometries is NOT an empty set.
+
+### Parameters
+
+| Name                                    | Type                                                                                                                                 | Description                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| feature1                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry                                    |
+| feature2                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry                                    |
+| options<i>?</i>                         | **Object**                                                                                                                           | Optional parameters _(default \{\})_                           |
+| options.ignoreSelfIntersections<i>?</i> | **boolean**                                                                                                                          | ignores self-intersections on input features _(default false)_ |
+
+### Returns
+
+<ul>
+  **boolean** true if geometries intersect, false otherwise
+
+</ul>
+
+### Examples
+
+```javascript
+var point1 = turf.point([2, 2]);
+var point2 = turf.point([1, 2]);
+var line = turf.lineString([
+  [1, 1],
+  [1, 3],
+  [1, 4],
+]);
+
+turf.booleanIntersects(line, point1);
+//=false
+
+turf.booleanIntersects(line, point2);
+//=true
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var point1 = turf.point([2, 2]);
+  var point2 = turf.point([1, 2]);
+  var line = turf.lineString([
+    [1, 1],
+    [1, 3],
+    [1, 4],
+  ]);
+
+  turf.booleanIntersects(line, point1);
+  //=false
+
+  turf.booleanIntersects(line, point2);
+  //=true
+
+  //addToMap
+  var addToMap = { point1, point2, line };
+  point1.properties["marker-color"] = "#f00";
+  point2.properties["marker-color"] = "#0f0";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-intersects
+
+import { booleanIntersects } from "@turf/boolean-intersects";
+const result = booleanIntersects(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanIntersects(...);
+```

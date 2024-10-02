@@ -1,0 +1,58 @@
+---
+title: booleanPointOnLine
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Returns true if a point is on a line. Accepts a optional parameter to ignore the
+start and end vertices of the linestring.
+
+### Parameters
+
+| Name                              | Type                                                                                                                              | Description                                                                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| pt                                | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                    | GeoJSON Point                                                                                                              |
+| line                              | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | GeoJSON LineString                                                                                                         |
+| options<i>?</i>                   | **Object**                                                                                                                        | Optional parameters _(default \{\})_                                                                                       |
+| options.ignoreEndVertices<i>?</i> | **boolean**                                                                                                                       | whether to ignore the start and end vertices. _(default false)_                                                            |
+| options.epsilon<i>?</i>           | **number**                                                                                                                        | Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points |
+
+### Returns
+
+<ul>
+  **boolean** true/false
+
+</ul>
+
+### Examples
+
+```javascript
+var pt = turf.point([0, 0]);
+var line = turf.lineString([
+  [-1, -1],
+  [1, 1],
+  [1.5, 2.2],
+]);
+var isPointOnLine = turf.booleanPointOnLine(pt, line);
+//=true
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-point-on-line
+
+import { booleanPointOnLine } from "@turf/boolean-point-on-line";
+const result = booleanPointOnLine(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanPointOnLine(...);
+```

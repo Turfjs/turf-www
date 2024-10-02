@@ -1,0 +1,125 @@
+---
+title: tag
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a set of [polygons](https://tools.ietf.org/html/rfc7946#section-3.1.6) and/or [multipolygons](https://tools.ietf.org/html/rfc7946#section-3.1.7) and performs a spatial join.
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                          | Description                                                            |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| points   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>**                                                                        | input points                                                           |
+| polygons | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input (multi)polygons                                                  |
+| field    | **string**                                                                                                                                                                                                    | property in `polygons` to add to joined \{\<Point\>\} features         |
+| outField | **string**                                                                                                                                                                                                    | property in `points` in which to store joined property from `polygons` |
+
+### Returns
+
+<ul>
+  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** points with `containingPolyId` property containing values from `polyId`
+
+</ul>
+
+### Examples
+
+```javascript
+var pt1 = turf.point([-77, 44]);
+var pt2 = turf.point([-77, 38]);
+var poly1 = turf.polygon(
+  [
+    [
+      [-81, 41],
+      [-81, 47],
+      [-72, 47],
+      [-72, 41],
+      [-81, 41],
+    ],
+  ],
+  { pop: 3000 },
+);
+var poly2 = turf.polygon(
+  [
+    [
+      [-81, 35],
+      [-81, 41],
+      [-72, 41],
+      [-72, 35],
+      [-81, 35],
+    ],
+  ],
+  { pop: 1000 },
+);
+
+var points = turf.featureCollection([pt1, pt2]);
+var polygons = turf.featureCollection([poly1, poly2]);
+
+var tagged = turf.tag(points, polygons, "pop", "population");
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var pt1 = turf.point([-77, 44]);
+  var pt2 = turf.point([-77, 38]);
+  var poly1 = turf.polygon(
+    [
+      [
+        [-81, 41],
+        [-81, 47],
+        [-72, 47],
+        [-72, 41],
+        [-81, 41],
+      ],
+    ],
+    { pop: 3000 },
+  );
+  var poly2 = turf.polygon(
+    [
+      [
+        [-81, 35],
+        [-81, 41],
+        [-72, 41],
+        [-72, 35],
+        [-81, 35],
+      ],
+    ],
+    { pop: 1000 },
+  );
+
+  var points = turf.featureCollection([pt1, pt2]);
+  var polygons = turf.featureCollection([poly1, poly2]);
+
+  var tagged = turf.tag(points, polygons, "pop", "population");
+
+  //addToMap
+  var addToMap = { tagged, polygons };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<!-- prettier-ignore -->
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/tag
+
+import { tag } from "@turf/tag";
+const result = tag(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.tag(...);
+```
