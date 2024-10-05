@@ -10,12 +10,8 @@ import * as prettier from "prettier";
   // in an IIFE as top level async not allowed.
   const documentation = await import("documentation");
 
-  const srcPathDir = path.resolve(__dirname, "..", "turf");
+  const srcPathDir = path.resolve("/Users/james/Code/turf/span");
   const docsOutDir = path.resolve(__dirname, "..", "docs");
-
-  console.log(srcPathDir);
-  // ...
-  const modules = [];
 
   interface SidebarConfig {
     type: string;
@@ -25,42 +21,47 @@ import * as prettier from "prettier";
   }
 
   const sidebarBuckets = {};
-  const orderedSidebarBucketKeys: string[] = [];
-  const tocCategories = {};
-  let category = "";
 
-  // Assemble user defined categories to place functions into. These will be the
-  // categories in the API sidebar. A few other categories we create
-  // automatically below to place types and constants in to.
+  // Load documentation configuration from turf repo. We only use the paths
+  // section of this file, choosing instead to put members in categories based
+  // on the @turfcategory tag embedded within the JSDoc.
   const docs = yaml.load(path.join(srcPathDir, "documentation.yml"));
-  docs.toc.forEach((tocItem) => {
-    if (tocItem.name) {
-      sidebarBuckets[tocItem.name] = [];
-      orderedSidebarBucketKeys.push(tocItem.name);
-      category = tocItem.name;
-    } else {
-      tocCategories[tocItem] = category;
-    }
-  });
-  // Catch all for uncategorised functions.
-  sidebarBuckets["Other"] = [];
-  orderedSidebarBucketKeys.push("Other");
 
-  console.log(sidebarBuckets);
+  // We do add some MDN links for common Javascript types. We don't keep them in
+  // documentation.yml as the README.md files generated from the turf repo have
+  // this taken care of automatically.
+  docs.paths = Object.assign(docs.paths, {
+    object:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    Object:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    string:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String",
+    number:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    boolean:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    Array:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    undefined:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Undefined",
+    Error:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error",
+  });
+
+  // First run though all the packages and build a list of all the contained
+  // public members - functions, typedefs, constants. We gather the full list
+  // before rendering anything so we can insert cross references to internal
+  // typedefs. For example, Units.
 
   // glob index.ts/js in turf/packages/
   const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
-  // These two packages weren't exported from @turf/turf in 6.5.0, so
-  // aren't in the CDN file the website uses. Suppress for now
-  // and add back in once v7 is on the CDN.
-  // .filter((path) => path.includes("turf-helpers"));
-  // .filter((path) => path.includes("turf-bearing"))
-  // .filter((path) => !path.includes("turf-rectangle-grid"))
-  // .filter((path) => !path.includes("turf-nearest-neighbor-analysis"));
+  // .filter((path) => path.includes("turf-nearest-point-to-line"));
+
+  const members: any[] = [];
 
   for (const packageDir of packageDirs) {
     const moduleName = path.parse(packageDir).name;
-    console.log(`\n\n*** ${moduleName}\n`);
 
     const pckg = loadJsonFileSync(path.join(packageDir, "package.json"));
 
@@ -76,79 +77,93 @@ import * as prettier from "prettier";
       });
       const moduleObj = JSON.parse(await documentation.formats.json(res));
 
-      if (moduleName === "turf-moran-index") {
-        console.log(JSON.stringify(moduleObj));
-      }
-
       // For each exported member of the module (functions, types, consts)
       // generate the documentation, save to a file, and add an entry to the
       // appropriate heading in the sidebar. Some modules have multiple
       // members e.g. helpers or meta
       for (const member of moduleObj) {
-        // console.log("function", JSON.stringify(fn));
-
         if (member.kind === "module") {
           console.log("skipping module header");
           continue;
         }
 
-        let filename: string | undefined = undefined,
-          mdx: string | undefined = undefined;
-
-        if (member.kind === "typedef") {
-          [filename, mdx] = typedefJsonToMdx(member, pckg);
-        } else if (member.kind === "constant") {
-          [filename, mdx] = [member.name, "bar"];
-        } else if (member.kind === "function") {
-          console.log(
-            `skipping2 ${member.kind} ${member.name} from ${moduleName}`,
-          );
-        } else {
-          // A function.
-          [filename, mdx] = functionJsonToMdx(member, pckg);
-        }
-
-        console.log(pckg.name, member.name, filename);
-
-        if (filename && mdx) {
-          const prettyMdx = await prettier.format(mdx, {
-            parser: "mdx",
-            trailingSemi: "none",
-          });
-          const apiDir = member.kind === "typedef" ? "api/types" : "api";
-          fs.writeFileSync(
-            path.join(docsOutDir, apiDir, `${filename}.mdx`),
-            prettyMdx,
-          );
-
-          if (tocCategories[filename]) {
-            sidebarBuckets[tocCategories[filename]].push(
-              `${apiDir}/${filename}`,
-            );
-          } else {
-            // No category provided in documentation.yml. Default to "Other".
-            sidebarBuckets["Other"].push(path.join(apiDir, `${filename}`));
-          }
-        } else {
-          console.log(
-            `skipping ${member.kind} ${member.name} from ${moduleName}`,
-          );
-        }
+        // Augment the member object with the pckg details. We need those to
+        // display npm installation instructions.
+        members.push({ ...member, pckg });
       }
     }
   }
 
+  const typedefMembers = members.filter((member) => member?.kind === "typedef");
+
+  // Add a link entry to docs.paths for each typedef. Make the path the file
+  // (rather than the URL) and Docusaurus will handle relative links for us.
+  typedefMembers.forEach((member) => {
+    docs.paths[member.name] = `docs/api/types/${member.name}.mdx`;
+  });
+
+  const functionMembers = members.filter(
+    (member) => member?.kind === "function",
+  );
+
+  await Promise.all(
+    functionMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
+
+      [filename, category, mdx] = functionJsonToMdx(member);
+
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
+        });
+        const fileurl = path.join("api", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
+
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
+      }
+    }),
+  );
+
+  await Promise.all(
+    typedefMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
+
+      [filename, category, mdx] = typedefJsonToMdx(member);
+
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
+        });
+        const fileurl = path.join("api", "types", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
+
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
+      }
+    }),
+  );
+
+  const sidebarBucketKeys = Object.keys(sidebarBuckets).sort();
   const sidebarConfig: SidebarConfig[] = [];
-  for (const key of orderedSidebarBucketKeys) {
+  for (const key of sidebarBucketKeys) {
     sidebarConfig.push({
       type: "category",
       label: key,
-      collapsed: false,
+      collapsed: true,
       items: sidebarBuckets[key].sort(),
     });
   }
-
-  console.log(sidebarConfig);
 
   // Save API categories config to api-sidebar.ts. Prettify content as well.
   const sidebarContent = `// Generated automatically by generate-api-mdx.ts
@@ -172,50 +187,92 @@ export default ${JSON.stringify(sidebarConfig)}`;
     },
   );
 
-  function typedefJsonToMdx(typedef, pckg) {
-    return [typedef.name, "some mdx"];
-    if (moduleObj.length === 1) {
-      // Single function in this module.
-      return functionJsonToMdx(moduleObj[0], pckg);
-    } else {
-      let mdx = "";
-      let filename = "";
-      // Multiple functions e.g. helpers or meta
-      moduleObj.forEach((fn) => {
-        if (fn.kind && fn.kind === "module") {
-          console.log("skipping module header");
-          return;
+  function addToSidebar(category, filepath) {
+    // If there is no bucket for this category yet, add one.
+    if (!sidebarBuckets[category]) {
+      sidebarBuckets[category] = [];
+    }
+    sidebarBuckets[category].push(filepath);
+  }
+
+  function typedefJsonToMdx(typedef) {
+    let mdx = "";
+
+    const name = typedef.name;
+    const filename = name;
+
+    const description = getDescriptionMdx(typedef);
+
+    const definition = renderTypedefToMdx(typedef);
+
+    return [
+      filename,
+      "Type Definitions",
+      `---
+title: ${name}
+---
+
+### Description
+
+${description}
+
+### Definition
+
+${definition}
+
+`,
+    ];
+  }
+
+  function renderTypedefToMdx(typedef) {
+    let mdx = "";
+    if (typedef.type.name === "Function") {
+      // function - typedef.type.name === "Function" e.g. coordEachCallback
+
+      mdx = mdx.concat("function (\n\n");
+      mdx = mdx.concat(getParamsMdx(typedef));
+      mdx = mdx.concat("\n)\n");
+
+      const returnsMdx = getReturnsMdx(typedef);
+      if (returnsMdx !== "") {
+        mdx = mdx.concat("### Returns\n").concat(returnsMdx).concat("\n");
+      }
+
+      return mdx;
+    } else if (
+      typedef.type.name === "object" ||
+      typedef.type.name === "Object"
+    ) {
+      // object - typedef.type.name === "object" e.g. DbscanProps
+      typedef.augments.forEach((augmentation) => {
+        if (augmentation.title === "extends") {
+          mdx = mdx.concat(renderToMdx(augmentation.name)).concat(" & ");
         }
-        const [fnFilename, fnMdx] = functionJsonToMdx(fn, pckg);
-        filename = fnFilename;
-        mdx.concat(fnMdx);
       });
-      return [filename, mdx];
+
+      mdx = mdx.concat("object \\{\n\n");
+      mdx = mdx.concat(getParamsMdx(typedef));
+      mdx = mdx.concat("\n\\}\n");
+
+      return mdx;
+    } else {
+      // Union, etc - e.g. Units or AreaUnits
+      return renderToMdx(typedef.type);
     }
   }
 
-  function moduleJsonToMdx(moduleObj, pckg) {
-    if (moduleObj.length === 1) {
-      // Single function in this module.
-      return functionJsonToMdx(moduleObj[0], pckg);
-    } else {
-      let mdx = "";
-      let filename = "";
-      // Multiple functions e.g. helpers or meta
-      moduleObj.forEach((fn) => {
-        if (fn.kind && fn.kind === "module") {
-          console.log("skipping module header");
-          return;
-        }
-        const [fnFilename, fnMdx] = functionJsonToMdx(fn, pckg);
-        filename = fnFilename;
-        mdx.concat(fnMdx);
-      });
-      return [filename, mdx];
-    }
+  function getTagByTitle(member, title): object | undefined {
+    const tags = member.tags;
+    let value: string | undefined = undefined;
+    tags.forEach((tag) => {
+      if (tag.title === title) {
+        value = tag;
+      }
+    });
+    return value;
   }
 
-  function functionJsonToMdx(fn, pckg) {
+  function functionJsonToMdx(fn) {
     const name = fn.name;
 
     const description = getDescriptionMdx(fn);
@@ -224,13 +281,19 @@ export default ${JSON.stringify(sidebarConfig)}`;
 
     const returns = getReturnsMdx(fn);
 
+    const categoryTag = getTagByTitle(fn, "turfcategory");
+    const category = categoryTag?.description ?? "Other";
+
     let examples;
     if (hasExamples(fn)) {
       examples = getExamplesMdx(fn);
     }
 
+    fn.tags?.[""];
+
     return [
       name,
+      category,
       `---
 title: ${name}
 ---
@@ -258,9 +321,9 @@ ${examples ? examples : ""}
 ### Installation
 
 \`\`\`javascript
-$ npm install ${pckg.name}
+$ npm install ${fn.pckg.name}
 
-import { ${name} } from "${pckg.name}";
+import { ${name} } from "${fn.pckg.name}";
 const result = ${name}(...);
 \`\`\`
 
@@ -282,7 +345,13 @@ const result = turf.${name}(...);
   function getParamsMdx(fn) {
     let mdx = "| Name | Type | Description |\n| --- | --- | --- |\n";
     const tags = fn.tags;
-    for (const param of fn.params) {
+    let params: typeof fn.params = [];
+    if (fn.params && fn.params.length > 0) {
+      params = fn.params;
+    } else {
+      params = fn.properties;
+    }
+    for (const param of params) {
       const paramTag = tags
         .filter((tag) => tag.name === param.name)
         .slice(0, 1)[0];
@@ -317,14 +386,8 @@ const result = turf.${name}(...);
       const returnsDescription = ret.description
         ? `${renderToMdx(ret.description)}`
         : "";
-      mdx = mdx
-        .concat("<ul>\n")
-        .concat(mdxEscape(`  ${returnsType} ${returnsDescription}\n`))
-        .concat("</ul>\n");
+      mdx = mdx.concat(mdxEscape(`  ${returnsType} ${returnsDescription}\n`));
     }
-    // for (const tag of fn.tags.filter((tag) => tag.title === "returns")) {
-    //   mdx = mdx.concat(renderTagToMdx(tag));
-    // }
 
     return mdx;
   }
@@ -431,6 +494,7 @@ export function Map${index}() {
       case "name":
         break;
       case "param":
+      case "property":
         const name = tag.name;
         let optional = "";
         let type = "";
@@ -483,10 +547,10 @@ export function Map${index}() {
     return `\`\`\`javascript\n${mdxIn}\n\`\`\`\n`;
   }
 
-  function getDescriptionMdx(fn) {
+  function getDescriptionMdx(member) {
     let description = "";
-    if (fn.description.children) {
-      for (const child of fn.description.children) {
+    if (member.description.children) {
+      for (const child of member.description.children) {
         description = description.concat(renderToMdx(child));
       }
     }
@@ -526,6 +590,7 @@ export function Map${index}() {
         for (const child of node.children) {
           mdx = mdx.concat(renderToMdx(child));
         }
+        // Special handling if paragraph is embedded in a list item.
         if (parent && parent.type === "listItem") {
           // For some reason list item contents are provided as paragraphs.
           // Only add a single newline to avoid additional whitespace
@@ -576,9 +641,9 @@ export function Map${index}() {
         break;
       case "TypeApplication":
         mdx = mdx.concat(
-          `${renderToMdx(node.expression)}<${node.applications
+          `${renderToMdx(node.expression)}\\<${node.applications
             .map((application) => renderToMdx(application))
-            .join("|")}>`,
+            .join(", ")}\\>`,
         );
         break;
       case "NameExpression":
@@ -593,8 +658,11 @@ export function Map${index}() {
         break;
       case "UnionType":
         mdx = mdx.concat(
-          `${node.elements.map((element) => renderToMdx(element)).join("|")}`,
+          `${node.elements.map((element) => renderToMdx(element)).join(" | ")}`,
         );
+        break;
+      case "StringLiteralType":
+        mdx = mdx.concat(`"${node.value}"`);
         break;
       case "UndefinedLiteral":
         mdx = mdx.concat("undefined");
@@ -605,8 +673,12 @@ export function Map${index}() {
       case "AllLiteral":
         mdx = mdx.concat("\\*");
         break;
+      case "VoidLiteral":
+        mdx = mdx.concat("void");
+        break;
       default:
-        throw new Error(node.type + " not supported");
+        console.log(JSON.stringify(node));
+        throw new Error(`renderToMdx ${node.type} not supported`);
     }
     return mdx;
   }

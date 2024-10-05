@@ -53,7 +53,8 @@ You will likely see many changes to MDX files in the `docs/` directory.
 Run docusaurus to view the site in dev mode and highlight any missing routes, etc. Docusaurus is pretty good at finding problems. Fix any issues manually, usually by tweaking the MDX.
 
 ```
-$ npm run start
+$ npm run build
+$ npm run serve
 ```
 
 Note the generated documentation will appear under the _Next_ drop down menu.
