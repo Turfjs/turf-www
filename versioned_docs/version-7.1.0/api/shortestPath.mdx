@@ -43,7 +43,7 @@ var options = {
       [0, -3],
       [0, -7],
     ],
-  ]),
+  ]).geometry,
 };
 
 var path = turf.shortestPath(start, end, options);
@@ -52,28 +52,28 @@ var path = turf.shortestPath(start, end, options);
 export function Map0() {
   "use strict";
 
-  // jsdoc example start
-  var start = [-5, -6];
-  var end = [9, -6];
-  var options = {
-    obstacles: turf.polygon([
-      [
-        [0, -7],
-        [5, -7],
-        [5, -3],
-        [0, -3],
-        [0, -7],
-      ],
-    ]),
-  };
+// jsdoc example start
+var start = [-5, -6];
+var end = [9, -6];
+var options = {
+obstacles: turf.polygon([
+[
+[0, -7],
+[5, -7],
+[5, -3],
+[0, -3],
+[0, -7],
+],
+]).geometry,
+};
 
-  var path = turf.shortestPath(start, end, options);
+var path = turf.shortestPath(start, end, options);
 
-  //addToMap
-  var addToMap = { start, end, obstacles: options.obstacles, path };
-  // jsdoc example end
+//addToMap
+var addToMap = { start, end, obstacles: options.obstacles, path };
+// jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+return <ExampleMap addToMap={addToMap} />;
 }
 
 <!-- prettier-ignore -->

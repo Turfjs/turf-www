@@ -27,6 +27,18 @@ import * as prettier from "prettier";
   // on the @turfcategory tag embedded within the JSDoc.
   const docs = yaml.load(path.join(srcPathDir, "documentation.yml"));
 
+  function getCategory(memberName) {
+    const matchingTocs = Object.keys(docs.toc).filter(
+      (tocName) =>
+        docs.toc[tocName].filter((item) => item === memberName).length > 0,
+    );
+    if (matchingTocs.length === 1) {
+      return matchingTocs[0];
+    } else {
+      return "Other";
+    }
+  }
+
   // We do add some MDN links for common Javascript types. We don't keep them in
   // documentation.yml as the README.md files generated from the turf repo have
   // this taken care of automatically.
@@ -96,10 +108,18 @@ import * as prettier from "prettier";
 
   const typedefMembers = members.filter((member) => member?.kind === "typedef");
 
-  // Add a link entry to docs.paths for each typedef. Make the path the file
-  // (rather than the URL) and Docusaurus will handle relative links for us.
+  const constantMembers = members.filter(
+    (member) => member?.kind === "constant",
+  );
+
+  // Add a link entry to docs.paths for each typedef and constant. Make the path
+  // the file (rather than the URL) and Docusaurus will handle relative links
+  // for us.
   typedefMembers.forEach((member) => {
     docs.paths[member.name] = `docs/api/types/${member.name}.mdx`;
+  });
+  constantMembers.forEach((member) => {
+    docs.paths[member.name] = `docs/api/constants/${member.name}.mdx`;
   });
 
   const functionMembers = members.filter(
@@ -154,13 +174,43 @@ import * as prettier from "prettier";
     }),
   );
 
-  const sidebarBucketKeys = Object.keys(sidebarBuckets).sort();
+  await Promise.all(
+    constantMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
+
+      [filename, category, mdx] = constantJsonToMdx(member);
+
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
+        });
+        const fileurl = path.join("api", "constants", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
+
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
+      }
+    }),
+  );
+
+  let sidebarBucketKeys = Object.keys(docs.toc).concat([
+    "Other",
+    "Type Definitions",
+    "Constants",
+  ]);
+  // console.log(JSON.stringify(sidebarBuckets));
+
   const sidebarConfig: SidebarConfig[] = [];
   for (const key of sidebarBucketKeys) {
     sidebarConfig.push({
       type: "category",
       label: key,
-      collapsed: true,
+      collapsed: false,
       items: sidebarBuckets[key].sort(),
     });
   }
@@ -196,8 +246,6 @@ export default ${JSON.stringify(sidebarConfig)}`;
   }
 
   function typedefJsonToMdx(typedef) {
-    let mdx = "";
-
     const name = typedef.name;
     const filename = name;
 
@@ -219,6 +267,33 @@ ${description}
 ### Definition
 
 ${definition}
+
+`,
+    ];
+  }
+
+  function constantJsonToMdx(member) {
+    const name = member.name;
+    const filename = name;
+
+    const description = getDescriptionMdx(member);
+
+    const value = renderTypedefToMdx(member);
+
+    return [
+      filename,
+      "Constants",
+      `---
+title: ${name}
+---
+
+### Description
+
+${description}
+
+### Value
+
+${value}
 
 `,
     ];
@@ -281,8 +356,7 @@ ${definition}
 
     const returns = getReturnsMdx(fn);
 
-    const categoryTag = getTagByTitle(fn, "turfcategory");
-    const category = categoryTag?.description ?? "Other";
+    const category = getCategory(name);
 
     let examples;
     if (hasExamples(fn)) {
@@ -386,7 +460,7 @@ const result = turf.${name}(...);
       const returnsDescription = ret.description
         ? `${renderToMdx(ret.description)}`
         : "";
-      mdx = mdx.concat(mdxEscape(`  ${returnsType} ${returnsDescription}\n`));
+      mdx = mdx.concat(mdxEscape(`${returnsType} ${returnsDescription}\n`));
     }
 
     return mdx;
@@ -602,6 +676,7 @@ export function Map${index}() {
         break;
       case "text":
       case "html":
+      case "NumericLiteralType":
         mdx = mdx.concat(node.value);
         break;
       case "link":
@@ -659,6 +734,12 @@ export function Map${index}() {
       case "UnionType":
         mdx = mdx.concat(
           `${node.elements.map((element) => renderToMdx(element)).join(" | ")}`,
+        );
+        break;
+      case "ArrayType":
+        mdx = mdx.concat("[");
+        mdx = mdx.concat(
+          node.elements.map((element) => renderToMdx(element)).join(", "),
         );
         break;
       case "StringLiteralType":
