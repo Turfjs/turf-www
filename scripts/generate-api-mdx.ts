@@ -260,6 +260,13 @@ export default ${JSON.stringify(sidebarConfig)}`;
 title: ${name}
 ---
 
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
 ### Description
 
 ${description}
@@ -286,6 +293,13 @@ ${definition}
       `---
 title: ${name}
 ---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -374,7 +388,11 @@ title: ${name}
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -553,7 +571,6 @@ export function Map${index}() {
   return <ExampleMap addToMap={addToMap}/>;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map${index} />}</BrowserOnly>
 `);
       }
