@@ -74,7 +74,7 @@ const config = {
         indexName: "turfjs",
       },
       // Replace with your project's social card
-      image: "img/docusaurus-social-card.jpg",
+      image: "img/turfjs-social.jpg",
       navbar: {
         title: "Turf.js",
         logo: {
