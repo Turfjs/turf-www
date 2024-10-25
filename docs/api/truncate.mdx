@@ -4,7 +4,12 @@ title: truncate
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,20 +17,17 @@ Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the 
 
 ### Parameters
 
-| Name                        | Type                                                         | Description                                                                                     |
-| --------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| geojson                     | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection.                         |
-| options<i>?</i>             | **Object**                                                   | Optional parameters _(default \{\})_                                                            |
-| options.precision<i>?</i>   | **number**                                                   | coordinate decimal precision _(default 6)_                                                      |
-| options.coordinates<i>?</i> | **number**                                                   | maximum number of coordinates (primarly used to remove z coordinates) _(default 3)_             |
-| options.mutate<i>?</i>      | **boolean**                                                  | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
+| Name                        | Type                                                                                              | Description                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| geojson                     | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection.                         |
+| options<i>?</i>             | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                                                            |
+| options.precision<i>?</i>   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | coordinate decimal precision _(default 6)_                                                      |
+| options.coordinates<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | maximum number of coordinates (primarly used to remove z coordinates) _(default 3)_             |
+| options.mutate<i>?</i>      | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
 ### Returns
 
-<ul>
-  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** layer with truncated geometry
-
-</ul>
+**[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** layer with truncated geometry
 
 ### Examples
 
@@ -52,7 +54,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

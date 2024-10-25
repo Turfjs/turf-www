@@ -1,0 +1,47 @@
+---
+title: geomReduceCallback
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Callback for geomReduce
+
+The first time the callback function is called, the values provided as arguments depend
+on whether the reduce method has an initialValue argument.
+
+If an initialValue is provided to the reduce method:
+
+- The previousValue argument is initialValue.
+- The currentValue argument is the value of the first element present in the array.
+
+If an initialValue is not provided:
+
+- The previousValue argument is the value of the first element present in the array.
+- The currentValue argument is the value of the second element present in the array.
+
+### Definition
+
+function (
+
+| Name              | Type                                                                                            | Description                                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| previousValue     | **Reducer**                                                                                     | The accumulated value previously returned in the last invocation of the callback, or initialValue, if supplied. |
+| currentGeometry   | **[GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1)**                           | The current Geometry being processed.                                                                           |
+| featureIndex      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | The current index of the Feature being processed.                                                               |
+| featureProperties | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | The current Feature Properties being processed.                                                                 |
+| featureBBox       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | The current Feature BBox being processed.                                                                       |
+| featureId         | **Id**                                                                                          | The current Feature Id being processed.                                                                         |
+
+)
+
+### Returns
+
+**Reducer**

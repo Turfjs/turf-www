@@ -4,29 +4,31 @@ title: geometryCollection
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Creates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\> based on a
+Creates a Feature\<GeometryCollection\> based on a
 coordinate array. Properties can be added optionally.
 
 ### Parameters
 
-| Name                 | Type                                                                     | Description                                                               |
-| -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| geometries           | **Array\<[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\>** | an array of GeoJSON Geometries                                            |
-| properties<i>?</i>   | **Object**                                                               | an Object of key-value pairs to add as properties _(default \{\})_        |
-| options<i>?</i>      | **Object**                                                               | Optional Parameters _(default \{\})_                                      |
-| options.bbox<i>?</i> | **Array\<number\>**                                                      | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **string \| number**                                                     | Identifier associated with the Feature                                    |
+| Name                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Description                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| geometries           | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPoint](https://tools.ietf.org/html/rfc7946#section-3.1.3) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | an array of GeoJSON Geometries                                            |
+| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                                                                                                                                                                                                                                                                                                                                                                                                       | an Object of key-value pairs to add as properties _(default \{\})_        |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                                                                                                                                | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **Id**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Identifier associated with the Feature                                    |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\>** a GeoJSON GeometryCollection Feature
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** a GeoJSON GeometryCollection Feature
 
 ### Examples
 

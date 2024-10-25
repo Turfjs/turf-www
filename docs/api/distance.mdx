@@ -4,28 +4,30 @@ title: distance
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Calculates the distance between two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) in degrees, radians, miles, or kilometers.
+Calculates the distance between two [coordinates](https://tools.ietf.org/html/rfc7946#section-3.1.1) in degrees, radians, miles, or kilometers.
 This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
 
 ### Parameters
 
-| Name                  | Type                                                                                                                         | Description                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| from                  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | origin point or coordinate                                             |
-| to                    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1) \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)** | destination point or coordinate                                        |
-| options<i>?</i>       | **Object**                                                                                                                   | Optional parameters _(default \{\})_                                   |
-| options.units<i>?</i> | **string**                                                                                                                   | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| Name                  | Type                                                                                            | Description                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| from                  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | origin coordinate                                                      |
+| to                    | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | destination coordinate                                                 |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                   |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
 
 ### Returns
 
-<ul>
-  **number** distance between the two points
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** distance between the two coordinates
 
 ### Examples
 
@@ -56,7 +58,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

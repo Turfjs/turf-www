@@ -10,12 +10,8 @@ import * as prettier from "prettier";
   // in an IIFE as top level async not allowed.
   const documentation = await import("documentation");
 
-  const srcPathDir = path.resolve(__dirname, "..", "turf");
+  const srcPathDir = path.resolve("/Users/james/Code/turf/span");
   const docsOutDir = path.resolve(__dirname, "..", "docs");
-
-  console.log(srcPathDir);
-  // ...
-  const modules = [];
 
   interface SidebarConfig {
     type: string;
@@ -25,90 +21,192 @@ import * as prettier from "prettier";
   }
 
   const sidebarBuckets = {};
-  const orderedSidebarBucketKeys: string[] = [];
-  const functionCategories = {};
-  let category = "";
 
+  // Load documentation configuration from turf repo. We only use the paths
+  // section of this file, choosing instead to put members in categories based
+  // on the @turfcategory tag embedded within the JSDoc.
   const docs = yaml.load(path.join(srcPathDir, "documentation.yml"));
-  docs.toc.forEach((tocItem) => {
-    if (tocItem.name) {
-      sidebarBuckets[tocItem.name] = [];
-      orderedSidebarBucketKeys.push(tocItem.name);
-      category = tocItem.name;
+
+  function getCategory(memberName) {
+    const matchingTocs = Object.keys(docs.toc).filter(
+      (tocName) =>
+        docs.toc[tocName].filter((item) => item === memberName).length > 0,
+    );
+    if (matchingTocs.length === 1) {
+      return matchingTocs[0];
     } else {
-      functionCategories[tocItem] = category;
+      return "Other";
     }
+  }
+
+  // We do add some MDN links for common Javascript types. We don't keep them in
+  // documentation.yml as the README.md files generated from the turf repo have
+  // this taken care of automatically.
+  docs.paths = Object.assign(docs.paths, {
+    object:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    Object:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    string:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String",
+    number:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    boolean:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    Array:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    undefined:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Undefined",
+    Error:
+      "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error",
   });
-  sidebarBuckets["Other"] = [];
-  orderedSidebarBucketKeys.push("Other");
+
+  // First run though all the packages and build a list of all the contained
+  // public members - functions, typedefs, constants. We gather the full list
+  // before rendering anything so we can insert cross references to internal
+  // typedefs. For example, Units.
 
   // glob index.ts/js in turf/packages/
-  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"))
-    // These two packages weren't exported from @turf/turf in 6.5.0, so
-    // aren't in the CDN file the website uses. Suppress for now
-    // and add back in once v7 is on the CDN.
-    .filter((path) => !path.includes("turf-rectangle-grid"))
-    .filter((path) => !path.includes("turf-nearest-neighbor-analysis"));
+  const packageDirs = globSync(path.join(srcPathDir, "packages", "turf-*"));
+  // .filter((path) => path.includes("turf-nearest-point-to-line"));
+
+  const members: any[] = [];
+
+  for (const packageDir of packageDirs) {
+    const moduleName = path.parse(packageDir).name;
+
+    const pckg = loadJsonFileSync(path.join(packageDir, "package.json"));
+
+    // Check for index.ts or index.js
+    const indexFiles = globSync(path.join(packageDir, "index.[jt]s"));
+    if (indexFiles.length === 1) {
+      const indexFile = indexFiles[0];
+
+      // Get the documentation for the module.
+      const res = await documentation.build([path.resolve(indexFile)], {
+        external: [],
+        shallow: true,
+      });
+      const moduleObj = JSON.parse(await documentation.formats.json(res));
+
+      // For each exported member of the module (functions, types, consts)
+      // generate the documentation, save to a file, and add an entry to the
+      // appropriate heading in the sidebar. Some modules have multiple
+      // members e.g. helpers or meta
+      for (const member of moduleObj) {
+        if (member.kind === "module") {
+          console.log("skipping module header");
+          continue;
+        }
+
+        // Augment the member object with the pckg details. We need those to
+        // display npm installation instructions.
+        members.push({ ...member, pckg });
+      }
+    }
+  }
+
+  const typedefMembers = members.filter((member) => member?.kind === "typedef");
+
+  const constantMembers = members.filter(
+    (member) => member?.kind === "constant",
+  );
+
+  // Add a link entry to docs.paths for each typedef and constant. Make the path
+  // the file (rather than the URL) and Docusaurus will handle relative links
+  // for us.
+  typedefMembers.forEach((member) => {
+    docs.paths[member.name] = `docs/api/types/${member.name}.mdx`;
+  });
+  constantMembers.forEach((member) => {
+    docs.paths[member.name] = `docs/api/constants/${member.name}.mdx`;
+  });
+
+  const functionMembers = members.filter(
+    (member) => member?.kind === "function",
+  );
 
   await Promise.all(
-    packageDirs.map(async (packageDir) => {
-      const moduleName = path.parse(packageDir).name;
-      console.log(moduleName);
+    functionMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
 
-      const pckg = loadJsonFileSync(path.join(packageDir, "package.json"));
+      [filename, category, mdx] = functionJsonToMdx(member);
 
-      // Check for index.ts or index.js
-      const indexFiles = globSync(path.join(packageDir, "index.[jt]s"));
-      if (indexFiles.length === 1) {
-        const indexFile = indexFiles[0];
-        const res = await documentation.build([path.resolve(indexFile)], {
-          external: [],
-          shallow: true,
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
         });
-        const moduleObj = JSON.parse(await documentation.formats.json(res));
+        const fileurl = path.join("api", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
 
-        // Multiple functions e.g. helpers or meta
-        await Promise.all(
-          moduleObj.map(async (fn) => {
-            if (fn.kind && fn.kind === "module") {
-              console.log("skipping module header");
-              return;
-            }
-            if (fn.kind && fn.kind !== "function") {
-              console.log(`skipping non-function ${fn.name} ${fn.kind}`);
-              return;
-            }
-
-            const [filename, mdx] = functionJsonToMdx(fn, pckg);
-
-            if (filename && mdx) {
-              const prettyMdx = await prettier.format(mdx, {
-                parser: "mdx",
-                trailingSemi: "none",
-              });
-              fs.writeFileSync(
-                docsOutDir + "/api/" + filename + ".mdx",
-                prettyMdx,
-              );
-              if (functionCategories[filename]) {
-                sidebarBuckets[functionCategories[filename]].push(
-                  `api/${filename}`,
-                );
-              } else {
-                // No category provided in documentation.yml. Default to "Other".
-                sidebarBuckets["Other"].push(`api/${filename}`);
-              }
-            } else {
-              console.log(`skipping ${moduleName} ${filename}`);
-            }
-          }),
-        );
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
       }
     }),
   );
 
+  await Promise.all(
+    typedefMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
+
+      [filename, category, mdx] = typedefJsonToMdx(member);
+
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
+        });
+        const fileurl = path.join("api", "types", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
+
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
+      }
+    }),
+  );
+
+  await Promise.all(
+    constantMembers.map(async (member) => {
+      let filename: string | undefined = undefined,
+        category: string | undefined = undefined,
+        mdx: string | undefined = undefined;
+
+      [filename, category, mdx] = constantJsonToMdx(member);
+
+      if (filename && category && mdx) {
+        const prettyMdx = await prettier.format(mdx, {
+          parser: "mdx",
+          trailingSemi: "none",
+        });
+        const fileurl = path.join("api", "constants", `${filename}`);
+        const filepath = `${fileurl}.mdx`;
+
+        fs.writeFileSync(path.join(docsOutDir, filepath), prettyMdx);
+        addToSidebar(category, fileurl);
+      } else {
+        console.log(`skipping ${member.kind} ${member.name}`);
+      }
+    }),
+  );
+
+  let sidebarBucketKeys = Object.keys(docs.toc).concat([
+    "Other",
+    "Type Definitions",
+    "Constants",
+  ]);
+  // console.log(JSON.stringify(sidebarBuckets));
+
   const sidebarConfig: SidebarConfig[] = [];
-  for (const key of orderedSidebarBucketKeys) {
+  for (const key of sidebarBucketKeys) {
     sidebarConfig.push({
       type: "category",
       label: key,
@@ -139,28 +237,131 @@ export default ${JSON.stringify(sidebarConfig)}`;
     },
   );
 
-  function moduleJsonToMdx(moduleObj, pckg) {
-    if (moduleObj.length === 1) {
-      // Single function in this module.
-      return functionJsonToMdx(moduleObj[0], pckg);
-    } else {
-      let mdx = "";
-      let filename = "";
-      // Multiple functions e.g. helpers or meta
-      moduleObj.forEach((fn) => {
-        if (fn.kind && fn.kind === "module") {
-          console.log("skipping module header");
-          return;
+  function addToSidebar(category, filepath) {
+    // If there is no bucket for this category yet, add one.
+    if (!sidebarBuckets[category]) {
+      sidebarBuckets[category] = [];
+    }
+    sidebarBuckets[category].push(filepath);
+  }
+
+  function typedefJsonToMdx(typedef) {
+    const name = typedef.name;
+    const filename = name;
+
+    const description = getDescriptionMdx(typedef);
+
+    const definition = renderTypedefToMdx(typedef);
+
+    return [
+      filename,
+      "Type Definitions",
+      `---
+title: ${name}
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+${description}
+
+### Definition
+
+${definition}
+
+`,
+    ];
+  }
+
+  function constantJsonToMdx(member) {
+    const name = member.name;
+    const filename = name;
+
+    const description = getDescriptionMdx(member);
+
+    const value = renderTypedefToMdx(member);
+
+    return [
+      filename,
+      "Constants",
+      `---
+title: ${name}
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+${description}
+
+### Value
+
+${value}
+
+`,
+    ];
+  }
+
+  function renderTypedefToMdx(typedef) {
+    let mdx = "";
+    if (typedef.type.name === "Function") {
+      // function - typedef.type.name === "Function" e.g. coordEachCallback
+
+      mdx = mdx.concat("function (\n\n");
+      mdx = mdx.concat(getParamsMdx(typedef));
+      mdx = mdx.concat("\n)\n");
+
+      const returnsMdx = getReturnsMdx(typedef);
+      if (returnsMdx !== "") {
+        mdx = mdx.concat("### Returns\n").concat(returnsMdx).concat("\n");
+      }
+
+      return mdx;
+    } else if (
+      typedef.type.name === "object" ||
+      typedef.type.name === "Object"
+    ) {
+      // object - typedef.type.name === "object" e.g. DbscanProps
+      typedef.augments.forEach((augmentation) => {
+        if (augmentation.title === "extends") {
+          mdx = mdx.concat(renderToMdx(augmentation.name)).concat(" & ");
         }
-        const [fnFilename, fnMdx] = functionJsonToMdx(fn, pckg);
-        filename = fnFilename;
-        mdx.concat(fnMdx);
       });
-      return [filename, mdx];
+
+      mdx = mdx.concat("object \\{\n\n");
+      mdx = mdx.concat(getParamsMdx(typedef));
+      mdx = mdx.concat("\n\\}\n");
+
+      return mdx;
+    } else {
+      // Union, etc - e.g. Units or AreaUnits
+      return renderToMdx(typedef.type);
     }
   }
 
-  function functionJsonToMdx(fn, pckg) {
+  function getTagByTitle(member, title): object | undefined {
+    const tags = member.tags;
+    let value: string | undefined = undefined;
+    tags.forEach((tag) => {
+      if (tag.title === title) {
+        value = tag;
+      }
+    });
+    return value;
+  }
+
+  function functionJsonToMdx(fn) {
     const name = fn.name;
 
     const description = getDescriptionMdx(fn);
@@ -169,20 +370,29 @@ export default ${JSON.stringify(sidebarConfig)}`;
 
     const returns = getReturnsMdx(fn);
 
+    const category = getCategory(name);
+
     let examples;
     if (hasExamples(fn)) {
       examples = getExamplesMdx(fn);
     }
 
+    fn.tags?.[""];
+
     return [
       name,
+      category,
       `---
 title: ${name}
 ---
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -203,9 +413,9 @@ ${examples ? examples : ""}
 ### Installation
 
 \`\`\`javascript
-$ npm install ${pckg.name}
+$ npm install ${fn.pckg.name}
 
-import { ${name} } from "${pckg.name}";
+import { ${name} } from "${fn.pckg.name}";
 const result = ${name}(...);
 \`\`\`
 
@@ -226,8 +436,36 @@ const result = turf.${name}(...);
 
   function getParamsMdx(fn) {
     let mdx = "| Name | Type | Description |\n| --- | --- | --- |\n";
-    for (const tag of fn.tags.filter((tag) => tag.title === "param")) {
-      mdx = mdx.concat(renderTagToMdx(tag));
+    const tags = fn.tags;
+    let params: typeof fn.params = [];
+    if (fn.params && fn.params.length > 0) {
+      params = fn.params;
+    } else {
+      params = fn.properties;
+    }
+    for (const param of params) {
+      const paramTag = tags
+        .filter((tag) => tag.name === param.name)
+        .slice(0, 1)[0];
+      if (paramTag) {
+        param.type = paramTag.type;
+      }
+      mdx = mdx.concat(renderTagToMdx(param));
+      // For example, options.blah
+      if (param.properties) {
+        for (const property of param.properties) {
+          // Merge in the 'types' field from the tag of the same name. For some
+          // reason documentationjs stores the type data (including optional) on
+          // the tag, but the rich description (including embedded links) on the
+          // params.
+          const propertyTag = tags
+            .filter((tag) => tag.name === property.name)
+            .slice(0, 1)[0];
+
+          property.type = propertyTag.type;
+          mdx = mdx.concat(renderTagToMdx(property));
+        }
+      }
     }
 
     return mdx;
@@ -240,14 +478,8 @@ const result = turf.${name}(...);
       const returnsDescription = ret.description
         ? `${renderToMdx(ret.description)}`
         : "";
-      mdx = mdx
-        .concat("<ul>\n")
-        .concat(mdxEscape(`  ${returnsType} ${returnsDescription}\n`))
-        .concat("</ul>\n");
+      mdx = mdx.concat(mdxEscape(`${returnsType} ${returnsDescription}\n`));
     }
-    // for (const tag of fn.tags.filter((tag) => tag.title === "returns")) {
-    //   mdx = mdx.concat(renderTagToMdx(tag));
-    // }
 
     return mdx;
   }
@@ -339,7 +571,6 @@ export function Map${index}() {
   return <ExampleMap addToMap={addToMap}/>;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map${index} />}</BrowserOnly>
 `);
       }
@@ -354,6 +585,7 @@ export function Map${index}() {
       case "name":
         break;
       case "param":
+      case "property":
         const name = tag.name;
         let optional = "";
         let type = "";
@@ -370,7 +602,7 @@ export function Map${index}() {
         }
         // Join multi-line param descriptions with a space. https://stackoverflow.com/a/30955762
         const description = tag.description
-          ? newlineToSpace(mdxEscape(tag.description))
+          ? newlineToSpace(mdxEscape(renderToMdx(tag.description)))
           : "";
         const defaultValue = tag.default
           ? `_(default ${mdxEscape(tag.default)})_`
@@ -406,10 +638,10 @@ export function Map${index}() {
     return `\`\`\`javascript\n${mdxIn}\n\`\`\`\n`;
   }
 
-  function getDescriptionMdx(fn) {
+  function getDescriptionMdx(member) {
     let description = "";
-    if (fn.description.children) {
-      for (const child of fn.description.children) {
+    if (member.description.children) {
+      for (const child of member.description.children) {
         description = description.concat(renderToMdx(child));
       }
     }
@@ -449,6 +681,7 @@ export function Map${index}() {
         for (const child of node.children) {
           mdx = mdx.concat(renderToMdx(child));
         }
+        // Special handling if paragraph is embedded in a list item.
         if (parent && parent.type === "listItem") {
           // For some reason list item contents are provided as paragraphs.
           // Only add a single newline to avoid additional whitespace
@@ -460,9 +693,11 @@ export function Map${index}() {
         break;
       case "text":
       case "html":
+      case "NumericLiteralType":
         mdx = mdx.concat(node.value);
         break;
       case "link":
+      case "linkReference":
         let url = node.url;
         if (docs.paths[node.url]) {
           url = docs.paths[node.url];
@@ -498,9 +733,9 @@ export function Map${index}() {
         break;
       case "TypeApplication":
         mdx = mdx.concat(
-          `${renderToMdx(node.expression)}<${node.applications
+          `${renderToMdx(node.expression)}\\<${node.applications
             .map((application) => renderToMdx(application))
-            .join("|")}>`,
+            .join(", ")}\\>`,
         );
         break;
       case "NameExpression":
@@ -515,8 +750,17 @@ export function Map${index}() {
         break;
       case "UnionType":
         mdx = mdx.concat(
-          `${node.elements.map((element) => renderToMdx(element)).join("|")}`,
+          `${node.elements.map((element) => renderToMdx(element)).join(" | ")}`,
         );
+        break;
+      case "ArrayType":
+        mdx = mdx.concat("[");
+        mdx = mdx.concat(
+          node.elements.map((element) => renderToMdx(element)).join(", "),
+        );
+        break;
+      case "StringLiteralType":
+        mdx = mdx.concat(`"${node.value}"`);
         break;
       case "UndefinedLiteral":
         mdx = mdx.concat("undefined");
@@ -527,8 +771,12 @@ export function Map${index}() {
       case "AllLiteral":
         mdx = mdx.concat("\\*");
         break;
+      case "VoidLiteral":
+        mdx = mdx.concat("void");
+        break;
       default:
-        throw new Error(node.type + " not supported");
+        console.log(JSON.stringify(node));
+        throw new Error(`renderToMdx ${node.type} not supported`);
     }
     return mdx;
   }

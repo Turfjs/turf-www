@@ -4,7 +4,12 @@ title: kinks
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -20,10 +25,7 @@ returns [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) at all self-
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** self-intersections
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** self-intersections
 
 ### Examples
 
@@ -64,7 +66,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

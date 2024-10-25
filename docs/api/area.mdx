@@ -4,24 +4,26 @@ title: area
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Takes one or more features and returns their area in square meters.
+Calculates the geodesic area in square meters of one or more polygons.
 
 ### Parameters
 
-| Name    | Type                                                         | Description              |
-| ------- | ------------------------------------------------------------ | ------------------------ |
-| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input GeoJSON feature(s) |
+| Name    | Type                                                         | Description                                                                                                                                                                                                          |
+| ------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | input polygon(s) as [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1), [Feature](https://tools.ietf.org/html/rfc7946#section-3.2), or [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) |
 
 ### Returns
 
-<ul>
-  **number** area in square meters
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** area in square meters
 
 ### Examples
 
@@ -63,7 +65,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

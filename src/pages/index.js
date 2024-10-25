@@ -59,8 +59,8 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title="Advanced geospatial toolkit for Typescript"
+      description="Turf provides advanced geospatial analysis capabilities for browsers and Node.js"
     >
       <HomepageHeader />
       <main>

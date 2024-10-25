@@ -1,0 +1,26 @@
+---
+title: NearestNeighborStudyArea
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Nearest neighbour study area polygon feature.
+
+### Definition
+
+object \{
+
+| Name                               | Type                                                                          | Description |
+| ---------------------------------- | ----------------------------------------------------------------------------- | ----------- |
+| properties                         | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**      |             |
+| properties.nearestNeighborAnalysis | **[NearestNeighborStatistics](docs/api/types/NearestNeighborStatistics.mdx)** |             |
+
+\}

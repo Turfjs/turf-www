@@ -4,7 +4,12 @@ title: clusterEach
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,15 +17,15 @@ clusterEach
 
 ### Parameters
 
-| Name     | Type                                                                     | Description                                               |
-| -------- | ------------------------------------------------------------------------ | --------------------------------------------------------- |
-| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** | GeoJSON Features                                          |
-| property | **string \| number**                                                     | GeoJSON property key/value used to create clusters        |
-| callback | **Function**                                                             | a method that takes (cluster, clusterValue, currentIndex) |
+| Name     | Type                                                                                                                                                                                           | Description                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)**                                                                                                                       | GeoJSON Features                                          |
+| property | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | GeoJSON property key/value used to create clusters        |
+| callback | **[clusterEachCallback](docs/api/types/clusterEachCallback.mdx)**                                                                                                                              | a method that takes (cluster, clusterValue, currentIndex) |
 
 ### Returns
 
-<ul>**void**</ul>
+**void**
 
 ### Examples
 

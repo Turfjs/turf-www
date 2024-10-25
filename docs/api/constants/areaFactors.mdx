@@ -1,0 +1,19 @@
+---
+title: areaFactors
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Area of measurement factors based on 1 square meter.
+
+### Value
+
+Record\<[AreaUnits](docs/api/types/AreaUnits.mdx), [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>

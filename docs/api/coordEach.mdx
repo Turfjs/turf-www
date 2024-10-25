@@ -4,7 +4,12 @@ title: coordEach
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,15 +17,15 @@ Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
 
 ### Parameters
 
-| Name                     | Type                                                                                                                                                                                                  | Description                                                                                                           |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| geojson                  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object                                                                                                    |
-| callback                 | **Function**                                                                                                                                                                                          | a method that takes (currentCoord, coordIndex, featureIndex, multiFeatureIndex)                                       |
-| excludeWrapCoord<i>?</i> | **boolean**                                                                                                                                                                                           | whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration. _(default false)_ |
+| Name                     | Type                                                                                              | Description                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| geojson                  | **[AllGeoJSON](docs/api/types/AllGeoJSON.mdx)**                                                   | any GeoJSON object                                                                                                    |
+| callback                 | **[coordEachCallback](docs/api/types/coordEachCallback.mdx)**                                     | a method that takes (currentCoord, coordIndex, featureIndex, multiFeatureIndex)                                       |
+| excludeWrapCoord<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration. _(default false)_ |
 
 ### Returns
 
-<ul>**void**</ul>
+**void**
 
 ### Examples
 

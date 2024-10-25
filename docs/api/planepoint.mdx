@@ -4,13 +4,19 @@ title: planepoint
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Takes a triangular plane as a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)
-and a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) within that triangle and returns the z-value
-at that point. The Polygon should have properties `a`, `b`, and `c`
+Takes a triangular plane as a polygon and a point within that triangle, and
+returns the z-value at that point.
+
+The Polygon should have properties `a`, `b`, and `c`
 that define the values at its three corners. Alternatively, the z-values
 of each triangle point can be provided by their respective 3rd coordinate
 if their values are not provided as properties.
@@ -24,17 +30,14 @@ if their values are not provided as properties.
 
 ### Returns
 
-<ul>
-  **number** the z-value for `interpolatedPoint`
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** the z-value for `interpolatedPoint`
 
 ### Examples
 
 ```javascript
-var point = turf.point([-75.3221, 39.529]);
+const point = turf.point([-75.3221, 39.529]);
 // "a", "b", and "c" values represent the values of the coordinates in order.
-var triangle = turf.polygon(
+const triangle = turf.polygon(
   [
     [
       [-75.1221, 39.57],
@@ -50,7 +53,7 @@ var triangle = turf.polygon(
   },
 );
 
-var zValue = turf.planepoint(point, triangle);
+const zValue = turf.planepoint(point, triangle);
 point.properties.zValue = zValue;
 ```
 
@@ -58,9 +61,9 @@ export function Map0() {
   "use strict";
 
   // jsdoc example start
-  var point = turf.point([-75.3221, 39.529]);
+  const point = turf.point([-75.3221, 39.529]);
   // "a", "b", and "c" values represent the values of the coordinates in order.
-  var triangle = turf.polygon(
+  const triangle = turf.polygon(
     [
       [
         [-75.1221, 39.57],
@@ -76,17 +79,16 @@ export function Map0() {
     },
   );
 
-  var zValue = turf.planepoint(point, triangle);
+  const zValue = turf.planepoint(point, triangle);
   point.properties.zValue = zValue;
 
   //addToMap
-  var addToMap = { triangle, point };
+  const addToMap = [triangle, point];
   // jsdoc example end
 
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

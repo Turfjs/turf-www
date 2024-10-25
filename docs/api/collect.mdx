@@ -4,7 +4,12 @@ title: collect
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -20,15 +25,12 @@ on the polygon.
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | polygons    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | polygons with values on which to aggregate |
 | points      | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>**   | points to be aggregated                    |
-| inProperty  | **string**                                                                                                                               | property to be nested from                 |
-| outProperty | **string**                                                                                                                               | property to be nested into                 |
+| inProperty  | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                          | property to be nested from                 |
+| outProperty | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                          | property to be nested into                 |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** polygons with properties listed based on `outField`
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** polygons with properties listed based on `outField`
 
 ### Examples
 
@@ -103,7 +105,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

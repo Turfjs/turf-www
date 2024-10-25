@@ -4,7 +4,12 @@ title: convertLength
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,18 +18,15 @@ Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, ce
 
 ### Parameters
 
-| Name                 | Type       | Description                            |
-| -------------------- | ---------- | -------------------------------------- |
-| length               | **number** | to be converted                        |
-| originalUnit<i>?</i> | **Units**  | of the length _(default "kilometers")_ |
-| finalUnit<i>?</i>    | **Units**  | returned unit _(default "kilometers")_ |
+| Name                 | Type                                                                                            | Description                            |
+| -------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------- |
+| length               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | to be converted                        |
+| originalUnit<i>?</i> | **[Units](docs/api/types/Units.mdx)**                                                           | of the length _(default "kilometers")_ |
+| finalUnit<i>?</i>    | **[Units](docs/api/types/Units.mdx)**                                                           | returned unit _(default "kilometers")_ |
 
 ### Returns
 
-<ul>
-  **number** the converted length
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** the converted length
 
 ### Installation
 

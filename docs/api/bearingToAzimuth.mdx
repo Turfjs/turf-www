@@ -4,7 +4,12 @@ title: bearingToAzimuth
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,16 +18,13 @@ and returns an angle between 0-360 degrees (positive clockwise), 0 being the nor
 
 ### Parameters
 
-| Name    | Type       | Description                          |
-| ------- | ---------- | ------------------------------------ |
-| bearing | **number** | angle, between -180 and +180 degrees |
+| Name    | Type                                                                                            | Description                          |
+| ------- | ----------------------------------------------------------------------------------------------- | ------------------------------------ |
+| bearing | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | angle, between -180 and +180 degrees |
 
 ### Returns
 
-<ul>
-  **number** angle between 0 and 360 degrees
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** angle between 0 and 360 degrees
 
 ### Installation
 

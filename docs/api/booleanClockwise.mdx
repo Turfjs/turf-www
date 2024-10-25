@@ -4,7 +4,12 @@ title: booleanClockwise
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,16 +17,13 @@ Takes a ring and return true or false whether or not the ring is clockwise or co
 
 ### Parameters
 
-| Name | Type                                                                                                                                                                                                                             | Description     |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| line | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| Array\<Array\<number\>\>** | to be evaluated |
+| Name | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Description     |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| line | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>\>** | to be evaluated |
 
 ### Returns
 
-<ul>
-  **boolean** true/false
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
 
 ### Examples
 

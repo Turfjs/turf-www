@@ -4,7 +4,12 @@ title: lineSliceAlong
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -19,17 +24,14 @@ This can be useful for extracting only the part of a route between two distances
 | Name                  | Type                                                                                                                                                                                                 | Description                                                            |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | line                  | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | input line                                                             |
-| startDist             | **number**                                                                                                                                                                                           | distance along the line to starting point                              |
-| stopDist              | **number**                                                                                                                                                                                           | distance along the line to ending point                                |
-| options<i>?</i>       | **Object**                                                                                                                                                                                           | Optional parameters _(default \{\})_                                   |
-| options.units<i>?</i> | **string**                                                                                                                                                                                           | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
+| startDist             | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                      | distance along the line to starting point                              |
+| stopDist              | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                      | distance along the line to ending point                                |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                      | Optional parameters _(default \{\})_                                   |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                      | can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** sliced line
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** sliced line
 
 ### Examples
 
@@ -66,7 +68,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

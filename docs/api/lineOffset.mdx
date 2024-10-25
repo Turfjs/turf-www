@@ -4,7 +4,12 @@ title: lineOffset
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -15,16 +20,13 @@ Takes a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4) and returns a 
 | Name                  | Type                                                                                                                                                                                                                                                                     | Description                                                                                |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
 | geojson               | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | input GeoJSON                                                                              |
-| distance              | **number**                                                                                                                                                                                                                                                               | distance to offset the line (can be of negative value)                                     |
-| options<i>?</i>       | **Object**                                                                                                                                                                                                                                                               | Optional parameters _(default \{\})_                                                       |
-| options.units<i>?</i> | **string**                                                                                                                                                                                                                                                               | can be degrees, radians, miles, kilometers, inches, yards, meters _(default 'kilometers')_ |
+| distance              | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                          | distance to offset the line (can be of negative value)                                     |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                          | Optional parameters _(default \{\})_                                                       |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                          | can be degrees, radians, miles, kilometers, inches, yards, meters _(default 'kilometers')_ |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** Line offset from the input line
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** Line offset from the input line
 
 ### Examples
 
@@ -64,7 +66,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

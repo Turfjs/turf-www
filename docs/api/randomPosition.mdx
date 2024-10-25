@@ -4,7 +4,12 @@ title: randomPosition
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,16 +17,13 @@ Returns a random position within a [bounding box](https://tools.ietf.org/html/rf
 
 ### Parameters
 
-| Name         | Type                | Description                                                                        |
-| ------------ | ------------------- | ---------------------------------------------------------------------------------- |
-| bbox<i>?</i> | **Array\<number\>** | a bounding box inside of which positions are placed. _(default [-180,-90,180,90])_ |
+| Name         | Type                                                      | Description                                                                        |
+| ------------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** | a bounding box inside of which positions are placed. _(default [-180,-90,180,90])_ |
 
 ### Returns
 
-<ul>
-  **Array\<number\>** Position [longitude, latitude]
-
-</ul>
+**Position** Position [longitude, latitude]
 
 ### Examples
 

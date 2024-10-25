@@ -4,7 +4,12 @@ title: transformTranslate
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,22 +18,19 @@ on the provided direction angle.
 
 ### Parameters
 
-| Name                         | Type                                                         | Description                                                                                          |
-| ---------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| geojson                      | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | object to be translated                                                                              |
-| distance                     | **number**                                                   | length of the motion; negative values determine motion in opposite direction                         |
-| direction                    | **number**                                                   | of the motion; angle from North in decimal degrees, positive clockwise                               |
-| options<i>?</i>              | **Object**                                                   | Optional parameters _(default \{\})_                                                                 |
-| options.units<i>?</i>        | **string**                                                   | in which `distance` will be express; miles, kilometers, degrees, or radians _(default 'kilometers')_ |
-| options.zTranslation<i>?</i> | **number**                                                   | length of the vertical motion, same unit of distance _(default 0)_                                   |
-| options.mutate<i>?</i>       | **boolean**                                                  | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_      |
+| Name                         | Type                                                                                                                                    | Description                                                                                          |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| geojson                      | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** | object to be translated                                                                              |
+| distance                     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | length of the motion; negative values determine motion in opposite direction                         |
+| direction                    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | of the motion; angle from North in decimal degrees, positive clockwise                               |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                         | Optional parameters _(default \{\})_                                                                 |
+| options.units<i>?</i>        | **[Units](docs/api/types/Units.mdx)**                                                                                                   | in which `distance` will be express; miles, kilometers, degrees, or radians _(default 'kilometers')_ |
+| options.zTranslation<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | length of the vertical motion, same unit of distance _(default 0)_                                   |
+| options.mutate<i>?</i>       | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                       | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_      |
 
 ### Returns
 
-<ul>
-  **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** the translated GeoJSON object
-
-</ul>
+**[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** the translated GeoJSON object
 
 ### Examples
 
@@ -66,7 +68,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

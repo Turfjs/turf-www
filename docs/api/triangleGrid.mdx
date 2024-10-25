@@ -4,29 +4,31 @@ title: triangleGrid
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Takes a bounding box and a cell depth and returns a set of triangular [polygons](https://tools.ietf.org/html/rfc7946#section-3.1.6) in a grid.
+Creates a grid of triangular polygons.
 
 ### Parameters
 
-| Name                       | Type                                                                                                                           | Description                                                                                          |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| bbox                       | **Array\<number\>**                                                                                                            | extent in [minX, minY, maxX, maxY] order                                                             |
-| cellSide                   | **number**                                                                                                                     | dimension of each cell                                                                               |
-| options<i>?</i>            | **Object**                                                                                                                     | Optional parameters _(default \{\})_                                                                 |
-| options.units<i>?</i>      | **string**                                                                                                                     | used in calculating cellSide, can be degrees, radians, miles, or kilometers _(default 'kilometers')_ |
-| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                  |
-| options.properties<i>?</i> | **Object**                                                                                                                     | passed to each point of the grid _(default \{\})_                                                    |
+| Name                       | Type                                                                                                                           | Description                                                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                      | extent of grid in [minX, minY, maxX, maxY] order                                                                                                                         |
+| cellSide                   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                | dimension of each grid cell. Two triangles are created in each cell.                                                                                                     |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                | Optional parameters _(default \{\})_                                                                                                                                     |
+| options.units<i>?</i>      | **[Units](docs/api/types/Units.mdx)**                                                                                          | used in calculating cellSide. Supports all valid Turf [Units](https://github.com/Turfjs/turf/blob/master/packages/turf-helpers/README_UNITS.md) _(default 'kilometers')_ |
+| options.mask<i>?</i>       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | if passed a Polygon or MultiPolygon, the grid Points will be created only inside it                                                                                      |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                | passed to each point of the grid _(default \{\})_                                                                                                                        |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of polygons
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of polygons
 
 ### Examples
 
@@ -55,7 +57,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

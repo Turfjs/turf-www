@@ -4,7 +4,12 @@ title: isObject
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,16 +17,13 @@ isObject
 
 ### Parameters
 
-| Name  | Type   | Description          |
-| ----- | ------ | -------------------- |
-| input | **\*** | variable to validate |
+| Name  | Type    | Description          |
+| ----- | ------- | -------------------- |
+| input | **any** | variable to validate |
 
 ### Returns
 
-<ul>
-  **boolean** true/false, including false for Arrays and Functions
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false, including false for Arrays and Functions
 
 ### Examples
 

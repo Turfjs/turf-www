@@ -4,7 +4,12 @@ title: coordAll
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,16 +17,13 @@ Get all coordinates from any GeoJSON object.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                  | Description        |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON object |
+| Name    | Type                                            | Description        |
+| ------- | ----------------------------------------------- | ------------------ |
+| geojson | **[AllGeoJSON](docs/api/types/AllGeoJSON.mdx)** | any GeoJSON object |
 
 ### Returns
 
-<ul>
-  **Array\<Array\<number\>\>** coordinate position array
-
-</ul>
+**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>\>** coordinate position array
 
 ### Examples
 

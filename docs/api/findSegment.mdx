@@ -4,7 +4,12 @@ title: findSegment
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -18,21 +23,18 @@ Point & MultiPoint will always return null.
 | Name                              | Type                                                                                                                                                                                                  | Description                                                |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | geojson                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | Any GeoJSON Feature or Geometry                            |
-| options<i>?</i>                   | **Object**                                                                                                                                                                                            | Optional parameters _(default \{\})_                       |
-| options.featureIndex<i>?</i>      | **number**                                                                                                                                                                                            | Feature Index _(default 0)_                                |
-| options.multiFeatureIndex<i>?</i> | **number**                                                                                                                                                                                            | Multi-Feature Index _(default 0)_                          |
-| options.geometryIndex<i>?</i>     | **number**                                                                                                                                                                                            | Geometry Index _(default 0)_                               |
-| options.segmentIndex<i>?</i>      | **number**                                                                                                                                                                                            | Segment Index _(default 0)_                                |
-| options.properties<i>?</i>        | **Object**                                                                                                                                                                                            | Translate Properties to output LineString _(default \{\})_ |
+| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                       | Optional parameters _(default \{\})_                       |
+| options.featureIndex<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Feature Index _(default 0)_                                |
+| options.multiFeatureIndex<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Multi-Feature Index _(default 0)_                          |
+| options.geometryIndex<i>?</i>     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Geometry Index _(default 0)_                               |
+| options.segmentIndex<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Segment Index _(default 0)_                                |
+| options.properties<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                       | Translate Properties to output LineString _(default \{\})_ |
 | options.bbox<i>?</i>              | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                             | Translate BBox to output LineString _(default \{\})_       |
-| options.id<i>?</i>                | **number \| string**                                                                                                                                                                                  | Translate Id to output LineString _(default \{\})_         |
+| options.id<i>?</i>                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**        | Translate Id to output LineString _(default \{\})_         |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** 2-vertex GeoJSON Feature LineString
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** 2-vertex GeoJSON Feature LineString
 
 ### Examples
 
