@@ -4,7 +4,12 @@ title: buffer
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -21,17 +26,14 @@ the input, or even be empty.
 | Name                  | Type                                                                                                                                                                                                         | Description                                                         |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
 | geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | input to be buffered                                                |
-| radius                | **number**                                                                                                                                                                                                   | distance to draw the buffer (negative values are allowed)           |
-| options<i>?</i>       | **Object**                                                                                                                                                                                                   | Optional parameters _(default \{\})_                                |
-| options.units<i>?</i> | **string**                                                                                                                                                                                                   | any of the options supported by turf units _(default "kilometers")_ |
-| options.steps<i>?</i> | **number**                                                                                                                                                                                                   | number of steps _(default 8)_                                       |
+| radius                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                              | distance to draw the buffer (negative values are allowed)           |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                              | Optional parameters _(default \{\})_                                |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                              | any of the options supported by turf units _(default "kilometers")_ |
+| options.steps<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                              | number of steps _(default 8)_                                       |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| undefined** buffered features
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| undefined** buffered features
 
 ### Examples
 
@@ -54,7 +56,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

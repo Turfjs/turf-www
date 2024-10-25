@@ -1,0 +1,26 @@
+---
+title: MoranIndex
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+### Definition
+
+object \{
+
+| Name               | Type                                                                                            | Description                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| moranIndex         | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the moran's Index of the observed feature set                             |
+| expectedMoranIndex | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the moran's Index of the random distribution                              |
+| stdNorm            | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the standard devitaion of the random distribution                         |
+| zNorm              | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the z-score of the observe samples with regard to the random distribution |
+
+\}

@@ -4,7 +4,12 @@ title: booleanParallel
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -19,10 +24,7 @@ Boolean-Parallel returns True if each segment of `line1` is parallel to the corr
 
 ### Returns
 
-<ul>
-  **boolean** true/false if the lines are parallel
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false if the lines are parallel
 
 ### Examples
 

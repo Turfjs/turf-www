@@ -4,7 +4,12 @@ title: pNormDistance
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,15 +17,15 @@ calcualte the Minkowski p-norm distance between two features.
 
 ### Parameters
 
-| Name     | Type          | Description                                                         |
-| -------- | ------------- | ------------------------------------------------------------------- |
-| feature1 | **UNCERTAIN** | point feature                                                       |
-| feature2 | **UNCERTAIN** | point feature                                                       |
-| p        | **UNCERTAIN** | p-norm 1=\<p\<=infinity 1: Manhattan distance 2: Euclidean distance |
+| Name     | Type          | Description                                                                       |
+| -------- | ------------- | --------------------------------------------------------------------------------- |
+| feature1 | **UNCERTAIN** | point feature                                                                     |
+| feature2 | **UNCERTAIN** | point feature                                                                     |
+| p        | **UNCERTAIN** | p-norm 1=\<p\<=infinity 1: Manhattan distance 2: Euclidean distance _(default 2)_ |
 
 ### Returns
 
-<ul>**number**</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**
 
 ### Installation
 

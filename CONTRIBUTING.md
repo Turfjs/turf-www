@@ -45,7 +45,7 @@ $ git -C turf/ checkout 68915ee
 Now that the `turf/` submodule points to 7.1.0 code regenerate the API documentation:
 
 ```
-$ npx tsx ./scripts/generate-api-mdx.ts
+$ npm run generate-api-mdx
 ```
 
 You will likely see many changes to MDX files in the `docs/` directory.
@@ -71,7 +71,7 @@ You will now see many more changes in the `versioned_docs` directory. This is th
 
 ```
 $ git submodule update --init
-$ npx tsx ./scripts/generate-api-mdx.ts
+$ npm run generate-api-mdx
 ```
 
 Most, if not all, of the changes in docs/ should revert. If any remain review them as they may have previously been committed as manual corrections (and thus can be discarded).

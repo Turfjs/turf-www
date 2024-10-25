@@ -4,7 +4,12 @@ title: bearing
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,19 +18,16 @@ i.e. the angle measured in degrees from the north line (0 degrees)
 
 ### Parameters
 
-| Name                  | Type                                                           | Description                                            |
-| --------------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
-| start                 | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | starting Point                                         |
-| end                   | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)** | ending Point                                           |
-| options<i>?</i>       | **Object**                                                     | Optional parameters _(default \{\})_                   |
-| options.final<i>?</i> | **boolean**                                                    | calculates the final bearing if true _(default false)_ |
+| Name                  | Type                                                                                              | Description                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| start                 | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | starting Point                                         |
+| end                   | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | ending Point                                           |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                   |
+| options.final<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | calculates the final bearing if true _(default false)_ |
 
 ### Returns
 
-<ul>
-  **number** bearing in decimal degrees, between -180 and 180 degrees (positive clockwise)
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** bearing in decimal degrees, between -180 and 180 degrees (positive clockwise)
 
 ### Examples
 
@@ -55,7 +57,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

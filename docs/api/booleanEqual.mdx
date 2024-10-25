@@ -4,7 +4,12 @@ title: booleanEqual
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -17,15 +22,12 @@ See [http://edndoc.esri.com/arcsde/9.0/general_topics/understand_spatial_relatio
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | feature1                  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input                                                     |
 | feature2                  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | GeoJSON input                                                     |
-| options<i>?</i>           | **Object**                                                                                                                    | Optional parameters _(default \{\})_                              |
-| options.precision<i>?</i> | **number**                                                                                                                    | decimal precision to use when comparing coordinates _(default 6)_ |
+| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                               | Optional parameters _(default \{\})_                              |
+| options.precision<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                               | decimal precision to use when comparing coordinates _(default 6)_ |
 
 ### Returns
 
-<ul>
-  **boolean** true if the objects are equal, false otherwise
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the objects are equal, false otherwise
 
 ### Examples
 

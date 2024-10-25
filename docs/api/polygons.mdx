@@ -4,7 +4,12 @@ title: polygons
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,20 +17,17 @@ Creates a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) [FeatureC
 
 ### Parameters
 
-| Name                 | Type                                           | Description                                                               |
-| -------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
-| coordinates          | **Array\<Array\<Array\<Array\<number\>\>\>\>** | an array of Polygon coordinates                                           |
-| properties<i>?</i>   | **Object**                                     | an Object of key-value pairs to add as properties _(default \{\})_        |
-| options<i>?</i>      | **Object**                                     | Optional Parameters _(default \{\})_                                      |
-| options.bbox<i>?</i> | **Array\<number\>**                            | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **string \| number**                           | Identifier associated with the FeatureCollection                          |
+| Name                 | Type                                                                                            | Description                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| coordinates          | **UNCERTAIN**                                                                                   |                                                                           |
+| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | an Object of key-value pairs to add as properties _(default \{\})_        |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **Id**                                                                                          | Identifier associated with the FeatureCollection                          |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Polygon FeatureCollection
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** Polygon FeatureCollection
 
 ### Examples
 

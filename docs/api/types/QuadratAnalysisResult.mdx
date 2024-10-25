@@ -1,0 +1,28 @@
+---
+title: QuadratAnalysisResult
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+the return type of the quadratAnalysis
+
+### Definition
+
+object \{
+
+| Name                  | Type                                                                                                                                                                                         | Description                                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| criticalValue         | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              |                                                                                                               |
+| maxAbsoluteDifference | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              |                                                                                                               |
+| isRandom              | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                            |                                                                                                               |
+| observedDistribution  | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>** | the cumulative distribution of observed features, the index represents the number of features in the quadrat. |
+
+\}

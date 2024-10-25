@@ -4,28 +4,30 @@ title: booleanPointInPolygon
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) and determines if the point
-resides inside the polygon. The polygon can be convex or concave. The function accounts for holes.
+Determines if a point lies within a polygon. The polygon can be convex or
+concave, or contain holes.
 
 ### Parameters
 
-| Name                           | Type                                                                                                                                                                                                | Description                                                                                                                       |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| point                          | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                      | input point                                                                                                                       |
-| polygon                        | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input polygon or multipolygon                                                                                                     |
-| options<i>?</i>                | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                                                                                              |
-| options.ignoreBoundary<i>?</i> | **boolean**                                                                                                                                                                                         | True if polygon boundary should be ignored when determining if the point is inside the polygon otherwise false. _(default false)_ |
+| Name                           | Type                                                                                                                                                                                                   | Description                                                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| point                          | **Position \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | Point possibly within the polygon.                                                                                  |
+| polygon                        | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>**    | Polygon to search within.                                                                                           |
+| options<i>?</i>                | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                        | Optional parameters. _(default \{\})_                                                                               |
+| options.ignoreBoundary<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                      | If set to true, a point lying on the polygon boundary is not considered to be within the polygon. _(default false)_ |
 
 ### Returns
 
-<ul>
-  **boolean** `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** True if the point lies within the polygon, false otherwise.
 
 ### Examples
 

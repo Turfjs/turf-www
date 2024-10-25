@@ -4,7 +4,12 @@ title: polygonToLine
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -16,15 +21,12 @@ Converts a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) to [(Mul
 | Name                       | Type                                                                                                                                                                                                | Description                                               |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | Feature to convert                                        |
-| options<i>?</i>            | **Object**                                                                                                                                                                                          | Optional parameters _(default \{\})_                      |
-| options.properties<i>?</i> | **Object**                                                                                                                                                                                          | translates GeoJSON properties to Feature _(default \{\})_ |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                     | Optional parameters _(default \{\})_                      |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                     | translates GeoJSON properties to Feature _(default \{\})_ |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring\>** converted (Multi)Polygon to (Multi)LineString
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring\>** converted (Multi)Polygon to (Multi)LineString
 
 ### Examples
 
@@ -65,7 +67,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

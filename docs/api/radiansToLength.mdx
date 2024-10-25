@@ -4,7 +4,12 @@ title: radiansToLength
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,17 +18,14 @@ Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, ce
 
 ### Parameters
 
-| Name          | Type       | Description                                                                                                     |
-| ------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| radians       | **number** | in radians across the sphere                                                                                    |
-| units<i>?</i> | **string** | can be degrees, radians, miles, inches, yards, metres, meters, kilometres, kilometers. _(default "kilometers")_ |
+| Name          | Type                                                                                            | Description                                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| radians       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | in radians across the sphere                                                                                    |
+| units<i>?</i> | **[Units](docs/api/types/Units.mdx)**                                                           | can be degrees, radians, miles, inches, yards, metres, meters, kilometres, kilometers. _(default "kilometers")_ |
 
 ### Returns
 
-<ul>
-  **number** distance
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** distance
 
 ### Installation
 

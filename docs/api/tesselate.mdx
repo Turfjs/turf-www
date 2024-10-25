@@ -4,30 +4,32 @@ title: tesselate
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Tesselates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\> into a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\> of triangles
+Tesselates a polygon or multipolygon into a collection of triangle polygons
 using [earcut](https://github.com/mapbox/earcut).
 
 ### Parameters
 
-| Name | Type                                                                                                                           | Description              |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| poly | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | the polygon to tesselate |
+| Name | Type                                                                                                                                                                                                | Description              |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| poly | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | the polygon to tesselate |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a geometrycollection feature
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** collection of polygon tesselations
 
 ### Examples
 
 ```javascript
-var poly = turf.polygon([
+const poly = turf.polygon([
   [
     [11, 0],
     [22, 4],
@@ -38,14 +40,14 @@ var poly = turf.polygon([
     [11, 0],
   ],
 ]);
-var triangles = turf.tesselate(poly);
+const triangles = turf.tesselate(poly);
 ```
 
 export function Map0() {
   "use strict";
 
   // jsdoc example start
-  var poly = turf.polygon([
+  const poly = turf.polygon([
     [
       [11, 0],
       [22, 4],
@@ -56,16 +58,15 @@ export function Map0() {
       [11, 0],
     ],
   ]);
-  var triangles = turf.tesselate(poly);
+  const triangles = turf.tesselate(poly);
 
   //addToMap
-  var addToMap = { poly, triangles };
+  const addToMap = [poly, triangles];
   // jsdoc example end
 
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

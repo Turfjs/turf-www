@@ -4,7 +4,12 @@ title: clustersKmeans
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -16,19 +21,16 @@ It uses the [k-means algorithm](https://en.wikipedia.org/wiki/K-means_clustering
 | Name                             | Type                                                                                                                                   | Description                                                                                     |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | points                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | to be clustered                                                                                 |
-| options<i>?</i>                  | **Object**                                                                                                                             | Optional parameters _(default \{\})_                                                            |
-| options.numberOfClusters<i>?</i> | **number**                                                                                                                             | numberOfClusters that will be generated _(default Math.sqrt(numberOfPoints/2))_                 |
-| options.mutate<i>?</i>           | **boolean**                                                                                                                            | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
+| options<i>?</i>                  | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                                                            |
+| options.numberOfClusters<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | numberOfClusters that will be generated _(default Math.sqrt(numberOfPoints/2))_                 |
+| options.mutate<i>?</i>           | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                      | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** Clustered Points with an additional two properties associated to each Feature:
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** Clustered Points with an additional two properties associated to each Feature:
 
 - \{number\} cluster - the associated clusterId
 - \{[number, number]\} centroid - Centroid of the cluster [Longitude, Latitude]
-
-</ul>
 
 ### Examples
 
@@ -55,7 +57,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

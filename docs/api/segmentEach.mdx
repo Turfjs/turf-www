@@ -4,7 +4,12 @@ title: segmentEach
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,14 +18,14 @@ Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEa
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                  | Description                                                                                        |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON                                                                                        |
-| callback | **Function**                                                                                                                                                                                          | a method that takes (currentSegment, featureIndex, multiFeatureIndex, geometryIndex, segmentIndex) |
+| Name     | Type                                                              | Description                                                                                        |
+| -------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| geojson  | **[AllGeoJSON](docs/api/types/AllGeoJSON.mdx)**                   | any GeoJSON                                                                                        |
+| callback | **[segmentEachCallback](docs/api/types/segmentEachCallback.mdx)** | a method that takes (currentSegment, featureIndex, multiFeatureIndex, geometryIndex, segmentIndex) |
 
 ### Returns
 
-<ul>**void**</ul>
+**void**
 
 ### Examples
 

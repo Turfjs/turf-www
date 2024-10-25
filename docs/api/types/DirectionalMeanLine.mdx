@@ -1,0 +1,29 @@
+---
+title: DirectionalMeanLine
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+### Definition
+
+object \{
+
+| Name             | Type                                                                                            | Description                                                                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cartesianAngle   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the mean angle of all lines. (measure from due earth counterclockwise).                                                                                   |
+| bearingAngle     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the mean angle of all lines. (bearing).                                                                                                                   |
+| circularVariance | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the extent to which features all point in the same direction. the value ranges 0-1, the bigger the value, the more variation in directions between lines. |
+| averageX         | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the centroid of all lines.                                                                                                                                |
+| averageY         | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the centroid of all line.                                                                                                                                 |
+| averageLength    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the average length of line.                                                                                                                               |
+| countOfLines     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the count of features.                                                                                                                                    |
+
+\}

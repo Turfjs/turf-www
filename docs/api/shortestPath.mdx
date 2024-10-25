@@ -4,30 +4,32 @@ title: shortestPath
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
 Returns the shortest [path](https://tools.ietf.org/html/rfc7946#section-3.1.4) from [start](https://tools.ietf.org/html/rfc7946#section-3.1.2) to [end](https://tools.ietf.org/html/rfc7946#section-3.1.2) without colliding with
-any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) in obstacles
+any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) in obstacles [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                                                                                  | Description                                                                                                                                   |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| start                      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                        | point                                                                                                                                         |
-| end                        | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                        | point                                                                                                                                         |
-| options<i>?</i>            | **Object**                                                                                                                                                                                                                                                            | optional parameters _(default \{\})_                                                                                                          |
-| options.obstacles<i>?</i>  | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | areas which path cannot travel                                                                                                                |
-| options.units<i>?</i>      | **string**                                                                                                                                                                                                                                                            | unit in which resolution & minimum distance will be expressed in; it can be degrees, radians, miles, kilometers, ... _(default 'kilometers')_ |
-| options.resolution<i>?</i> | **number**                                                                                                                                                                                                                                                            | distance between matrix points on which the path will be calculated _(default 100)_                                                           |
+| Name                       | Type                                                                                                                                                                                                                                                                                                                                   | Description                                                                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| start                      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                                                                                         | point                                                                                                                                         |
+| end                        | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                                                                                                                                                         | point                                                                                                                                         |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                        | optional parameters _(default \{\})_                                                                                                          |
+| options.obstacles<i>?</i>  | **[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\> \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | areas which path cannot travel                                                                                                                |
+| options.units<i>?</i>      | **[Units](docs/api/types/Units.mdx)**                                                                                                                                                                                                                                                                                                  | unit in which resolution & minimum distance will be expressed in; it can be degrees, radians, miles, kilometers, ... _(default 'kilometers')_ |
+| options.resolution<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                                        | distance between matrix points on which the path will be calculated _(default 100)_                                                           |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** shortest path between start and end
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** shortest path between start and end
 
 ### Examples
 
@@ -43,7 +45,7 @@ var options = {
       [0, -3],
       [0, -7],
     ],
-  ]),
+  ]).geometry,
 };
 
 var path = turf.shortestPath(start, end, options);
@@ -64,7 +66,7 @@ export function Map0() {
         [0, -3],
         [0, -7],
       ],
-    ]),
+    ]).geometry,
   };
 
   var path = turf.shortestPath(start, end, options);
@@ -76,7 +78,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

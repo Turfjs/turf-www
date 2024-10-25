@@ -4,7 +4,12 @@ title: centerOfMass
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,18 +17,15 @@ Takes any [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or a [Featu
 
 ### Parameters
 
-| Name                       | Type                                                         | Description                                      |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | GeoJSON to be centered                           |
-| options<i>?</i>            | **Object**                                                   | Optional Parameters _(default \{\})_             |
-| options.properties<i>?</i> | **Object**                                                   | Translate Properties to Feature _(default \{\})_ |
+| Name                       | Type                                                                                            | Description                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | GeoJSON to be centered                           |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default \{\})_             |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate Properties to Feature _(default \{\})_ |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the center of mass
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the center of mass
 
 ### Examples
 
@@ -66,7 +68,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

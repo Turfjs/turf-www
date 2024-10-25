@@ -4,7 +4,12 @@ title: bbox
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,18 +18,15 @@ Uses geojson.bbox if available and options.recompute is not set.
 
 ### Parameters
 
-| Name                      | Type                                                         | Description                                            |
-| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
-| geojson                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any GeoJSON object                                     |
-| options<i>?</i>           | **Object**                                                   | Optional parameters _(default \{\})_                   |
-| options.recompute<i>?</i> | **boolean**                                                  | Whether to ignore an existing bbox property on geojson |
+| Name                      | Type                                                                                              | Description                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| geojson                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | any GeoJSON object                                     |
+| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                   |
+| options.recompute<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | Whether to ignore an existing bbox property on geojson |
 
 ### Returns
 
-<ul>
-  **[BBox](https://tools.ietf.org/html/rfc7946#section-5)** bbox extent in [minX, minY, maxX, maxY] order
-
-</ul>
+**[BBox](https://tools.ietf.org/html/rfc7946#section-5)** bbox extent in [minX, minY, maxX, maxY] order
 
 ### Examples
 
@@ -57,7 +59,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

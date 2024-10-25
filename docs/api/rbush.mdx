@@ -4,7 +4,12 @@ title: rbush
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,16 +17,13 @@ GeoJSON implementation of [RBush](https://github.com/mourner/rbush#rbush) spatia
 
 ### Parameters
 
-| Name               | Type       | Description                                                                                                                                                                                                  |
-| ------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| maxEntries<i>?</i> | **number** | defines the maximum number of entries in a tree node. 9 (used by default) is a reasonable choice for most applications. Higher value means faster insertion and slower search, and vice versa. _(default 9)_ |
+| Name               | Type                                                                                            | Description                                                                                                                                                                                                  |
+| ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| maxEntries<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | defines the maximum number of entries in a tree node. 9 (used by default) is a reasonable choice for most applications. Higher value means faster insertion and slower search, and vice versa. _(default 9)_ |
 
 ### Returns
 
-<ul>
-  **RBush** GeoJSON RBush
-
-</ul>
+**RBush** GeoJSON RBush
 
 ### Examples
 

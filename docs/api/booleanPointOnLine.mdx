@@ -4,7 +4,12 @@ title: booleanPointOnLine
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -17,16 +22,13 @@ start and end vertices of the linestring.
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | pt                                | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                    | GeoJSON Point                                                                                                              |
 | line                              | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | GeoJSON LineString                                                                                                         |
-| options<i>?</i>                   | **Object**                                                                                                                        | Optional parameters _(default \{\})_                                                                                       |
-| options.ignoreEndVertices<i>?</i> | **boolean**                                                                                                                       | whether to ignore the start and end vertices. _(default false)_                                                            |
-| options.epsilon<i>?</i>           | **number**                                                                                                                        | Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points |
+| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                   | Optional parameters _(default \{\})_                                                                                       |
+| options.ignoreEndVertices<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                 | whether to ignore the start and end vertices. _(default false)_                                                            |
+| options.epsilon<i>?</i>           | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | Fractional number to compare with the cross product result. Useful for dealing with floating points such as lng/lat points |
 
 ### Returns
 
-<ul>
-  **boolean** true/false
-
-</ul>
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
 
 ### Examples
 

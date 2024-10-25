@@ -4,30 +4,34 @@ title: unkinkPolygon
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
-Takes a kinked polygon and returns a feature collection of polygons that have no kinks.
+Takes a kinked polygon and returns a feature collection of polygons that have
+no kinks.
+
 Uses [simplepolygon](https://github.com/mclaeysb/simplepolygon) internally.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                                                                                        | Description                     |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | GeoJSON Polygon or MultiPolygon |
+| Name    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description        |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | polygons to unkink |
 
 ### Returns
 
-<ul>
-  **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Unkinked polygons
-
-</ul>
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Unkinked polygons
 
 ### Examples
 
 ```javascript
-var poly = turf.polygon([
+const poly = turf.polygon([
   [
     [0, 0],
     [2, 0],
@@ -37,14 +41,14 @@ var poly = turf.polygon([
   ],
 ]);
 
-var result = turf.unkinkPolygon(poly);
+const result = turf.unkinkPolygon(poly);
 ```
 
 export function Map0() {
   "use strict";
 
   // jsdoc example start
-  var poly = turf.polygon([
+  const poly = turf.polygon([
     [
       [0, 0],
       [2, 0],
@@ -54,16 +58,15 @@ export function Map0() {
     ],
   ]);
 
-  var result = turf.unkinkPolygon(poly);
+  const result = turf.unkinkPolygon(poly);
 
   //addToMap
-  var addToMap = { poly, result };
+  const addToMap = [poly, result];
   // jsdoc example end
 
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

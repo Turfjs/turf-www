@@ -4,7 +4,12 @@ title: length
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -15,15 +20,12 @@ Takes a [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) and measures it
 | Name                  | Type                                                                                                                                                                                                      | Description                                                          |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | geojson               | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | GeoJSON to measure                                                   |
-| options<i>?</i>       | **Object**                                                                                                                                                                                                | Optional parameters _(default \{\})_                                 |
-| options.units<i>?</i> | **string**                                                                                                                                                                                                | can be degrees, radians, miles, or kilometers _(default kilometers)_ |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                           | Optional parameters _(default \{\})_                                 |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                           | can be degrees, radians, miles, or kilometers _(default kilometers)_ |
 
 ### Returns
 
-<ul>
-  **number** length of GeoJSON
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** length of GeoJSON
 
 ### Examples
 
@@ -57,7 +59,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation

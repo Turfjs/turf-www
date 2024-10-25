@@ -4,7 +4,12 @@ title: convertArea
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -13,18 +18,15 @@ Valid units: kilometers, kilometres, meters, metres, centimetres, millimeters, a
 
 ### Parameters
 
-| Name                 | Type       | Description                            |
-| -------------------- | ---------- | -------------------------------------- |
-| area                 | **number** | to be converted                        |
-| originalUnit<i>?</i> | **Units**  | of the distance _(default "meters")_   |
-| finalUnit<i>?</i>    | **Units**  | returned unit _(default "kilometers")_ |
+| Name                 | Type                                                                                            | Description                            |
+| -------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------- |
+| area                 | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | to be converted                        |
+| originalUnit<i>?</i> | **[AreaUnits](docs/api/types/AreaUnits.mdx)**                                                   | of the distance _(default "meters")_   |
+| finalUnit<i>?</i>    | **[AreaUnits](docs/api/types/AreaUnits.mdx)**                                                   | returned unit _(default "kilometers")_ |
 
 ### Returns
 
-<ul>
-  **number** the converted area
-
-</ul>
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** the converted area
 
 ### Installation
 

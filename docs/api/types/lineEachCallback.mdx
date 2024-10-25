@@ -1,0 +1,32 @@
+---
+title: lineEachCallback
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Callback for lineEach
+
+### Definition
+
+function (
+
+| Name              | Type                                                                                                                              | Description                                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| currentLine       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | The current LineString \| LinearRing being processed   |
+| featureIndex      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | The current index of the Feature being processed       |
+| multiFeatureIndex | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | The current index of the Multi-Feature being processed |
+| geometryIndex     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | The current index of the Geometry being processed      |
+
+)
+
+### Returns
+
+**void**

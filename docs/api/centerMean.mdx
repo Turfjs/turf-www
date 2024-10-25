@@ -4,7 +4,12 @@ title: centerMean
 
 import * as turf from "turf-next";
 import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 ### Description
 
@@ -12,21 +17,18 @@ Takes a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or [FeatureCo
 
 ### Parameters
 
-| Name                       | Type                                                         | Description                                            |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
-| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | GeoJSON to be centered                                 |
-| options<i>?</i>            | **Object**                                                   | Optional parameters _(default \{\})_                   |
-| options.properties<i>?</i> | **Object**                                                   | Translate GeoJSON Properties to Point _(default \{\})_ |
-| options.bbox<i>?</i>       | **Object**                                                   | Translate GeoJSON BBox to Point _(default \{\})_       |
-| options.id<i>?</i>         | **Object**                                                   | Translate GeoJSON Id to Point _(default \{\})_         |
-| options.weight<i>?</i>     | **string**                                                   | the property name used to weight the center            |
+| Name                       | Type                                                                                            | Description                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | GeoJSON to be centered                                 |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                   |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Properties to Point _(default \{\})_ |
+| options.bbox<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON BBox to Point _(default \{\})_       |
+| options.id<i>?</i>         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Id to Point _(default \{\})_         |
+| options.weight<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | the property name used to weight the center            |
 
 ### Returns
 
-<ul>
-  **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a Point feature at the mean center point of all input features
-
-</ul>
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a Point feature at the mean center point of all input features
 
 ### Examples
 
@@ -63,7 +65,6 @@ export function Map0() {
   return <ExampleMap addToMap={addToMap} />;
 }
 
-<!-- prettier-ignore -->
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
