@@ -1,0 +1,64 @@
+---
+title: booleanClockwise
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a ring and return true or false whether or not the ring is clockwise or counter-clockwise.
+
+### Parameters
+
+| Name | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Description     |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| line | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>\>** | to be evaluated |
+
+### Returns
+
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
+
+### Examples
+
+```javascript
+var clockwiseRing = turf.lineString([
+  [0, 0],
+  [1, 1],
+  [1, 0],
+  [0, 0],
+]);
+var counterClockwiseRing = turf.lineString([
+  [0, 0],
+  [1, 0],
+  [1, 1],
+  [0, 0],
+]);
+
+turf.booleanClockwise(clockwiseRing);
+//=true
+turf.booleanClockwise(counterClockwiseRing);
+//=false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-clockwise
+
+import { booleanClockwise } from "@turf/boolean-clockwise";
+const result = booleanClockwise(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanClockwise(...);
+```

@@ -1,0 +1,19 @@
+---
+title: earthRadius
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+The Earth radius in kilometers. Used by Turf modules that model the Earth as a sphere. The [mean radius](https://en.wikipedia.org/wiki/Earth_radius#Arithmetic_mean_radius) was selected because it is [recommended ](https://rosettacode.org/wiki/Haversine_formula#:~:text=This%20value%20is%20recommended) by the Haversine formula (used by turf/distance) to reduce error.
+
+### Value
+
+[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)

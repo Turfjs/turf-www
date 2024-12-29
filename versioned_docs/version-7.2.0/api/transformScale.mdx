@@ -1,0 +1,87 @@
+---
+title: transformScale
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Scale GeoJSON objects from a given point by a scaling factor e.g. factor=2
+would make each object 200% larger.
+If a FeatureCollection is provided, the origin point will be calculated
+based on each individual feature _unless_ an exact
+
+### Parameters
+
+| Name                   | Type                                                                                                                                    | Description                                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** | objects to be scaled                                                                                                                                                           |
+| factor                 | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | of scaling, positive values greater than 0. Numbers between 0 and 1 will shrink the geojson, numbers greater than 1 will expand it, a factor of 1 will not change the geojson. |
+| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                         | Optional parameters _(default \{\})_                                                                                                                                           |
+| options.origin<i>?</i> | **[Corners](docs/api/types/Corners.mdx) \| [Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                 | Point from which the scaling will occur (string options: sw/se/nw/ne/center/centroid) _(default 'centroid')_                                                                   |
+| options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                       | allows GeoJSON input to be mutated (significant performance improvement if true) _(default false)_                                                                             |
+
+### Returns
+
+**[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** scaled GeoJSON
+
+### Examples
+
+```javascript
+const poly = turf.polygon([
+  [
+    [0, 29],
+    [3.5, 29],
+    [2.5, 32],
+    [0, 29],
+  ],
+]);
+const scaledPoly = turf.transformScale(poly, 3);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  const poly = turf.polygon([
+    [
+      [0, 29],
+      [3.5, 29],
+      [2.5, 32],
+      [0, 29],
+    ],
+  ]);
+  const scaledPoly = turf.transformScale(poly, 3);
+
+  //addToMap
+  const addToMap = [poly, scaledPoly];
+  scaledPoly.properties = { stroke: "#F00", "stroke-width": 4 };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/transform-scale
+
+import { transformScale } from "@turf/transform-scale";
+const result = transformScale(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.transformScale(...);
+```

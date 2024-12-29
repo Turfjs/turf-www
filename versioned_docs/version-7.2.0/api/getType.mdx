@@ -1,0 +1,59 @@
+---
+title: getType
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Get GeoJSON object's type, Geometry type is prioritize.
+
+### Parameters
+
+| Name           | Type                                                                                            | Description                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| geojson        | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | GeoJSON object                                                                  |
+| \_name<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** |                                                                                 |
+| name<i>?</i>   | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | name of the variable to display in error message (unused) _(default "geojson")_ |
+
+### Returns
+
+**[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** GeoJSON type
+
+### Examples
+
+```javascript
+var point = {
+  type: "Feature",
+  properties: {},
+  geometry: {
+    type: "Point",
+    coordinates: [110, 40],
+  },
+};
+var geom = turf.getType(point);
+//="Point"
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { getType } from "@turf/invariant";
+const result = getType(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getType(...);
+```

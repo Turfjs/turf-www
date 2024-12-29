@@ -1,0 +1,51 @@
+---
+title: getCoord
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
+
+### Parameters
+
+| Name  | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                          |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| coord | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\> \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | GeoJSON Point or an Array of numbers |
+
+### Returns
+
+**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>** coordinates
+
+### Examples
+
+```javascript
+var pt = turf.point([10, 10]);
+
+var coord = turf.getCoord(pt);
+//= [10, 10]
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { getCoord } from "@turf/invariant";
+const result = getCoord(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getCoord(...);
+```

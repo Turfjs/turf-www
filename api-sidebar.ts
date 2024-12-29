@@ -23,6 +23,7 @@ export default [
       "api/midpoint",
       "api/pointOnFeature",
       "api/pointToLineDistance",
+      "api/pointToPolygonDistance",
       "api/polygonTangents",
       "api/rhumbBearing",
       "api/rhumbDestination",

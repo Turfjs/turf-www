@@ -38,23 +38,24 @@ First thing to do is make sure _Current_ points to the code (and hence, the docu
 
 To do this we link the `turf/` submodule directory in turf-www to the relevant commit in the turf repo. In the example below commit `68915ee` refers to the 7.1.0 tag in the turf repo:
 
-```
-$ git -C turf/ checkout 68915ee
+```bash
+git -C turf/ fetch
+git -C turf/ checkout 68915ee
 ```
 
 Now that the `turf/` submodule points to 7.1.0 code regenerate the API documentation:
 
-```
-$ npm run generate-api-mdx
+```bash
+npm run generate-api-mdx
 ```
 
 You will likely see many changes to MDX files in the `docs/` directory.
 
 Run docusaurus to view the site in dev mode and highlight any missing routes, etc. Docusaurus is pretty good at finding problems. Fix any issues manually, usually by tweaking the MDX.
 
-```
-$ npm run build
-$ npm run serve
+```bash
+npm run build
+npm run serve
 ```
 
 Note the generated documentation will appear under the _Next_ drop down menu.
@@ -63,15 +64,15 @@ You could at this point commit the changes. However we're about to make a versio
 
 Now, version the contents of _Current_ as 7.1.0:
 
-```
-$ npm run docusaurus docs:version 7.1.0
+```bash
+npm run docusaurus docs:version 7.1.0
 ```
 
 You will now see many more changes in the `versioned_docs` directory. This is the snapshot we want to commit and publish. Before we do that though, switch back to the HEAD of our git repo and regenerate the _Current_ documentation based on that code:
 
-```
-$ git submodule update --init
-$ npm run generate-api-mdx
+```bash
+git submodule update --init
+npm run generate-api-mdx
 ```
 
 Most, if not all, of the changes in docs/ should revert. If any remain review them as they may have previously been committed as manual corrections (and thus can be discarded).
@@ -88,10 +89,10 @@ versioned_sidebars/ <- one new file
 
 Once everything looks good, commit all the files and push to your fork:
 
-```
-$ git add .
-$ git commit -m "Adding v7.1.0 documentation snapshot."
-$ git push
+```bash
+git add .
+git commit -m "Adding v7.1.0 documentation snapshot."
+git push
 ```
 
 ### Publishing to turfjs.org

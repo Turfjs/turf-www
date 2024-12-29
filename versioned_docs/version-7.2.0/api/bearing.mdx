@@ -1,0 +1,76 @@
+---
+title: bearing
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes two [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and finds the geographic bearing between them,
+i.e. the angle measured in degrees from the north line (0 degrees)
+
+### Parameters
+
+| Name                  | Type                                                                                              | Description                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| start                 | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | starting Point                                         |
+| end                   | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | ending Point                                           |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                   |
+| options.final<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | calculates the final bearing if true _(default false)_ |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** bearing in decimal degrees, between -180 and 180 degrees (positive clockwise)
+
+### Examples
+
+```javascript
+var point1 = turf.point([-75.343, 39.984]);
+var point2 = turf.point([-75.534, 39.123]);
+
+var bearing = turf.bearing(point1, point2);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var point1 = turf.point([-75.343, 39.984]);
+  var point2 = turf.point([-75.534, 39.123]);
+
+  var bearing = turf.bearing(point1, point2);
+
+  //addToMap
+  var addToMap = { point1, point2 };
+  point1.properties["marker-color"] = "#f00";
+  point2.properties["marker-color"] = "#0f0";
+  point1.properties.bearing = bearing;
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/bearing
+
+import { bearing } from "@turf/bearing";
+const result = bearing(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bearing(...);
+```

@@ -1,0 +1,59 @@
+---
+title: booleanConcave
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a polygon and return true or false as to whether it is concave or not.
+
+### Parameters
+
+| Name    | Type                                                                                                                           | Description     |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | to be evaluated |
+
+### Returns
+
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
+
+### Examples
+
+```javascript
+var convexPolygon = turf.polygon([
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [0, 0],
+  ],
+]);
+
+turf.booleanConcave(convexPolygon);
+//=false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-concave
+
+import { booleanConcave } from "@turf/boolean-concave";
+const result = booleanConcave(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanConcave(...);
+```

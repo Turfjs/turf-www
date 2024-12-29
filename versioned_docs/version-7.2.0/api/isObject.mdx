@@ -1,0 +1,51 @@
+---
+title: isObject
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+isObject
+
+### Parameters
+
+| Name  | Type    | Description          |
+| ----- | ------- | -------------------- |
+| input | **any** | variable to validate |
+
+### Returns
+
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false, including false for Arrays and Functions
+
+### Examples
+
+```javascript
+turf.isObject({ elevation: 10 });
+//=true
+turf.isObject("foo");
+//=false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { isObject } from "@turf/helpers";
+const result = isObject(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.isObject(...);
+```

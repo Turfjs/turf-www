@@ -1,0 +1,45 @@
+---
+title: featureOf
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Enforce expectations about types of [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) inputs for Turf.
+Internally this uses [geojsonType](geojsonType) to judge geometry types.
+
+### Parameters
+
+| Name    | Type                                                                                            | Description                              |
+| ------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)**                                  | a feature with an expected geometry type |
+| type    | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | expected GeoJSON type                    |
+| name    | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | name of calling function                 |
+
+### Returns
+
+**void**
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { featureOf } from "@turf/invariant";
+const result = featureOf(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.featureOf(...);
+```

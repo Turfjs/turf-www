@@ -1,0 +1,44 @@
+---
+title: radiansToLength
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
+Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+
+### Parameters
+
+| Name          | Type                                                                                            | Description                                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| radians       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | in radians across the sphere                                                                                    |
+| units<i>?</i> | **[Units](docs/api/types/Units.mdx)**                                                           | can be degrees, radians, miles, inches, yards, metres, meters, kilometres, kilometers. _(default "kilometers")_ |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** distance
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { radiansToLength } from "@turf/helpers";
+const result = radiansToLength(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.radiansToLength(...);
+```

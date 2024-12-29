@@ -1,0 +1,42 @@
+---
+title: radiansToDegrees
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Converts an angle in radians to degrees
+
+### Parameters
+
+| Name    | Type                                                                                            | Description      |
+| ------- | ----------------------------------------------------------------------------------------------- | ---------------- |
+| radians | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | angle in radians |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** degrees between 0 and 360 degrees
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { radiansToDegrees } from "@turf/helpers";
+const result = radiansToDegrees(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.radiansToDegrees(...);
+```

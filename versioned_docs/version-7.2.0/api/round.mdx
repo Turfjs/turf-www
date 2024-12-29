@@ -1,0 +1,53 @@
+---
+title: round
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Round number to precision
+
+### Parameters
+
+| Name              | Type                                                                                            | Description             |
+| ----------------- | ----------------------------------------------------------------------------------------------- | ----------------------- |
+| num               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | Number                  |
+| precision<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | Precision _(default 0)_ |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** rounded number
+
+### Examples
+
+```javascript
+turf.round(120.4321);
+//=120
+
+turf.round(120.4321, 2);
+//=120.43
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { round } from "@turf/helpers";
+const result = round(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.round(...);
+```

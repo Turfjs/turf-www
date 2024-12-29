@@ -1,0 +1,85 @@
+---
+title: lineOffset
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4) and returns a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4) at offset by the specified distance.
+
+### Parameters
+
+| Name                  | Type                                                                                                                                                                                                                                                                     | Description                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| geojson               | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | input GeoJSON                                                                              |
+| distance              | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                          | distance to offset the line (can be of negative value)                                     |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                          | Optional parameters _(default \{\})_                                                       |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                          | can be degrees, radians, miles, kilometers, inches, yards, meters _(default 'kilometers')_ |
+
+### Returns
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** Line offset from the input line
+
+### Examples
+
+```javascript
+var line = turf.lineString(
+  [
+    [-83, 30],
+    [-84, 36],
+    [-78, 41],
+  ],
+  { stroke: "#F00" },
+);
+
+var offsetLine = turf.lineOffset(line, 2, { units: "miles" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString(
+    [
+      [-83, 30],
+      [-84, 36],
+      [-78, 41],
+    ],
+    { stroke: "#F00" },
+  );
+
+  var offsetLine = turf.lineOffset(line, 2, { units: "miles" });
+
+  //addToMap
+  var addToMap = { offsetLine, line };
+  offsetLine.properties.stroke = "#00F";
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/line-offset
+
+import { lineOffset } from "@turf/line-offset";
+const result = lineOffset(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineOffset(...);
+```
