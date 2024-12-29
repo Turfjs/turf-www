@@ -1,0 +1,70 @@
+---
+title: coordEach
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
+
+### Parameters
+
+| Name                     | Type                                                                                              | Description                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| geojson                  | **[AllGeoJSON](docs/api/types/AllGeoJSON.mdx)**                                                   | any GeoJSON object                                                                                                    |
+| callback                 | **[coordEachCallback](docs/api/types/coordEachCallback.mdx)**                                     | a method that takes (currentCoord, coordIndex, featureIndex, multiFeatureIndex)                                       |
+| excludeWrapCoord<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration. _(default false)_ |
+
+### Returns
+
+**void**
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.point([36, 53], { hello: "world" }),
+]);
+
+turf.coordEach(
+  features,
+  function (
+    currentCoord,
+    coordIndex,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+  ) {
+    //=currentCoord
+    //=coordIndex
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { coordEach } from "@turf/meta";
+const result = coordEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.coordEach(...);
+```

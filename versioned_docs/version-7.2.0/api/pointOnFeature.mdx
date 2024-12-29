@@ -1,0 +1,91 @@
+---
+title: pointOnFeature
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a Feature or FeatureCollection and returns a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) guaranteed to be on the surface of the feature.
+
+- Given a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6), the point will be in the area of the polygon
+- Given a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4), the point will be along the string
+- Given a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2), the point will the same as the input
+
+### Parameters
+
+| Name    | Type                                                         | Description                      |
+| ------- | ------------------------------------------------------------ | -------------------------------- |
+| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | any Feature or FeatureCollection |
+
+### Returns
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a point on the surface of `input`
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [116, -36],
+    [131, -32],
+    [146, -43],
+    [155, -25],
+    [133, -9],
+    [111, -22],
+    [116, -36],
+  ],
+]);
+
+var pointOnPolygon = turf.pointOnFeature(polygon);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [116, -36],
+      [131, -32],
+      [146, -43],
+      [155, -25],
+      [133, -9],
+      [111, -22],
+      [116, -36],
+    ],
+  ]);
+
+  var pointOnPolygon = turf.pointOnFeature(polygon);
+
+  //addToMap
+  var addToMap = { polygon, pointOnPolygon };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/point-on-feature
+
+import { pointOnFeature } from "@turf/point-on-feature";
+const result = pointOnFeature(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pointOnFeature(...);
+```

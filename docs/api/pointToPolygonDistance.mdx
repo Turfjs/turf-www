@@ -1,0 +1,49 @@
+---
+title: pointToPolygonDistance
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Calculates the distance from a point to the edges of a polygon or multi-polygon.
+Returns negative values for points inside the polygon.
+Handles polygons with holes and multi-polygons.
+A hole is treated as the exterior of the polygon.
+
+### Parameters
+
+| Name                  | Type                                                                                                                                                                                                                                                                                                                                     | Description                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| point                 | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| Position**                                                                                                                                   | Input point                                              |
+| polygonOrMultiPolygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | Input polygon or multipolygon                            |
+| options               | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                          | Optional parameters _(default \{\})_                     |
+| options.units         | **[Units](docs/api/types/Units.mdx)**                                                                                                                                                                                                                                                                                                    | Units of the result e.g. "kilometers", "miles", "meters" |
+| options.method        | **"geodesic" \| "planar"**                                                                                                                                                                                                                                                                                                               | Method of the result                                     |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Distance in meters (negative values for points inside the polygon)
+
+### Installation
+
+```javascript
+$ npm install @turf/point-to-polygon-distance
+
+import { pointToPolygonDistance } from "@turf/point-to-polygon-distance";
+const result = pointToPolygonDistance(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.pointToPolygonDistance(...);
+```

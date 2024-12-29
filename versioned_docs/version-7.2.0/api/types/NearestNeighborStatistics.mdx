@@ -1,0 +1,29 @@
+---
+title: NearestNeighborStatistics
+---
+
+import * as turf from "turf-next";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Nearest neighbour statistics.
+
+### Definition
+
+object \{
+
+| Name                 | Type                                                                                            | Description |
+| -------------------- | ----------------------------------------------------------------------------------------------- | ----------- |
+| arealUnits           | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** |             |
+| observedMeanDistance | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
+| expectedMeanDistance | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
+| numberOfPoints       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
+| zScore               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
+
+\}

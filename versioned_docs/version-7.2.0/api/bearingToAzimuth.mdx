@@ -1,0 +1,43 @@
+---
+title: bearingToAzimuth
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Converts any bearing angle from the north line direction (positive clockwise)
+and returns an angle between 0-360 degrees (positive clockwise), 0 being the north line
+
+### Parameters
+
+| Name    | Type                                                                                            | Description                          |
+| ------- | ----------------------------------------------------------------------------------------------- | ------------------------------------ |
+| bearing | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | angle, between -180 and +180 degrees |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** angle between 0 and 360 degrees
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { bearingToAzimuth } from "@turf/helpers";
+const result = bearingToAzimuth(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.bearingToAzimuth(...);
+```

@@ -1,0 +1,70 @@
+---
+title: flattenReduce
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Reduce flattened features in any GeoJSON object, similar to Array.reduce().
+
+### Parameters
+
+| Name                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                            | Description                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\>** | any GeoJSON object                                                                   |
+| callback             | **[flattenReduceCallback](docs/api/types/flattenReduceCallback.mdx)**                                                                                                                                                                                                                                                                                                                                                           | a method that takes (previousValue, currentFeature, featureIndex, multiFeatureIndex) |
+| initialValue<i>?</i> | **Reducer**                                                                                                                                                                                                                                                                                                                                                                                                                     | Value to use as the first argument to the first call of the callback.                |
+
+### Returns
+
+**Reducer** The value that results from the reduction.
+
+### Examples
+
+```javascript
+var features = turf.featureCollection([
+  turf.point([26, 37], { foo: "bar" }),
+  turf.multiPoint(
+    [
+      [40, 30],
+      [36, 53],
+    ],
+    { hello: "world" },
+  ),
+]);
+
+turf.flattenReduce(
+  features,
+  function (previousValue, currentFeature, featureIndex, multiFeatureIndex) {
+    //=previousValue
+    //=currentFeature
+    //=featureIndex
+    //=multiFeatureIndex
+    return currentFeature;
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { flattenReduce } from "@turf/meta";
+const result = flattenReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.flattenReduce(...);
+```

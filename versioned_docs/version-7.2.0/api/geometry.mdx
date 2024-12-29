@@ -1,0 +1,55 @@
+---
+title: geometry
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Creates a GeoJSON [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) from a Geometry string type & coordinates.
+For GeometryCollection type use `helpers.geometryCollection`
+
+### Parameters
+
+| Name            | Type                                                                                                             | Description                          |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| type            | **"Point" \| "LineString" \| "Polygon" \| "MultiPoint" \| "MultiLineString" \| "MultiPolygon"**                  | Geometry Type                        |
+| coordinates     | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<any\>**             | Coordinates                          |
+| \_options       | **Record\<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), never\>** | _(default \{\})_                     |
+| options<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                  | Optional Parameters _(default \{\})_ |
+
+### Returns
+
+**[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** a GeoJSON Geometry
+
+### Examples
+
+```javascript
+var type = "Point";
+var coordinates = [110, 50];
+var geometry = turf.geometry(type, coordinates);
+// => geometry
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { geometry } from "@turf/helpers";
+const result = geometry(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.geometry(...);
+```

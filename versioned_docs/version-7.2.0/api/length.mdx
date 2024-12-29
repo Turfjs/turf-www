@@ -1,0 +1,78 @@
+---
+title: length
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) and measures its length in the specified units, [(Multi)Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)'s distance are ignored.
+
+### Parameters
+
+| Name                  | Type                                                                                                                                                                                                      | Description                                                          |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| geojson               | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | GeoJSON to measure                                                   |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                           | Optional parameters _(default \{\})_                                 |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                           | can be degrees, radians, miles, or kilometers _(default kilometers)_ |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** length of GeoJSON
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [115, -32],
+  [131, -22],
+  [143, -25],
+  [150, -34],
+]);
+var length = turf.length(line, { units: "miles" });
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var line = turf.lineString([
+    [115, -32],
+    [131, -22],
+    [143, -25],
+    [150, -34],
+  ]);
+  var length = turf.length(line, { units: "miles" });
+
+  //addToMap
+  var addToMap = { line };
+  line.properties.distance = length;
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/length
+
+import { length } from "@turf/length";
+const result = length(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.length(...);
+```

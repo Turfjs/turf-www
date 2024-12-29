@@ -1,0 +1,87 @@
+---
+title: transformTranslate
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Moves any geojson Feature or Geometry of a specified distance along a Rhumb Line
+on the provided direction angle.
+
+### Parameters
+
+| Name                         | Type                                                                                                                                    | Description                                                                                          |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| geojson                      | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** | object to be translated                                                                              |
+| distance                     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | length of the motion; negative values determine motion in opposite direction                         |
+| direction                    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | of the motion; angle from North in decimal degrees, positive clockwise                               |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                         | Optional parameters _(default \{\})_                                                                 |
+| options.units<i>?</i>        | **[Units](docs/api/types/Units.mdx)**                                                                                                   | in which `distance` will be express; miles, kilometers, degrees, or radians _(default 'kilometers')_ |
+| options.zTranslation<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                         | length of the vertical motion, same unit of distance _(default 0)_                                   |
+| options.mutate<i>?</i>       | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                       | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_      |
+
+### Returns
+
+**[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** the translated GeoJSON object
+
+### Examples
+
+```javascript
+var poly = turf.polygon([
+  [
+    [0, 29],
+    [3.5, 29],
+    [2.5, 32],
+    [0, 29],
+  ],
+]);
+var translatedPoly = turf.transformTranslate(poly, 100, 35);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var poly = turf.polygon([
+    [
+      [0, 29],
+      [3.5, 29],
+      [2.5, 32],
+      [0, 29],
+    ],
+  ]);
+  var translatedPoly = turf.transformTranslate(poly, 100, 35);
+
+  //addToMap
+  var addToMap = { poly, translatedPoly };
+  translatedPoly.properties = { stroke: "#F00", "stroke-width": 4 };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/transform-translate
+
+import { transformTranslate } from "@turf/transform-translate";
+const result = transformTranslate(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.transformTranslate(...);
+```

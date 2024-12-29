@@ -1,0 +1,70 @@
+---
+title: lineEach
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Iterate over line or ring coordinates in LineString, Polygon, MultiLineString, MultiPolygon Features or Geometries,
+similar to Array.forEach.
+
+### Parameters
+
+| Name     | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| geojson  | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Lines](docs/api/types/Lines.mdx)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Lines](docs/api/types/Lines.mdx)\> \| [Lines](docs/api/types/Lines.mdx) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\> \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)** | object                                                                            |
+| callback | **[lineEachCallback](docs/api/types/lineEachCallback.mdx)**                                                                                                                                                                                                                                                                                                                                                                                                               | a method that takes (currentLine, featureIndex, multiFeatureIndex, geometryIndex) |
+
+### Returns
+
+**void**
+
+### Examples
+
+```javascript
+var multiLine = turf.multiLineString([
+  [
+    [26, 37],
+    [35, 45],
+  ],
+  [
+    [36, 53],
+    [38, 50],
+    [41, 55],
+  ],
+]);
+
+turf.lineEach(
+  multiLine,
+  function (currentLine, featureIndex, multiFeatureIndex, geometryIndex) {
+    //=currentLine
+    //=featureIndex
+    //=multiFeatureIndex
+    //=geometryIndex
+  },
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { lineEach } from "@turf/meta";
+const result = lineEach(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineEach(...);
+```

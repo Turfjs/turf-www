@@ -1,0 +1,84 @@
+---
+title: nearestPointToLine
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Returns the closest [point](https://tools.ietf.org/html/rfc7946#section-3.1.2), of a [collection](https://tools.ietf.org/html/rfc7946#section-3.3) of points,
+to a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4). The returned point has a `dist` property indicating its distance to the line.
+
+### Parameters
+
+| Name                       | Type                                                                                                                                                                                                              | Description                                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | Point Collection                                                                                           |
+| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>**                  | Line Feature                                                                                               |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                   | Optional parameters _(default \{\})_                                                                       |
+| options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                   | unit of the output distance property (eg: degrees, radians, miles, or kilometers) _(default 'kilometers')_ |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                   | Translate Properties to Point _(default \{\})_                                                             |
+
+### Returns
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the closest point
+
+### Examples
+
+```javascript
+var pt1 = turf.point([0, 0]);
+var pt2 = turf.point([0.5, 0.5]);
+var points = turf.featureCollection([pt1, pt2]);
+var line = turf.lineString([
+  [1, 1],
+  [-1, 1],
+]);
+
+var nearest = turf.nearestPointToLine(points, line);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var pt1 = turf.point([0, 0]);
+  var pt2 = turf.point([0.5, 0.5]);
+  var points = turf.featureCollection([pt1, pt2]);
+  var line = turf.lineString([
+    [1, 1],
+    [-1, 1],
+  ]);
+
+  var nearest = turf.nearestPointToLine(points, line);
+
+  //addToMap
+  var addToMap = { nearest, line };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/nearest-point-to-line
+
+import { nearestPointToLine } from "@turf/nearest-point-to-line";
+const result = nearestPointToLine(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.nearestPointToLine(...);
+```

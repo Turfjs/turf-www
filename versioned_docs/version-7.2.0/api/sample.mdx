@@ -1,0 +1,73 @@
+---
+title: sample
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) and returns a FeatureCollection with given number of [features](https://tools.ietf.org/html/rfc7946#section-3.2) at random.
+
+### Parameters
+
+| Name              | Type                                                                                            | Description                  |
+| ----------------- | ----------------------------------------------------------------------------------------------- | ---------------------------- |
+| fc                | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<T\>**                   |                              |
+| num               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | number of features to select |
+| featurecollection | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)**                        | set of input features        |
+
+### Returns
+
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)** a FeatureCollection with `n` features
+
+### Examples
+
+```javascript
+var points = turf.randomPoint(100, { bbox: [-80, 30, -60, 60] });
+
+var sample = turf.sample(points, 5);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var points = turf.randomPoint(100, { bbox: [-80, 30, -60, 60] });
+
+  var sample = turf.sample(points, 5);
+
+  //addToMap
+  var addToMap = { points, sample };
+  turf.featureEach(sample, function (currentFeature) {
+    currentFeature.properties["marker-size"] = "large";
+    currentFeature.properties["marker-color"] = "#000";
+  });
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/sample
+
+import { sample } from "@turf/sample";
+const result = sample(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.sample(...);
+```

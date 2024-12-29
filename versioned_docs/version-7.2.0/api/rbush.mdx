@@ -1,0 +1,49 @@
+---
+title: rbush
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+GeoJSON implementation of [RBush](https://github.com/mourner/rbush#rbush) spatial index.
+
+### Parameters
+
+| Name               | Type                                                                                            | Description                                                                                                                                                                                                  |
+| ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| maxEntries<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | defines the maximum number of entries in a tree node. 9 (used by default) is a reasonable choice for most applications. Higher value means faster insertion and slower search, and vice versa. _(default 9)_ |
+
+### Returns
+
+**RBush** GeoJSON RBush
+
+### Examples
+
+```javascript
+var geojsonRbush = require("geojson-rbush").default;
+var tree = geojsonRbush();
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/geojson-rbush
+
+import { rbush } from "@turf/geojson-rbush";
+const result = rbush(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.rbush(...);
+```

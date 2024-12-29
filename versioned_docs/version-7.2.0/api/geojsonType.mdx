@@ -1,0 +1,44 @@
+---
+title: geojsonType
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Enforce expectations about types of GeoJSON objects for Turf.
+
+### Parameters
+
+| Name  | Type                                                                                            | Description              |
+| ----- | ----------------------------------------------------------------------------------------------- | ------------------------ |
+| value | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | any GeoJSON object       |
+| type  | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | expected GeoJSON type    |
+| name  | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | name of calling function |
+
+### Returns
+
+**void**
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { geojsonType } from "@turf/invariant";
+const result = geojsonType(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.geojsonType(...);
+```

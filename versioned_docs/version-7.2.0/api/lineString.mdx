@@ -1,0 +1,72 @@
+---
+title: lineString
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Creates a [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) from an Array of Positions.
+
+### Parameters
+
+| Name                 | Type                                                                                                      | Description                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| coordinates          | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<Position\>** | an array of Positions                                                     |
+| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                  | an Object of key-value pairs to add as properties _(default \{\})_        |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**           | Optional Parameters _(default \{\})_                                      |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                 | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **Id**                                                                                                    | Identifier associated with the Feature                                    |
+
+### Returns
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** LineString Feature
+
+### Examples
+
+```javascript
+var linestring1 = turf.lineString(
+  [
+    [-24, 63],
+    [-23, 60],
+    [-25, 65],
+    [-20, 69],
+  ],
+  { name: "line 1" },
+);
+var linestring2 = turf.lineString(
+  [
+    [-14, 43],
+    [-13, 40],
+    [-15, 45],
+    [-10, 49],
+  ],
+  { name: "line 2" },
+);
+
+//=linestring1
+//=linestring2
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { lineString } from "@turf/helpers";
+const result = lineString(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.lineString(...);
+```

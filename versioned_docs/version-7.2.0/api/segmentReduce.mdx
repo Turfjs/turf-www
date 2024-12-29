@@ -1,0 +1,91 @@
+---
+title: segmentReduce
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()
+(Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+
+### Parameters
+
+| Name                 | Type                                                                                                                                                                                                  | Description                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | any GeoJSON                                                           |
+| callback             | **[segmentReduceCallback](docs/api/types/segmentReduceCallback.mdx)**                                                                                                                                 | a method that takes (previousValue, currentSegment, currentIndex)     |
+| initialValue<i>?</i> | **Reducer**                                                                                                                                                                                           | Value to use as the first argument to the first call of the callback. |
+
+### Returns
+
+**Reducer**
+
+### Examples
+
+```javascript
+var polygon = turf.polygon([
+  [
+    [-50, 5],
+    [-40, -10],
+    [-50, -10],
+    [-40, 5],
+    [-50, 5],
+  ],
+]);
+
+// Iterate over GeoJSON by 2-vertex segments
+turf.segmentReduce(
+  polygon,
+  function (
+    previousSegment,
+    currentSegment,
+    featureIndex,
+    multiFeatureIndex,
+    geometryIndex,
+    segmentIndex,
+  ) {
+    //= previousSegment
+    //= currentSegment
+    //= featureIndex
+    //= multiFeatureIndex
+    //= geometryIndex
+    //= segmentIndex
+    return currentSegment;
+  },
+);
+
+// Calculate the total number of segments
+var initialValue = 0;
+var total = turf.segmentReduce(
+  polygon,
+  function (previousValue) {
+    previousValue++;
+    return previousValue;
+  },
+  initialValue,
+);
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/meta
+
+import { segmentReduce } from "@turf/meta";
+const result = segmentReduce(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.segmentReduce(...);
+```

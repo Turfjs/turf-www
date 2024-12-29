@@ -1,0 +1,58 @@
+---
+title: getCoords
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Unwrap coordinates from a Feature, Geometry Object or an Array
+
+### Parameters
+
+| Name   | Type                                                                                                                                                                                                                              | Description                          |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| coords | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<any\> \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | Feature, Geometry Object or an Array |
+
+### Returns
+
+**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<any\>** coordinates
+
+### Examples
+
+```javascript
+var poly = turf.polygon([
+  [
+    [119.32, -8.7],
+    [119.55, -8.69],
+    [119.51, -8.54],
+    [119.32, -8.7],
+  ],
+]);
+
+var coords = turf.getCoords(poly);
+//= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/invariant
+
+import { getCoords } from "@turf/invariant";
+const result = getCoords(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.getCoords(...);
+```

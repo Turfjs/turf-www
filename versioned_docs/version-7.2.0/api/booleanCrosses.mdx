@@ -1,0 +1,66 @@
+---
+title: booleanCrosses
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Boolean-Crosses returns True if the intersection results in a geometry whose dimension is one less than
+the maximum dimension of the two source geometries and the intersection set is interior to
+both source geometries.
+
+Boolean-Crosses returns t (TRUE) for only multipoint/polygon, multipoint/linestring, linestring/linestring, linestring/polygon, and linestring/multipolygon comparisons.
+Other comparisons are not supported as they are outside the OpenGIS Simple Features spec and may give unexpected results.
+
+### Parameters
+
+| Name     | Type                                                                                                                                 | Description                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+
+### Returns
+
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
+
+### Examples
+
+```javascript
+var line1 = turf.lineString([
+  [-2, 2],
+  [4, 2],
+]);
+var line2 = turf.lineString([
+  [1, 1],
+  [1, 2],
+  [1, 3],
+  [1, 4],
+]);
+
+var cross = turf.booleanCrosses(line1, line2);
+//=true
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-crosses
+
+import { booleanCrosses } from "@turf/boolean-crosses";
+const result = booleanCrosses(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanCrosses(...);
+```

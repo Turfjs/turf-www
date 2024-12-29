@@ -1,0 +1,56 @@
+---
+title: booleanValid
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+booleanValid checks if the geometry is a valid according to the OGC Simple Feature Specification.
+
+### Parameters
+
+| Name    | Type                                                                                                                                 | Description                 |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| feature | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+
+### Returns
+
+**[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true/false
+
+### Examples
+
+```javascript
+var line = turf.lineString([
+  [1, 1],
+  [1, 2],
+  [1, 3],
+  [1, 4],
+]);
+
+turf.booleanValid(line); // => true
+turf.booleanValid({ foo: "bar" }); // => false
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/boolean-valid
+
+import { booleanValid } from "@turf/boolean-valid";
+const result = booleanValid(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.booleanValid(...);
+```

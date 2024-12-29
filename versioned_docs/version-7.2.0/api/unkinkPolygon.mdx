@@ -1,0 +1,86 @@
+---
+title: unkinkPolygon
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a kinked polygon and returns a feature collection of polygons that have
+no kinks.
+
+Uses [simplepolygon](https://github.com/mclaeysb/simplepolygon) internally.
+
+### Parameters
+
+| Name    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description        |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | polygons to unkink |
+
+### Returns
+
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Unkinked polygons
+
+### Examples
+
+```javascript
+const poly = turf.polygon([
+  [
+    [0, 0],
+    [2, 0],
+    [0, 2],
+    [2, 2],
+    [0, 0],
+  ],
+]);
+
+const result = turf.unkinkPolygon(poly);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  const poly = turf.polygon([
+    [
+      [0, 0],
+      [2, 0],
+      [0, 2],
+      [2, 2],
+      [0, 0],
+    ],
+  ]);
+
+  const result = turf.unkinkPolygon(poly);
+
+  //addToMap
+  const addToMap = [poly, result];
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/unkink-polygon
+
+import { unkinkPolygon } from "@turf/unkink-polygon";
+const result = unkinkPolygon(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.unkinkPolygon(...);
+```

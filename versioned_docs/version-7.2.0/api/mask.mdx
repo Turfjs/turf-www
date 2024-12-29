@@ -1,0 +1,107 @@
+---
+title: mask
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes polygons or multipolygons and an optional mask, and returns an exterior
+ring polygon with holes.
+
+### Parameters
+
+| Name                   | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| polygon                | **[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | GeoJSON polygon used as interior rings or holes                                                   |
+| mask<i>?</i>           | **[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>**                                                                                                                                                                                                                                                                                                                                                        | GeoJSON polygon used as the exterior ring (if undefined, the world extent is used)                |
+| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Optional parameters _(default \{\})_                                                              |
+| options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                                                                                                                                                                                                                                                                                     | allows the `mask` GeoJSON input to be mutated (performance improvement if true) _(default false)_ |
+
+### Returns
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Masked Polygon (exterior ring with holes)
+
+### Examples
+
+```javascript
+const polygon = turf.polygon([
+  [
+    [112, -21],
+    [116, -36],
+    [146, -39],
+    [153, -24],
+    [133, -10],
+    [112, -21],
+  ],
+]);
+const mask = turf.polygon([
+  [
+    [90, -55],
+    [170, -55],
+    [170, 10],
+    [90, 10],
+    [90, -55],
+  ],
+]);
+
+const masked = turf.mask(polygon, mask);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  const polygon = turf.polygon([
+    [
+      [112, -21],
+      [116, -36],
+      [146, -39],
+      [153, -24],
+      [133, -10],
+      [112, -21],
+    ],
+  ]);
+  const mask = turf.polygon([
+    [
+      [90, -55],
+      [170, -55],
+      [170, 10],
+      [90, 10],
+      [90, -55],
+    ],
+  ]);
+
+  const masked = turf.mask(polygon, mask);
+
+  //addToMap
+  const addToMap = [masked];
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/mask
+
+import { mask } from "@turf/mask";
+const result = mask(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.mask(...);
+```

@@ -1,0 +1,118 @@
+---
+title: simplify
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Takes a [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) object and returns a simplified version. Internally uses the 2d version of
+[simplify-js](http://mourner.github.io/simplify-js/) to perform simplification using the Ramer-Douglas-Peucker algorithm.
+
+### Parameters
+
+| Name                        | Type                                                                                              | Description                                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| geojson                     | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | object to be simplified                                                                                                  |
+| options<i>?</i>             | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                                                                                     |
+| options.tolerance<i>?</i>   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | simplification tolerance _(default 1)_                                                                                   |
+| options.highQuality<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | whether or not to spend more time to create a higher-quality simplification with a different algorithm _(default false)_ |
+| options.mutate<i>?</i>      | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_                          |
+
+### Returns
+
+**[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** a simplified GeoJSON
+
+### Examples
+
+```javascript
+var geojson = turf.polygon([
+  [
+    [-70.603637, -33.399918],
+    [-70.614624, -33.395332],
+    [-70.639343, -33.392466],
+    [-70.659942, -33.394759],
+    [-70.683975, -33.404504],
+    [-70.697021, -33.419406],
+    [-70.701141, -33.434306],
+    [-70.700454, -33.446339],
+    [-70.694274, -33.458369],
+    [-70.682601, -33.465816],
+    [-70.668869, -33.472117],
+    [-70.646209, -33.473835],
+    [-70.624923, -33.472117],
+    [-70.609817, -33.468107],
+    [-70.595397, -33.458369],
+    [-70.587158, -33.442901],
+    [-70.587158, -33.426283],
+    [-70.590591, -33.414248],
+    [-70.594711, -33.406224],
+    [-70.603637, -33.399918],
+  ],
+]);
+var options = { tolerance: 0.01, highQuality: false };
+var simplified = turf.simplify(geojson, options);
+```
+
+export function Map0() {
+  "use strict";
+
+  // jsdoc example start
+  var geojson = turf.polygon([
+    [
+      [-70.603637, -33.399918],
+      [-70.614624, -33.395332],
+      [-70.639343, -33.392466],
+      [-70.659942, -33.394759],
+      [-70.683975, -33.404504],
+      [-70.697021, -33.419406],
+      [-70.701141, -33.434306],
+      [-70.700454, -33.446339],
+      [-70.694274, -33.458369],
+      [-70.682601, -33.465816],
+      [-70.668869, -33.472117],
+      [-70.646209, -33.473835],
+      [-70.624923, -33.472117],
+      [-70.609817, -33.468107],
+      [-70.595397, -33.458369],
+      [-70.587158, -33.442901],
+      [-70.587158, -33.426283],
+      [-70.590591, -33.414248],
+      [-70.594711, -33.406224],
+      [-70.603637, -33.399918],
+    ],
+  ]);
+  var options = { tolerance: 0.01, highQuality: false };
+  var simplified = turf.simplify(geojson, options);
+
+  //addToMap
+  var addToMap = { geojson, simplified };
+  // jsdoc example end
+
+  return <ExampleMap addToMap={addToMap} />;
+}
+
+<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+
+### Installation
+
+```javascript
+$ npm install @turf/simplify
+
+import { simplify } from "@turf/simplify";
+const result = simplify(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.simplify(...);
+```

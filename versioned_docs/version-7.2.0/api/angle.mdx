@@ -1,0 +1,55 @@
+---
+title: angle
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+
+### Description
+
+Finds the angle formed by two adjacent segments defined by 3 points. The result will be the (positive clockwise)
+angle with origin on the `startPoint-midPoint` segment, or its explementary angle if required.
+
+### Parameters
+
+| Name                         | Type                                                                                              | Description                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| startPoint                   | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | Start Point Coordinates                                                                 |
+| midPoint                     | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | Mid Point Coordinates                                                                   |
+| endPoint                     | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | End Point Coordinates                                                                   |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                                                    |
+| options.explementary<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | Returns the explementary angle instead (360 - angle) _(default false)_                  |
+| options.mercator<i>?</i>     | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | if calculations should be performed over Mercator or WGS84 projection _(default false)_ |
+
+### Returns
+
+**[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Angle between the provided points, or its explementary.
+
+### Examples
+
+```javascript
+turf.angle([5, 5], [5, 6], [3, 4]);
+//=45
+```
+
+### Installation
+
+```javascript
+$ npm install @turf/angle
+
+import { angle } from "@turf/angle";
+const result = angle(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.angle(...);
+```
