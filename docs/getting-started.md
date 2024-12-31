@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Getting started
 
-How you add Turf to your project will dependend on your environment and tooling but here are some guidelines to get you started.
+How you add Turf to your project will depend on your environment and tooling but here are some guidelines to get you started.
 
 The source of truth for published versions of Turf is [NPM](https://www.npmjs.com/package/@turf/turf?activeTab=versions).  You are welcome to use other providers that republish these packages.
 
