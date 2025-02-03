@@ -58,6 +58,29 @@ var poly2 = turf.polygon([
 var intersection = turf.intersect(turf.featureCollection([poly1, poly2]));
 ```
 
+#### Result
+
+```json
+{
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [-122.720031, 45.526554],
+        [-122.669906, 45.507309],
+        [-122.68902729894835, 45.48565],
+        [-122.584762, 45.48565],
+        [-122.584762, 45.545508794628965],
+        [-122.64038, 45.553967],
+        [-122.720031, 45.526554]
+      ]
+    ]
+  }
+}
+```
+
 export function Map0() {
   "use strict";
 
