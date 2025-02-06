@@ -68,6 +68,7 @@ var dataset = turf.randomPoint(100, { bbox: bbox });
 var nearestNeighborStudyArea = turf.nearestNeighborAnalysis(dataset);
 ```
 
+```javascript live
 function Map() {
   var bbox = [-65, 40, -63, 42];
   var dataset = turf.randomPoint(100, { bbox: bbox });
@@ -75,6 +76,7 @@ function Map() {
 
   return <ExampleMap addToMap={{ dataset, nearestNeighborStudyArea }} />;
 }
+```
 
 ### Installation
 

@@ -51,6 +51,7 @@ var stop = turf.point([-77.021884, 38.889563]);
 var sliced = turf.lineSlice(start, stop, line);
 ```
 
+```javascript live
 function Map() {
   var line = turf.lineString([
     [-77.031669, 38.878605],
@@ -67,6 +68,7 @@ function Map() {
 
   return <ExampleMap addToMap={{ start, stop, line }} />;
 }
+```
 
 ### Installation
 
