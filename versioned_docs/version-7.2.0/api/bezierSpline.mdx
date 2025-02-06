@@ -48,7 +48,8 @@ var line = turf.lineString([
 var curved = turf.bezierSpline(line);
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   var line = turf.lineString([
     [-76.091308, 18.427501],
     [-76.695556, 18.729501],
@@ -59,12 +60,12 @@ export function Map0() {
   ]);
 
   var curved = turf.bezierSpline(line);
+  console.log('curved', curved);
   curved.properties = { stroke: "#0F0" };
 
   return <ExampleMap addToMap={{ line, curved }} />;
 }
-
-<Map0 />
+```
 
 ### Installation
 
