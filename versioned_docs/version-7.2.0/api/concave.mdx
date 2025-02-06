@@ -45,10 +45,8 @@ var options = { units: "miles", maxEdge: 1 };
 var hull = turf.concave(points, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var points = turf.featureCollection([
     turf.point([-63.601226, 44.642643]),
     turf.point([-63.591442, 44.651436]),
@@ -61,14 +59,9 @@ export function Map0() {
 
   var hull = turf.concave(points, options);
 
-  //addToMap
-  var addToMap = { points, hull };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ points, hull }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
