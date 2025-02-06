@@ -47,11 +47,8 @@ var breaks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 var lines = turf.isolines(pointGrid, breaks, { zProperty: "temperature" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  // create a grid of points with random z-values in their properties
+```javascript live
+function Map() {
   var extent = [0, 30, 20, 50];
   var cellWidth = 100;
   var pointGrid = turf.pointGrid(extent, cellWidth, { units: "miles" });
@@ -63,14 +60,9 @@ export function Map0() {
 
   var lines = turf.isolines(pointGrid, breaks, { zProperty: "temperature" });
 
-  //addToMap
-  var addToMap = { lines };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ lines }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
