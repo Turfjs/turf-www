@@ -40,24 +40,17 @@ var options = { units: "miles" };
 var grid = turf.pointGrid(extent, cellSide, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var extent = [-70.823364, -33.553984, -70.473175, -33.302986];
   var cellSide = 3;
   var options = { units: "miles" };
 
   var grid = turf.pointGrid(extent, cellSide, options);
 
-  //addToMap
-  var addToMap = { grid };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ grid }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
