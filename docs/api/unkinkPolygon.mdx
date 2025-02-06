@@ -44,10 +44,8 @@ const poly = turf.polygon([
 const result = turf.unkinkPolygon(poly);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const poly = turf.polygon([
     [
       [0, 0],
@@ -60,14 +58,11 @@ export function Map0() {
 
   const result = turf.unkinkPolygon(poly);
 
-  //addToMap
-  const addToMap = [poly, result];
-  // jsdoc example end
+  console.log('result', result);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={[poly, result]} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
