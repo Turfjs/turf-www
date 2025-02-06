@@ -43,10 +43,8 @@ var line2 = turf.lineString([
 var intersects = turf.lineIntersect(line1, line2);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line1 = turf.lineString([
     [126, -11],
     [129, -21],
@@ -57,14 +55,9 @@ export function Map0() {
   ]);
   var intersects = turf.lineIntersect(line1, line2);
 
-  //addToMap
-  var addToMap = { line1, line2, intersects };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ line1, line2, intersects }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
