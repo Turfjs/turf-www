@@ -35,26 +35,22 @@ var points = turf.randomPoint(100, { bbox: [-80, 30, -60, 60] });
 var sample = turf.sample(points, 5);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var points = turf.randomPoint(100, { bbox: [-80, 30, -60, 60] });
 
   var sample = turf.sample(points, 5);
 
-  //addToMap
-  var addToMap = { points, sample };
   turf.featureEach(sample, function (currentFeature) {
     currentFeature.properties["marker-size"] = "large";
     currentFeature.properties["marker-color"] = "#000";
   });
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  console.log('sample', sample);
+
+  return <ExampleMap addToMap={{ points, sample }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
