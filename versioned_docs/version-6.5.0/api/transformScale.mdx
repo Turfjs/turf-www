@@ -47,10 +47,8 @@ var poly = turf.polygon([
 var scaledPoly = turf.transformScale(poly, 3);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly = turf.polygon([
     [
       [0, 29],
@@ -60,17 +58,13 @@ export function Map0() {
     ],
   ]);
   var scaledPoly = turf.transformScale(poly, 3);
-
-  //addToMap
-  var addToMap = { poly, scaledPoly };
   scaledPoly.properties = { stroke: "#F00", "stroke-width": 4 };
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  console.log('scaledPoly', scaledPoly);
+
+  return <ExampleMap addToMap={{ poly, scaledPoly }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
