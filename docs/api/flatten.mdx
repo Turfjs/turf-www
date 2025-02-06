@@ -108,7 +108,8 @@ var flatten = turf.flatten(multiGeometry);
 }
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   var multiGeometry = turf.multiPolygon([
     [
       [
@@ -138,11 +139,12 @@ export function Map0() {
   ]);
 
   var flatten = turf.flatten(multiGeometry);
+  
+  console.log('flattened result:', flatten);
 
   return <ExampleMap addToMap={{ flatten }} />;
 }
-
-<Map0 />
+```
 
 ### Installation
 
