@@ -38,12 +38,17 @@ var serbia = turf.point([20.566406, 43.421008]);
 var saudiArabia = turf.flip(serbia);
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   var serbia = turf.point([20.566406, 43.421008]);
   var saudiArabia = turf.flip(serbia);
 
+  console.log('Original point:', serbia);
+  console.log('Flipped point:', saudiArabia);
+
   return <ExampleMap addToMap={{ serbia, saudiArabia }} />;
 }
+```
 
 ### Installation
 
