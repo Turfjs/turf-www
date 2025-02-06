@@ -41,7 +41,7 @@ var polygon = turf.polygon([
 var area = turf.area(polygon);
 ```
 
-export function Map0() {
+export function Map() {
   "use strict";
 
   // jsdoc example start
@@ -62,10 +62,10 @@ export function Map0() {
   polygon.properties.area = area;
   // jsdoc example end
 
+  console.log(area);
+
   return <ExampleMap addToMap={addToMap} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
 
