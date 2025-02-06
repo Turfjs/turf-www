@@ -81,10 +81,8 @@ var intersection = turf.intersect(turf.featureCollection([poly1, poly2]));
 }
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly1 = turf.polygon([
     [
       [-122.801742, 45.48565],
@@ -110,14 +108,9 @@ export function Map0() {
 
   var intersection = turf.intersect(turf.featureCollection([poly1, poly2]));
 
-  //addToMap
-  var addToMap = { poly1, poly2, intersection };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ poly1, poly2, intersection }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
