@@ -44,10 +44,8 @@ var line = turf.lineString([
 var polygon = turf.lineToPolygon(line);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString([
     [125, -30],
     [145, -30],
@@ -58,14 +56,9 @@ export function Map0() {
 
   var polygon = turf.lineToPolygon(line);
 
-  //addToMap
-  var addToMap = { polygon };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ polygon }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
