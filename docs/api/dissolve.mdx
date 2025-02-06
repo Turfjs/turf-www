@@ -74,7 +74,8 @@ var features = turf.featureCollection([
 var dissolved = turf.dissolve(features, { propertyName: "combine" });
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   var features = turf.featureCollection([
     turf.polygon(
       [
@@ -115,11 +116,12 @@ export function Map0() {
   ]);
 
   var dissolved = turf.dissolve(features, { propertyName: "combine" });
+  
+  console.log('dissolved', dissolved);
 
   return <ExampleMap addToMap={{ features, dissolved }} />;
 }
-
-<Map0 />
+```
 
 ### Installation
 
