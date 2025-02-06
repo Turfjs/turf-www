@@ -42,10 +42,8 @@ var line = turf.lineString([
 var length = turf.length(line, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString([
     [115, -32],
     [131, -22],
@@ -54,16 +52,11 @@ export function Map0() {
   ]);
   var length = turf.length(line, { units: "miles" });
 
-  //addToMap
-  var addToMap = { line };
   line.properties.distance = length;
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ line }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
