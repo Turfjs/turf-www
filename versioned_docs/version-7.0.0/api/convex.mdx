@@ -50,10 +50,8 @@ var points = turf.featureCollection([
 var hull = turf.convex(points);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var points = turf.featureCollection([
     turf.point([10.195312, 43.755225]),
     turf.point([10.404052, 43.8424511]),
@@ -65,15 +63,11 @@ export function Map0() {
 
   var hull = turf.convex(points);
 
-  //addToMap
-  var addToMap = { points, hull };
-  // jsdoc example end
+  console.log('hull', hull);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ points, hull }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
