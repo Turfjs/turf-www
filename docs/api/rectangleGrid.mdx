@@ -42,10 +42,8 @@ var options = { units: "miles" };
 var rectangleGrid = turf.rectangleGrid(bbox, cellWidth, cellHeight, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var bbox = [-95, 30, -85, 40];
   var cellWidth = 50;
   var cellHeight = 20;
@@ -53,14 +51,11 @@ export function Map0() {
 
   var rectangleGrid = turf.rectangleGrid(bbox, cellWidth, cellHeight, options);
 
-  //addToMap
-  var addToMap = { rectangleGrid };
-  // jsdoc example end
+  console.log('rectangleGrid', rectangleGrid);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ rectangleGrid }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
