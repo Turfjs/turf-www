@@ -45,10 +45,8 @@ var line = turf.lineString([
 var chunk = turf.lineChunk(line, 15, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString([
     [-95, 40],
     [-93, 45],
@@ -57,15 +55,9 @@ export function Map0() {
 
   var chunk = turf.lineChunk(line, 15, { units: "miles" });
 
-  //addToMap
-  var addToMap = { chunk };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ chunk }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
