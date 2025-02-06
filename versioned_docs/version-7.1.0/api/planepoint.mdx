@@ -60,12 +60,9 @@ const zValue = turf.planepoint(point, triangle);
 point.properties.zValue = zValue;
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const point = turf.point([-75.3221, 39.529]);
-  // "a", "b", and "c" values represent the values of the coordinates in order.
   const triangle = turf.polygon(
     [
       [
@@ -85,15 +82,9 @@ export function Map0() {
   const zValue = turf.planepoint(point, triangle);
   point.properties.zValue = zValue;
 
-  //addToMap
-  const addToMap = [triangle, point];
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={[triangle, point]} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
