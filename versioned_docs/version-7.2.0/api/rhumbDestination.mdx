@@ -42,26 +42,21 @@ var options = { units: "miles" };
 var destination = turf.rhumbDestination(pt, distance, bearing, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var pt = turf.point([-75.343, 39.984], { "marker-color": "F00" });
   var distance = 50;
   var bearing = 90;
   var options = { units: "miles" };
 
   var destination = turf.rhumbDestination(pt, distance, bearing, options);
-
-  //addToMap
-  var addToMap = { pt, destination };
   destination.properties["marker-color"] = "#00F";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  console.log('destination', destination);
+
+  return <ExampleMap addToMap={{ pt, destination }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
