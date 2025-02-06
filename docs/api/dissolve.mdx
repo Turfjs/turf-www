@@ -75,9 +75,6 @@ var dissolved = turf.dissolve(features, { propertyName: "combine" });
 ```
 
 export function Map0() {
-  "use strict";
-
-  // jsdoc example start
   var features = turf.featureCollection([
     turf.polygon(
       [
@@ -119,14 +116,10 @@ export function Map0() {
 
   var dissolved = turf.dissolve(features, { propertyName: "combine" });
 
-  //addToMap
-  var addToMap = { features, dissolved };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ features, dissolved }} />;
 }
 
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+<Map0 />
 
 ### Installation
 
