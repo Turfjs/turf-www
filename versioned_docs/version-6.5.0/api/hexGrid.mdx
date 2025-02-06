@@ -46,25 +46,17 @@ var options = { units: "miles" };
 var hexgrid = turf.hexGrid(bbox, cellSide, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var bbox = [-96, 31, -84, 40];
   var cellSide = 50;
   var options = { units: "miles" };
 
   var hexgrid = turf.hexGrid(bbox, cellSide, options);
 
-  //addToMap
-  var addToMap = { hexgrid };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ hexgrid }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
