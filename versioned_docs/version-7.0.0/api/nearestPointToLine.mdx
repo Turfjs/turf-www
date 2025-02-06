@@ -47,10 +47,8 @@ var line = turf.lineString([
 var nearest = turf.nearestPointToLine(points, line);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var pt1 = turf.point([0, 0]);
   var pt2 = turf.point([0.5, 0.5]);
   var points = turf.featureCollection([pt1, pt2]);
@@ -61,15 +59,9 @@ export function Map0() {
 
   var nearest = turf.nearestPointToLine(points, line);
 
-  //addToMap
-  var addToMap = { nearest, line };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ nearest, line }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
