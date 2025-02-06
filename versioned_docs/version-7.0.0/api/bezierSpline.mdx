@@ -52,9 +52,6 @@ var curved = turf.bezierSpline(line);
 ```
 
 export function Map0() {
-  "use strict";
-
-  // jsdoc example start
   var line = turf.lineString([
     [-76.091308, 18.427501],
     [-76.695556, 18.729501],
@@ -65,17 +62,12 @@ export function Map0() {
   ]);
 
   var curved = turf.bezierSpline(line);
-
-  //addToMap
-  var addToMap = { line, curved };
   curved.properties = { stroke: "#0F0" };
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ line, curved }} />;
 }
 
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+<Map0 />
 
 ### Installation
 
