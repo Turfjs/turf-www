@@ -34,21 +34,16 @@ var pt = turf.point([-7903683.846322424, 5012341.663847514]);
 var converted = turf.toWgs84(pt);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var pt = turf.point([-7903683.846322424, 5012341.663847514]);
   var converted = turf.toWgs84(pt);
 
-  //addToMap
-  var addToMap = { pt, converted };
-  // jsdoc example end
+  console.log('converted', converted);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ pt, converted }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
