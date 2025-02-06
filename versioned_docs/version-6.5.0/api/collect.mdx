@@ -68,10 +68,8 @@ var values = collected.features[0].properties.values;
 //=values => [200, 600]
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly1 = turf.polygon([
     [
       [0, 0],
@@ -99,17 +97,13 @@ export function Map0() {
   var pointFC = turf.featureCollection([pt1, pt2, pt3, pt4, pt5]);
   var collected = turf.collect(polyFC, pointFC, "population", "values");
   var values = collected.features[0].properties.values;
-  //=values => [200, 600]
 
-  //addToMap
-  var addToMap = { pointFC, collected };
-  // jsdoc example end
+  console.log('Collected values:', values);
+  console.log('Full collected result:', collected);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ pointFC, collected }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
