@@ -39,25 +39,15 @@ var point2 = turf.point([145.14244, -37.830937]);
 var midpoint = turf.midpoint(point1, point2);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+function Map() {
   var point1 = turf.point([144.834823, -37.771257]);
   var point2 = turf.point([145.14244, -37.830937]);
 
   var midpoint = turf.midpoint(point1, point2);
-
-  //addToMap
-  var addToMap = { point1, point2, midpoint };
   midpoint.properties["marker-color"] = "#f00";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ point1, point2, midpoint }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
 
