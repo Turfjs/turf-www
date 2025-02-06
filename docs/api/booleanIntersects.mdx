@@ -46,34 +46,18 @@ turf.booleanIntersects(line, point2);
 //=true
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var point1 = turf.point([2, 2]);
   var point2 = turf.point([1, 2]);
-  var line = turf.lineString([
-    [1, 1],
-    [1, 3],
-    [1, 4],
-  ]);
+  var line = turf.lineString([[1, 1], [1, 3], [1, 4]]);
 
-  turf.booleanIntersects(line, point1);
-  //=false
-
-  turf.booleanIntersects(line, point2);
-  //=true
-
-  //addToMap
-  var addToMap = { point1, point2, line };
   point1.properties["marker-color"] = "#f00";
   point2.properties["marker-color"] = "#0f0";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ point1, point2, line }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
