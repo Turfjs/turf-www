@@ -37,12 +37,13 @@ the input, or even be empty.
 
 ### Examples
 
-```javascript
+```javascript live noInline
 var point = turf.point([-90.54863, 14.616599]);
 var buffered = turf.buffer(point, 500, { units: "miles" });
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   "use strict";
 
   // jsdoc example start
@@ -55,8 +56,9 @@ export function Map0() {
 
   return <ExampleMap addToMap={addToMap} />;
 }
+```
 
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+{/* <BrowserOnly>{() => <Map0 />}</BrowserOnly> */}
 
 ### Installation
 
