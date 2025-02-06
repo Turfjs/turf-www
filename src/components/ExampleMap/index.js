@@ -13,14 +13,13 @@ export default function ExampleMap(props) {
     }
 
     // Initialise map and set base style layer.
-    const turfMap = L.mapbox.map("turfMap", {
-      scrollWheelZoom: false,
-    });
+    const turfMap = L.mapbox.map("turfMap");
     // colour - mapbox://styles/mapbox/streets-v12
     // greyscale - mapbox://styles/mapbox/light-v11
     // dark - mapbox://styles/mapbox/dark-v11
     turfMap.addLayer(L.mapbox.styleLayer("mapbox://styles/mapbox/light-v11"));
 
+    turfMap.scrollWheelZoom.disable();
     // Create a feature group to add all our layers to. We'll
     // use this below to get the overall bounds of all layers
     // to zoom the map appropriately.
@@ -44,7 +43,7 @@ export default function ExampleMap(props) {
     }
 
     turfMap.fitBounds(fg.getBounds(), { padding: [30, 30] });
-  });
+  }, []);
 
   return <div id="turfMap" style={{ height: "325px" }}></div>;
 }
