@@ -55,10 +55,8 @@ var mask = turf.polygon([
 var masked = turf.mask(polygon, mask);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var polygon = turf.polygon([
     [
       [112, -21],
@@ -81,15 +79,9 @@ export function Map0() {
 
   var masked = turf.mask(polygon, mask);
 
-  //addToMap
-  var addToMap = { masked };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ masked }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
