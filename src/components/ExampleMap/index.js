@@ -13,7 +13,9 @@ export default function ExampleMap(props) {
     }
 
     // Initialise map and set base style layer.
-    const turfMap = L.mapbox.map("turfMap");
+    const turfMap = L.mapbox.map("turfMap", {
+      scrollWheelZoom: false,
+    });
     // colour - mapbox://styles/mapbox/streets-v12
     // greyscale - mapbox://styles/mapbox/light-v11
     // dark - mapbox://styles/mapbox/dark-v11
