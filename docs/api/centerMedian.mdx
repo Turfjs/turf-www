@@ -76,17 +76,22 @@ var points = turf.points([
 var medianCenter = turf.centerMedian(points);
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   var points = turf.points([
     [0, 0],
     [1, 0],
     [0, 1],
-    [5, 8],
+    [5, 8]
   ]);
+
   var medianCenter = turf.centerMedian(points);
+
+  console.log('medianCenter', medianCenter);
 
   return <ExampleMap addToMap={{ points, medianCenter }} />;
 }
+```
 
 ### Installation
 
