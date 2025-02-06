@@ -47,10 +47,8 @@ var polygon = turf.polygon([
 var pointOnPolygon = turf.pointOnFeature(polygon);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var polygon = turf.polygon([
     [
       [116, -36],
@@ -65,14 +63,9 @@ export function Map0() {
 
   var pointOnPolygon = turf.pointOnFeature(polygon);
 
-  //addToMap
-  var addToMap = { polygon, pointOnPolygon };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ polygon, pointOnPolygon }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
