@@ -51,10 +51,8 @@ var options = {
 var path = turf.shortestPath(start, end, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var start = [-5, -6];
   var end = [9, -6];
   var options = {
@@ -71,14 +69,11 @@ export function Map0() {
 
   var path = turf.shortestPath(start, end, options);
 
-  //addToMap
-  var addToMap = { start, end, obstacles: options.obstacles, path };
-  // jsdoc example end
+  console.log('path', path);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ start, end, obstacles: options.obstacles, path }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
