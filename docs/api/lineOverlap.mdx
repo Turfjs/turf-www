@@ -64,6 +64,8 @@ function Map() {
 
   var overlapping = turf.lineOverlap(line1, line2);
 
+  console.log('overlapping', overlapping);
+
   return <ExampleMap addToMap={{ line1, line2, overlapping }} />;
 }
 ```

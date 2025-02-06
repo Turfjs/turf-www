@@ -52,6 +52,7 @@ function Map() {
 
   var chunk = turf.lineChunk(line, 15, { units: "miles" });
 
+  console.log('chunk', chunk);
   return <ExampleMap addToMap={{ chunk }} />;
 }
 ```

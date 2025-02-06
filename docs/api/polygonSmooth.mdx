@@ -62,6 +62,8 @@ function Map() {
 
   var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
 
+  console.log('smoothed', smoothed);
+
   return <ExampleMap addToMap={{ smoothed, polygon }} />;
 }
 ```

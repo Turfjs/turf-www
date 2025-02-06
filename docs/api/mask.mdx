@@ -79,6 +79,8 @@ function Map() {
 
   const masked = turf.mask(polygon, mask);
 
+  console.log('masked', masked);
+
   return <ExampleMap addToMap={[masked]} />;
 }
 ```

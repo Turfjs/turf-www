@@ -63,6 +63,8 @@ function Map() {
 
   var sliced = turf.lineSlice(start, stop, line);
 
+  console.log('sliced', sliced);
+
   return <ExampleMap addToMap={{ start, stop, line }} />;
 }
 ```

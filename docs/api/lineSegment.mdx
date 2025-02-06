@@ -54,6 +54,8 @@ function Map() {
   ]);
   var segments = turf.lineSegment(polygon);
 
+  console.log('segments', segments);
+
   return <ExampleMap addToMap={{ polygon, segments }} />;
 }
 ```
