@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 export default function ExampleMap(props) {
   useEffect(() => {
     L.mapbox.accessToken =
-      "pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNrZWp2ODRvNzFqMHoyeHJ6b3Jpc29iczQifQ.YdYb6a6rA5aCtkmDZ5wn_g";
+      "pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNtYWRsY2p4MzBoNDAyd29sdTZ3anM4cTYifQ.geW7aD3o2GBOKoub_wzwnQ";
 
     // Remove any old map that might have been initialised.
     // https://github.com/Leaflet/Leaflet/issues/3962#issuecomment-500680902
