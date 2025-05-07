@@ -54,35 +54,29 @@ var options = {
 var path = turf.shortestPath(start, end, options);
 ```
 
-export function Map0() {
-  "use strict";
+```javascript live
+function Map() {
+  var start = [-5, -6];
+  var end = [9, -6];
+  var options = {
+    obstacles: turf.polygon([
+      [
+        [0, -7],
+        [5, -7],
+        [5, -3],
+        [0, -3],
+        [0, -7],
+      ],
+    ]).geometry,
+  };
 
-// jsdoc example start
-var start = [-5, -6];
-var end = [9, -6];
-var options = {
-obstacles: turf.polygon([
-[
-[0, -7],
-[5, -7],
-[5, -3],
-[0, -3],
-[0, -7],
-],
-]).geometry,
-};
+  var path = turf.shortestPath(start, end, options);
 
-var path = turf.shortestPath(start, end, options);
+  console.log('path', path);
 
-//addToMap
-var addToMap = { start, end, obstacles: options.obstacles, path };
-// jsdoc example end
-
-return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ start, end, obstacles: options.obstacles, path }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -46,10 +46,8 @@ var points = turf.featureCollection([
 var nearest = turf.nearestPoint(targetPoint, points);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var targetPoint = turf.point([28.965797, 41.010086], {
     "marker-color": "#0F0",
   });
@@ -60,16 +58,11 @@ export function Map0() {
   ]);
 
   var nearest = turf.nearestPoint(targetPoint, points);
-
-  //addToMap
-  var addToMap = { targetPoint, points, nearest };
   nearest.properties["marker-color"] = "#F00";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ targetPoint, points, nearest }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -79,27 +79,22 @@ var points = turf.points([
 var medianCenter = turf.centerMedian(points);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var points = turf.points([
     [0, 0],
     [1, 0],
     [0, 1],
-    [5, 8],
+    [5, 8]
   ]);
+
   var medianCenter = turf.centerMedian(points);
 
-  //addToMap
-  var addToMap = { points, medianCenter };
-  // jsdoc example end
+  console.log('medianCenter', medianCenter);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ points, medianCenter }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -41,26 +41,21 @@ var point2 = turf.point([-75.534, 39.123], { "marker-color": "#00F" });
 var bearing = turf.rhumbBearing(point1, point2);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var point1 = turf.point([-75.343, 39.984], { "marker-color": "#F00" });
   var point2 = turf.point([-75.534, 39.123], { "marker-color": "#00F" });
 
   var bearing = turf.rhumbBearing(point1, point2);
 
-  //addToMap
-  var addToMap = { point1, point2 };
+  console.log('bearing', bearing);
+
   point1.properties.bearing = bearing;
   point2.properties.bearing = bearing;
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ point1, point2 }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

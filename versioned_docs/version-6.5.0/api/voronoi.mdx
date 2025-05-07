@@ -43,25 +43,19 @@ var points = turf.randomPoint(100, options);
 var voronoiPolygons = turf.voronoi(points, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var options = {
     bbox: [-70, 40, -60, 60],
   };
   var points = turf.randomPoint(100, options);
   var voronoiPolygons = turf.voronoi(points, options);
 
-  //addToMap
-  var addToMap = { voronoiPolygons, points };
-  // jsdoc example end
+  console.log('voronoiPolygons', voronoiPolygons);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ voronoiPolygons, points }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

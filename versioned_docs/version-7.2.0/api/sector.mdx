@@ -44,10 +44,8 @@ var bearing2 = 45;
 var sector = turf.sector(center, radius, bearing1, bearing2);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var center = turf.point([-75, 40]);
   var radius = 5;
   var bearing1 = 25;
@@ -55,14 +53,11 @@ export function Map0() {
 
   var sector = turf.sector(center, radius, bearing1, bearing2);
 
-  //addToMap
-  var addToMap = { center, sector };
-  // jsdoc example end
+  console.log('sector', sector);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ center, sector }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

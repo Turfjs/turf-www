@@ -46,10 +46,8 @@ var polygon = turf.polygon([
 var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var polygon = turf.polygon([
     [
       [11, 0],
@@ -64,14 +62,11 @@ export function Map0() {
 
   var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
 
-  //addToMap
-  var addToMap = { smoothed, polygon };
-  // jsdoc example end
+  console.log('smoothed', smoothed);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ smoothed, polygon }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

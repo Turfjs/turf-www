@@ -40,23 +40,21 @@ the input, or even be empty.
 ```javascript
 var point = turf.point([-90.54863, 14.616599]);
 var buffered = turf.buffer(point, 500, { units: "miles" });
+console.log(buffered);
 ```
 
-export function Map0() {
+```javascript live
+function Map() {
   "use strict";
 
-  // jsdoc example start
   var point = turf.point([-90.54863, 14.616599]);
   var buffered = turf.buffer(point, 500, { units: "miles" });
+  
+  console.log(buffered);
 
-  //addToMap
-  var addToMap = { point, buffered };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ point, buffered }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

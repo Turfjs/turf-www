@@ -43,10 +43,8 @@ var poly = turf.polygon([
 var kinks = turf.kinks(poly);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly = turf.polygon([
     [
       [-12.034835, 8.901183],
@@ -59,14 +57,9 @@ export function Map0() {
 
   var kinks = turf.kinks(poly);
 
-  //addToMap
-  var addToMap = { poly, kinks };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ poly, kinks }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

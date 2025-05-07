@@ -45,22 +45,20 @@ var point = turf.point([-90.54863, 14.616599]);
 var buffered = turf.buffer(point, 500, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+export function Map() {
   var point = turf.point([-90.54863, 14.616599]);
   var buffered = turf.buffer(point, 500, { units: "miles" });
 
-  //addToMap
-  var addToMap = { point, buffered };
-  // jsdoc example end
+  console.log(buffered);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{
+    point, buffered
+  }} />;
 }
+```
 
 <!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
 

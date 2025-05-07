@@ -47,10 +47,8 @@ var options = { pivot: [0, 25] };
 var rotatedPoly = turf.transformRotate(poly, 10, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly = turf.polygon([
     [
       [0, 29],
@@ -62,16 +60,13 @@ export function Map0() {
   var options = { pivot: [0, 25] };
   var rotatedPoly = turf.transformRotate(poly, 10, options);
 
-  //addToMap
-  var addToMap = { poly, rotatedPoly };
+  console.log('rotatedPoly', rotatedPoly);
+
   rotatedPoly.properties = { stroke: "#F00", "stroke-width": 4 };
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={[poly, rotatedPoly]} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

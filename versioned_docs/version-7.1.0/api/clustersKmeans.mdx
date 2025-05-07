@@ -44,24 +44,15 @@ var options = { numberOfClusters: 7 };
 var clustered = turf.clustersKmeans(points, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  // create random points with random z-values in their properties
+```javascript live
+function Map() {
   var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
   var options = { numberOfClusters: 7 };
   var clustered = turf.clustersKmeans(points, options);
 
-  //addToMap
-  var addToMap = { clustered };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ clustered }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

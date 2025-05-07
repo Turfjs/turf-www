@@ -61,10 +61,32 @@ var options = { tolerance: 0.01, highQuality: false };
 var simplified = turf.simplify(geojson, options);
 ```
 
-export function Map0() {
-  "use strict";
+#### Results
 
-  // jsdoc example start
+```json
+{
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [ -70.603637, -33.399918 ],
+        [ -70.683975, -33.404504 ],
+        [ -70.701141, -33.434306 ],
+        [ -70.694274, -33.458369 ],
+        [ -70.668869, -33.472117 ],
+        [ -70.609817, -33.468107 ],
+        [ -70.587158, -33.442901 ],
+        [ -70.603637, -33.399918 ]
+      ]
+    ]
+  }
+}
+```
+
+```javascript live
+function Map() {
   var geojson = turf.polygon([
     [
       [-70.603637, -33.399918],
@@ -92,14 +114,11 @@ export function Map0() {
   var options = { tolerance: 0.01, highQuality: false };
   var simplified = turf.simplify(geojson, options);
 
-  //addToMap
-  var addToMap = { geojson, simplified };
-  // jsdoc example end
+  console.log('simplified', simplified);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ geojson, simplified }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

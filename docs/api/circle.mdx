@@ -39,23 +39,16 @@ var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
 var circle = turf.circle(center, radius, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var center = [-75.343, 39.984];
   var radius = 5;
   var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
   var circle = turf.circle(center, radius, options);
 
-  //addToMap
-  var addToMap = { center: turf.point(center), circle };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ center: turf.point(center), circle }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -44,10 +44,8 @@ var pt = turf.point([-77.037076, 38.884017]);
 var snapped = turf.nearestPointOnLine(line, pt, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString([
     [-77.031669, 38.878605],
     [-77.029609, 38.881946],
@@ -59,16 +57,11 @@ export function Map0() {
   var pt = turf.point([-77.037076, 38.884017]);
 
   var snapped = turf.nearestPointOnLine(line, pt, { units: "miles" });
-
-  //addToMap
-  var addToMap = { line, pt, snapped };
   snapped.properties["marker-color"] = "#00f";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ line, pt, snapped }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

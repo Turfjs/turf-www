@@ -55,10 +55,8 @@ var searchWithin = turf.polygon([
 var ptsWithin = turf.pointsWithinPolygon(points, searchWithin);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var points = turf.points([
     [-46.6318, -23.5523],
     [-46.6246, -23.5325],
@@ -81,19 +79,14 @@ export function Map0() {
 
   var ptsWithin = turf.pointsWithinPolygon(points, searchWithin);
 
-  //addToMap
-  var addToMap = { points, searchWithin, ptsWithin };
   turf.featureEach(ptsWithin, function (currentFeature) {
     currentFeature.properties["marker-size"] = "large";
     currentFeature.properties["marker-color"] = "#000";
   });
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ points, searchWithin, ptsWithin }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

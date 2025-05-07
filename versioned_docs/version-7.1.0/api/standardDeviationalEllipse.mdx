@@ -57,23 +57,17 @@ const points = turf.randomPoint(400, { bbox: bbox });
 const sdEllipse = turf.standardDeviationalEllipse(points);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const bbox = [-74, 40.72, -73.98, 40.74];
   const points = turf.randomPoint(400, { bbox: bbox });
   const sdEllipse = turf.standardDeviationalEllipse(points);
 
-  //addToMap
-  const addToMap = [points, sdEllipse];
-  // jsdoc example end
+  console.log('sdEllipse', sdEllipse);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ points, sdEllipse }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

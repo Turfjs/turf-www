@@ -44,10 +44,8 @@ var features = turf.points([
 var center = turf.center(features);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var features = turf.points([
     [-97.522259, 35.4691],
     [-97.502754, 35.463455],
@@ -55,18 +53,12 @@ export function Map0() {
   ]);
 
   var center = turf.center(features);
-
-  //addToMap
-  var addToMap = { features, center };
   center.properties["marker-size"] = "large";
   center.properties["marker-color"] = "#000";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ features, center }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

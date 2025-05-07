@@ -47,10 +47,8 @@ var stop = 25;
 var sliced = turf.lineSliceAlong(line, start, stop, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString([
     [7, 45],
     [9, 45],
@@ -61,14 +59,9 @@ export function Map0() {
   var stop = 25;
   var sliced = turf.lineSliceAlong(line, start, stop, { units: "miles" });
 
-  //addToMap
-  var addToMap = { line, start, stop, sliced };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ line, start, stop, sliced }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

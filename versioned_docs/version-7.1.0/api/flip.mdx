@@ -38,23 +38,17 @@ var serbia = turf.point([20.566406, 43.421008]);
 var saudiArabia = turf.flip(serbia);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var serbia = turf.point([20.566406, 43.421008]);
-
   var saudiArabia = turf.flip(serbia);
 
-  //addToMap
-  var addToMap = { serbia, saudiArabia };
-  // jsdoc example end
+  console.log('serbia', serbia);
+  console.log('saudiArabia', saudiArabia);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ serbia, saudiArabia }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

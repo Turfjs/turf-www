@@ -46,10 +46,8 @@ var line = turf.lineString(
 var offsetLine = turf.lineOffset(line, 2, { units: "miles" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var line = turf.lineString(
     [
       [-83, 30],
@@ -60,17 +58,11 @@ export function Map0() {
   );
 
   var offsetLine = turf.lineOffset(line, 2, { units: "miles" });
-
-  //addToMap
-  var addToMap = { offsetLine, line };
   offsetLine.properties.stroke = "#00F";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ offsetLine, line }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

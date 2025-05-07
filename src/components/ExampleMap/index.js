@@ -19,6 +19,7 @@ export default function ExampleMap(props) {
     // dark - mapbox://styles/mapbox/dark-v11
     turfMap.addLayer(L.mapbox.styleLayer("mapbox://styles/mapbox/light-v11"));
 
+    turfMap.scrollWheelZoom.disable();
     // Create a feature group to add all our layers to. We'll
     // use this below to get the overall bounds of all layers
     // to zoom the map appropriately.
@@ -42,7 +43,7 @@ export default function ExampleMap(props) {
     }
 
     turfMap.fitBounds(fg.getBounds(), { padding: [30, 30] });
-  });
+  }, []);
 
   return <div id="turfMap" style={{ height: "325px" }}></div>;
 }

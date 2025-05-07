@@ -55,10 +55,8 @@ const mask = turf.polygon([
 const masked = turf.mask(polygon, mask);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const polygon = turf.polygon([
     [
       [112, -21],
@@ -81,14 +79,11 @@ export function Map0() {
 
   const masked = turf.mask(polygon, mask);
 
-  //addToMap
-  const addToMap = [masked];
-  // jsdoc example end
+  console.log('masked', masked);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={[masked]} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

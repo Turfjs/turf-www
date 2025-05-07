@@ -43,10 +43,8 @@ const poly = turf.polygon([
 const triangles = turf.tesselate(poly);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const poly = turf.polygon([
     [
       [11, 0],
@@ -60,14 +58,11 @@ export function Map0() {
   ]);
   const triangles = turf.tesselate(poly);
 
-  //addToMap
-  const addToMap = [poly, triangles];
-  // jsdoc example end
+  console.log('triangles', triangles);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={[poly, triangles]} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

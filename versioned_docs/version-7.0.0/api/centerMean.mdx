@@ -46,10 +46,8 @@ var options = { weight: "value" };
 var mean = turf.centerMean(features, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var features = turf.featureCollection([
     turf.point([-97.522259, 35.4691], { value: 10 }),
     turf.point([-97.502754, 35.463455], { value: 3 }),
@@ -58,18 +56,12 @@ export function Map0() {
 
   var options = { weight: "value" };
   var mean = turf.centerMean(features, options);
-
-  //addToMap
-  var addToMap = { features, mean };
   mean.properties["marker-size"] = "large";
   mean.properties["marker-color"] = "#000";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ features, mean }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

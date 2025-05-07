@@ -58,10 +58,8 @@ const poly2 = turf.polygon([
 const union = turf.union(turf.featureCollection([poly1, poly2]));
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   const poly1 = turf.polygon(
     [
       [
@@ -87,20 +85,17 @@ export function Map0() {
 
   const union = turf.union(turf.featureCollection([poly1, poly2]));
 
-  //addToMap
-  const addToMap = { poly1, poly2, union };
+  console.log('union', union);
 
   poly1.properties.fill = "#0f0";
   poly2.properties.fill = "#00f";
   union.properties.stroke = "red";
   union.properties["stroke-width"] = 4;
   union.properties.fill = "transparent";
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ poly1, poly2, union }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -44,25 +44,19 @@ var greatCircle = turf.greatCircle(start, end, {
 });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var start = turf.point([-122, 48]);
   var end = turf.point([-77, 39]);
-
   var greatCircle = turf.greatCircle(start, end, {
     properties: { name: "Seattle to DC" },
   });
 
-  //addToMap
-  var addToMap = { start, end, greatCircle };
-  // jsdoc example end
+  console.log('greatCircle', greatCircle);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ start, end, greatCircle }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

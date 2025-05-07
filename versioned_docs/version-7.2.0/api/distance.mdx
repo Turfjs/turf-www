@@ -39,26 +39,21 @@ var options = { units: "miles" };
 var distance = turf.distance(from, to, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var from = turf.point([-75.343, 39.984]);
   var to = turf.point([-75.534, 39.123]);
   var options = { units: "miles" };
 
   var distance = turf.distance(from, to, options);
+  console.log('distance:', distance);
 
-  //addToMap
-  var addToMap = { from, to };
   from.properties.distance = distance;
   to.properties.distance = distance;
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ from, to }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

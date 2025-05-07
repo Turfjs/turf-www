@@ -45,24 +45,16 @@ var ySemiAxis = 2;
 var ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var center = [-75, 40];
   var xSemiAxis = 5;
   var ySemiAxis = 2;
   var ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);
 
-  //addToMap
-  var addToMap = { center: turf.point(center), ellipse };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ center: turf.point(center), ellipse }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

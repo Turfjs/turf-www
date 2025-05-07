@@ -36,25 +36,16 @@ var bbox = [-20, -20, -15, 0];
 var squared = turf.square(bbox);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var bbox = [-20, -20, -15, 0];
   var squared = turf.square(bbox);
 
-  //addToMap
-  var addToMap = {
-    bbox: turf.bboxPolygon(bbox),
-    squared: turf.bboxPolygon(squared),
-  };
-  // jsdoc example end
+  console.log('squared', squared);
 
-  return <ExampleMap addToMap={addToMap} />;
+  return <ExampleMap addToMap={{ bbox: turf.bboxPolygon(bbox), squared: turf.bboxPolygon(squared) }} />;
 }
-
-<!-- prettier-ignore -->
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 

@@ -46,10 +46,8 @@ var poly = turf.polygon([
 var translatedPoly = turf.transformTranslate(poly, 100, 35);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
+```javascript live
+function Map() {
   var poly = turf.polygon([
     [
       [0, 29],
@@ -59,16 +57,13 @@ export function Map0() {
     ],
   ]);
   var translatedPoly = turf.transformTranslate(poly, 100, 35);
-
-  //addToMap
-  var addToMap = { poly, translatedPoly };
   translatedPoly.properties = { stroke: "#F00", "stroke-width": 4 };
-  // jsdoc example end
 
-  return <ExampleMap addToMap={addToMap} />;
+  console.log('translatedPoly', translatedPoly);
+
+  return <ExampleMap addToMap={{ poly, translatedPoly }} />;
 }
-
-<BrowserOnly>{() => <Map0 />}</BrowserOnly>
+```
 
 ### Installation
 
