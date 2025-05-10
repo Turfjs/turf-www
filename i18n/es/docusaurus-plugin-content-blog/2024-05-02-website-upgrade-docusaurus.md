@@ -7,8 +7,8 @@ tags:
   - documentation
 ---
 
-In preparation for the v7 release of Turf, we've updated Turf's website to run on [docusaurus](https://docusaurus.io). This brings with it a lot of advantages, one of the main ones being versioned documentation.
+Como preparación para el lanzamiento de la versión 7 de Turf, actualizamos su sitio web para que funcione en [docusaurus](https://docusaurus.io) . Esto ofrece numerosas ventajas, una de las principales es la documentación versionada.
 
-Versioning will allow us to keep the website up-to-date with the latest documentation, while catering to legacy versions as well.
+El control de versiones nos permitirá mantener el sitio web actualizado con la documentación más reciente, atendiendo también a las versiones heredadas.
 
-If you notice any website quirks or broken links, please [create a new issue](https://github.com/Turfjs/turf-www/issues) if it hasn't already been reported.
+Si nota alguna peculiaridad en el sitio web o enlaces rotos, [cree un nuevo problema](https://github.com/Turfjs/turf-www/issues) si aún no lo ha informado.
