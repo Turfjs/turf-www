@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import * as turf from "@turf/turf";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 function pointToLayer(feature, latlng) {
   return L.circleMarker(latlng, {
@@ -39,6 +40,8 @@ const geojsonOptions = {
 export default function HomepageMap(props) {
   const { turfFunction } = props;
 
+  const { siteConfig } = useDocusaurusContext();
+
   const points = turf.featureCollection([
     turf.point([-74.0, 40.739], { price: 8 }),
     turf.point([-73.992, 40.742], { price: 12 }),
@@ -77,8 +80,7 @@ export default function HomepageMap(props) {
   const addToMap = { points, features };
 
   useEffect(() => {
-    L.mapbox.accessToken =
-      "pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNrZWp2ODRvNzFqMHoyeHJ6b3Jpc29iczQifQ.YdYb6a6rA5aCtkmDZ5wn_g";
+    L.mapbox.accessToken = siteConfig.customFields.mapboxAccessToken;
 
     // Remove any old map that might have been initialised.
     // https://github.com/Leaflet/Leaflet/issues/3962#issuecomment-500680902

@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 export default function ExampleMap(props) {
+  const { siteConfig } = useDocusaurusContext();
+
   useEffect(() => {
-    L.mapbox.accessToken =
-      "pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNtYWRsY2p4MzBoNDAyd29sdTZ3anM4cTYifQ.geW7aD3o2GBOKoub_wzwnQ";
+    L.mapbox.accessToken = siteConfig.customFields.mapboxAccessToken;
 
     // Remove any old map that might have been initialised.
     // https://github.com/Leaflet/Leaflet/issues/3962#issuecomment-500680902
