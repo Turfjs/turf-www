@@ -36,6 +36,11 @@ const config = {
     locales: ["en"],
   },
 
+  customFields: {
+    mapboxAccessToken:
+      "pk.eyJ1IjoidHVyZmpzIiwiYSI6ImNtYWRsY2p4MzBoNDAyd29sdTZ3anM4cTYifQ.geW7aD3o2GBOKoub_wzwnQ",
+  },
+
   presets: [
     [
       "classic",
