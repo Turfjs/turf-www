@@ -7,9 +7,28 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line1 = turf.lineString([
+    [115, -35],
+    [125, -30],
+    [135, -30],
+    [145, -35],
+  ]);
+  var line2 = turf.lineString([
+    [115, -25],
+    [125, -30],
+    [135, -30],
+    [145, -25],
+  ]);
+  var overlapping = turf.lineOverlap(line1, line2);
+  //addToMap
+  var addToMap = { line1, line2, overlapping };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,16 +36,16 @@ Takes any LineString or Polygon and returns the overlapping lines between both f
 
 ### Parameters
 
-| Name                      | Type                                                                                                                                                                                                                                                                                                                                                                                                          | Description                                                                         |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| line1                     | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | any LineString or Polygon                                                           |
-| line2                     | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | any LineString or Polygon                                                           |
-| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                               | Optional parameters _(default \{\})_                                                |
-| options.tolerance<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                                                                                                               | Tolerance distance to match overlapping line segments (in kilometers) _(default 0)_ |
+| Name                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                              | Description                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| line1                     | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | any LineString or Polygon                                                           |
+| line2                     | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | any LineString or Polygon                                                           |
+| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                                                   | Optional parameters _(default &#123;&#125;)_                                        |
+| options.tolerance<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                                                                                                                                   | Tolerance distance to match overlapping line segments (in kilometers) _(default 0)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** lines(s) that are overlapping between both features
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** lines(s) that are overlapping between both features
 
 ### Examples
 
@@ -47,32 +66,6 @@ var line2 = turf.lineString([
 var overlapping = turf.lineOverlap(line1, line2);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line1 = turf.lineString([
-    [115, -35],
-    [125, -30],
-    [135, -30],
-    [145, -35],
-  ]);
-  var line2 = turf.lineString([
-    [115, -25],
-    [125, -30],
-    [135, -30],
-    [145, -25],
-  ]);
-
-  var overlapping = turf.lineOverlap(line1, line2);
-
-  //addToMap
-  var addToMap = { line1, line2, overlapping };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -90,3 +83,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.lineOverlap(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

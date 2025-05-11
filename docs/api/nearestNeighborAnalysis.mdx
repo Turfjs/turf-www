@@ -7,17 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var bbox = [-65, 40, -63, 42];
+  var dataset = turf.randomPoint(100, { bbox: bbox });
+  var nearestNeighborStudyArea = turf.nearestNeighborAnalysis(dataset);
+  //addToMap
+  var addToMap = { dataset, nearestNeighborStudyArea };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
-Nearest Neighbor Analysis calculates an index based the average distances
+Nearest Neighbor Analysis calculates an index based on the average distances
 between points in the dataset, thereby providing inference as to whether the
 data is clustered, dispersed, or randomly distributed within the study area.
 
-It returns a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\> of the study area, with the results of
+It returns a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt; of the study area, with the results of
 the analysis attached as part of of the `nearestNeighborAnalysis` property
 of the study area's `properties`. The attached
 [_z_-score](https://en.wikipedia.org/wiki/Standard_score) indicates how many
@@ -33,7 +42,7 @@ dispersed.
 - Though the analysis will work on any [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) type, it
   works best with [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) collections.
 - This analysis is _very_ sensitive to the study area provided.
-  If no [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\> is passed as the study area, the function draws a box
+  If no [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt; is passed as the study area, the function draws a box
   around the data, which may distort the findings. This analysis works best
   with a bounded area of interest within with the data is either clustered,
   dispersed, or randomly distributed. For example, a city's subway stops may
@@ -49,12 +58,12 @@ Measure of Spatial Relationships in Populations,” _Ecology_ 35, no. 4
 
 ### Parameters
 
-| Name                       | Type                                                                                                                           | Description                                  |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| dataset                    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>**                                                | FeatureCollection (pref. of points) to study |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                | Optional parameters _(default \{\})_         |
-| options.studyArea<i>?</i>  | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | polygon representing the study area          |
-| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                       | properties _(default \{\})_                  |
+| Name                       | Type                                                                                                                               | Description                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| dataset                    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;any&gt;**                                                | FeatureCollection (pref. of points) to study |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                    | Optional parameters _(default &#123;&#125;)_ |
+| options.studyArea<i>?</i>  | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** | polygon representing the study area          |
+| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                           | properties _(default &#123;&#125;)_          |
 
 ### Returns
 
@@ -67,21 +76,6 @@ var bbox = [-65, 40, -63, 42];
 var dataset = turf.randomPoint(100, { bbox: bbox });
 var nearestNeighborStudyArea = turf.nearestNeighborAnalysis(dataset);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var bbox = [-65, 40, -63, 42];
-  var dataset = turf.randomPoint(100, { bbox: bbox });
-  var nearestNeighborStudyArea = turf.nearestNeighborAnalysis(dataset);
-
-  //addToMap
-  var addToMap = { dataset, nearestNeighborStudyArea };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -100,3 +94,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.nearestNeighborAnalysis(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

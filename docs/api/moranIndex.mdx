@@ -7,23 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Moran's I measures patterns of attribute values associated with features.
 The method reveal whether similar values tend to occur near each other,
 or whether high or low values are interspersed.
 
-Moran's I \> 0 means a clusterd pattern.
-Moran's I \< 0 means a dispersed pattern.
+Moran's I &gt; 0 means a clusterd pattern.
+Moran's I &lt; 0 means a dispersed pattern.
 Moran's I = 0 means a random pattern.
 
 In order to test the significance of the result. The z score is calculated.
-A positive enough z-score (ex. \>1.96) indicates clustering,
-while a negative enough z-score (ex. \<-1.96) indicates a dispersed pattern.
+A positive enough z-score (ex. &gt;1.96) indicates clustering,
+while a negative enough z-score (ex. &lt;-1.96) indicates a dispersed pattern.
 
 the z-score can be calculated based on a normal or random assumption.
 
@@ -37,7 +33,7 @@ the z-score can be calculated based on a normal or random assumption.
 
 | Name                            | Type                                                                                              | Description                                                |
 | ------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>**                   |                                                            |
+| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;any&gt;**               |                                                            |
 | options                         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   |                                                            |
 | options.inputField              | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**   | the property name, must contain numeric values             |
 | options.threshold<i>?</i>       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | the distance threshold _(default 100000)_                  |
@@ -76,3 +72,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.moranIndex(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

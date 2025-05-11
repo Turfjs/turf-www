@@ -7,9 +7,24 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line1 = turf.lineString([
+    [126, -11],
+    [129, -21],
+  ]);
+  var line2 = turf.lineString([
+    [123, -18],
+    [131, -14],
+  ]);
+  var intersects = turf.lineIntersect(line1, line2);
+  //addToMap
+  var addToMap = { line1, line2, intersects };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -21,13 +36,13 @@ Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).
 | --------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | line1                                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | any LineString or Polygon                                     |
 | line2                                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | any LineString or Polygon                                     |
-| options<i>?</i>                         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                          |
+| options<i>?</i>                         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default &#123;&#125;)_                  |
 | options.removeDuplicates<i>?</i>        | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | remove duplicate intersections _(default true)_               |
 | options.ignoreSelfIntersections<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | ignores self-intersections on input features _(default true)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** point(s) that intersect both
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** point(s) that intersect both
 
 ### Examples
 
@@ -42,27 +57,6 @@ var line2 = turf.lineString([
 ]);
 var intersects = turf.lineIntersect(line1, line2);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line1 = turf.lineString([
-    [126, -11],
-    [129, -21],
-  ]);
-  var line2 = turf.lineString([
-    [123, -18],
-    [131, -14],
-  ]);
-  var intersects = turf.lineIntersect(line1, line2);
-
-  //addToMap
-  var addToMap = { line1, line2, intersects };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -81,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.lineIntersect(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

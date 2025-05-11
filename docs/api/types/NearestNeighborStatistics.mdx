@@ -6,17 +6,13 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Nearest neighbour statistics.
 
 ### Definition
 
-object \{
+object &#123;
 
 | Name                 | Type                                                                                            | Description |
 | -------------------- | ----------------------------------------------------------------------------------------------- | ----------- |
@@ -26,4 +22,8 @@ object \{
 | numberOfPoints       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
 | zScore               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** |             |
 
-\}
+&#125;
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

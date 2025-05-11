@@ -7,27 +7,23 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Creates a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) from an Array of LinearRings.
 
 ### Parameters
 
-| Name                 | Type                                                                                            | Description                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| coordinates          | **UNCERTAIN**                                                                                   |                                                                           |
-| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | an Object of key-value pairs to add as properties _(default \{\})_        |
-| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default \{\})_                                      |
-| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **Id**                                                                                          | Identifier associated with the Feature                                    |
+| Name                 | Type                                                                                            | Description                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| coordinates          | **UNCERTAIN**                                                                                   |                                                                            |
+| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | an Object of key-value pairs to add as properties _(default &#123;&#125;)_ |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default &#123;&#125;)_                               |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | Bounding Box Array [west, south, east, north] associated with the Feature  |
+| options.id<i>?</i>   | **Id**                                                                                          | Identifier associated with the Feature                                     |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** Polygon Feature
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)&gt;** Polygon Feature
 
 ### Examples
 
@@ -63,3 +59,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.polygon(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

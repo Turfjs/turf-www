@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Finds a particular Point from a GeoJSON using `@turf/meta` indexes.
@@ -19,21 +15,21 @@ Negative indexes are permitted.
 
 ### Parameters
 
-| Name                              | Type                                                                                                                                                                                                  | Description                                           |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| geojson                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | Any GeoJSON Feature or Geometry                       |
-| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                       | Optional parameters _(default \{\})_                  |
-| options.featureIndex<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Feature Index _(default 0)_                           |
-| options.multiFeatureIndex<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Multi-Feature Index _(default 0)_                     |
-| options.geometryIndex<i>?</i>     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Geometry Index _(default 0)_                          |
-| options.coordIndex<i>?</i>        | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                       | Coord Index _(default 0)_                             |
-| options.properties<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                       | Translate Properties to output Point _(default \{\})_ |
-| options.bbox<i>?</i>              | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                             | Translate BBox to output Point _(default \{\})_       |
-| options.id<i>?</i>                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**        | Translate Id to output Point _(default \{\})_         |
+| Name                              | Type                                                                                                                                                                                                          | Description                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| geojson                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) &#124; [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | Any GeoJSON Feature or Geometry                               |
+| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                               | Optional parameters _(default &#123;&#125;)_                  |
+| options.featureIndex<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                               | Feature Index _(default 0)_                                   |
+| options.multiFeatureIndex<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                               | Multi-Feature Index _(default 0)_                             |
+| options.geometryIndex<i>?</i>     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                               | Geometry Index _(default 0)_                                  |
+| options.coordIndex<i>?</i>        | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                               | Coord Index _(default 0)_                                     |
+| options.properties<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                               | Translate Properties to output Point _(default &#123;&#125;)_ |
+| options.bbox<i>?</i>              | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                     | Translate BBox to output Point _(default &#123;&#125;)_       |
+| options.id<i>?</i>                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) &#124; [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**            | Translate Id to output Point _(default &#123;&#125;)_         |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** 2-vertex GeoJSON Feature Point
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** 2-vertex GeoJSON Feature Point
 
 ### Examples
 
@@ -79,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.findPoint(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

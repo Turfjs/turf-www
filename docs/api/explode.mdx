@@ -7,9 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [-81, 41],
+      [-88, 36],
+      [-84, 31],
+      [-80, 33],
+      [-77, 39],
+      [-81, 41],
+    ],
+  ]);
+  var explode = turf.explode(polygon);
+  //addToMap
+  var addToMap = { polygon, explode };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -23,7 +40,7 @@ Takes a feature or set of features and returns all positions as [points](https:/
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<point\>** points representing the exploded input features
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;point&gt;** points representing the exploded input features
 
 ### Examples
 
@@ -42,30 +59,6 @@ var polygon = turf.polygon([
 var explode = turf.explode(polygon);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var polygon = turf.polygon([
-    [
-      [-81, 41],
-      [-88, 36],
-      [-84, 31],
-      [-80, 33],
-      [-77, 39],
-      [-81, 41],
-    ],
-  ]);
-
-  var explode = turf.explode(polygon);
-
-  //addToMap
-  var addToMap = { polygon, explode };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -83,3 +76,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.explode(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

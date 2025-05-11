@@ -7,9 +7,25 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line = turf.lineString([
+    [-76.091308, 18.427501],
+    [-76.695556, 18.729501],
+    [-76.552734, 19.40443],
+    [-74.61914, 19.134789],
+    [-73.652343, 20.07657],
+    [-73.157958, 20.210656],
+  ]);
+  var curved = turf.bezierSpline(line);
+  //addToMap
+  var addToMap = { line, curved };
+  curved.properties = { stroke: "#0F0" };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -21,17 +37,17 @@ The bezier spline implementation is by [Leszek Rybicki](http://leszek.rybicki.cc
 
 ### Parameters
 
-| Name                       | Type                                                                                                                              | Description                                                                |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | input LineString                                                           |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                   | Optional parameters _(default \{\})_                                       |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                   | Translate properties to output _(default \{\})_                            |
-| options.resolution<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | time in milliseconds between points _(default 10000)_                      |
-| options.sharpness<i>?</i>  | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                   | a measure of how curvy the path should be between splines _(default 0.85)_ |
+| Name                       | Type                                                                                                                                  | Description                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** | input LineString                                                           |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                       | Optional parameters _(default &#123;&#125;)_                               |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                       | Translate properties to output _(default &#123;&#125;)_                    |
+| options.resolution<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                       | time in milliseconds between points _(default 10000)_                      |
+| options.sharpness<i>?</i>  | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                       | a measure of how curvy the path should be between splines _(default 0.85)_ |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** curved line
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** curved line
 
 ### Examples
 
@@ -47,29 +63,6 @@ var line = turf.lineString([
 
 var curved = turf.bezierSpline(line);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line = turf.lineString([
-    [-76.091308, 18.427501],
-    [-76.695556, 18.729501],
-    [-76.552734, 19.40443],
-    [-74.61914, 19.134789],
-    [-73.652343, 20.07657],
-    [-73.157958, 20.210656],
-  ]);
-
-  var curved = turf.bezierSpline(line);
-
-  //addToMap
-  var addToMap = { line, curved };
-  curved.properties = { stroke: "#0F0" };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -88,3 +81,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.bezierSpline(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

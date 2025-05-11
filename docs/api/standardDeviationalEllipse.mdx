@@ -7,9 +7,18 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const bbox = [-74, 40.72, -73.98, 40.74];
+  const points = turf.randomPoint(400, { bbox: bbox });
+  const sdEllipse = turf.standardDeviationalEllipse(points);
+  //addToMap
+  const addToMap = [points, sdEllipse];
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -26,25 +35,25 @@ in ArcGIS and the [QGIS Standard Deviational Ellipse Plugin](http://arken.nmbu.n
 
 • Robert S. Yuill, “The Standard Deviational Ellipse; An Updated Tool for
 Spatial Description,” _Geografiska Annaler_ 53, no. 1 (1971): 28–39,
-doi:\{@link [https://doi.org/10.2307/490885 \| 10.2307/490885\}](https://doi.org/10.2307/490885 \| 10.2307/490885\}).
+doi:&#123;@link [https://doi.org/10.2307/490885&#124;10.2307/490885&#125;](https://doi.org/10.2307/490885|10.2307/490885}).
 
 • Paul Hanly Furfey, “A Note on Lefever’s “Standard Deviational Ellipse,”
 _American Journal of Sociology_ 33, no. 1 (1927): 94—98,
-doi:\{@link [https://doi.org/10.1086/214336 \| 10.1086/214336\}](https://doi.org/10.1086/214336 \| 10.1086/214336\}).
+doi:&#123;@link [https://doi.org/10.1086/214336&#124;10.1086/214336&#125;](https://doi.org/10.1086/214336|10.1086/214336}).
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                   | Description                                                  |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | GeoJSON points                                               |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                         |
-| options.weight<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                        | the property name used to weight the center                  |
-| options.steps<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | number of steps for the polygon _(default 64)_               |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | properties to pass to the resulting ellipse _(default \{\})_ |
+| Name                       | Type                                                                                                                                       | Description                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | GeoJSON points                                                       |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | Optional parameters _(default &#123;&#125;)_                         |
+| options.weight<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                            | the property name used to weight the center                          |
+| options.steps<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | number of steps for the polygon _(default 64)_                       |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | properties to pass to the resulting ellipse _(default &#123;&#125;)_ |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** an elliptical Polygon that includes approximately 1 SD of the dataset within it.
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** an elliptical Polygon that includes approximately 1 SD of the dataset within it.
 
 ### Examples
 
@@ -53,21 +62,6 @@ const bbox = [-74, 40.72, -73.98, 40.74];
 const points = turf.randomPoint(400, { bbox: bbox });
 const sdEllipse = turf.standardDeviationalEllipse(points);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const bbox = [-74, 40.72, -73.98, 40.74];
-  const points = turf.randomPoint(400, { bbox: bbox });
-  const sdEllipse = turf.standardDeviationalEllipse(points);
-
-  //addToMap
-  const addToMap = [points, sdEllipse];
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -86,3 +80,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.standardDeviationalEllipse(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

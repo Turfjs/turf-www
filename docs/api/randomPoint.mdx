@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Returns a random [point](point).
@@ -20,12 +16,12 @@ Returns a random [point](point).
 | Name                 | Type                                                                                            | Description                                                                         |
 | -------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | count<i>?</i>        | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | how many geometries will be generated _(default 1)_                                 |
-| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                                |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                                        |
 | options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** GeoJSON FeatureCollection of points
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** GeoJSON FeatureCollection of points
 
 ### Examples
 
@@ -49,3 +45,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.randomPoint(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

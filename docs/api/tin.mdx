@@ -7,9 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  // generate some random point data
+  var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
+  // add a random property to each point between 0 and 9
+  for (var i = 0; i < points.features.length; i++) {
+    points.features[i].properties.z = ~~(Math.random() * 9);
+  }
+  var tin = turf.tin(points, "z");
+  //addToMap
+  var addToMap = { tin, points };
+  for (var i = 0; i < tin.features.length; i++) {
+    var properties = tin.features[i].properties;
+    properties.fill = "#" + properties.a + properties.b + properties.c;
+  }
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -24,14 +41,14 @@ triangle.
 
 ### Parameters
 
-| Name      | Type                                                                                                                                   | Description                                                                                                                                       |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| points    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | input points                                                                                                                                      |
-| z<i>?</i> | **String**                                                                                                                             | name of the property from which to pull z values This is optional: if not given, then there will be no extra data added to the derived triangles. |
+| Name      | Type                                                                                                                                       | Description                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | input points                                                                                                                                      |
+| z<i>?</i> | **String**                                                                                                                                 | name of the property from which to pull z values This is optional: if not given, then there will be no extra data added to the derived triangles. |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** TIN output
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** TIN output
 
 ### Examples
 
@@ -45,30 +62,6 @@ for (var i = 0; i < points.features.length; i++) {
 }
 var tin = turf.tin(points, "z");
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  // generate some random point data
-  var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
-
-  // add a random property to each point between 0 and 9
-  for (var i = 0; i < points.features.length; i++) {
-    points.features[i].properties.z = ~~(Math.random() * 9);
-  }
-  var tin = turf.tin(points, "z");
-
-  //addToMap
-  var addToMap = { tin, points };
-  for (var i = 0; i < tin.features.length; i++) {
-    var properties = tin.features[i].properties;
-    properties.fill = "#" + properties.a + properties.b + properties.c;
-  }
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -87,3 +80,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.tin(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

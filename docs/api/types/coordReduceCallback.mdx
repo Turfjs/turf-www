@@ -6,10 +6,6 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Callback for coordReduce
@@ -31,17 +27,21 @@ If an initialValue is not provided:
 
 function (
 
-| Name              | Type                                                                                                                                                                                         | Description                                                                                                                       |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| previousValue     | **Reducer**                                                                                                                                                                                  | The accumulated value previously returned in the last invocation of the callback, or initialValue, if supplied.                   |
-| currentCoord      | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>** | The current coordinate being processed.                                                                                           |
-| coordIndex        | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              | The current index of the coordinate being processed. Starts at index 0, if an initialValue is provided, and at index 1 otherwise. |
-| featureIndex      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              | The current index of the Feature being processed.                                                                                 |
-| multiFeatureIndex | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              | The current index of the Multi-Feature being processed.                                                                           |
-| geometryIndex     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                              | The current index of the Geometry being processed.                                                                                |
+| Name              | Type                                                                                                                                                                                             | Description                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| previousValue     | **Reducer**                                                                                                                                                                                      | The accumulated value previously returned in the last invocation of the callback, or initialValue, if supplied.                   |
+| currentCoord      | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)&gt;** | The current coordinate being processed.                                                                                           |
+| coordIndex        | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                  | The current index of the coordinate being processed. Starts at index 0, if an initialValue is provided, and at index 1 otherwise. |
+| featureIndex      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                  | The current index of the Feature being processed.                                                                                 |
+| multiFeatureIndex | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                  | The current index of the Multi-Feature being processed.                                                                           |
+| geometryIndex     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                  | The current index of the Geometry being processed.                                                                                |
 
 )
 
 ### Returns
 
 **Reducer**
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

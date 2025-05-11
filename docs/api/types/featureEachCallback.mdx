@@ -6,10 +6,6 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Callback for featureEach
@@ -20,7 +16,7 @@ function (
 
 | Name           | Type                                                                                            | Description                                       |
 | -------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| currentFeature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>**                           | The current Feature being processed.              |
+| currentFeature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;**                       | The current Feature being processed.              |
 | featureIndex   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | The current index of the Feature being processed. |
 
 )
@@ -28,3 +24,7 @@ function (
 ### Returns
 
 **void**
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

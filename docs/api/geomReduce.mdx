@@ -7,21 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Reduce geometry in any GeoJSON object, similar to Array.reduce().
 
 ### Parameters
 
-| Name                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                            | Description                                                                                                   |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\>** | any GeoJSON object                                                                                            |
-| callback             | **[geomReduceCallback](docs/api/types/geomReduceCallback.mdx)**                                                                                                                                                                                                                                                                                                                                                                 | a method that takes (previousValue, currentGeometry, featureIndex, featureProperties, featureBBox, featureId) |
-| initialValue<i>?</i> | **Reducer**                                                                                                                                                                                                                                                                                                                                                                                                                     | Value to use as the first argument to the first call of the callback.                                         |
+| Name                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                | Description                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| geojson              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) &#124; [GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)&gt;** | any GeoJSON object                                                                                            |
+| callback             | **[geomReduceCallback](docs/api/types/geomReduceCallback.mdx)**                                                                                                                                                                                                                                                                                                                                                                                     | a method that takes (previousValue, currentGeometry, featureIndex, featureProperties, featureBBox, featureId) |
+| initialValue<i>?</i> | **Reducer**                                                                                                                                                                                                                                                                                                                                                                                                                                         | Value to use as the first argument to the first call of the callback.                                         |
 
 ### Returns
 
@@ -71,3 +67,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.geomReduce(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,26 +7,22 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Takes one or more [Features](https://tools.ietf.org/html/rfc7946#section-3.2) and creates a [FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3).
 
 ### Parameters
 
-| Name                 | Type                                                                                                                                                                                                                                                                                                   | Description                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| features             | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>\>** | input features                                                            |
-| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                        | Optional Parameters _(default \{\})_                                      |
-| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                              | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **Id**                                                                                                                                                                                                                                                                                                 | Identifier associated with the Feature                                    |
+| Name                 | Type                                                                                                                                                                                                                                                                                                           | Description                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| features             | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)&gt;&gt;** | input features                                                            |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                | Optional Parameters _(default &#123;&#125;)_                              |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                      | Bounding Box Array [west, south, east, north] associated with the Feature |
+| options.id<i>?</i>   | **Id**                                                                                                                                                                                                                                                                                                         | Identifier associated with the Feature                                    |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** FeatureCollection of Features
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[GeometryObject](https://tools.ietf.org/html/rfc7946#section-3.1), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)&gt;** FeatureCollection of Features
 
 ### Examples
 
@@ -55,3 +51,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.featureCollection(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

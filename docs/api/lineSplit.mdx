@@ -7,9 +7,24 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line = turf.lineString([
+    [120, -25],
+    [145, -25],
+  ]);
+  var splitter = turf.lineString([
+    [130, -15],
+    [130, -35],
+  ]);
+  var split = turf.lineSplit(line, splitter);
+  //addToMap
+  var addToMap = { line, splitter };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,14 +32,14 @@ Split a LineString by another GeoJSON Feature.
 
 ### Parameters
 
-| Name     | Type                                                                                                                              | Description                 |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| line     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** | LineString Feature to split |
-| splitter | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>**                                                             | Feature used to split line  |
+| Name     | Type                                                                                                                                  | Description                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| line     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** | LineString Feature to split |
+| splitter | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;**                                                             | Feature used to split line  |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** Split LineStrings
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** Split LineStrings
 
 ### Examples
 
@@ -40,28 +55,6 @@ var splitter = turf.lineString([
 
 var split = turf.lineSplit(line, splitter);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line = turf.lineString([
-    [120, -25],
-    [145, -25],
-  ]);
-  var splitter = turf.lineString([
-    [130, -15],
-    [130, -35],
-  ]);
-
-  var split = turf.lineSplit(line, splitter);
-
-  //addToMap
-  var addToMap = { line, splitter };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -80,3 +73,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.lineSplit(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

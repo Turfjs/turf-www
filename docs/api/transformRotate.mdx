@@ -7,9 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const poly = turf.polygon([
+    [
+      [0, 29],
+      [3.5, 29],
+      [2.5, 32],
+      [0, 29],
+    ],
+  ]);
+  const options = { pivot: [0, 25] };
+  const rotatedPoly = turf.transformRotate(poly, 10, options);
+  //addToMap
+  const addToMap = [poly, rotatedPoly];
+  rotatedPoly.properties = { stroke: "#F00", "stroke-width": 4 };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -21,7 +38,7 @@ Rotates any geojson Feature or Geometry of a specified angle, around its `centro
 | ---------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | object to be rotated                                                                            |
 | angle                  | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | of rotation in decimal degrees, positive clockwise                                              |
-| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                                                            |
+| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default &#123;&#125;)_                                                    |
 | options.pivot<i>?</i>  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                    | point around which the rotation will be performed _(default 'centroid')_                        |
 | options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
@@ -44,29 +61,6 @@ const options = { pivot: [0, 25] };
 const rotatedPoly = turf.transformRotate(poly, 10, options);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const poly = turf.polygon([
-    [
-      [0, 29],
-      [3.5, 29],
-      [2.5, 32],
-      [0, 29],
-    ],
-  ]);
-  const options = { pivot: [0, 25] };
-  const rotatedPoly = turf.transformRotate(poly, 10, options);
-
-  //addToMap
-  const addToMap = [poly, rotatedPoly];
-  rotatedPoly.properties = { stroke: "#F00", "stroke-width": 4 };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -84,3 +78,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.transformRotate(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,9 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  // create random points with random z-values in their properties
+  var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
+  var maxDistance = 100;
+  var clustered = turf.clustersDbscan(points, maxDistance);
+  //addToMap
+  var addToMap = { clustered };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,21 +27,21 @@ Takes a set of [points](https://tools.ietf.org/html/rfc7946#section-3.1.2) and p
 
 ### Parameters
 
-| Name                      | Type                                                                                                                                   | Description                                                                                                                                                |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| points                    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | to be clustered                                                                                                                                            |
-| maxDistance               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | Maximum Distance between any point of the cluster to generate the clusters (kilometers by default, see options)                                            |
-| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                                                                                                                       |
-| options.units<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                        | in which `maxDistance` is expressed, can be degrees, radians, miles, or kilometers _(default "kilometers")_                                                |
-| options.mutate<i>?</i>    | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                      | Allows GeoJSON input to be mutated _(default false)_                                                                                                       |
-| options.minPoints<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | Minimum number of points to generate a single cluster, points which do not meet this requirement will be classified as an 'edge' or 'noise'. _(default 3)_ |
+| Name                      | Type                                                                                                                                       | Description                                                                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points                    | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | to be clustered                                                                                                                                            |
+| maxDistance               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | Maximum Distance between any point of the cluster to generate the clusters (kilometers by default, see options)                                            |
+| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | Optional parameters _(default &#123;&#125;)_                                                                                                               |
+| options.units<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                            | in which `maxDistance` is expressed, can be degrees, radians, miles, or kilometers _(default "kilometers")_                                                |
+| options.mutate<i>?</i>    | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                          | Allows GeoJSON input to be mutated _(default false)_                                                                                                       |
+| options.minPoints<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | Minimum number of points to generate a single cluster, points which do not meet this requirement will be classified as an 'edge' or 'noise'. _(default 3)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2), [DbscanProps](docs/api/types/DbscanProps.mdx)\>** Clustered Points with an additional two properties associated to each Feature:
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2), [DbscanProps](docs/api/types/DbscanProps.mdx)&gt;** Clustered Points with an additional two properties associated to each Feature:
 
-- \{number\} cluster - the associated clusterId
-- \{string\} dbscan - type of point it has been classified as ('core' \| 'edge' \| 'noise')
+- &#123;number&#125; cluster - the associated clusterId
+- &#123;string&#125; dbscan - type of point it has been classified as ('core'&#124;'edge'&#124;'noise')
 
 ### Examples
 
@@ -41,22 +51,6 @@ var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
 var maxDistance = 100;
 var clustered = turf.clustersDbscan(points, maxDistance);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  // create random points with random z-values in their properties
-  var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
-  var maxDistance = 100;
-  var clustered = turf.clustersDbscan(points, maxDistance);
-
-  //addToMap
-  var addToMap = { clustered };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -75,3 +69,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.clustersDbscan(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

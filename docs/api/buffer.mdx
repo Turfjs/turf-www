@@ -7,9 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var point = turf.point([-90.54863, 14.616599]);
+  var buffered = turf.buffer(point, 500, { units: "miles" });
+  //addToMap
+  var addToMap = { point, buffered };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -23,17 +31,17 @@ the input, or even be empty.
 
 ### Parameters
 
-| Name                  | Type                                                                                                                                                                                                         | Description                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | input to be buffered                                                |
-| radius                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                              | distance to draw the buffer (negative values are allowed)           |
-| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                              | Optional parameters _(default \{\})_                                |
-| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                              | any of the options supported by turf units _(default "kilometers")_ |
-| options.steps<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                              | number of steps _(default 8)_                                       |
+| Name                  | Type                                                                                                                                                                                                                     | Description                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| geojson               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;** | input to be buffered                                                |
+| radius                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                          | distance to draw the buffer (negative values are allowed)           |
+| options<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                          | Optional parameters _(default &#123;&#125;)_                        |
+| options.units<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                          | any of the options supported by turf units _(default "kilometers")_ |
+| options.steps<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                          | number of steps _(default 8)_                                       |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| undefined** buffered features
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; undefined** buffered features
 
 ### Examples
 
@@ -41,20 +49,6 @@ the input, or even be empty.
 var point = turf.point([-90.54863, 14.616599]);
 var buffered = turf.buffer(point, 500, { units: "miles" });
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var point = turf.point([-90.54863, 14.616599]);
-  var buffered = turf.buffer(point, 500, { units: "miles" });
-
-  //addToMap
-  var addToMap = { point, buffered };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -73,3 +67,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.buffer(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

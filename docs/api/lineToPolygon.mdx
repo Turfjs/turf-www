@@ -7,9 +7,23 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line = turf.lineString([
+    [125, -30],
+    [145, -30],
+    [145, -20],
+    [125, -20],
+    [125, -30],
+  ]);
+  var polygon = turf.lineToPolygon(line);
+  //addToMap
+  var addToMap = { polygon };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,18 +31,18 @@ Converts (Multi)LineString(s) to Polygon(s).
 
 ### Parameters
 
-| Name                         | Type                                                                                                                                                                                                                                                                              | Description                                                                                            |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| lines                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** | Features to convert                                                                                    |
-| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                   | Optional parameters _(default \{\})_                                                                   |
-| options.properties<i>?</i>   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                   | translates GeoJSON properties to Feature _(default \{\})_                                              |
-| options.autoComplete<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                 | auto complete linestrings (matches first & last coordinates) _(default true)_                          |
-| options.orderCoords<i>?</i>  | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                 | sorts linestrings to place outer ring at the first position of the coordinates _(default true)_        |
-| options.mutate<i>?</i>       | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                 | mutate the original linestring using autoComplete (matches first & last coordinates) _(default false)_ |
+| Name                         | Type                                                                                                                                                                                                                                                                                          | Description                                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| lines                        | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)&gt;** | Features to convert                                                                                    |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                               | Optional parameters _(default &#123;&#125;)_                                                           |
+| options.properties<i>?</i>   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                               | translates GeoJSON properties to Feature _(default &#123;&#125;)_                                      |
+| options.autoComplete<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                             | auto complete linestrings (matches first & last coordinates) _(default true)_                          |
+| options.orderCoords<i>?</i>  | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                             | sorts linestrings to place outer ring at the first position of the coordinates _(default true)_        |
+| options.mutate<i>?</i>       | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                                                                                                                                                                             | mutate the original linestring using autoComplete (matches first & last coordinates) _(default false)_ |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** converted to Polygons
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** converted to Polygons
 
 ### Examples
 
@@ -43,27 +57,6 @@ var line = turf.lineString([
 
 var polygon = turf.lineToPolygon(line);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line = turf.lineString([
-    [125, -30],
-    [145, -30],
-    [145, -20],
-    [125, -20],
-    [125, -30],
-  ]);
-
-  var polygon = turf.lineToPolygon(line);
-
-  //addToMap
-  var addToMap = { polygon };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -82,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.lineToPolygon(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

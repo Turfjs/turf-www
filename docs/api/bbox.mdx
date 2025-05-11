@@ -7,9 +7,22 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line = turf.lineString([
+    [-74, 40],
+    [-78, 42],
+    [-82, 35],
+  ]);
+  var bbox = turf.bbox(line);
+  var bboxPolygon = turf.bboxPolygon(bbox);
+  //addToMap
+  var addToMap = { line, bboxPolygon };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -21,7 +34,7 @@ Uses geojson.bbox if available and options.recompute is not set.
 | Name                      | Type                                                                                              | Description                                            |
 | ------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | geojson                   | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                      | any GeoJSON object                                     |
-| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                   |
+| options<i>?</i>           | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default &#123;&#125;)_           |
 | options.recompute<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | Whether to ignore an existing bbox property on geojson |
 
 ### Returns
@@ -40,25 +53,6 @@ var bbox = turf.bbox(line);
 var bboxPolygon = turf.bboxPolygon(bbox);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line = turf.lineString([
-    [-74, 40],
-    [-78, 42],
-    [-82, 35],
-  ]);
-  var bbox = turf.bbox(line);
-  var bboxPolygon = turf.bboxPolygon(bbox);
-
-  //addToMap
-  var addToMap = { line, bboxPolygon };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -76,3 +70,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.bbox(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

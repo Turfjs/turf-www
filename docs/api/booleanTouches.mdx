@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Boolean-touches true if none of the points common to both geometries
@@ -18,10 +14,10 @@ intersect the interiors of both geometries.
 
 ### Parameters
 
-| Name     | Type                                                                                                                                 | Description                 |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
-| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
-| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry |
+| Name     | Type                                                                                                                                         | Description                 |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;** | GeoJSON Feature or Geometry |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;** | GeoJSON Feature or Geometry |
 
 ### Returns
 
@@ -57,3 +53,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.booleanTouches(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

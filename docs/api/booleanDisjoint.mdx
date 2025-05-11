@@ -7,22 +7,18 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Boolean-disjoint returns (TRUE) if the intersection of the two geometries is an empty set.
 
 ### Parameters
 
-| Name                                    | Type                                                                                                                                 | Description                                                  |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| feature1                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry                                  |
-| feature2                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<any\>** | GeoJSON Feature or Geometry                                  |
-| options<i>?</i>                         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                      | Optional parameters _(default \{\})_                         |
-| options.ignoreSelfIntersections<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                    | ignore self-intersections on input features _(default true)_ |
+| Name                                    | Type                                                                                                                                         | Description                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| feature1                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;** | GeoJSON Feature or Geometry                                  |
+| feature2                                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;any&gt;** | GeoJSON Feature or Geometry                                  |
+| options<i>?</i>                         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                              | Optional parameters _(default &#123;&#125;)_                 |
+| options.ignoreSelfIntersections<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                            | ignore self-intersections on input features _(default true)_ |
 
 ### Returns
 
@@ -58,3 +54,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.booleanDisjoint(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

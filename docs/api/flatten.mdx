@@ -7,9 +7,43 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var multiGeometry = turf.multiPolygon([
+    [
+      [
+        [102.0, 2.0],
+        [103.0, 2.0],
+        [103.0, 3.0],
+        [102.0, 3.0],
+        [102.0, 2.0],
+      ],
+    ],
+    [
+      [
+        [100.0, 0.0],
+        [101.0, 0.0],
+        [101.0, 1.0],
+        [100.0, 1.0],
+        [100.0, 0.0],
+      ],
+      [
+        [100.2, 0.2],
+        [100.8, 0.2],
+        [100.8, 0.8],
+        [100.2, 0.8],
+        [100.2, 0.2],
+      ],
+    ],
+  ]);
+  var flatten = turf.flatten(multiGeometry);
+  //addToMap
+  var addToMap = { flatten };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -23,7 +57,7 @@ Flattens any [GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) to a [Feat
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>** all Multi-Geometries are flattened into single Features
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;any&gt;** all Multi-Geometries are flattened into single Features
 
 ### Examples
 
@@ -59,47 +93,6 @@ var multiGeometry = turf.multiPolygon([
 var flatten = turf.flatten(multiGeometry);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var multiGeometry = turf.multiPolygon([
-    [
-      [
-        [102.0, 2.0],
-        [103.0, 2.0],
-        [103.0, 3.0],
-        [102.0, 3.0],
-        [102.0, 2.0],
-      ],
-    ],
-    [
-      [
-        [100.0, 0.0],
-        [101.0, 0.0],
-        [101.0, 1.0],
-        [100.0, 1.0],
-        [100.0, 0.0],
-      ],
-      [
-        [100.2, 0.2],
-        [100.8, 0.2],
-        [100.8, 0.8],
-        [100.2, 0.8],
-        [100.2, 0.2],
-      ],
-    ],
-  ]);
-
-  var flatten = turf.flatten(multiGeometry);
-
-  //addToMap
-  var addToMap = { flatten };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -117,3 +110,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.flatten(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

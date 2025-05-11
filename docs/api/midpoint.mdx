@@ -7,9 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const point1 = turf.point([144.834823, -37.771257]);
+  const point2 = turf.point([145.14244, -37.830937]);
+  const midpoint = turf.midpoint(point1, point2);
+  //addToMap
+  const addToMap = [point1, point2, midpoint];
+  midpoint.properties["marker-color"] = "#f00";
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -26,7 +36,7 @@ account.
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a point midway between `pt1` and `pt2`
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** a point midway between `pt1` and `pt2`
 
 ### Examples
 
@@ -36,23 +46,6 @@ const point2 = turf.point([145.14244, -37.830937]);
 
 const midpoint = turf.midpoint(point1, point2);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const point1 = turf.point([144.834823, -37.771257]);
-  const point2 = turf.point([145.14244, -37.830937]);
-
-  const midpoint = turf.midpoint(point1, point2);
-
-  //addToMap
-  const addToMap = [point1, point2, midpoint];
-  midpoint.properties["marker-color"] = "#f00";
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -71,3 +64,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.midpoint(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

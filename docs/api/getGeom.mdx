@@ -7,23 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Get Geometry from Feature or Geometry Object
 
 ### Parameters
 
-| Name    | Type                                                                                                                          | Description                        |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| geojson | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | GeoJSON Feature or Geometry Object |
+| Name    | Type                                                                                                                              | Description                        |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| geojson | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) &#124; [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)** | GeoJSON Feature or Geometry Object |
 
 ### Returns
 
-**[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| null** GeoJSON Geometry Object
+**[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; null** GeoJSON Geometry Object
 
 ### Examples
 
@@ -55,3 +51,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.getGeom(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

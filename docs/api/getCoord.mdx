@@ -7,23 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
 
 ### Parameters
 
-| Name  | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                          |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| coord | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\> \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | GeoJSON Point or an Array of numbers |
+| Name  | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description                          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| coord | **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)&gt; &#124; [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt; &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | GeoJSON Point or an Array of numbers |
 
 ### Returns
 
-**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>** coordinates
+**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)&gt;** coordinates
 
 ### Examples
 
@@ -49,3 +45,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.getCoord(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,9 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const bbox = [-20, -20, -15, 0];
+  const squared = turf.square(bbox);
+  //addToMap
+  const addToMap = [turf.bboxPolygon(bbox), turf.bboxPolygon(squared)];
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -33,20 +41,6 @@ const bbox = [-20, -20, -15, 0];
 const squared = turf.square(bbox);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const bbox = [-20, -20, -15, 0];
-  const squared = turf.square(bbox);
-
-  //addToMap
-  const addToMap = [turf.bboxPolygon(bbox), turf.bboxPolygon(squared)];
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -64,3 +58,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.square(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

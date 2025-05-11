@@ -7,9 +7,20 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var start = turf.point([-122, 48]);
+  var end = turf.point([-77, 39]);
+  var greatCircle = turf.greatCircle(start, end, {
+    properties: { name: "Seattle to DC" },
+  });
+  //addToMap
+  var addToMap = { start, end, greatCircle };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -24,14 +35,14 @@ then a `LineString` will be returned with duplicate coordinates the length of th
 | -------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | start                      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | source point feature                                                                                                                    |
 | end                        | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | destination point feature                                                                                                               |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                                                                                    |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | line feature properties _(default \{\})_                                                                                                |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                                                                                            |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | line feature properties _(default &#123;&#125;)_                                                                                        |
 | options.npoints<i>?</i>    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | number of points _(default 100)_                                                                                                        |
 | options.offset<i>?</i>     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | offset controls the likelyhood that lines will be split which cross the dateline. The higher the number the more likely. _(default 10)_ |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\>** great circle line feature
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)&gt;** great circle line feature
 
 ### Examples
 
@@ -43,24 +54,6 @@ var greatCircle = turf.greatCircle(start, end, {
   properties: { name: "Seattle to DC" },
 });
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var start = turf.point([-122, 48]);
-  var end = turf.point([-77, 39]);
-
-  var greatCircle = turf.greatCircle(start, end, {
-    properties: { name: "Seattle to DC" },
-  });
-
-  //addToMap
-  var addToMap = { start, end, greatCircle };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -79,3 +72,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.greatCircle(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

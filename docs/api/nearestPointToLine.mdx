@@ -7,9 +7,23 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var pt1 = turf.point([0, 0]);
+  var pt2 = turf.point([0.5, 0.5]);
+  var points = turf.featureCollection([pt1, pt2]);
+  var line = turf.lineString([
+    [1, 1],
+    [-1, 1],
+  ]);
+  var nearest = turf.nearestPointToLine(points, line);
+  //addToMap
+  var addToMap = { nearest, line };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -18,17 +32,17 @@ to a [line](https://tools.ietf.org/html/rfc7946#section-3.1.4). The returned poi
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                              | Description                                                                                                |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | Point Collection                                                                                           |
-| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) \| [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>**                  | Line Feature                                                                                               |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                   | Optional parameters _(default \{\})_                                                                       |
-| options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                   | unit of the output distance property (eg: degrees, radians, miles, or kilometers) _(default 'kilometers')_ |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                   | Translate Properties to Point _(default \{\})_                                                             |
+| Name                       | Type                                                                                                                                                                                                                      | Description                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| points                     | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [GeometryCollection](https://tools.ietf.org/html/rfc7946#section-3.1.8)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | Point Collection                                                                                           |
+| line                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2) &#124; [Geometry](https://tools.ietf.org/html/rfc7946#section-3.1)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;**                  | Line Feature                                                                                               |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                           | Optional parameters _(default &#123;&#125;)_                                                               |
+| options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                           | unit of the output distance property (eg: degrees, radians, miles, or kilometers) _(default 'kilometers')_ |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                           | Translate Properties to Point _(default &#123;&#125;)_                                                     |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** the closest point
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** the closest point
 
 ### Examples
 
@@ -43,27 +57,6 @@ var line = turf.lineString([
 
 var nearest = turf.nearestPointToLine(points, line);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var pt1 = turf.point([0, 0]);
-  var pt2 = turf.point([0.5, 0.5]);
-  var points = turf.featureCollection([pt1, pt2]);
-  var line = turf.lineString([
-    [1, 1],
-    [-1, 1],
-  ]);
-
-  var nearest = turf.nearestPointToLine(points, line);
-
-  //addToMap
-  var addToMap = { nearest, line };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -82,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.nearestPointToLine(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

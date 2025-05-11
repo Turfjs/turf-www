@@ -7,27 +7,23 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 ### Parameters
 
 | Name                            | Type                                                                                              | Description                                                                                                                         |
 | ------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<any\>**                   | FeatureCollection.                                                                                                                  |
+| fc                              | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;any&gt;**               | FeatureCollection.                                                                                                                  |
 | options<i>?</i>                 | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | option object.                                                                                                                      |
 | options.threshold<i>?</i>       | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | If the distance between neighbor and target features is greater than threshold, the weight of that neighbor is 0. _(default 10000)_ |
-| options.p<i>?</i>               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | Minkowski p-norm distance parameter. 1: Manhattan distance. 2: Euclidean distance. 1=\<p\<=infinity. _(default 2)_                  |
-| options.binary<i>?</i>          | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | If true, weight=1 if d \<= threshold otherwise weight=0. If false, weight=Math.pow(d, alpha). _(default false)_                     |
+| options.p<i>?</i>               | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | Minkowski p-norm distance parameter. 1: Manhattan distance. 2: Euclidean distance. 1=&lt;p&lt;=infinity. _(default 2)_              |
+| options.binary<i>?</i>          | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | If true, weight=1 if d &lt;= threshold otherwise weight=0. If false, weight=Math.pow(d, alpha). _(default false)_                   |
 | options.alpha<i>?</i>           | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**   | distance decay parameter. A big value means the weight decay quickly as distance increases. _(default -1)_                          |
 | options.standardization<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | row standardization. _(default false)_                                                                                              |
 
 ### Returns
 
-**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>\>** distance weight matrix.
+**[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)&gt;&gt;** distance weight matrix.
 
 ### Examples
 
@@ -52,3 +48,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.distanceWeight(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Quadrat analysis lays a set of equal-size areas(quadrat) over the study area and counts
@@ -42,10 +38,10 @@ which is simply the area of the study area divided by the number of features.
 
 | Name                            | Type                                                                                                                                                                                                                                                                                                                                                                                    | Description                                                                                                                         |
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| pointFeatureSet                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>**                                                                                                                                                                                                                                                  | point set to study                                                                                                                  |
-| options<i>?</i>                 | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                         | optional parameters _(default \{\})_                                                                                                |
+| pointFeatureSet                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;**                                                                                                                                                                                                                                              | point set to study                                                                                                                  |
+| options<i>?</i>                 | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                         | optional parameters _(default &#123;&#125;)_                                                                                        |
 | options.studyBbox<i>?</i>       | **[[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number), [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number), [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number), [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | bbox representing the study area                                                                                                    |
-| options.confidenceLevel<i>?</i> | **20 \| 15 \| 10 \| 5 \| 2 \| 1**                                                                                                                                                                                                                                                                                                                                                       | a confidence level. The unit is percentage . 5 means 95%, value must be in [K_TABLE](docs/api/constants/K_TABLE.mdx) _(default 20)_ |
+| options.confidenceLevel<i>?</i> | **20 &#124; 15 &#124; 10 &#124; 5 &#124; 2 &#124; 1**                                                                                                                                                                                                                                                                                                                                   | a confidence level. The unit is percentage . 5 means 95%, value must be in [K_TABLE](docs/api/constants/K_TABLE.mdx) _(default 20)_ |
 
 ### Returns
 
@@ -74,3 +70,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.quadratAnalysis(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
