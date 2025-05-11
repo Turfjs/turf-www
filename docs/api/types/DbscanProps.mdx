@@ -6,21 +6,21 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Properties assigned to each clustered point.
 
 ### Definition
 
-GeoJsonProperties & object \{
+GeoJsonProperties & object &#123;
 
 | Name            | Type                                                                                            | Description                             |
 | --------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------- |
 | dbscan<i>?</i>  | **[Dbscan](docs/api/types/Dbscan.mdx)**                                                         | type of point it has been classified as |
 | cluster<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | associated clusterId                    |
 
-\}
+&#125;
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

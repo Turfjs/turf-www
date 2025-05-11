@@ -6,10 +6,6 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Unit of measurement factors based on earthRadius.
@@ -19,3 +15,7 @@ Keys are the name of the unit, values are the number of that unit in a single ra
 ### Value
 
 Record\<[Units](docs/api/types/Units.mdx), [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,9 +7,48 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var polygon1 = turf.polygon(
+    [
+      [
+        [128, -26],
+        [141, -26],
+        [141, -21],
+        [128, -21],
+        [128, -26],
+      ],
+    ],
+    {
+      fill: "#F00",
+      "fill-opacity": 0.1,
+    },
+  );
+  var polygon2 = turf.polygon(
+    [
+      [
+        [126, -28],
+        [140, -28],
+        [140, -20],
+        [126, -20],
+        [126, -28],
+      ],
+    ],
+    {
+      fill: "#00F",
+      "fill-opacity": 0.1,
+    },
+  );
+  var difference = turf.difference(
+    turf.featureCollection([polygon1, polygon2]),
+  );
+  //addToMap
+  var addToMap = { polygon1, polygon2, difference };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,13 +56,13 @@ Finds the difference between multiple [polygons](https://tools.ietf.org/html/rfc
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                          | Description            |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| features | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input Polygon features |
+| Name     | Type                                                                                                                                                                                                                  | Description            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| features | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | input Polygon features |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| null** a Polygon or MultiPolygon feature showing the area of `polygon1` excluding the area of `polygon2` (if empty returns `null`)
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; null** a Polygon or MultiPolygon feature showing the area of `polygon1` excluding the area of `polygon2` (if empty returns `null`)
 
 ### Examples
 
@@ -62,52 +101,6 @@ var polygon2 = turf.polygon(
 var difference = turf.difference(turf.featureCollection([polygon1, polygon2]));
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var polygon1 = turf.polygon(
-    [
-      [
-        [128, -26],
-        [141, -26],
-        [141, -21],
-        [128, -21],
-        [128, -26],
-      ],
-    ],
-    {
-      fill: "#F00",
-      "fill-opacity": 0.1,
-    },
-  );
-  var polygon2 = turf.polygon(
-    [
-      [
-        [126, -28],
-        [140, -28],
-        [140, -20],
-        [126, -20],
-        [126, -28],
-      ],
-    ],
-    {
-      fill: "#00F",
-      "fill-opacity": 0.1,
-    },
-  );
-
-  var difference = turf.difference(
-    turf.featureCollection([polygon1, polygon2]),
-  );
-
-  //addToMap
-  var addToMap = { polygon1, polygon2, difference };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -125,3 +118,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.difference(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

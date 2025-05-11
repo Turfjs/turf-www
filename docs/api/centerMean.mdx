@@ -7,9 +7,24 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var features = turf.featureCollection([
+    turf.point([-97.522259, 35.4691], { value: 10 }),
+    turf.point([-97.502754, 35.463455], { value: 3 }),
+    turf.point([-97.508269, 35.463245], { value: 5 }),
+  ]);
+  var options = { weight: "value" };
+  var mean = turf.centerMean(features, options);
+  //addToMap
+  var addToMap = { features, mean };
+  mean.properties["marker-size"] = "large";
+  mean.properties["marker-color"] = "#000";
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,18 +32,18 @@ Takes a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2) or [FeatureCo
 
 ### Parameters
 
-| Name                       | Type                                                                                            | Description                                            |
-| -------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | GeoJSON to be centered                                 |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                   |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Properties to Point _(default \{\})_ |
-| options.bbox<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON BBox to Point _(default \{\})_       |
-| options.id<i>?</i>         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Id to Point _(default \{\})_         |
-| options.weight<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | the property name used to weight the center            |
+| Name                       | Type                                                                                            | Description                                                    |
+| -------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| geojson                    | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)**                                    | GeoJSON to be centered                                         |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                   |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Properties to Point _(default &#123;&#125;)_ |
+| options.bbox<i>?</i>       | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON BBox to Point _(default &#123;&#125;)_       |
+| options.id<i>?</i>         | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Translate GeoJSON Id to Point _(default &#123;&#125;)_         |
+| options.weight<i>?</i>     | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | the property name used to weight the center                    |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** a Point feature at the mean center point of all input features
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** a Point feature at the mean center point of all input features
 
 ### Examples
 
@@ -42,28 +57,6 @@ var features = turf.featureCollection([
 var options = { weight: "value" };
 var mean = turf.centerMean(features, options);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var features = turf.featureCollection([
-    turf.point([-97.522259, 35.4691], { value: 10 }),
-    turf.point([-97.502754, 35.463455], { value: 3 }),
-    turf.point([-97.508269, 35.463245], { value: 5 }),
-  ]);
-
-  var options = { weight: "value" };
-  var mean = turf.centerMean(features, options);
-
-  //addToMap
-  var addToMap = { features, mean };
-  mean.properties["marker-size"] = "large";
-  mean.properties["marker-color"] = "#000";
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -82,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.centerMean(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

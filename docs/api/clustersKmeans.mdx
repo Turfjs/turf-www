@@ -7,9 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  // create random points with random z-values in their properties
+  var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
+  var options = { numberOfClusters: 7 };
+  var clustered = turf.clustersKmeans(points, options);
+  //addToMap
+  var addToMap = { clustered };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -18,19 +28,19 @@ It uses the [k-means algorithm](https://en.wikipedia.org/wiki/K-means_clustering
 
 ### Parameters
 
-| Name                             | Type                                                                                                                                   | Description                                                                                     |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| points                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | to be clustered                                                                                 |
-| options<i>?</i>                  | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                                                            |
-| options.numberOfClusters<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | numberOfClusters that will be generated _(default Math.sqrt(numberOfPoints/2))_                 |
-| options.mutate<i>?</i>           | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                      | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
+| Name                             | Type                                                                                                                                       | Description                                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| points                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | to be clustered                                                                                 |
+| options<i>?</i>                  | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | Optional parameters _(default &#123;&#125;)_                                                    |
+| options.numberOfClusters<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | numberOfClusters that will be generated _(default Math.sqrt(numberOfPoints/2))_                 |
+| options.mutate<i>?</i>           | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                          | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** Clustered Points with an additional two properties associated to each Feature:
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** Clustered Points with an additional two properties associated to each Feature:
 
-- \{number\} cluster - the associated clusterId
-- \{[number, number]\} centroid - Centroid of the cluster [Longitude, Latitude]
+- &#123;number&#125; cluster - the associated clusterId
+- &#123;[number, number]&#125; centroid - Centroid of the cluster [Longitude, Latitude]
 
 ### Examples
 
@@ -40,22 +50,6 @@ var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
 var options = { numberOfClusters: 7 };
 var clustered = turf.clustersKmeans(points, options);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  // create random points with random z-values in their properties
-  var points = turf.randomPoint(100, { bbox: [0, 30, 20, 50] });
-  var options = { numberOfClusters: 7 };
-  var clustered = turf.clustersKmeans(points, options);
-
-  //addToMap
-  var addToMap = { clustered };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -74,3 +68,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.clustersKmeans(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

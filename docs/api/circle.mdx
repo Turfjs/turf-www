@@ -7,9 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var center = [-75.343, 39.984];
+  var radius = 5;
+  var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
+  var circle = turf.circle(center, radius, options);
+  //addToMap
+  var addToMap = { center: turf.point(center), circle };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,18 +27,18 @@ Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and calculate
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                                                                                                                                     | Description                                                     |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| center                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\> \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)\>** | center point                                                    |
-| radius                     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                          | radius of the circle                                            |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                          | Optional parameters _(default \{\})_                            |
-| options.steps<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                          | number of steps _(default 64)_                                  |
-| options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                                                                          | miles, kilometers, degrees, or radians _(default 'kilometers')_ |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                          | properties _(default \{\})_                                     |
+| Name                       | Type                                                                                                                                                                                                                                                                                                                                 | Description                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| center                     | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt; &#124; [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)&gt;** | center point                                                    |
+| radius                     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                                      | radius of the circle                                            |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                      | Optional parameters _(default &#123;&#125;)_                    |
+| options.steps<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                                                                                                                                                                                                                      | number of steps _(default 64)_                                  |
+| options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                                                                                      | miles, kilometers, degrees, or radians _(default 'kilometers')_ |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                      | properties _(default &#123;&#125;)_                             |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** circle polygon
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** circle polygon
 
 ### Examples
 
@@ -38,22 +48,6 @@ var radius = 5;
 var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
 var circle = turf.circle(center, radius, options);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var center = [-75.343, 39.984];
-  var radius = 5;
-  var options = { steps: 10, units: "kilometers", properties: { foo: "bar" } };
-  var circle = turf.circle(center, radius, options);
-
-  //addToMap
-  var addToMap = { center: turf.point(center), circle };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -72,3 +66,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.circle(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

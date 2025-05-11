@@ -6,15 +6,11 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 ### Definition
 
-object \{
+object &#123;
 
 | Name               | Type                                                                                            | Description                                                               |
 | ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -23,4 +19,8 @@ object \{
 | stdNorm            | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the standard devitaion of the random distribution                         |
 | zNorm              | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | the z-score of the observe samples with regard to the random distribution |
 
-\}
+&#125;
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

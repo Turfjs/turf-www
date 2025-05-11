@@ -7,9 +7,19 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var center = [-75, 40];
+  var xSemiAxis = 5;
+  var ySemiAxis = 2;
+  var ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);
+  //addToMap
+  var addToMap = { center: turf.point(center), ellipse };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -22,16 +32,16 @@ Takes a [Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) and calculate
 | center                     | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | center point                                                           |
 | xSemiAxis                  | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | semi (major) axis of the ellipse along the x-axis                      |
 | ySemiAxis                  | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | semi (minor) axis of the ellipse along the y-axis                      |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                   |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                           |
 | options.angle<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | angle of rotation in decimal degrees, positive clockwise _(default 0)_ |
 | options.pivot<i>?</i>      | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                  | point around which any rotation will be performed _(default center)_   |
 | options.steps<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | number of steps _(default 64)_                                         |
 | options.units<i>?</i>      | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** | unit of measurement for axes _(default 'kilometers')_                  |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | properties _(default \{\})_                                            |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | properties _(default &#123;&#125;)_                                    |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** ellipse polygon
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** ellipse polygon
 
 ### Examples
 
@@ -41,22 +51,6 @@ var xSemiAxis = 5;
 var ySemiAxis = 2;
 var ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var center = [-75, 40];
-  var xSemiAxis = 5;
-  var ySemiAxis = 2;
-  var ellipse = turf.ellipse(center, xSemiAxis, ySemiAxis);
-
-  //addToMap
-  var addToMap = { center: turf.point(center), ellipse };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -75,3 +69,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.ellipse(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

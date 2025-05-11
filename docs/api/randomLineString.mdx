@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Returns a random [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4).
@@ -20,7 +16,7 @@ Returns a random [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)
 | Name                         | Type                                                                                            | Description                                                                                                    |
 | ---------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | count<i>?</i>                | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | how many geometries will be generated _(default 1)_                                                            |
-| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                                                           |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                                                                   |
 | options.bbox<i>?</i>         | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_                            |
 | options.num_vertices<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | is how many coordinates each LineString will contain. _(default 10)_                                           |
 | options.max_length<i>?</i>   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | is the maximum number of decimal degrees that a vertex can be from its predecessor _(default 0.0001)_          |
@@ -28,7 +24,7 @@ Returns a random [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** GeoJSON FeatureCollection of linestrings
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** GeoJSON FeatureCollection of linestrings
 
 ### Examples
 
@@ -52,3 +48,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.randomLineString(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

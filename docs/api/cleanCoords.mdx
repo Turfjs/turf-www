@@ -7,25 +7,21 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Removes redundant coordinates from any GeoJSON Geometry.
 
 ### Parameters
 
-| Name                   | Type                                                                                                                          | Description                                          |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| geojson                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | Feature or Geometry                                  |
-| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                               | Optional parameters _(default \{\})_                 |
-| options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                             | allows GeoJSON input to be mutated _(default false)_ |
+| Name                   | Type                                                                                                                              | Description                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| geojson                | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** | Feature or Geometry                                  |
+| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                   | Optional parameters _(default &#123;&#125;)_         |
+| options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**                                 | allows GeoJSON input to be mutated _(default false)_ |
 
 ### Returns
 
-**[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** the cleaned input Feature/Geometry
+**[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)** the cleaned input Feature/Geometry
 
 ### Examples
 
@@ -66,3 +62,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.cleanCoords(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

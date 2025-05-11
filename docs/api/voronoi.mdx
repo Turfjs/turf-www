@@ -7,9 +7,20 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const options = {
+    bbox: [-70, 40, -60, 60],
+  };
+  const points = turf.randomPoint(100, options);
+  const voronoiPolygons = turf.voronoi(points, options);
+  //addToMap
+  const addToMap = [voronoiPolygons, points];
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -20,15 +31,15 @@ The Voronoi algorithim used comes from the d3-voronoi package.
 
 ### Parameters
 
-| Name                 | Type                                                                                                                                   | Description                                                                          |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| points               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | points around which to calculate the Voronoi polygons                                |
-| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                                                 |
-| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                              | clipping rectangle, in [minX, minY, maxX, MaxY] order _(default [-180,-85,180,-85])_ |
+| Name                 | Type                                                                                                                                       | Description                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| points               | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | points around which to calculate the Voronoi polygons                                |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | Optional parameters _(default &#123;&#125;)_                                         |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                  | clipping rectangle, in [minX, minY, maxX, MaxY] order _(default [-180,-85,180,-85])_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a set of polygons, one per input point
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** a set of polygons, one per input point
 
 ### Examples
 
@@ -39,23 +50,6 @@ const options = {
 const points = turf.randomPoint(100, options);
 const voronoiPolygons = turf.voronoi(points, options);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const options = {
-    bbox: [-70, 40, -60, 60],
-  };
-  const points = turf.randomPoint(100, options);
-  const voronoiPolygons = turf.voronoi(points, options);
-
-  //addToMap
-  const addToMap = [voronoiPolygons, points];
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -74,3 +68,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.voronoi(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

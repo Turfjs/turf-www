@@ -7,9 +7,21 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var features = turf.featureCollection([
+    turf.point([-75.343, 39.984], { name: "Location A" }),
+    turf.point([-75.833, 39.284], { name: "Location B" }),
+    turf.point([-75.534, 39.123], { name: "Location C" }),
+  ]);
+  var enveloped = turf.envelope(features);
+  //addToMap
+  var addToMap = { features, enveloped };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -23,7 +35,7 @@ Takes any number of features and returns a rectangular [Polygon](https://tools.i
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a rectangular Polygon feature that encompasses all vertices
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** a rectangular Polygon feature that encompasses all vertices
 
 ### Examples
 
@@ -36,25 +48,6 @@ var features = turf.featureCollection([
 
 var enveloped = turf.envelope(features);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var features = turf.featureCollection([
-    turf.point([-75.343, 39.984], { name: "Location A" }),
-    turf.point([-75.833, 39.284], { name: "Location B" }),
-    turf.point([-75.534, 39.123], { name: "Location C" }),
-  ]);
-
-  var enveloped = turf.envelope(features);
-
-  //addToMap
-  var addToMap = { features, enveloped };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -73,3 +66,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.envelope(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

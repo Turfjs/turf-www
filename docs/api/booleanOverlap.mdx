@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Compares two geometries of the same dimension and returns true if their intersection set results in a geometry
@@ -21,10 +17,10 @@ In other words, it returns true if the two geometries overlap, provided that nei
 
 ### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                                                                                                                                          | Description |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input       |
-| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input       |
+| Name     | Type                                                                                                                                                                                                                                                                                                                                                                                                                              | Description |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| feature1 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | input       |
+| feature2 | **[Geometry](https://tools.ietf.org/html/rfc7946#section-3.1) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | input       |
 
 ### Returns
 
@@ -82,3 +78,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.booleanOverlap(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

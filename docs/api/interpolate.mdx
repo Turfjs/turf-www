@@ -7,9 +7,22 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
+  // add a random property to each point
+  turf.featureEach(points, function (point) {
+    point.properties.solRad = Math.random() * 50;
+  });
+  var options = { gridType: "points", property: "solRad", units: "miles" };
+  var grid = turf.interpolate(points, 100, options);
+  //addToMap
+  var addToMap = { grid };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,20 +30,20 @@ Takes a set of points and estimates their 'property' values on a grid using the 
 
 ### Parameters
 
-| Name                     | Type                                                                                                                                   | Description                                                                                                                                         |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| points                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)\>** | with known value                                                                                                                                    |
-| cellSize                 | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | the distance across each grid point                                                                                                                 |
-| options<i>?</i>          | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                        | Optional parameters _(default \{\})_                                                                                                                |
-| options.gridType<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                        | defines the output format based on a Grid Type (options: 'square' \| 'point' \| 'hex' \| 'triangle') _(default 'square')_                           |
-| options.property<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                        | the property name in `points` from which z-values will be pulled, zValue fallbacks to 3rd coordinate if no property exists. _(default 'elevation')_ |
-| options.units<i>?</i>    | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                        | used in calculating cellSize, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                                |
-| options.weight<i>?</i>   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                        | exponent regulating the distance-decay weighting _(default 1)_                                                                                      |
-| options.bbox<i>?</i>     | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                              | Bounding Box Array [west, south, east, north] associated with the FeatureCollection. _(default bbox(points))_                                       |
+| Name                     | Type                                                                                                                                       | Description                                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| points                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** | with known value                                                                                                                                    |
+| cellSize                 | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | the distance across each grid point                                                                                                                 |
+| options<i>?</i>          | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                            | Optional parameters _(default &#123;&#125;)_                                                                                                        |
+| options.gridType<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                            | defines the output format based on a Grid Type (options: 'square' &#124; 'point' &#124; 'hex' &#124; 'triangle') _(default 'square')_               |
+| options.property<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                            | the property name in `points` from which z-values will be pulled, zValue fallbacks to 3rd coordinate if no property exists. _(default 'elevation')_ |
+| options.units<i>?</i>    | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                            | used in calculating cellSize, can be degrees, radians, miles, or kilometers _(default 'kilometers')_                                                |
+| options.weight<i>?</i>   | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**                                            | exponent regulating the distance-decay weighting _(default 1)_                                                                                      |
+| options.bbox<i>?</i>     | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                  | Bounding Box Array [west, south, east, north] associated with the FeatureCollection. _(default bbox(points))_                                       |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** grid of points or polygons with interpolated 'property'
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** grid of points or polygons with interpolated 'property'
 
 ### Examples
 
@@ -44,26 +57,6 @@ turf.featureEach(points, function (point) {
 var options = { gridType: "points", property: "solRad", units: "miles" };
 var grid = turf.interpolate(points, 100, options);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var points = turf.randomPoint(30, { bbox: [50, 30, 70, 50] });
-
-  // add a random property to each point
-  turf.featureEach(points, function (point) {
-    point.properties.solRad = Math.random() * 50;
-  });
-  var options = { gridType: "points", property: "solRad", units: "miles" };
-  var grid = turf.interpolate(points, 100, options);
-
-  //addToMap
-  var addToMap = { grid };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -82,3 +75,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.interpolate(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

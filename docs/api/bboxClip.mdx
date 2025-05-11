@@ -7,9 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var bbox = [0, 0, 10, 10];
+  var poly = turf.polygon([
+    [
+      [2, 2],
+      [8, 4],
+      [12, 8],
+      [3, 7],
+      [2, 2],
+    ],
+  ]);
+  var clipped = turf.bboxClip(poly, bbox);
+  //addToMap
+  var addToMap = { bbox, poly, clipped };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -19,14 +36,14 @@ May result in degenerate edges when clipping Polygons.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                                                                                                                                                           | Description                              |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | feature to clip to the bbox              |
-| bbox    | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                      | extent in [minX, minY, maxX, maxY] order |
+| Name    | Type                                                                                                                                                                                                                                                                                                                                                           | Description                              |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| feature | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | feature to clip to the bbox              |
+| bbox    | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                                                                                                                                                                                      | extent in [minX, minY, maxX, maxY] order |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** clipped Feature
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; [MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5) &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** clipped Feature
 
 ### Examples
 
@@ -45,30 +62,6 @@ var poly = turf.polygon([
 var clipped = turf.bboxClip(poly, bbox);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var bbox = [0, 0, 10, 10];
-  var poly = turf.polygon([
-    [
-      [2, 2],
-      [8, 4],
-      [12, 8],
-      [3, 7],
-      [2, 2],
-    ],
-  ]);
-
-  var clipped = turf.bboxClip(poly, bbox);
-
-  //addToMap
-  var addToMap = { bbox, poly, clipped };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -86,3 +79,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.bboxClip(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

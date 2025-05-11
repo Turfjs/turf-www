@@ -7,10 +7,6 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Returns a random [polygon](polygon).
@@ -20,14 +16,14 @@ Returns a random [polygon](polygon).
 | Name                              | Type                                                                                            | Description                                                                                                                             |
 | --------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | count<i>?</i>                     | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | how many geometries will be generated _(default 1)_                                                                                     |
-| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default \{\})_                                                                                                    |
+| options<i>?</i>                   | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional parameters _(default &#123;&#125;)_                                                                                            |
 | options.bbox<i>?</i>              | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | a bounding box inside of which geometries are placed. _(default [-180,-90,180,90])_                                                     |
 | options.num_vertices<i>?</i>      | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | is how many coordinates each LineString will contain. _(default 10)_                                                                    |
 | options.max_radial_length<i>?</i> | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | is the maximum number of decimal degrees latitude or longitude that a vertex can reach out of the center of the Polygon. _(default 10)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** GeoJSON FeatureCollection of polygons
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** GeoJSON FeatureCollection of polygons
 
 ### Examples
 
@@ -51,3 +47,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.randomPolygon(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

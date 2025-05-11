@@ -264,9 +264,6 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 ${description}
@@ -274,6 +271,9 @@ ${description}
 ### Definition
 
 ${definition}
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 `,
     ];
@@ -298,9 +298,6 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 ${description}
@@ -308,6 +305,9 @@ ${description}
 ### Value
 
 ${value}
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 `,
     ];
@@ -339,9 +339,9 @@ ${value}
         }
       });
 
-      mdx = mdx.concat("object \\{\n\n");
+      mdx = mdx.concat("object &#123;\n\n");
       mdx = mdx.concat(getParamsMdx(typedef));
-      mdx = mdx.concat("\n\\}\n");
+      mdx = mdx.concat("\n&#125;\n");
 
       return mdx;
     } else {
@@ -372,9 +372,15 @@ ${value}
 
     const category = getCategory(name);
 
-    let examples;
+    let examplesJs;
+    let examplesMdx;
     if (hasExamples(fn)) {
-      examples = getExamplesMdx(fn);
+      // Get examples in two parts:
+      // 1. executable JS code that defines the React example map component, put
+      //  at the top of the file (before any markdown)
+      examplesJs = getExamplesJs(fn);
+      // 2. JSX to invoke the above component in the MDX section
+      examplesMdx = getExamplesMdx(fn);
     }
 
     fn.tags?.[""];
@@ -391,8 +397,7 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+${examplesJs ? examplesJs : ""}
 
 ### Description
 
@@ -406,9 +411,9 @@ ${params}
 
 ${returns}
 
-${examples ? "### Examples" : ""}
+${examplesMdx ? "### Examples" : ""}
 
-${examples ? examples : ""}
+${examplesMdx ? examplesMdx : ""}
 
 ### Installation
 
@@ -425,6 +430,9 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.${name}(...);
 \`\`\`
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
 
 `,
     ];
@@ -492,7 +500,7 @@ const result = turf.${name}(...);
    * @param {Object} fn - The function JSDoc to extract examples from.
    * @return {string} The Markdown content for the examples section.
    */
-  function getExamplesMdx(fn) {
+  function getExamplesJs(fn) {
     let mdx = "";
     // Remember there may be multiple examples!
     for (const [index, tag] of fn.tags
@@ -501,8 +509,6 @@ const result = turf.${name}(...);
       // Possibly need to modify this below.
       let exampleCode: string = tag.description;
 
-      mdx = mdx.concat(renderTagToMdx(tag));
-
       // If there's an //addToMap comment, include a copy of the example code
       // in the MDX to be executed, and embed an <ExampleMap> component to
       // display the result.
@@ -510,7 +516,7 @@ const result = turf.${name}(...);
         mdx = mdx.concat(`
 export function Map${index}() {
   "use strict";
-  
+  // No blank lines so MDX parses code block as a single "export" node.
 `);
         // However we need to transform the addToMap array into an object so
         // the ExampleMap can implicitly use the keys as layer names.
@@ -567,10 +573,42 @@ export function Map${index}() {
           "\n  // jsdoc example end",
         );
         mdx = mdx.concat(`
-        
   return <ExampleMap addToMap={addToMap}/>;
 }
+`);
+      }
+    }
 
+    // Remove blank lines so MDX doesn't think each blank line is the start of a
+    // new block. We want the entire function to appear as a single "export"
+    // node so we know not to translate it.
+    return mdx.replace(/^\s*[\r\n]/gm, "");
+  }
+
+  /**
+   * Generates the Markdown content for the examples section of a function.
+   * Note there may be multiple examples and maps for each
+   * function.
+   *
+   * @param {Object} fn - The function JSDoc to extract examples from.
+   * @return {string} The Markdown content for the examples section.
+   */
+  function getExamplesMdx(fn) {
+    let mdx = "";
+    // Remember there may be multiple examples!
+    for (const [index, tag] of fn.tags
+      .filter((tag) => tag.title === "example")
+      .entries()) {
+      // Possibly need to modify this below.
+      let exampleCode: string = tag.description;
+
+      mdx = mdx.concat(renderTagToMdx(tag));
+
+      // If there's an //addToMap comment, include a copy of the example code
+      // in the MDX to be executed, and embed an <ExampleMap> component to
+      // display the result.
+      if (exampleCode.match(/\/\/addToMap/)) {
+        mdx = mdx.concat(`
 <BrowserOnly>{() => <Map${index} />}</BrowserOnly>
 `);
       }
@@ -624,10 +662,22 @@ export function Map${index}() {
     return mdx;
   }
 
+  // Escape { } < > | characters so they aren't interpretted as JSX when
+  // embedded in MDX. These characters show up quite a bit in Typescript
+  // generics.
+  // In some instances they're escaped (Typescript generics in parameter
+  // descriptions), and in other they're not (in function descriptions).
   function mdxEscape(mdxIn) {
     return mdxIn
-      .replace(/(?<!\\)([\{\}\<\>])/g, "\\$1")
-      .replace(/\|/g, " \\| ");
+      .replace(/\\\</gm, "&lt;")
+      .replace(/\\\>/gm, "&gt;")
+      .replace(/\\\{/gm, "&#123;")
+      .replace(/\\\}/gm, "&#125;")
+      .replace(/\</gm, "&lt;")
+      .replace(/\>/gm, "&gt;")
+      .replace(/\{/gm, "&#123;")
+      .replace(/\|/gm, "&#124;")
+      .replace(/\}/gm, "&#125;");
   }
 
   function newlineToSpace(mdxIn) {

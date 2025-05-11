@@ -7,9 +7,25 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var poly = turf.polygon([
+    [
+      [125, -30],
+      [145, -30],
+      [145, -20],
+      [125, -20],
+      [125, -30],
+    ],
+  ]);
+  var line = turf.polygonToLine(poly);
+  //addToMap
+  var addToMap = { line };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -18,15 +34,15 @@ Converts a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) to [(Mul
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                | Description                                               |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | Feature to convert                                        |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                     | Optional parameters _(default \{\})_                      |
-| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                     | translates GeoJSON properties to Feature _(default \{\})_ |
+| Name                       | Type                                                                                                                                                                                                        | Description                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| poly                       | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | Feature to convert                                                |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                             | Optional parameters _(default &#123;&#125;)_                      |
+| options.properties<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                             | translates GeoJSON properties to Feature _(default &#123;&#125;)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) \| MultiLinestring\>** converted (Multi)Polygon to (Multi)LineString
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3) &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) &#124; MultiLinestring&gt;** converted (Multi)Polygon to (Multi)LineString
 
 ### Examples
 
@@ -43,29 +59,6 @@ var poly = turf.polygon([
 
 var line = turf.polygonToLine(poly);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var poly = turf.polygon([
-    [
-      [125, -30],
-      [145, -30],
-      [145, -20],
-      [125, -20],
-      [125, -30],
-    ],
-  ]);
-
-  var line = turf.polygonToLine(poly);
-
-  //addToMap
-  var addToMap = { line };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -84,3 +77,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.polygonToLine(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

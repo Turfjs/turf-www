@@ -7,9 +7,26 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var line = turf.lineString([
+    [-77.031669, 38.878605],
+    [-77.029609, 38.881946],
+    [-77.020339, 38.884084],
+    [-77.025661, 38.885821],
+    [-77.021884, 38.889563],
+    [-77.019824, 38.892368],
+  ]);
+  var start = turf.point([-77.029609, 38.881946]);
+  var stop = turf.point([-77.021884, 38.889563]);
+  var sliced = turf.lineSlice(start, stop, line);
+  //addToMap
+  var addToMap = { start, stop, line };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -21,15 +38,15 @@ This can be useful for extracting only the part of a route between waypoints.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                 | Description    |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| startPt | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                       | starting point |
-| stopPt  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                       | stopping point |
-| line    | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\> \| [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | line to slice  |
+| Name    | Type                                                                                                                                                                                                         | Description    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| startPt | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                               | starting point |
+| stopPt  | **[Coord](https://tools.ietf.org/html/rfc7946#section-3.1.1)**                                                                                                                                               | stopping point |
+| line    | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt; &#124; [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | line to slice  |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)\>** sliced line
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt;** sliced line
 
 ### Examples
 
@@ -48,30 +65,6 @@ var stop = turf.point([-77.021884, 38.889563]);
 var sliced = turf.lineSlice(start, stop, line);
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var line = turf.lineString([
-    [-77.031669, 38.878605],
-    [-77.029609, 38.881946],
-    [-77.020339, 38.884084],
-    [-77.025661, 38.885821],
-    [-77.021884, 38.889563],
-    [-77.019824, 38.892368],
-  ]);
-  var start = turf.point([-77.029609, 38.881946]);
-  var stop = turf.point([-77.021884, 38.889563]);
-
-  var sliced = turf.lineSlice(start, stop, line);
-
-  //addToMap
-  var addToMap = { start, stop, line };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -89,3 +82,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.lineSlice(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

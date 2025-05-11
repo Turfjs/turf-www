@@ -7,9 +7,25 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const poly = turf.polygon([
+    [
+      [0, 0],
+      [2, 0],
+      [0, 2],
+      [2, 2],
+      [0, 0],
+    ],
+  ]);
+  const result = turf.unkinkPolygon(poly);
+  //addToMap
+  const addToMap = [poly, result];
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -20,13 +36,13 @@ Uses [simplepolygon](https://github.com/mclaeysb/simplepolygon) internally.
 
 ### Parameters
 
-| Name    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description        |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | polygons to unkink |
+| Name    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Description        |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| geojson | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | polygons to unkink |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** Unkinked polygons
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** Unkinked polygons
 
 ### Examples
 
@@ -43,29 +59,6 @@ const poly = turf.polygon([
 
 const result = turf.unkinkPolygon(poly);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const poly = turf.polygon([
-    [
-      [0, 0],
-      [2, 0],
-      [0, 2],
-      [2, 2],
-      [0, 0],
-    ],
-  ]);
-
-  const result = turf.unkinkPolygon(poly);
-
-  //addToMap
-  const addToMap = [poly, result];
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -84,3 +77,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.unkinkPolygon(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

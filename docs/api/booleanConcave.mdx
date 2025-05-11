@@ -7,19 +7,15 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 Takes a polygon and return true or false as to whether it is concave or not.
 
 ### Parameters
 
-| Name    | Type                                                                                                                           | Description     |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------- |
-| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | to be evaluated |
+| Name    | Type                                                                                                                               | Description     |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| polygon | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** | to be evaluated |
 
 ### Returns
 
@@ -57,3 +53,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.booleanConcave(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

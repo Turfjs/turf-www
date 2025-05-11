@@ -7,28 +7,24 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
-Creates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)\> based on a
+Creates a [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5)&gt; based on a
 coordinate array. Properties can be added optionally.
 
 ### Parameters
 
-| Name                 | Type                                                                                            | Description                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| coordinates          | **UNCERTAIN**                                                                                   |                                                                           |
-| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | an Object of key-value pairs to add as properties _(default \{\})_        |
-| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default \{\})_                                      |
-| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | Bounding Box Array [west, south, east, north] associated with the Feature |
-| options.id<i>?</i>   | **Id**                                                                                          | Identifier associated with the Feature                                    |
+| Name                 | Type                                                                                            | Description                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| coordinates          | **UNCERTAIN**                                                                                   |                                                                            |
+| properties<i>?</i>   | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                        | an Object of key-value pairs to add as properties _(default &#123;&#125;)_ |
+| options<i>?</i>      | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Optional Parameters _(default &#123;&#125;)_                               |
+| options.bbox<i>?</i> | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                       | Bounding Box Array [west, south, east, north] associated with the Feature  |
+| options.id<i>?</i>   | **Id**                                                                                          | Identifier associated with the Feature                                     |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)\>** a MultiLineString feature
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[MultiLineString](https://tools.ietf.org/html/rfc7946#section-3.1.5), [GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)&gt;** a MultiLineString feature
 
 ### Examples
 
@@ -58,3 +54,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.multiLineString(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,21 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 calcualte the Minkowski p-norm distance between two features.
 
 ### Parameters
 
-| Name     | Type          | Description                                                                       |
-| -------- | ------------- | --------------------------------------------------------------------------------- |
-| feature1 | **UNCERTAIN** | point feature                                                                     |
-| feature2 | **UNCERTAIN** | point feature                                                                     |
-| p        | **UNCERTAIN** | p-norm 1=\<p\<=infinity 1: Manhattan distance 2: Euclidean distance _(default 2)_ |
+| Name     | Type          | Description                                                                           |
+| -------- | ------------- | ------------------------------------------------------------------------------------- |
+| feature1 | **UNCERTAIN** | point feature                                                                         |
+| feature2 | **UNCERTAIN** | point feature                                                                         |
+| p        | **UNCERTAIN** | p-norm 1=&lt;p&lt;=infinity 1: Manhattan distance 2: Euclidean distance _(default 2)_ |
 
 ### Returns
 
@@ -42,3 +38,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.pNormDistance(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

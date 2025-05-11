@@ -6,17 +6,13 @@ import * as turf from "turf-next";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
-
 ### Description
 
 the confidence level
 
 ### Value
 
-object \{
+object &#123;
 
 | Name | Type                                                                                            | Description |
 | ---- | ----------------------------------------------------------------------------------------------- | ----------- |
@@ -27,4 +23,8 @@ object \{
 | 2    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | 1.51743     |
 | 1    | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | 1.62762     |
 
-\}
+&#125;
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

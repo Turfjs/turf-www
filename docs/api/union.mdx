@@ -7,9 +7,42 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  const poly1 = turf.polygon(
+    [
+      [
+        [-82.574787, 35.594087],
+        [-82.574787, 35.615581],
+        [-82.545261, 35.615581],
+        [-82.545261, 35.594087],
+        [-82.574787, 35.594087],
+      ],
+    ],
+    { fill: "#0f0" },
+  );
+  const poly2 = turf.polygon([
+    [
+      [-82.560024, 35.585153],
+      [-82.560024, 35.602602],
+      [-82.52964, 35.602602],
+      [-82.52964, 35.585153],
+      [-82.560024, 35.585153],
+    ],
+  ]);
+  const union = turf.union(turf.featureCollection([poly1, poly2]));
+  //addToMap
+  const addToMap = { poly1, poly2, union };
+  poly1.properties.fill = "#0f0";
+  poly2.properties.fill = "#00f";
+  union.properties.stroke = "red";
+  union.properties["stroke-width"] = 4;
+  union.properties.fill = "transparent";
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -19,15 +52,15 @@ feature.
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                          | Description                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| features                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** | input polygon features                                  |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                               | Optional Parameters _(default \{\})_                    |
-| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                                                                                                      | properties to assign to output feature _(default \{\})_ |
+| Name                       | Type                                                                                                                                                                                                                  | Description                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| features                   | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** | input polygon features                                          |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                       | Optional Parameters _(default &#123;&#125;)_                    |
+| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                                                                                                              | properties to assign to output feature _(default &#123;&#125;)_ |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| null** a combined polygon or multi-polygon feature, or null if there were no input polygons to combine
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; null** a combined polygon or multi-polygon feature, or null if there were no input polygons to combine
 
 ### Examples
 
@@ -58,48 +91,6 @@ const poly2 = turf.polygon([
 const union = turf.union(turf.featureCollection([poly1, poly2]));
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  const poly1 = turf.polygon(
-    [
-      [
-        [-82.574787, 35.594087],
-        [-82.574787, 35.615581],
-        [-82.545261, 35.615581],
-        [-82.545261, 35.594087],
-        [-82.574787, 35.594087],
-      ],
-    ],
-    { fill: "#0f0" },
-  );
-
-  const poly2 = turf.polygon([
-    [
-      [-82.560024, 35.585153],
-      [-82.560024, 35.602602],
-      [-82.52964, 35.602602],
-      [-82.52964, 35.585153],
-      [-82.560024, 35.585153],
-    ],
-  ]);
-
-  const union = turf.union(turf.featureCollection([poly1, poly2]));
-
-  //addToMap
-  const addToMap = { poly1, poly2, union };
-
-  poly1.properties.fill = "#0f0";
-  poly2.properties.fill = "#00f";
-  union.properties.stroke = "red";
-  union.properties["stroke-width"] = 4;
-  union.properties.fill = "transparent";
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -117,3 +108,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.union(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

@@ -7,9 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var bbox = [0, 0, 10, 10];
+  var poly = turf.bboxPolygon(bbox);
+  //addToMap
+  var addToMap = { poly };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -17,16 +25,16 @@ Takes a bbox and returns an equivalent [polygon](https://tools.ietf.org/html/rfc
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                           | Description                                      |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                      | extent in [minX, minY, maxX, maxY] order         |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                | Optional parameters _(default \{\})_             |
-| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                                                                                       | Translate properties to Polygon _(default \{\})_ |
-| options.id<i>?</i>         | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | Translate Id to Polygon _(default \{\})_         |
+| Name                       | Type                                                                                                                                                                                               | Description                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| bbox                       | **[BBox](https://tools.ietf.org/html/rfc7946#section-5)**                                                                                                                                          | extent in [minX, minY, maxX, maxY] order                 |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                    | Optional parameters _(default &#123;&#125;)_             |
+| options.properties<i>?</i> | **[GeoJsonProperties](https://tools.ietf.org/html/rfc7946#section-3.2)**                                                                                                                           | Translate properties to Polygon _(default &#123;&#125;)_ |
+| options.id<i>?</i>         | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) &#124; [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | Translate Id to Polygon _(default &#123;&#125;)_         |
 
 ### Returns
 
-**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a Polygon representation of the bounding box
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** a Polygon representation of the bounding box
 
 ### Examples
 
@@ -35,21 +43,6 @@ var bbox = [0, 0, 10, 10];
 
 var poly = turf.bboxPolygon(bbox);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var bbox = [0, 0, 10, 10];
-
-  var poly = turf.bboxPolygon(bbox);
-
-  //addToMap
-  var addToMap = { poly };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -68,3 +61,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.bboxPolygon(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

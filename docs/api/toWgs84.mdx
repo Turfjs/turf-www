@@ -7,9 +7,17 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var pt = turf.point([-7903683.846322424, 5012341.663847514]);
+  var converted = turf.toWgs84(pt);
+  //addToMap
+  var addToMap = { pt, converted };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -19,8 +27,8 @@ Converts a Mercator (EPSG:900913) GeoJSON object into WGS84 projection
 
 | Name                   | Type                                                                                              | Description                                                                                     |
 | ---------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) \| Position**                          | Mercator GeoJSON object                                                                         |
-| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default \{\})_                                                            |
+| geojson                | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3) &#124; Position**                      | Mercator GeoJSON object                                                                         |
+| options<i>?</i>        | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**   | Optional parameters _(default &#123;&#125;)_                                                    |
 | options.mutate<i>?</i> | **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** | allows GeoJSON input to be mutated (significant performance increase if true) _(default false)_ |
 
 ### Returns
@@ -33,20 +41,6 @@ Converts a Mercator (EPSG:900913) GeoJSON object into WGS84 projection
 var pt = turf.point([-7903683.846322424, 5012341.663847514]);
 var converted = turf.toWgs84(pt);
 ```
-
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var pt = turf.point([-7903683.846322424, 5012341.663847514]);
-  var converted = turf.toWgs84(pt);
-
-  //addToMap
-  var addToMap = { pt, converted };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
 
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
@@ -65,3 +59,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.toWgs84(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

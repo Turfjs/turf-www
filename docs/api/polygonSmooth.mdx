@@ -7,26 +7,44 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var polygon = turf.polygon([
+    [
+      [11, 0],
+      [22, 4],
+      [31, 0],
+      [31, 11],
+      [21, 15],
+      [11, 11],
+      [11, 0],
+    ],
+  ]);
+  var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
+  //addToMap
+  var addToMap = { smoothed, polygon };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
-Smooths a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7). Based on [Chaikin's algorithm](http://graphics.cs.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html).
+Smooths a [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) or [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7). Based on [Chaikin's algorithm](https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf).
 Warning: may create degenerate polygons.
 
 ### Parameters
 
-| Name                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                       |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| inputPolys                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\> \| [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | (Multi)Polygon(s) to smooth                                                                       |
-| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Optional parameters _(default \{\})_                                                              |
-| options.iterations<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                                                                                                                                                                                                                                                                                                       | The number of times to smooth the polygon. A higher value means a smoother polygon. _(default 1)_ |
+| Name                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Description                                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| inputPolys                 | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; [Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt; &#124; [Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)** | (Multi)Polygon(s) to smooth                                                                       |
+| options<i>?</i>            | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Optional parameters _(default &#123;&#125;)_                                                      |
+| options.iterations<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | The number of times to smooth the polygon. A higher value means a smoother polygon. _(default 1)_ |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) \| [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)\>** FeatureCollection containing the smoothed polygon/multipoylgons
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6) &#124; [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7)&gt;** FeatureCollection containing the smoothed polygon/multipoylgons
 
 ### Examples
 
@@ -46,31 +64,6 @@ var polygon = turf.polygon([
 var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var polygon = turf.polygon([
-    [
-      [11, 0],
-      [22, 4],
-      [31, 0],
-      [31, 11],
-      [21, 15],
-      [11, 11],
-      [11, 0],
-    ],
-  ]);
-
-  var smoothed = turf.polygonSmooth(polygon, { iterations: 3 });
-
-  //addToMap
-  var addToMap = { smoothed, polygon };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -88,3 +81,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.polygonSmooth(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>

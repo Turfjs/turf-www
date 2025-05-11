@@ -7,9 +7,54 @@ import ExampleMap from "@site/src/components/ExampleMap";
 import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<!-- Expose turf as global var for experimenting in the browser console -->
-
-<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
+export function Map0() {
+  "use strict";
+  // No blank lines so MDX parses code block as a single "export" node.
+  // jsdoc example start
+  var features = turf.featureCollection([
+    turf.polygon(
+      [
+        [
+          [0, 0],
+          [0, 1],
+          [1, 1],
+          [1, 0],
+          [0, 0],
+        ],
+      ],
+      { combine: "yes" },
+    ),
+    turf.polygon(
+      [
+        [
+          [0, -1],
+          [0, 0],
+          [1, 0],
+          [1, -1],
+          [0, -1],
+        ],
+      ],
+      { combine: "yes" },
+    ),
+    turf.polygon(
+      [
+        [
+          [1, -1],
+          [1, 0],
+          [2, 0],
+          [2, -1],
+          [1, -1],
+        ],
+      ],
+      { combine: "no" },
+    ),
+  ]);
+  var dissolved = turf.dissolve(features, { propertyName: "combine" });
+  //addToMap
+  var addToMap = { features, dissolved };
+  // jsdoc example end
+  return <ExampleMap addToMap={addToMap} />;
+}
 
 ### Description
 
@@ -18,16 +63,16 @@ Note that [MultiPolygon](https://tools.ietf.org/html/rfc7946#section-3.1.7) feat
 
 ### Parameters
 
-| Name                         | Type                                                                                                                                     | Description                                                    |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| fc                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** |                                                                |
-| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                          | Optional parameters _(default \{\})_                           |
-| options.propertyName<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                          | features with the same `propertyName` value will be dissolved. |
-| featureCollection            | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** | input feature collection to be dissolved                       |
+| Name                         | Type                                                                                                                                         | Description                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| fc                           | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** |                                                                |
+| options<i>?</i>              | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**                                              | Optional parameters _(default &#123;&#125;)_                   |
+| options.propertyName<i>?</i> | **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**                                              | features with the same `propertyName` value will be dissolved. |
+| featureCollection            | **[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** | input feature collection to be dissolved                       |
 
 ### Returns
 
-**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)\<[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)\>** a FeatureCollection containing the dissolved polygons
+**[FeatureCollection](https://tools.ietf.org/html/rfc7946#section-3.3)&lt;[Polygon](https://tools.ietf.org/html/rfc7946#section-3.1.6)&gt;** a FeatureCollection containing the dissolved polygons
 
 ### Examples
 
@@ -74,58 +119,6 @@ var features = turf.featureCollection([
 var dissolved = turf.dissolve(features, { propertyName: "combine" });
 ```
 
-export function Map0() {
-  "use strict";
-
-  // jsdoc example start
-  var features = turf.featureCollection([
-    turf.polygon(
-      [
-        [
-          [0, 0],
-          [0, 1],
-          [1, 1],
-          [1, 0],
-          [0, 0],
-        ],
-      ],
-      { combine: "yes" },
-    ),
-    turf.polygon(
-      [
-        [
-          [0, -1],
-          [0, 0],
-          [1, 0],
-          [1, -1],
-          [0, -1],
-        ],
-      ],
-      { combine: "yes" },
-    ),
-    turf.polygon(
-      [
-        [
-          [1, -1],
-          [1, 0],
-          [2, 0],
-          [2, -1],
-          [1, -1],
-        ],
-      ],
-      { combine: "no" },
-    ),
-  ]);
-
-  var dissolved = turf.dissolve(features, { propertyName: "combine" });
-
-  //addToMap
-  var addToMap = { features, dissolved };
-  // jsdoc example end
-
-  return <ExampleMap addToMap={addToMap} />;
-}
-
 <BrowserOnly>{() => <Map0 />}</BrowserOnly>
 
 ### Installation
@@ -143,3 +136,7 @@ $ npm install @turf/turf
 import * as turf from "@turf/turf";
 const result = turf.dissolve(...);
 ```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
