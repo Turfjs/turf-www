@@ -1,0 +1,67 @@
+---
+title: along
+---
+
+import * as turf from "turf-next"; import ExampleMap from "@site/src/components/ExampleMap"; import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal"; import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<browseronly>{() =&gt; <windowturfglobal turf="{turf}"></windowturfglobal>}</browseronly>
+
+### Descripción
+
+Toma una [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4) y devuelve un [punto](https://tools.ietf.org/html/rfc7946#section-3.1.2) a una distancia especificada a lo largo de la línea.
+
+### Parámetros
+
+Nombre | Tipo | Descripción
+--- | --- | ---
+line | **[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)&gt; | [LineString](https://tools.ietf.org/html/rfc7946#section-3.1.4)** | línea de entrada
+distance | **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** | distancia a lo largo de la línea
+options<i>?</i> | **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** | Parámetros opcionales *(predeterminado {})*
+options.units<i>?</i> | **[Units](docs/api/types/Units.mdx)** | pueden ser grados, radianes, millas o kilómetros *(predeterminado "kilómetros")*
+
+### Devuelve
+
+**[Feature](https://tools.ietf.org/html/rfc7946#section-3.2)&lt;[Point](https://tools.ietf.org/html/rfc7946#section-3.1.2)&gt;** Point `distance` `units` along the line
+
+### Ejemplos
+
+```javascript
+var line = turf.lineString([
+  [-83, 30],
+  [-84, 36],
+  [-78, 41],
+]);
+var options = { units: "miles" };
+
+var along = turf.along(line, 200, options);
+```
+
+export function Map0() { "use strict";
+
+// jsdoc example start var line = turf.lineString([ [-83, 30], [-84, 36], [-78, 41], ]); var options = { units: "miles" };
+
+var along = turf.along(line, 200, options);
+
+//addToMap var addToMap = { along, line }; // jsdoc example end
+
+return <examplemap addtomap="{addToMap}"></examplemap>; }
+
+<browseronly>{() =&gt; <map></map>}</browseronly>
+
+### Instalación
+
+```javascript
+$ npm install @turf/along
+
+import { along } from "@turf/along";
+const result = along(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.along(...);
+```
