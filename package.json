@@ -16,14 +16,14 @@
     "generate-api-mdx": "npx tsx ./scripts/generate-api-mdx.ts"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.5.2",
-    "@docusaurus/preset-classic": "^3.5.2",
-    "@mdx-js/react": "^3.0.1",
-    "@shoelace-style/shoelace": "^2.16.0",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
+    "@mdx-js/react": "^3.1.1",
+    "@shoelace-style/shoelace": "^2.20.1",
     "@turf/turf": "^6.5.0",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
-    "prism-react-renderer": "^2.3.1",
+    "prism-react-renderer": "^2.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "turf-6": "npm:@turf/turf@^6.5.0",
@@ -31,12 +31,12 @@
     "turf-next": "npm:@turf/turf@^7.1.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.5.2",
-    "@docusaurus/types": "^3.5.2",
+    "@docusaurus/module-type-aliases": "^3.10.2",
+    "@docusaurus/types": "^3.10.2",
     "documentation": "^14.0.3",
-    "glob": "^10.4.5",
+    "glob": "^10.5.0",
     "load-json-file": "^7.0.1",
-    "prettier": "^3.3.3",
+    "prettier": "^3.9.6",
     "yamljs": "^0.3.0"
   },
   "repository": {
