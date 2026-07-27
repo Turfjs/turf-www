@@ -78,6 +78,6 @@
   },
   "homepage": "https://github.com/turfjs/turf-www",
   "engines": {
-    "node": ">=18.0"
+    "node": ">=26.0"
   }
 }
