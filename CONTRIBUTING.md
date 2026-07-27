@@ -14,7 +14,7 @@ The content of the Turf website resides in a separate repository, which links to
 
 1. A custom script (generate-api-mdx.ts) generates MDX (extended Markdown) describing the API directly from the Turf source files. generate-api-mdx.ts does any custom handling Turf requires, for example generating the interactive maps used to display examples.
 1. Docusaurus then processes that MDX into a static HTML website.
-1. The HTML files are uploaded to github pages where they become publicly accessible via https://turfjs.org
+1. The HTML files are uploaded to GitHub pages where they become publicly accessible via https://turfjs.org
 
 ### Terminology confusion
 
@@ -46,7 +46,7 @@ git -C turf/ checkout 68915ee
 Now that the `turf/` submodule points to 7.1.0 code regenerate the API documentation:
 
 ```bash
-npm run generate-api-mdx
+pnpm generate-api-mdx
 ```
 
 You will likely see many changes to MDX files in the `docs/` directory.
@@ -54,8 +54,8 @@ You will likely see many changes to MDX files in the `docs/` directory.
 Run docusaurus to view the site in dev mode and highlight any missing routes, etc. Docusaurus is pretty good at finding problems. Fix any issues manually, usually by tweaking the MDX.
 
 ```bash
-npm run build
-npm run serve
+pnpm build
+pnpm serve
 ```
 
 Note the generated documentation will appear under the _Next_ drop down menu.
@@ -65,14 +65,14 @@ You could at this point commit the changes. However we're about to make a versio
 Now, version the contents of _Current_ as 7.1.0:
 
 ```bash
-npm run docusaurus docs:version 7.1.0
+pnpm docusaurus docs:version 7.1.0
 ```
 
 You will now see many more changes in the `versioned_docs` directory. This is the snapshot we want to commit and publish. Before we do that though, switch back to the HEAD of our git repo and regenerate the _Current_ documentation based on that code:
 
 ```bash
 git submodule update --init
-npm run generate-api-mdx
+pnpm generate-api-mdx
 ```
 
 Most, if not all, of the changes in docs/ should revert. If any remain review them as they may have previously been committed as manual corrections (and thus can be discarded).
@@ -97,6 +97,6 @@ git push
 
 ### Publishing to turfjs.org
 
-To build and publish the site, you simply need to create a PR from your fork to turf-www:master. This will run a test build as a github action.
+To build and publish the site, you simply need to create a PR from your fork to turf-www:master. This will run a test build as a GitHub action.
 
-When your PR is merged into master, another github action will deploy the content automatically to github pages.
+When your PR is merged into master, another GitHub action will deploy the content automatically to GitHub pages.
