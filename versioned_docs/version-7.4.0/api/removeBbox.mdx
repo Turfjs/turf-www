@@ -1,0 +1,44 @@
+---
+title: removeBbox
+---
+
+import * as turf from "turf-next";
+import ExampleMap from "@site/src/components/ExampleMap";
+import WindowTurfGlobal from "@site/src/components/WindowTurfGlobal";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+### Description
+
+Recursively removes bounding boxes from a GeoJSON object.
+
+This function mutates the input GeoJSON object.
+
+### Parameters
+
+| Name    | Type                                                         | Description                                           |
+| ------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| geojson | **[GeoJSON](https://tools.ietf.org/html/rfc7946#section-3)** | GeoJSON object whose bounding boxes should be removed |
+
+### Returns
+
+**void**
+
+### Installation
+
+```javascript
+$ npm install @turf/helpers
+
+import { removeBbox } from "@turf/helpers";
+const result = removeBbox(...);
+```
+
+```javascript
+$ npm install @turf/turf
+
+import * as turf from "@turf/turf";
+const result = turf.removeBbox(...);
+```
+
+<!-- Expose turf as global var for experimenting in the browser console -->
+
+<BrowserOnly>{() => <WindowTurfGlobal turf={turf} />}</BrowserOnly>
