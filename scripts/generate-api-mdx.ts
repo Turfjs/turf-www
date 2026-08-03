@@ -10,7 +10,7 @@ import * as prettier from "prettier";
   // in an IIFE as top level async not allowed.
   const documentation = await import("documentation");
 
-  const srcPathDir = path.resolve("/Users/james/Code/turf/span");
+  const srcPathDir = path.resolve(__dirname, "../turf");
   const docsOutDir = path.resolve(__dirname, "..", "docs");
 
   interface SidebarConfig {
