@@ -277,6 +277,7 @@ export default [
       "api/quadratAnalysis",
       "api/rbush",
       "api/rectangleGrid",
+      "api/removeBbox",
       "api/standardDeviationalEllipse",
     ],
   },
